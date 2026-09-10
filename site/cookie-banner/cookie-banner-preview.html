@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TTS — Cookie consent preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../ds-core-r14.css" id="theme-css">
+<script>
+  // ?theme=light → светлая тема
+  if (new URLSearchParams(location.search).get('theme') === 'light') {
+    document.getElementById('theme-css').href = '../ds-core-r14-light.css';
+  }
+</script>
+<style>
+  body { min-height: 100vh; }
+  .preview-replay {
+    position: fixed;
+    top: 14px; right: 14px;
+  }
+</style>
+</head>
+<body>
+
+<button class="btn btn-ghost btn-sm preview-replay" id="replay">Проиграть заново</button>
+
+<div class="cookie-bar" id="cookie-bar" role="region" aria-label="Cookies">
+  <div class="cookie-bar-text">Пользуясь нашим сайтом, вы соглашаетесь с&nbsp;тем, что <a href="#" class="cookie-bar-link">мы используем cookies.</a></div>
+  <div class="cookie-bar-actions">
+    <button class="btn btn-primary btn-md" id="cookie-ok">ОКЕЙ</button>
+    <button class="btn btn-ghost btn-md" id="cookie-no">НЕТ</button>
+  </div>
+</div>
+
+<script>
+  const bar = document.getElementById('cookie-bar');
+
+  function hideBar() {
+    bar.classList.add('cookie-bar-hide');
+    bar.addEventListener('animationend', function onEnd(e) {
+      if (e.animationName !== 'cookie-out') return;
+      bar.style.display = 'none';
+      bar.removeEventListener('animationend', onEnd);
+    });
+  }
+
+  function showBar() {
+    bar.classList.remove('cookie-bar-hide');
+    bar.style.display = 'none';
+    void bar.offsetWidth;
+    bar.style.display = '';
+  }
+
+  document.getElementById('cookie-ok').addEventListener('click', hideBar);
+  document.getElementById('cookie-no').addEventListener('click', hideBar);
+  document.getElementById('replay').addEventListener('click', showBar);
+</script>
+</body>
+</html>

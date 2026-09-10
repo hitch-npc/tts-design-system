@@ -1,0 +1,1684 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TTS — Партнёрская программа · Upgraded (R14+)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&family=Source+Serif+4:wght@400&display=swap" rel="stylesheet">
+<style>
+/* ════════════════════════ STAGE ════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: #161616; }
+.stage { display: flex; flex-direction: column; align-items: center; gap: 28px; padding: 56px 24px 80px; }
+.stage-label {
+  font-family: "Manrope", sans-serif; font-size: 10px; font-weight: 600;
+  letter-spacing: .3em; text-transform: uppercase; color: #6A6A68; margin-top: 36px;
+}
+.stage-label:first-child { margin-top: 0; }
+.stage-row { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; justify-content: center; }
+.frame { width: 1440px; overflow: hidden; box-shadow: 0 16px 64px rgba(0,0,0,.5); flex-shrink: 0; position: relative; }
+.frame-m { width: 390px; }
+
+/* ════════════════════════ ТЕМЫ ════════════════════════ */
+.th-d {
+  --ink: #0D0D0D; --black: #111111;
+  --accent: #0047FF; --accent-hover: #0038CC;
+  --accent-ghost: #0B142A; --accent-border: #091E56;
+  --n950: #111318; --n900: #191C22; --n800: #262930; --n700: #4A4A48;
+  --n600: #626260; --n500: #7A7A78; --n400: #8A8A88; --n300: #A6A6A2;
+  --n200: #C0C0BC; --n100: #D6D6D2;
+  --blob-core: #06277F; --blob-mid: #15092A; --blob-purple: #200840; --blob-faint: #08133D;
+  --premium: #F5F4EE;
+  --success: #22C55E; --danger: #E53E3E; --danger-text: #FF8080;
+  --logo: var(--n100);
+  --grain-o: .045;
+}
+.th-l {
+  --ink: #FFFFFF; --black: #111111;
+  --accent: #0047FF; --accent-hover: #0038CC;
+  --accent-ghost: #EAF0FF; --accent-border: #B8C9F0;
+  --n950: #FAFAF7; --n900: #F2F1EB; --n800: #E2E1DA; --n700: #5A5A58;
+  --n600: #A8A8A5; --n500: #888886; --n400: #6A6A68; --n300: #4A4A48;
+  --n200: #2D2D2B; --n100: #0D0D0D;
+  --blob-core: #BFD0EE; --blob-mid: #E5DAEF; --blob-purple: #E5DAEF; --blob-faint: #E8EEF8;
+  --premium: #F5F4EE;
+  --success: #16A34A; --danger: #DC2626; --danger-text: #C62828;
+  --logo: #808174;
+  --grain-o: .03;
+}
+
+/* ════════════════════════ БАЗА ════════════════════════ */
+.frame {
+  font-family: "Manrope", sans-serif;
+  background: var(--ink); color: var(--n100);
+  font-size: 14px; line-height: 1.6;
+}
+.frame ::placeholder { color: var(--n600); }
+
+/* Зерно поверх всего фрейма */
+.frame::after {
+  content: ""; position: absolute; inset: 0; z-index: 90; pointer-events: none;
+  opacity: var(--grain-o);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='180' height='180' filter='url(%23n)'/></svg>");
+}
+
+/* ── Типографика ── */
+.lbl-accent {
+  font-size: 10px; font-weight: 600; letter-spacing: .22em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 18px;
+}
+.caption {
+  font-size: 10px; font-weight: 500; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--n500);
+}
+.hero-title {
+  font-family: "Cormorant Garamond", serif; font-weight: 400;
+  font-size: 40px; line-height: 1.08; letter-spacing: .01em;
+  text-transform: uppercase; color: var(--n100); margin-bottom: 28px;
+}
+.hero-title em { font-style: italic; }
+.sec-title {
+  font-family: "Cormorant Garamond", serif; font-weight: 500;
+  font-size: 38px; line-height: 1.12; color: var(--n100);
+  max-width: 560px; margin-bottom: 48px;
+}
+.sec-title em { font-style: italic; }
+
+/* ── Кнопки ── */
+.btn {
+  font-family: "Manrope", sans-serif; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase;
+  border: 1px solid transparent; border-radius: 2px; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  text-decoration: none; transition: background .2s, border-color .2s, color .2s;
+}
+.btn-lg { font-size: 12px; padding: 15px 28px; }
+.btn-md { font-size: 11px; padding: 12px 22px; }
+.btn-sm { font-size: 10px; padding: 9px 16px; min-height: 36px; }
+.btn-full { width: 100%; }
+.btn-primary { background: var(--accent); color: #FFFFFF; }
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-ghost { background: transparent; border-color: var(--n800); color: var(--n200); }
+.btn-ghost:hover { border-color: var(--n500); color: var(--n100); }
+.btn-ink { background: #0D0D0D; color: #F5F4EE; }
+.btn-ink:hover { background: #262930; }
+
+/* ── Теги ── */
+.tag {
+  display: inline-flex; align-items: center;
+  font-size: 9px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+  padding: 5px 10px; border-radius: 2px; border: 1px solid var(--n800); color: var(--n300);
+}
+.tag-accent { background: var(--accent-ghost); border-color: var(--accent-border); color: var(--accent); }
+
+.blob { position: absolute; border-radius: 50%; filter: blur(100px); pointer-events: none; }
+.rub { font-family: 'Source Serif 4', 'Source Serif Pro', Georgia, serif; font-style: normal; }
+
+/* ── Reveal ── */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ════════════════════════ NAV ════════════════════════ */
+.nav {
+  position: relative; z-index: 5;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 56px; border-bottom: 1px solid var(--n900);
+}
+.logo { color: var(--logo); display: flex; align-items: center; }
+.logo svg { height: 30px; width: auto; display: block; }
+.nav-links { display: flex; gap: 32px; list-style: none; }
+.nav-links a {
+  font-size: 10px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--n300); text-decoration: none; transition: color .2s;
+}
+.nav-links a:hover { color: var(--n100); }
+.frame-m .nav { padding: 16px 20px; }
+.frame-m .nav-links { display: none; }
+.frame-m .logo svg { height: 22px; }
+
+/* ════════════════════════ HERO ════════════════════════ */
+.hero { position: relative; overflow: hidden; padding: 96px 56px 88px; }
+.hero-blob-1 {
+  width: 680px; height: 680px; top: -160px; right: -120px;
+  background: radial-gradient(circle, var(--blob-core) 0%, var(--blob-mid) 55%, transparent 75%);
+}
+.hero-blob-2 {
+  width: 460px; height: 460px; bottom: -140px; left: 30%;
+  background: radial-gradient(circle, var(--blob-purple) 0%, var(--blob-faint) 50%, transparent 72%);
+}
+/* «Партер» — точечная сетка-кресла */
+.hall-dots {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 280px; pointer-events: none;
+  background-image: radial-gradient(circle, var(--n800) 1.1px, transparent 1.4px);
+  background-size: 20px 20px;
+  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,.9), transparent 85%);
+  mask-image: linear-gradient(to top, rgba(0,0,0,.9), transparent 85%);
+}
+/* Виньетка (только тёмная тема) */
+.th-d .hero::before {
+  content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background: radial-gradient(ellipse 120% 90% at 50% 40%, transparent 55%, rgba(0,0,0,.45) 100%);
+}
+.hero-grid {
+  position: relative; z-index: 3;
+  max-width: 1240px; margin: 0 auto;
+  display: grid; grid-template-columns: 1.35fr 1fr; gap: 72px; align-items: center;
+}
+.hero-lead {
+  font-size: 14px; font-weight: 300; line-height: 1.75;
+  color: var(--n300); max-width: 480px; margin-bottom: 36px;
+}
+.btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.hero-stats {
+  display: flex; gap: 56px; margin-top: 52px;
+  padding-top: 28px; border-top: 1px solid var(--n900);
+}
+.stat-num { font-family: "Oranienbaum", serif; font-size: 38px; line-height: 1; color: var(--n100); }
+.stat-lbl { margin-top: 8px; }
+
+.frame-m .hero { padding: 56px 20px 64px; }
+.frame-m .hero-grid { grid-template-columns: 1fr; gap: 56px; }
+.frame-m .hero-title { font-size: 32px; }
+.frame-m .hero-stats { gap: 20px; justify-content: space-between; }
+.frame-m .ticket-cover { height: 160px !important; }
+.frame-m .stat-num { font-size: 28px; }
+
+/* ── Стопка билетов ── */
+.stack { position: relative; width: 380px; height: 560px; justify-self: end; }
+.frame-m .stack { width: 320px; height: 510px; justify-self: center; }
+.ticket {
+  position: absolute; width: 350px;
+  background: var(--n950); border: 1px solid var(--n800); border-radius: 2px;
+  overflow: hidden;
+}
+.frame-m .ticket { width: 300px; }
+.ticket-back-1 { top: 56px; left: -16px; transform: rotate(-7deg); opacity: .5; min-height: 480px; }
+.ticket-back-2 { top: 28px; left: 26px; transform: rotate(4deg); opacity: .72; min-height: 490px; }
+.frame-m .ticket-back-1, .frame-m .ticket-back-2 { min-height: 410px; }
+.ticket-front { top: 44px; left: 6px; transform: rotate(-1.5deg); animation: tfloat 5.5s ease-in-out infinite; box-shadow: 0 28px 64px rgba(0,0,0,.35); }
+.th-l .ticket-front { box-shadow: 0 28px 64px rgba(28,28,26,.16); }
+/* Cover на светлой теме — тёмно-театральный, не белый */
+.th-l .calc .blob { display: none; }
+.th-l .ticket-cover {
+  background: linear-gradient(160deg, #1a1020 0%, #0f0d18 55%, #12101e 100%) !important;
+}
+.th-l .ticket-cover > div:first-child {
+  background: radial-gradient(ellipse 80% 90% at 30% 50%, rgba(60,30,90,.55) 0%, transparent 70%) !important;
+}
+.th-l .ticket-cover > div:nth-child(2) {
+  background: radial-gradient(ellipse 60% 80% at 70% 50%, rgba(0,40,120,.4) 0%, transparent 70%) !important;
+}
+@keyframes tfloat { 0%,100% { transform: rotate(-1.5deg) translateY(0); } 50% { transform: rotate(-1.5deg) translateY(-10px); } }
+
+.ticket-head { position: relative; padding: 26px 26px 22px; overflow: hidden; }
+.ticket-head .blob {
+  width: 240px; height: 240px; top: -110px; right: -70px; filter: blur(70px);
+  background: radial-gradient(circle, var(--blob-core) 0%, var(--blob-mid) 55%, transparent 75%);
+}
+.ticket-head > :not(.blob) { position: relative; z-index: 1; }
+.ticket-venue { margin-bottom: 12px; }
+.ticket-title {
+  font-family: "Cormorant Garamond", serif; font-weight: 500;
+  font-size: 28px; line-height: 1.1; color: var(--n100); margin-bottom: 18px;
+}
+.ticket-row { display: flex; justify-content: space-between; gap: 16px; }
+.ticket-v { font-size: 13px; color: var(--n200); margin-top: 4px; }
+
+/* Перфорация */
+.ticket-sep { position: relative; border-top: 1px dashed var(--n800); }
+.ticket-sep::before, .ticket-sep::after {
+  content: ""; position: absolute; top: -8px; width: 16px; height: 16px;
+  border-radius: 50%; background: var(--ink); border: 1px solid var(--n800);
+}
+.ticket-sep::before { left: -9px; }
+.ticket-sep::after { right: -9px; }
+
+.ticket-code {
+  padding: 14px 26px; display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  border-bottom: 1px solid var(--n900);
+}
+.barcode {
+  height: 30px; width: 130px;
+  background: repeating-linear-gradient(90deg,
+    var(--n100) 0 2px, transparent 2px 5px,
+    var(--n100) 5px 6px, transparent 6px 8px,
+    var(--n100) 8px 11px, transparent 11px 13px);
+}
+.ticket-foot { padding: 18px 26px 22px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.ticket-income { font-family: "Oranienbaum", serif; font-size: 26px; line-height: 1; color: var(--accent); margin-top: 6px; }
+
+/* ════════════════════════ MARQUEE ════════════════════════ */
+.marquee {
+  position: relative; overflow: hidden;
+  border-top: 1px solid var(--n900); border-bottom: 1px solid var(--n900);
+  padding: 20px 0;
+}
+.marquee-track {
+  display: flex; gap: 56px; width: max-content; white-space: nowrap;
+  font-family: "Forum", serif; font-size: 26px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--n500);
+  animation: mq 30s linear infinite;
+}
+.marquee-rev .marquee-track { animation-direction: reverse; }
+.marquee-track span { display: flex; align-items: center; gap: 56px; }
+.mq-dot { font-size: 11px; color: var(--accent); }
+@keyframes mq { to { transform: translateX(-50%); } }
+.frame-m .marquee-track { font-size: 18px; gap: 36px; }
+.frame-m .marquee-track span { gap: 36px; }
+
+/* ════════════════════════ СЕКЦИИ ════════════════════════ */
+.sec { position: relative; overflow: hidden; padding: 88px 56px; }
+.sec + .sec { border-top: 1px solid var(--n900); }
+.sec-wrap { position: relative; z-index: 1; max-width: 1240px; margin: 0 auto; }
+.frame-m .sec { padding: 64px 20px; }
+.frame-m .sec-title { font-size: 28px; margin-bottom: 36px; }
+
+/* ── WHO ── */
+.who-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--n800); border: 1px solid var(--n800);
+}
+.who-card { background: var(--n950); padding: 30px 26px; transition: background .25s; }
+.who-card:hover { background: var(--accent-ghost); }
+.who-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+.who-ico {
+  width: 40px; height: 40px; flex-shrink: 0;
+  border: 1px solid var(--n800); border-radius: 2px; background: var(--ink);
+  display: flex; align-items: center; justify-content: center; color: var(--n300);
+}
+.who-ico svg { width: 18px; height: 18px; display: block; }
+.who-idx { font-family: "Oranienbaum", serif; font-size: 15px; color: var(--n500); }
+.who-card h3 { font-family: "Forum", serif; font-weight: 400; font-size: 18px; letter-spacing: .02em; color: var(--n100); margin-bottom: 10px; }
+.who-card p { font-size: 13px; line-height: 1.7; color: var(--n300); }
+.frame-m .who-grid { grid-template-columns: 1fr; }
+.who-cta {
+  margin-top: 32px; border: 1px solid var(--n800); background: var(--n950);
+  padding: 26px 32px; display: flex; align-items: center; justify-content: space-between; gap: 20px;
+}
+.who-quote {
+  font-family: "Cormorant Garamond", serif; font-weight: 500; font-style: italic;
+  font-size: 21px; color: var(--n200);
+}
+.frame-m .who-cta { flex-direction: column; text-align: center; padding: 26px 20px; }
+
+/* ── HOW: акты ── */
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--n800); }
+.step { padding: 38px 30px; border-right: 1px solid var(--n800); background: var(--n950); }
+.step:last-child { border-right: none; }
+.step-act {
+  font-family: "Cormorant Garamond", serif; font-weight: 500; font-style: italic;
+  font-size: 32px; line-height: 1; color: var(--n100); margin-bottom: 8px;
+}
+.step-remark {
+  font-family: "Cormorant Garamond", serif; font-style: italic; font-weight: 500;
+  font-size: 15px; color: var(--n500); margin-bottom: 22px;
+}
+.step h3 { font-family: "Forum", serif; font-weight: 400; font-size: 17px; letter-spacing: .02em; color: var(--n100); margin-bottom: 10px; }
+.step p { font-size: 13px; line-height: 1.7; color: var(--n300); }
+.frame-m .steps { grid-template-columns: 1fr; }
+.frame-m .step { border-right: none; border-bottom: 1px solid var(--n800); }
+.frame-m .step:last-child { border-bottom: none; }
+
+/* ── PREMIUM-КЕЙС (ivory-инверсия) ── */
+.case-panel {
+  background: var(--premium); color: #0D0D0D; border-radius: 2px;
+  padding: 64px; margin-top: 56px;
+  display: grid; grid-template-columns: 1.2fr 1fr; gap: 64px; align-items: center;
+  position: relative; overflow: hidden;
+}
+.th-l .case-panel { border: 1px solid var(--n800); }
+.case-eyebrow {
+  font-size: 10px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase;
+  color: #7A7A78; margin-bottom: 24px;
+}
+.case-num {
+  font-family: "Oranienbaum", serif; font-size: 88px; line-height: .95; color: #0D0D0D;
+}
+.case-sub {
+  font-family: "Cormorant Garamond", serif; font-weight: 500; font-style: italic;
+  font-size: 24px; line-height: 1.35; color: #4A4A48; margin-top: 18px; max-width: 420px;
+}
+.case-side { display: flex; flex-direction: column; }
+.case-stat { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 16px 0; border-bottom: 1px solid rgba(13,13,13,.12); }
+.case-stat:first-child { border-top: 1px solid rgba(13,13,13,.12); }
+.case-k { font-size: 10px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: #7A7A78; }
+.case-v { font-family: "Oranienbaum", serif; font-size: 24px; color: #0D0D0D; }
+.case-side .btn { margin-top: 28px; align-self: flex-start; }
+.frame-m .case-panel { grid-template-columns: 1fr; padding: 40px 24px; gap: 36px; margin-top: 40px; }
+.frame-m .case-num { font-size: 56px; }
+.frame-m .case-sub { font-size: 19px; }
+
+/* ── EARNINGS / Калькулятор ── */
+.earnings { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 56px; align-items: start; }
+.frame-m .earnings { grid-template-columns: 1fr; gap: 36px; }
+.frame-m .calc { width: 100%; box-sizing: border-box; }
+.earn-h { font-family: "Forum", serif; font-weight: 400; font-size: 22px; letter-spacing: .02em; color: var(--n100); margin-bottom: 20px; }
+.info-block {
+  background: var(--n950); border: 1px solid var(--n800); border-radius: 2px;
+  padding: 20px 24px; font-size: 13px; line-height: 1.7; color: var(--n300); margin-bottom: 12px;
+}
+.info-block strong { font-weight: 600; color: var(--n100); }
+.info-accent { border-left: 2px solid var(--accent); }
+
+.calc {
+  position: relative; overflow: hidden;
+  background: var(--n950); border: 1px solid var(--n800); border-radius: 2px;
+  padding: 32px 30px;
+}
+.calc .blob {
+  width: 200px; height: 200px; top: -70px; right: -60px; filter: blur(60px); opacity: .45;
+  background: radial-gradient(circle, var(--blob-core) 0%, var(--blob-mid) 55%, transparent 75%);
+}
+.calc > :not(.blob) { position: relative; z-index: 1; }
+.calc-h { font-family: "Forum", serif; font-weight: 400; font-size: 19px; letter-spacing: .02em; color: var(--n100); margin-bottom: 26px; }
+.c-row { margin-bottom: 22px; }
+.c-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 12px; }
+.c-head .caption { flex: 1 1 auto; min-width: 0; }
+.c-val { font-family: "Oranienbaum", serif; font-size: 18px; color: var(--n100); flex-shrink: 0; white-space: nowrap; }
+
+input[type=range] {
+  -webkit-appearance: none; appearance: none;
+  display: block; width: 100%; height: 14px;
+  background: transparent; outline: none; margin: 0; padding: 0;
+}
+input[type=range]::-webkit-slider-runnable-track { height: 2px; background: var(--n800); border-radius: 0; }
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 14px; height: 14px; margin-top: -6px;
+  background: var(--accent); border-radius: 2px; border: none; cursor: pointer;
+}
+input[type=range]::-moz-range-track { height: 2px; background: var(--n800); border-radius: 0; }
+input[type=range]::-moz-range-thumb {
+  width: 14px; height: 14px; background: var(--accent); border-radius: 2px; border: none; cursor: pointer;
+}
+.c-result {
+  margin-top: 26px; padding: 16px 20px;
+  background: var(--accent-ghost); border: 1px solid var(--accent-border); border-radius: 2px;
+  display: flex; justify-content: space-between; align-items: center; gap: 8px 12px; flex-wrap: wrap;
+}
+.c-result-val { font-family: "Oranienbaum", serif; font-size: 32px; line-height: 1; color: var(--accent); white-space: nowrap; }
+.c-note { font-size: 11px; line-height: 1.6; color: var(--n500); margin-top: 14px; }
+.frame-m .calc { padding: 26px 20px; }
+.frame-m .calc .blob { width: 160px; height: 160px; top: -50px; right: -40px; opacity: .3; }
+.frame-m .c-result-val { font-size: 26px; }
+.frame-m .c-val { font-size: 16px; }
+
+/* ── FAQ ── */
+.faq-list { width: 100%; }
+.faq-item { border-bottom: 1px solid var(--n800); transition: background .2s; }
+.faq-item:hover { background: var(--n950); }
+.faq-btn {
+  width: 100%; display: flex; align-items: center; gap: 22px;
+  background: none; border: none; cursor: pointer; text-align: left;
+  padding: 22px 16px;
+  font-family: "Manrope", sans-serif; font-size: 14px; font-weight: 500; color: var(--n100);
+  transition: color .2s;
+}
+.faq-btn:hover { color: var(--accent); }
+.faq-num { font-family: "Oranienbaum", serif; font-size: 24px; line-height: 1; color: var(--n600); width: 44px; flex-shrink: 0; }
+.faq-q { flex: 1; }
+.faq-ico {
+  width: 24px; height: 24px; flex-shrink: 0;
+  border: 1px solid var(--n800); border-radius: 2px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; line-height: 1; color: var(--accent);
+  transition: transform .3s;
+}
+.faq-item.open .faq-ico { transform: rotate(45deg); }
+.faq-body { display: none; }
+.faq-item.open .faq-body { display: block; padding: 0 16px 24px 82px; }
+.faq-body p { font-size: 13px; line-height: 1.75; color: var(--n300); max-width: 640px; }
+.faq-body strong { font-weight: 600; color: var(--n100); }
+.frame-m .faq-btn { padding: 18px 8px; gap: 14px; }
+.frame-m .faq-num { width: 32px; font-size: 20px; }
+.frame-m .faq-item.open .faq-body { padding: 0 8px 20px 54px; }
+
+/* ── CLOSE + водяной знак ── */
+.close-sec .blob-a {
+  width: 560px; height: 560px; top: -180px; left: 50%; transform: translateX(-50%);
+  background: radial-gradient(circle, var(--blob-core) 0%, var(--blob-mid) 55%, transparent 75%);
+}
+.eye-wm {
+  position: absolute; right: -8%; bottom: -14%; width: 760px; height: auto;
+  color: var(--n100); opacity: .05; pointer-events: none; z-index: 0;
+}
+.frame-m .eye-wm { width: 420px; right: -30%; bottom: -6%; }
+.close-inner { position: relative; z-index: 1; max-width: 660px; margin: 0 auto; text-align: center; }
+.close-inner .sec-title { max-width: none; margin-bottom: 20px; }
+.close-lead { font-size: 14px; font-weight: 300; line-height: 1.75; color: var(--n300); margin-bottom: 44px; }
+.form-box {
+  text-align: left; background: var(--n950); border: 1px solid var(--n800); border-radius: 2px;
+  padding: 36px 32px;
+}
+.f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.frame-m .f-row { grid-template-columns: 1fr; }
+.f-full { grid-column: 1 / -1; }
+.f-label { display: block; margin-bottom: 7px; }
+.input {
+  width: 100%; padding: 11px 13px;
+  background: var(--ink); border: 1px solid var(--n800); border-radius: 2px;
+  font-family: "Manrope", sans-serif; font-size: 14px; color: var(--n100);
+  outline: none; transition: border-color .2s;
+}
+.input:focus { border-color: var(--accent); }
+select.input { cursor: pointer; appearance: none; }
+textarea.input { resize: none; }
+.f-note { font-size: 11px; color: var(--n500); text-align: center; margin-top: 14px; }
+.pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 36px; }
+
+
+/* ── Theme toggle ── */
+.theme-toggle {
+  display: flex; align-items: center; gap: 7px; cursor: pointer;
+  background: var(--n900); border: 1px solid var(--n800); border-radius: 2px;
+  padding: 7px 12px; color: var(--n400);
+  font-family: "Manrope", sans-serif; font-size: 9px; font-weight: 600;
+  letter-spacing: .16em; text-transform: uppercase;
+  transition: border-color .18s, color .18s;
+}
+.theme-toggle:hover { border-color: var(--n600); color: var(--n100); }
+.theme-toggle svg { width: 14px; height: 14px; display: block; flex-shrink: 0; }
+
+/* ── STICKY CTA ── */
+.cta-bar {
+  position: sticky; bottom: 0; z-index: 50;
+  display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  padding: 14px 56px;
+  background: color-mix(in srgb, var(--ink) 84%, transparent);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid var(--n900);
+}
+.cta-text { font-family: "Forum", serif; font-size: 17px; letter-spacing: .03em; color: var(--n100); }
+.frame-m .cta-bar { padding: 12px 20px; flex-wrap: wrap; gap: 10px; }
+.frame-m .cta-text { font-size: 13px; flex: 1; min-width: 0; }
+.frame-m .cta-bar .btn { white-space: nowrap; flex-shrink: 0; }
+
+/* ── FOOTER (site-footer из DS) ── */
+.site-footer { background: var(--n950); }
+.footer-top-line { height: 1px; background: linear-gradient(90deg, var(--accent) 0%, transparent 55%); }
+.footer-inner { max-width: 1240px; margin: 0 auto; padding: 0 56px; }
+.frame-m .footer-inner { padding: 0 20px; }
+.footer-main {
+  padding: 48px 0 44px;
+  display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 0 48px; align-items: start;
+  border-bottom: 1px solid var(--n800);
+}
+.frame-m .footer-main { grid-template-columns: 1fr; gap: 40px; }
+.footer-brand { display: flex; flex-direction: column; gap: 20px; }
+.footer-logo { color: var(--logo); width: fit-content; display: block; }
+.footer-logo svg { height: 22px; width: auto; display: block; }
+.footer-tagline { font-size: 13px; line-height: 1.7; color: var(--n400); }
+.footer-tagline strong { color: var(--n200); font-weight: 500; }
+.footer-legal { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+.footer-legal-link { font-size: 13px; color: var(--n500); text-decoration: none; width: fit-content; transition: color .12s; }
+.footer-legal-link:hover { color: var(--n200); }
+.footer-col, .footer-actions { display: flex; flex-direction: column; gap: 28px; }
+.footer-col-label {
+  font-size: 9px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--n600); margin-bottom: 10px;
+}
+.social-icons-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.social-item { display: none; }
+.social-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px;
+  background: var(--n900); border: 1px solid var(--n800); border-radius: 2px;
+  color: var(--n400); text-decoration: none; cursor: pointer;
+  transition: color .12s, border-color .12s, background .12s;
+}
+.social-btn:hover { color: var(--n100); border-color: var(--n600); background: var(--n800); }
+.social-btn svg { display: block; width: 16px; height: 16px; }
+.social-name { font-size: 9px; color: var(--n600); letter-spacing: .06em; text-align: center; margin-top: 4px; }
+.footer-contact-role { font-size: 12px; color: var(--n500); line-height: 1.5; margin-bottom: 6px; }
+.footer-contact-email {
+  font-size: 14px; font-weight: 500; color: var(--n200); text-decoration: none;
+  display: inline-block; position: relative; transition: color .2s;
+}
+.footer-contact-email::after {
+  content: ''; position: absolute; left: 0; bottom: -1px;
+  width: 0; height: 1px; background: var(--accent); transition: width .2s;
+}
+.footer-contact-email:hover { color: var(--accent); }
+.footer-contact-email:hover::after { width: 100%; }
+.footer-action-buttons { display: flex; flex-direction: column; gap: 8px; }
+.btn-dark { background: var(--n900); border-color: var(--n800); color: var(--n200); }
+.btn-dark:hover { background: var(--n800); color: var(--n100); }
+.footer-action-buttons .btn { justify-content: flex-start; gap: 10px; text-align: left; }
+.footer-action-buttons .btn svg { flex-shrink: 0; opacity: .7; }
+.footer-tech-support { display: flex; flex-direction: column; gap: 6px; }
+.footer-bottom {
+  padding: 20px 0 24px;
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+}
+.frame-m .footer-bottom { flex-direction: column; align-items: flex-start; }
+.footer-copy { font-size: 11px; color: var(--n600); white-space: nowrap; }
+.footer-disclaimer { font-size: 11px; color: var(--n700); line-height: 1.5; }
+
+/* ── Формы (R14) ── */
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-label {
+  font-size: 10px; font-weight: 600; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--n500);
+  font-family: var(--font);
+}
+.form-input {
+  font-family: var(--font); font-size: 14px; color: var(--n100);
+  background: var(--n950); border: 1px solid var(--n700);
+  border-radius: var(--r-sm); padding: 12px 16px; outline: none;
+  width: 100%; -webkit-appearance: none;
+  transition: border-color .15s, background .15s;
+}
+.form-input::placeholder { color: var(--n600); }
+.form-input:hover { border-color: var(--n600); }
+.form-input:focus { border-color: var(--accent); background: #0D0D1A; }
+.form-input.error { border-color: var(--danger); }
+.form-input.error:focus { border-color: var(--danger); }
+
+/* ════════════ SANDBOX-POLISH (R14-safe) ════════════ */
+/* Единый акцент Cobalt, радиус 2px, только токены — гардрейл проходит */
+
+/* 1 · Eyebrow → dot-chip (мотив точки-метки) */
+.lbl-accent {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 12px 6px 10px;
+  border: 1px solid var(--accent-border);
+  background: var(--accent-ghost);
+  border-radius: 2px;
+}
+.lbl-accent::before {
+  content: ""; flex-shrink: 0;
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--accent); box-shadow: 0 0 8px var(--accent);
+}
+
+/* 2 · Живое органическое свечение (дрейф blob'ов) */
+@keyframes blob-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(3%, -4%) scale(1.05); }
+  66%      { transform: translate(-2%, 3%) scale(.97); }
+}
+@keyframes blob-drift-c {
+  0%, 100% { transform: translateX(-50%) scale(1); }
+  50%      { transform: translateX(-50%) scale(1.08); }
+}
+.hero-blob-1 { animation: blob-drift 26s ease-in-out infinite; }
+.hero-blob-2 { animation: blob-drift 34s ease-in-out infinite reverse; }
+.close-sec .blob-a { animation: blob-drift-c 30s ease-in-out infinite; }
+
+/* 3 · Уточнённые микровзаимодействия кнопок */
+.btn { transition: background .2s, border-color .2s, color .2s, transform .2s, box-shadow .2s; }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 10px 26px -10px var(--accent); }
+.btn-ghost:hover { background: var(--accent-ghost); }
+
+/* 4 · Тоньше hover карточек-секций */
+.step { transition: background .25s, box-shadow .25s; }
+.step:hover { background: var(--n900); }
+.info-block { transition: border-color .2s, background .2s; }
+.info-block:hover { border-color: var(--n700); }
+
+/* Уважать reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .hero-blob-1, .hero-blob-2, .close-sec .blob-a, .ticket-front,
+  .marquee-track { animation: none !important; }
+}
+.form-input.success { border-color: var(--success); }
+.form-input.success:focus { border-color: var(--success); }
+.form-input:disabled {
+  background: var(--n900); border-color: var(--n800);
+  color: var(--n600); cursor: not-allowed; opacity: .7;
+}
+.form-input:disabled::placeholder { color: var(--n600); }
+.form-helper { font-size: 11px; color: var(--n600); font-family: var(--font); }
+.form-error  { font-size: 11px; color: var(--danger-text); font-family: var(--font); }
+.form-success { font-size: 11px; color: var(--success); font-family: var(--font); }
+.form-msg { font-size: 11px; font-family: var(--font); color: var(--n600); transition: color .15s; }
+.form-msg.is-error   { color: var(--danger-text); }
+.form-msg.is-success { color: var(--success); }
+.form-select {
+  font-family: var(--font); font-size: 14px; color: var(--n100);
+  background: var(--n950); border: 1px solid var(--n700);
+  border-radius: var(--r-sm); padding: 12px 40px 12px 16px; outline: none;
+  width: 100%; -webkit-appearance: none; cursor: pointer;
+  transition: border-color .15s;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 7L11 1' stroke='%237A7A78' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 16px center;
+}
+.form-select:hover { border-color: var(--n600); }
+.form-select:focus { border-color: var(--accent); }
+.form-select:disabled {
+  background-color: var(--n900); border-color: var(--n800);
+  color: var(--n600); cursor: not-allowed; opacity: .7;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 7L11 1' stroke='%23444444' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+</style>
+</head>
+<body>
+
+<!-- Логотип TTS + «глаз» для водяного знака -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="tts-logo" viewBox="0 0 676 194" fill="none">
+<path d="M415.013 85.8721C412.48 86.3456 409.995 86.5467 407.557 86.4756C405.143 86.4282 402.978 85.9906 401.061 85.1622C399.144 84.31 397.688 82.9728 396.694 81.1507C395.818 79.4938 395.356 77.8017 395.31 76.0736C395.262 74.3456 395.238 72.3934 395.238 70.216V36.8804H403.759V69.719C403.759 71.2573 403.77 72.606 403.794 73.7657C403.841 74.9261 404.09 75.8724 404.54 76.606C405.392 78.0266 406.753 78.8191 408.622 78.9851C410.492 79.1503 412.622 79.0555 415.013 78.7005V85.8721ZM388.28 54.2404V47.5307H415.013V54.2404H388.28Z" fill="currentColor"/>
+<path d="M423.968 41.7086V33.8628H432.524V41.7086H423.968ZM423.968 85.8721V47.5307H432.524V85.8721H423.968Z" fill="currentColor"/>
+<path d="M459.806 86.9365C455.853 86.9365 452.481 86.0607 449.688 84.3096C446.895 82.5342 444.753 80.1207 443.262 77.0677C441.795 74.014 441.049 70.5588 441.025 66.701C441.049 62.7722 441.819 59.293 443.333 56.2636C444.872 53.2105 447.049 50.8201 449.865 49.0924C452.682 47.341 456.031 46.4653 459.912 46.4653C464.267 46.4653 467.948 47.5658 470.953 49.7669C473.982 51.9443 475.959 54.9264 476.882 58.7132L468.361 61.0208C467.699 58.9617 466.598 57.3642 465.06 56.2281C463.521 55.0684 461.77 54.4886 459.806 54.4886C457.581 54.4886 455.747 55.0211 454.303 56.0862C452.859 57.1275 451.795 58.5712 451.108 60.4172C450.421 62.2633 450.079 64.3579 450.079 66.701C450.079 70.3458 450.895 73.2926 452.528 75.5408C454.161 77.7891 456.587 78.9136 459.806 78.9136C462.078 78.9136 463.865 78.3926 465.166 77.3515C466.492 76.3096 467.486 74.8072 468.149 72.8428L476.882 74.795C475.698 78.7002 473.627 81.7064 470.669 83.8124C467.71 85.8954 464.09 86.9365 459.806 86.9365Z" fill="currentColor"/>
+<path d="M483.954 85.8739L484.025 34.4946H492.731V65.893L506.825 47.3394H517.565L502.615 66.6067L518.849 85.8739H507.467L492.731 67.3203V85.8739H483.954Z" fill="currentColor"/>
+<path d="M539.246 86.944C535.344 86.944 531.919 86.0991 528.97 84.4105C526.02 82.7213 523.713 80.3789 522.048 77.3813C520.406 74.3843 519.586 70.9353 519.586 67.0343C519.586 62.8241 520.395 59.1728 522.012 56.0806C523.63 52.9645 525.878 50.5501 528.756 48.8375C531.634 47.1249 534.964 46.2686 538.746 46.2686C542.742 46.2686 546.132 47.2081 548.915 49.0872C551.722 50.9426 553.803 53.5711 555.159 56.9725C556.515 60.374 557.026 64.3821 556.693 68.9967H548.166V65.8569C548.142 61.6704 547.405 58.6139 545.953 56.6871C544.503 54.7604 542.219 53.797 539.103 53.797C535.582 53.797 532.966 54.8912 531.253 57.0796C529.541 59.2442 528.685 62.4197 528.685 66.6061C528.685 70.5072 529.541 73.5279 531.253 75.669C532.966 77.8095 535.464 78.8801 538.746 78.8801C540.863 78.8801 542.683 78.4159 544.205 77.4883C545.752 76.537 546.941 75.1697 547.773 73.3856L556.265 75.9543C554.79 79.4269 552.507 82.1271 549.414 84.0534C546.346 85.9805 542.956 86.944 539.246 86.944ZM525.973 68.9967V62.503H552.483V68.9967H525.973Z" fill="currentColor"/>
+<path d="M587.235 85.8733C584.689 86.3489 582.191 86.5508 579.741 86.4797C577.316 86.4323 575.139 85.9918 573.212 85.1598C571.286 84.3033 569.823 82.9597 568.823 81.1274C567.943 79.4626 567.48 77.7619 567.432 76.0252C567.384 74.2893 567.361 72.327 567.361 70.1383V36.6348H575.924V69.6388C575.924 71.1849 575.936 72.5404 575.96 73.7066C576.007 74.872 576.257 75.8233 576.709 76.5605C577.565 77.9882 578.933 78.7851 580.812 78.9511C582.692 79.1177 584.832 79.0229 587.235 78.6658V85.8733ZM560.367 54.0823V47.3388H587.235V54.0823H560.367Z" fill="currentColor"/>
+<path d="M632.395 85.8733C629.849 86.3489 627.352 86.5508 624.902 86.4797C622.476 86.4323 620.299 85.9918 618.372 85.1598C616.446 84.3033 614.983 82.9597 613.984 81.1274C613.103 79.4626 612.64 77.7619 612.593 76.0252C612.544 74.2893 612.521 72.327 612.521 70.1383V36.6348H621.084V69.6388C621.084 71.1849 621.096 72.5404 621.12 73.7066C621.167 74.872 621.417 75.8233 621.869 76.5605C622.725 77.9882 624.093 78.7851 625.972 78.9511C627.852 79.1177 629.992 79.0229 632.395 78.6658V85.8733ZM605.527 54.0823V47.3388H632.395V54.0823H605.527Z" fill="currentColor"/>
+<path d="M655.751 86.944C651.897 86.944 648.532 86.0753 645.654 84.3394C642.775 82.6027 640.539 80.2122 638.945 77.1672C637.375 74.0991 636.591 70.5785 636.591 66.6061C636.591 62.5624 637.399 59.0182 639.017 55.9735C640.635 52.9288 642.882 50.5501 645.761 48.8375C648.639 47.1249 651.969 46.2686 655.751 46.2686C659.628 46.2686 663.006 47.1367 665.884 48.8732C668.763 50.6096 670.999 53.0121 672.592 56.0806C674.186 59.1252 674.983 62.6337 674.983 66.6061C674.983 70.6023 674.174 74.1343 672.556 77.2031C670.963 80.2482 668.727 82.6387 665.848 84.3746C662.971 86.0876 659.604 86.944 655.751 86.944ZM655.751 78.8801C659.176 78.8801 661.721 77.7384 663.387 75.4549C665.051 73.1715 665.884 70.2217 665.884 66.6061C665.884 62.8716 665.04 59.8983 663.351 57.6862C661.662 55.4502 659.129 54.3322 655.751 54.3322C653.444 54.3322 651.54 54.8555 650.042 55.9022C648.567 56.925 647.473 58.3641 646.759 60.2195C646.046 62.051 645.689 64.1799 645.689 66.6061C645.689 70.3406 646.534 73.326 648.222 75.562C649.935 77.7743 652.444 78.8801 655.751 78.8801Z" fill="currentColor"/>
+<path d="M407.348 158.388C402.615 158.388 398.769 157.323 395.81 155.193C392.852 153.063 391.054 150.069 390.414 146.211L399.148 144.862C399.597 146.755 400.591 148.246 402.13 149.335C403.668 150.424 405.609 150.968 407.952 150.968C410.011 150.968 411.597 150.566 412.709 149.761C413.845 148.933 414.413 147.809 414.413 146.389C414.413 145.513 414.2 144.815 413.774 144.294C413.371 143.75 412.473 143.229 411.076 142.732C409.68 142.235 407.538 141.608 404.65 140.851C401.431 139.999 398.875 139.087 396.982 138.117C395.089 137.123 393.728 135.951 392.899 134.602C392.071 133.253 391.656 131.62 391.656 129.703C391.656 127.312 392.284 125.23 393.538 123.455C394.793 121.68 396.544 120.319 398.793 119.372C401.041 118.402 403.692 117.917 406.745 117.917C409.727 117.917 412.366 118.378 414.661 119.302C416.981 120.224 418.851 121.538 420.271 123.242C421.69 124.946 422.566 126.946 422.898 129.242L414.165 130.804C413.951 129.17 413.206 127.881 411.928 126.934C410.673 125.987 408.993 125.455 406.887 125.336C404.875 125.218 403.254 125.526 402.023 126.26C400.792 126.97 400.177 127.976 400.177 129.277C400.177 130.011 400.425 130.638 400.922 131.159C401.42 131.68 402.413 132.2 403.905 132.721C405.42 133.242 407.668 133.88 410.65 134.638C413.703 135.419 416.141 136.318 417.963 137.336C419.809 138.33 421.134 139.525 421.939 140.922C422.768 142.318 423.182 144.01 423.182 145.998C423.182 149.856 421.774 152.885 418.957 155.087C416.164 157.288 412.294 158.388 407.348 158.388Z" fill="currentColor"/>
+<path d="M457.477 157.32V138.86C457.477 137.653 457.394 136.316 457.228 134.849C457.063 133.381 456.672 131.973 456.057 130.624C455.465 129.251 454.566 128.127 453.359 127.251C452.176 126.375 450.566 125.938 448.531 125.938C447.442 125.938 446.365 126.115 445.3 126.47C444.235 126.825 443.265 127.441 442.389 128.316C441.537 129.168 440.85 130.351 440.33 131.866C439.809 133.357 439.549 135.275 439.549 137.618L434.472 135.452C434.472 132.186 435.099 129.228 436.354 126.576C437.632 123.926 439.502 121.82 441.963 120.258C444.424 118.672 447.454 117.879 451.051 117.879C453.892 117.879 456.235 118.352 458.08 119.299C459.926 120.246 461.394 121.453 462.483 122.92C463.571 124.387 464.376 125.949 464.897 127.606C465.417 129.263 465.748 130.836 465.891 132.328C466.057 133.795 466.139 134.99 466.139 135.914V157.32H457.477ZM430.887 157.32V106.199H438.52V133.109H439.549V157.32H430.887Z" fill="currentColor"/>
+<path d="M492.442 158.393C488.589 158.393 485.223 157.525 482.345 155.788C479.467 154.051 477.23 151.661 475.637 148.616C474.067 145.548 473.282 142.028 473.282 138.055C473.282 134.011 474.091 130.467 475.708 127.422C477.325 124.378 479.574 121.999 482.452 120.287C485.33 118.574 488.66 117.717 492.442 117.717C496.319 117.717 499.697 118.586 502.576 120.322C505.453 122.059 507.689 124.461 509.283 127.529C510.877 130.574 511.673 134.083 511.673 138.055C511.673 142.051 510.865 145.584 509.248 148.652C507.654 151.697 505.418 154.087 502.54 155.824C499.661 157.536 496.296 158.393 492.442 158.393ZM492.442 150.329C495.867 150.329 498.412 149.187 500.078 146.903C501.743 144.62 502.576 141.671 502.576 138.055C502.576 134.321 501.731 131.348 500.042 129.135C498.353 126.899 495.82 125.781 492.442 125.781C490.135 125.781 488.232 126.304 486.734 127.351C485.258 128.374 484.164 129.813 483.451 131.669C482.737 133.5 482.38 135.629 482.38 138.055C482.38 141.79 483.225 144.775 484.914 147.011C486.627 149.223 489.136 150.329 492.442 150.329Z" fill="currentColor"/>
+<path d="M526.35 157.322L514.576 118.717L522.996 118.788L530.525 143.514L538.161 118.788H545.403L553.003 143.514L560.568 118.788H568.988L557.214 157.322H550.506L541.764 130.812L533.059 157.322H526.35Z" fill="currentColor"/>
+<path d="M300.178 3.59277V185.521" stroke="currentColor" stroke-opacity="0.45" stroke-width="7.18518" stroke-linecap="square"/>
+<mask id="tts-mask" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="33" width="242" height="124">
+<path d="M241.43 33.8628H0V156.732H241.43V33.8628Z" fill="white"/>
+</mask>
+<g mask="url(#tts-mask)">
+<path d="M120.717 33.877C187.382 33.8789 241.427 95.3157 241.427 95.3157C240.957 95.8482 187.094 156.746 120.717 156.748C54.2542 156.748 0.333887 95.6944 0 95.3157C0 95.3157 54.0501 33.877 120.717 33.877ZM120.633 49.6928C95.4466 49.6928 75.0306 70.1087 75.0306 95.2949C75.0306 120.481 95.4459 140.897 120.633 140.897C145.818 140.896 166.234 120.481 166.234 95.2949C166.234 70.109 145.818 49.6933 120.633 49.6928ZM120.639 68.0628C135.682 68.0646 147.879 80.2592 147.879 95.3021C147.878 110.344 135.681 122.539 120.639 122.541C105.596 122.541 93.3945 110.345 93.393 95.3021C93.393 80.2577 105.596 68.0628 120.639 68.0628Z" fill="currentColor"/>
+</g>
+</symbol>
+<symbol id="tts-eye" viewBox="0 28 242 134" fill="none">
+<mask id="tts-mask-eye" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="33" width="242" height="124">
+<path d="M241.43 33.8628H0V156.732H241.43V33.8628Z" fill="white"/>
+</mask>
+<g mask="url(#tts-mask-eye)">
+<path d="M120.717 33.877C187.382 33.8789 241.427 95.3157 241.427 95.3157C240.957 95.8482 187.094 156.746 120.717 156.748C54.2542 156.748 0.333887 95.6944 0 95.3157C0 95.3157 54.0501 33.877 120.717 33.877ZM120.633 49.6928C95.4466 49.6928 75.0306 70.1087 75.0306 95.2949C75.0306 120.481 95.4459 140.897 120.633 140.897C145.818 140.896 166.234 120.481 166.234 95.2949C166.234 70.109 145.818 49.6933 120.633 49.6928ZM120.639 68.0628C135.682 68.0646 147.879 80.2592 147.879 95.3021C147.878 110.344 135.681 122.539 120.639 122.541C105.596 122.541 93.3945 110.345 93.393 95.3021C93.393 80.2577 105.596 68.0628 120.639 68.0628Z" fill="currentColor"/>
+</g>
+</symbol>
+</svg>
+
+<div class="stage">
+
+  <div class="stage-label">Upgraded · Desktop · Dark</div>
+  <div class="frame frame-d th-d" id="f1"></div>
+
+  <div class="stage-label">Upgraded · Desktop · Light</div>
+  <div class="frame frame-d th-l" id="f2"></div>
+
+  <div class="stage-label">Upgraded · Mobile · Dark / Light</div>
+  <div class="stage-row">
+    <div class="frame frame-m th-d" id="f3"></div>
+    <div class="frame frame-m th-l" id="f4"></div>
+  </div>
+
+</div>
+
+<!-- ════════════════════════ КОНТЕНТ ════════════════════════ -->
+<template id="tpl">
+
+<nav class="nav">
+  <a href="#" class="logo" aria-label="Ticket to Show"><svg viewBox="0 0 676 194"><use href="#tts-logo"/></svg></a>
+  <ul class="nav-links">
+    <li><a href="#">Как это работает</a></li>
+    <li><a href="#">Вопросы</a></li>
+    <li><a href="#">Партнёрам</a></li>
+  </ul>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <button class="theme-toggle" onclick="toggleTheme(this)" aria-label="Переключить тему">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" class="ico-sun" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" class="ico-moon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+      <span class="toggle-lbl">Тёмная</span>
+    </button>
+    <a href="#" class="btn btn-primary btn-sm">Стать партнёром</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="blob hero-blob-1"></div>
+  <div class="blob hero-blob-2"></div>
+  <div class="hall-dots"></div>
+  <div class="hero-grid">
+    <div>
+      <div class="lbl-accent">Партнёрская программа</div>
+      <h1 class="hero-title">Зарабатывайте на&nbsp;<em>театре</em> и&nbsp;концертах</h1>
+      <p class="hero-lead">Ticket to Show — официальный продавец билетов на мероприятия Москвы. Размещайте реферальные ссылки и получайте комиссию с каждой продажи.</p>
+      <div class="btn-row">
+        <a href="#" class="btn btn-primary btn-md">Оставить заявку</a>
+        <a href="#" class="btn btn-ghost btn-md">Как это работает</a>
+      </div>
+      <div class="hero-stats">
+        <div><div class="stat-num" data-count="250" data-suffix="+">0+</div><div class="caption stat-lbl">мероприятий в год</div></div>
+        <div><div class="stat-num" data-count="40" data-suffix="+">0+</div><div class="caption stat-lbl">площадок Москвы</div></div>
+        <div><div class="stat-num" data-count="0" data-suffix=" ₽">0 <span class="rub">₽</span></div><div class="caption stat-lbl">сервисный сбор</div></div>
+      </div>
+    </div>
+
+    <!-- Стопка билетов -->
+    <div class="stack">
+      <div class="ticket ticket-back-1">
+        <div class="ticket-head">
+          <div class="blob"></div>
+          <div class="caption ticket-venue">Большой театр · Москва</div>
+          <div class="ticket-title">Лебединое озеро</div>
+        </div>
+      </div>
+      <div class="ticket ticket-back-2">
+        <div class="ticket-head">
+          <div class="blob"></div>
+          <div class="caption ticket-venue">Геликон-опера · Москва</div>
+          <div class="ticket-title">Травиата</div>
+        </div>
+      </div>
+      <div class="ticket ticket-front">
+        <div class="ticket-cover" style="height:220px;overflow:hidden;position:relative;flex-shrink:0;background:linear-gradient(160deg,#1a1010 0%,#0d0d0d 60%,#1a0a0a 100%);">
+          <div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 90% at 30% 50%,rgba(60,12,12,.6) 0%,transparent 70%);"></div>
+          <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 70% 50%,rgba(20,10,30,.5) 0%,transparent 70%);"></div>
+          <!-- Заменить src на путь к фото: парень с черепом -->
+          <img src="" alt="Гамлет" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:none;" class="hamlet-photo">
+          <div style="position:absolute;bottom:12px;left:16px;z-index:2;">
+            <span style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:rgba(214,214,210,.55);">Театр · Драма</span>
+          </div>
+        </div>
+        <div class="ticket-head" style="padding-top:18px;">
+          <div class="blob" style="width:200px;height:200px;top:-80px;right:-60px;"></div>
+          <div class="caption ticket-venue">Дом музыки · Москва</div>
+          <div class="ticket-title">Гамлет</div>
+          <div class="ticket-row">
+            <div><div class="caption">Дата</div><div class="ticket-v">21 июня · 19:00</div></div>
+            <div style="text-align:right"><div class="caption">Место</div><div class="ticket-v">Партер, ряд 5</div></div>
+          </div>
+        </div>
+        <div class="ticket-sep"></div>
+        <div class="ticket-code">
+          <div class="barcode"></div>
+          <div class="caption">TTS-REF-8417</div>
+        </div>
+        <div class="ticket-foot">
+          <div><div class="caption">Ваш доход</div><div class="ticket-income">+<span class="rub">₽₽₽</span></div></div>
+          <span class="tag tag-accent">Реферальная ссылка</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Театр <i class="mq-dot">◆</i> Опера <i class="mq-dot">◆</i> Балет <i class="mq-dot">◆</i> Концерты <i class="mq-dot">◆</i> Стендап <i class="mq-dot">◆</i> Мюзикл <i class="mq-dot">◆</i></span>
+    <span>Театр <i class="mq-dot">◆</i> Опера <i class="mq-dot">◆</i> Балет <i class="mq-dot">◆</i> Концерты <i class="mq-dot">◆</i> Стендап <i class="mq-dot">◆</i> Мюзикл <i class="mq-dot">◆</i></span>
+  </div>
+</div>
+
+<!-- WHO -->
+<section class="sec">
+  <div class="sec-wrap reveal">
+    <div class="lbl-accent">Кому подходит программа</div>
+    <h2 class="sec-title">Узнаёте <em>себя?</em></h2>
+    <div class="who-grid">
+      <div class="who-card">
+        <div class="who-top">
+          <span class="who-ico"><svg viewBox="43 707 21 21" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M58.8857 708.568C59.3499 708.104 59.9794 707.843 60.6357 707.843C61.2921 707.843 61.9216 708.104 62.3857 708.568C62.8499 709.032 63.1106 709.661 63.1106 710.318C63.1106 710.974 62.8499 711.604 62.3857 712.068L47.8024 726.651L43.1357 727.818L44.3024 723.151L58.8857 708.568Z"/><path d="M55.9688 711.484L59.4687 714.984"/></svg></span>
+          <span class="who-idx">01</span>
+        </div>
+        <h3>Концертный / Театральный блогер</h3>
+        <p>Пишете о концертах, постановках и рекомендуете спектакли — ваши советы уже влияют на выбор читателей. Монетизируйте это напрямую.</p>
+      </div>
+      <div class="who-card">
+        <div class="who-top">
+          <span class="who-ico"><svg viewBox="495 1181 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M518.39 1181.63L505.557 1194.46"/><path d="M518.39 1181.63L510.223 1204.96L505.557 1194.46L495.057 1189.79L518.39 1181.63Z"/></svg></span>
+          <span class="who-idx">02</span>
+        </div>
+        <h3>Telegram-канал</h3>
+        <p>Аудитория в Telegram доверяет личным рекомендациям. Реферальная ссылка в посте — и комиссия начисляется автоматически.</p>
+      </div>
+      <div class="who-card">
+        <div class="who-top">
+          <span class="who-ico"><svg viewBox="609 1341 22 22" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M619.994 1362.07C625.793 1362.07 630.494 1357.37 630.494 1351.57C630.494 1345.78 625.793 1341.07 619.994 1341.07C614.195 1341.07 609.494 1345.78 609.494 1351.57C609.494 1357.37 614.195 1362.07 619.994 1362.07Z"/><path d="M609.494 1351.57H630.494"/><path d="M619.994 1341.07C622.463 1344.02 623.816 1347.73 623.816 1351.57C623.816 1355.41 622.463 1359.13 619.994 1362.07"/><path d="M619.994 1341.07C617.525 1344.02 616.172 1347.73 616.172 1351.57C616.172 1355.41 617.525 1359.13 619.994 1362.07"/></svg></span>
+          <span class="who-idx">03</span>
+        </div>
+        <h3>Городской сайт / афиша</h3>
+        <p>Ваши читатели уже ищут, куда пойти в Москве. Дайте им удобную ссылку — и зарабатывайте на каждом проданном билете.</p>
+      </div>
+      <div class="who-card">
+        <div class="who-top">
+          <span class="who-ico"><svg viewBox="270 1501 20 17" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M272.016 1504.02H275.102C275.367 1504.02 275.622 1503.92 275.809 1503.73L277.557 1501.98C277.744 1501.79 277.999 1501.69 278.264 1501.69H282.102C282.367 1501.69 282.622 1501.79 282.809 1501.98L284.557 1503.73C284.744 1503.92 284.999 1504.02 285.264 1504.02H288.35C288.659 1504.02 288.956 1504.14 289.175 1504.36C289.393 1504.58 289.516 1504.88 289.516 1505.19V1516.86C289.516 1517.16 289.393 1517.46 289.175 1517.68C288.956 1517.9 288.659 1518.02 288.35 1518.02H272.016C271.707 1518.02 271.41 1517.9 271.191 1517.68C270.973 1517.46 270.85 1517.16 270.85 1516.86V1505.19C270.85 1504.88 270.973 1504.58 271.191 1504.36C271.41 1504.14 271.707 1504.02 272.016 1504.02Z"/><path d="M280.183 1515.11C282.438 1515.11 284.266 1513.28 284.266 1511.02C284.266 1508.77 282.438 1506.94 280.183 1506.94C277.928 1506.94 276.1 1508.77 276.1 1511.02C276.1 1513.28 277.928 1515.11 280.183 1515.11Z"/></svg></span>
+          <span class="who-idx">04</span>
+        </div>
+        <h3>Lifestyle-инфлюенсер</h3>
+        <p>Выходы в театр органично вписываются в эстетичный контент. Красивые мероприятия — красивый заработок.</p>
+      </div>
+      <div class="who-card">
+        <div class="who-top">
+          <span class="who-ico"><svg viewBox="155 867 25 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M163.408 876.172C165.663 876.172 167.491 874.343 167.491 872.088C167.491 869.833 165.663 868.005 163.408 868.005C161.152 868.005 159.324 869.833 159.324 872.088C159.324 874.343 161.152 876.172 163.408 876.172Z"/><path d="M155.24 886.089C155.24 883.923 156.101 881.845 157.632 880.314C159.164 878.782 161.241 877.922 163.407 877.922C165.573 877.922 167.65 878.782 169.182 880.314C170.713 881.845 171.574 883.923 171.574 886.089"/><path d="M172.74 874.422C174.673 874.422 176.24 872.855 176.24 870.922C176.24 868.989 174.673 867.422 172.74 867.422C170.807 867.422 169.24 868.989 169.24 870.922C169.24 872.855 170.807 874.422 172.74 874.422Z"/><path d="M178.574 884.921C178.569 883.27 177.981 881.674 176.914 880.415C175.846 879.155 174.368 878.313 172.74 878.038"/></svg></span>
+          <span class="who-idx">05</span>
+        </div>
+        <h3>HR и корпоративный рынок</h3>
+        <p>Организуете культурные мероприятия для команды? Оформите партнёрство и возвращайте часть бюджета компании обратно.</p>
+      </div>
+      <div class="who-card">
+        <div class="who-top">
+          <span class="who-ico"><svg viewBox="45 1339 17 23" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M53.6354 1362.07C53.6354 1362.07 45.4688 1355.07 45.4688 1348.07C45.4688 1345.91 46.3292 1343.83 47.8607 1342.3C49.3923 1340.77 51.4695 1339.91 53.6354 1339.91C55.8014 1339.91 57.8786 1340.77 59.4101 1342.3C60.9417 1343.83 61.8021 1345.91 61.8021 1348.07C61.8021 1355.07 53.6354 1362.07 53.6354 1362.07Z"/><path d="M53.6354 1350.99C55.2462 1350.99 56.5521 1349.68 56.5521 1348.07C56.5521 1346.46 55.2462 1345.16 53.6354 1345.16C52.0246 1345.16 50.7188 1346.46 50.7188 1348.07C50.7188 1349.68 52.0246 1350.99 53.6354 1350.99Z"/></svg></span>
+          <span class="who-idx">06</span>
+        </div>
+        <h3>Отели и консьерж-службы</h3>
+        <p>Помогаете гостям составить культурную программу в Москве? Партнёрская ссылка превращает ваш сервис в дополнительный доход.</p>
+      </div>
+    </div>
+    <div class="who-cta">
+      <p class="who-quote">«Хочу зарабатывать, не рекламируя что попало»</p>
+      <a href="#" class="btn btn-primary btn-md">Обсудим условия</a>
+    </div>
+  </div>
+</section>
+
+<!-- HOW: программа спектакля -->
+<section class="sec">
+  <div class="sec-wrap reveal">
+    <div class="lbl-accent">Как работает партнёрство</div>
+    <h2 class="sec-title">Программа — <em>в трёх актах</em></h2>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-act">Акт I</div>
+        <div class="step-remark">— занавес поднимается —</div>
+        <h3>Регистрация и договор</h3>
+        <p>Заполните форму — менеджер свяжется в течение 24 часов. Условия комиссии обсуждаются индивидуально и фиксируются в договоре.</p>
+      </div>
+      <div class="step">
+        <div class="step-act">Акт II</div>
+        <div class="step-remark">— действие развивается —</div>
+        <h3>Получите реферальную ссылку</h3>
+        <p>В личном кабинете — уникальные ссылки на любые мероприятия из каталога. 250+ событий в год на 40+ площадках Москвы.</p>
+      </div>
+      <div class="step">
+        <div class="step-act">Акт III</div>
+        <div class="step-remark">— овации и выплаты —</div>
+        <h3>Размещайте и зарабатывайте</h3>
+        <p>Поделитесь ссылкой со своей аудиторией. Каждый проданный билет — ваша комиссия. Выплаты дважды в месяц на карту или р/с.</p>
+      </div>
+    </div>
+
+    <!-- PREMIUM-КЕЙС -->
+    <div class="case-panel reveal">
+      <div>
+        <div class="case-eyebrow">Реальный кейс · Telegram-канал о театре</div>
+        <div class="case-num" data-count="210000" data-suffix=" ₽">0 <span class="rub">₽</span></div>
+        <div class="case-sub">в месяц приносит владельцу канал с десятью тысячами подписчиков — целевой, вовлечённой аудиторией</div>
+      </div>
+      <div class="case-side">
+        <div class="case-stat"><span class="case-k">Подписчики</span><span class="case-v">10 000</span></div>
+        <div class="case-stat"><span class="case-k">Конверсия</span><span class="case-v">1,8%</span></div>
+        <div class="case-stat"><span class="case-k">Средний чек</span><span class="case-v">4 500 <span class="rub">₽</span></span></div>
+        <a href="#" class="btn btn-ink btn-md">Хочу так же</a>
+      </div>
+    </div>
+
+    <div class="earnings">
+      <div>
+        <h3 class="earn-h">Сколько можно заработать?</h3>
+        <div class="info-block">
+          Комиссия обсуждается индивидуально при заключении договора и зависит от вашего канала, тематики и объёма продаж. Никаких скрытых условий.
+        </div>
+        <div class="info-block">
+          Программа масштабируется вместе с вами: чем стабильнее продажи, тем выгоднее условия при пересмотре договора.
+        </div>
+        <div class="info-block info-accent">
+          <strong>Средняя цена билета</strong> — 4 500 <span class="rub">₽</span>. Конверсия тематической аудитории — около 1,8%. Ваш калькулятор дохода →
+        </div>
+      </div>
+
+      <div class="calc">
+        <div class="blob"></div>
+        <h4 class="calc-h">Ваш потенциальный доход</h4>
+        <div class="c-row">
+          <div class="c-head"><span class="caption">Подписчики / посетители в месяц</span><span class="c-val c-val-visitors">10 000</span></div>
+          <input type="range" class="c-visitors" min="500" max="100000" step="500" value="10000">
+        </div>
+        <div class="c-row">
+          <div class="c-head"><span class="caption">Конверсия в покупку</span><span class="c-val c-val-conv">1,8%</span></div>
+          <input type="range" class="c-conv" min="0.5" max="5" step="0.1" value="1.8">
+        </div>
+        <div class="c-row">
+          <div class="c-head"><span class="caption">Средняя цена билета</span><span class="c-val c-val-price">4 500 <span class="rub">₽</span></span></div>
+          <input type="range" class="c-price" min="1000" max="10000" step="100" value="4500">
+        </div>
+        <div class="c-result">
+          <span class="caption">Ваш доход в месяц</span>
+          <span class="c-result-val">218 700 <span class="rub">₽</span></span>
+        </div>
+        <p class="c-note">Расчёт приблизителен и основан на реальных кейсах партнёров. Итоговая ставка фиксируется в договоре.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec">
+  <div class="sec-wrap reveal">
+    <div class="lbl-accent">Частые вопросы</div>
+    <h2 class="sec-title">Сомневаетесь? <em>Разберём.</em></h2>
+    <div class="faq-list">
+
+      <div class="faq-item open">
+        <button class="faq-btn"><span class="faq-num">01</span><span class="faq-q">Мало аудитории — стоит ли пробовать?</span><span class="faq-ico">+</span></button>
+        <div class="faq-body"><p>Минимального порога нет. Небольшая, но <strong>тематическая аудитория</strong> конвертирует значительно лучше, чем миллионная холодная. Один подписчик, купивший билеты на три спектакля — уже реальный доход. Программа масштабируется вместе с вами.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn"><span class="faq-num">02</span><span class="faq-q">Комиссия — это фиксированный процент?</span><span class="faq-ico">+</span></button>
+        <div class="faq-body"><p>Условия обсуждаются индивидуально до подписания договора. На размер ставки влияют тематика площадки, объём аудитории и прогнозируемое количество продаж. Всё прозрачно: договор, личный кабинет, акты выплат.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn"><span class="faq-num">03</span><span class="faq-q">Покупатель вернул билет — я теряю комиссию?</span><span class="faq-ico">+</span></button>
+        <div class="faq-body"><p>При возврате билета начисленная комиссия аннулируется — это стандартная практика. Статистически возвраты составляют <strong>менее 2% продаж</strong>. Все движения прозрачно отображаются в личном кабинете в реальном времени.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn"><span class="faq-num">04</span><span class="faq-q">Нужны ли технические знания для интеграции?</span><span class="faq-ico">+</span></button>
+        <div class="faq-body"><p>Никакой интеграции. Вы получаете <strong>обычную ссылку</strong> — скопировали и вставили в пост или описание. Весь трекинг, учёт и расчёт мы берём на себя. Личный кабинет работает как обычный сайт — без кода.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn"><span class="faq-num">05</span><span class="faq-q">Когда и как выплачивается комиссия?</span><span class="faq-ico">+</span></button>
+        <div class="faq-body"><p>Выплаты дважды в месяц — 5-го и 20-го числа. Перевод на <strong>банковскую карту</strong> или расчётный счёт (для ИП и юридических лиц). Все транзакции подтверждаются актом для бухгалтерии. Минимальная сумма — 500 <span class="rub">₽</span>.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn"><span class="faq-num">06</span><span class="faq-q">Нужно ли создавать рекламный контент самому?</span><span class="faq-ico">+</span></button>
+        <div class="faq-body"><p>Мы предоставляем <strong>готовые материалы</strong>: описания спектаклей, фотографии, шаблоны постов. Никакого обязательного плана публикаций нет — публикуете то, что интересно вашей аудитории, когда сами считаете нужным.</p></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE 2 -->
+<div class="marquee marquee-rev" aria-hidden="true">
+  <div class="marquee-track">
+    <span>250+ мероприятий <i class="mq-dot">◆</i> 40+ площадок <i class="mq-dot">◆</i> Выплаты 2× в месяц <i class="mq-dot">◆</i> Без скрытых условий <i class="mq-dot">◆</i></span>
+    <span>250+ мероприятий <i class="mq-dot">◆</i> 40+ площадок <i class="mq-dot">◆</i> Выплаты 2× в месяц <i class="mq-dot">◆</i> Без скрытых условий <i class="mq-dot">◆</i></span>
+  </div>
+</div>
+
+<!-- CLOSE -->
+<section class="sec close-sec">
+  <div class="blob blob-a"></div>
+  <svg class="eye-wm" viewBox="0 28 242 134" aria-hidden="true"><use href="#tts-eye"/></svg>
+  <div class="close-inner reveal">
+    <div class="lbl-accent">Первый шаг</div>
+    <h2 class="sec-title">Оставьте заявку — <em>мы всё расскажем</em></h2>
+    <p class="close-lead">Менеджер свяжется в течение одного рабочего дня. Никаких обязательств — просто разговор об условиях.</p>
+
+    <div class="form-box">
+      <div class="f-row">
+        <div>
+          <label class="caption f-label">ФИО</label>
+          <input type="text" class="input" placeholder="Имя, фамилия и отчество">
+        </div>
+        <div>
+          <label class="caption f-label">Email</label>
+          <input type="email" class="input" placeholder="you@example.com">
+        </div>
+      </div>
+      <div class="f-row">
+        <div>
+          <label class="caption f-label">Ваша площадка</label>
+          <input type="text" class="input" placeholder="Сайт, канал или аккаунт">
+        </div>
+        <div>
+          <label class="caption f-label">Тип партнёра</label>
+          <select class="input">
+            <option>Выберите…</option>
+            <option>Telegram-канал</option>
+            <option>Блог / соцсети</option>
+            <option>Сайт / портал</option>
+            <option>Корпоративный партнёр</option>
+            <option>Другое</option>
+          </select>
+        </div>
+      </div>
+      <div class="f-row">
+        <div class="f-full">
+          <label class="caption f-label">О себе (необязательно)</label>
+          <textarea class="input" rows="3" placeholder="Аудитория, тематика, примерный охват…"></textarea>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-lg btn-full">Отправить заявку</button>
+      <p class="f-note">Нажимая кнопку, вы соглашаетесь с политикой обработки персональных данных</p>
+    </div>
+
+    <div class="pills">
+      <span class="tag">Ответим за 24 часа</span>
+      <span class="tag">Без скрытых условий</span>
+      <span class="tag">Персональный менеджер</span>
+      <span class="tag">Выплаты 2× в месяц</span>
+      <span class="tag">Договор и акты</span>
+    </div>
+  </div>
+</section>
+
+<!-- STICKY CTA -->
+<div class="cta-bar">
+  <span class="cta-text">Готовы зарабатывать на культуре?</span>
+  <a href="#" class="btn btn-primary btn-md">Стать партнёром</a>
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-top-line"></div>
+  <div class="footer-inner">
+    <div class="footer-main">
+
+      <!-- Колонка 1: Бренд, юридика -->
+      <div class="footer-brand">
+        <a href="/" class="footer-logo" aria-label="Ticket To Show">
+          <svg viewBox="0 0 676 194"><use href="#tts-logo"/></svg>
+        </a>
+        <p class="footer-tagline">
+          <strong>Ticket To Show</strong> — официальный дистрибьютор<br>
+          компании Moscow Show. Билеты без кассового сбора.
+        </p>
+        <nav class="footer-legal" aria-label="Правовые документы">
+          <a class="footer-legal-link" href="https://tickettoshow.ru/public_offer" target="_blank" rel="noopener">Публичная оферта</a>
+          <a class="footer-legal-link" href="https://tickettoshow.ru/processing_pers_data" target="_blank" rel="noopener">Обработка персональных данных</a>
+          <a class="footer-legal-link" href="https://tickettoshow.ru/policy" target="_blank" rel="noopener">Политика конфиденциальности</a>
+          <a class="footer-legal-link" href="https://tickettoshow.ru/consent_to_receive_advertising_mailings" target="_blank" rel="noopener">Согласие на рекламную рассылку</a>
+        </nav>
+      </div>
+
+      <!-- Колонка 2: Соцсети + контакт продаж -->
+      <div class="footer-col">
+        <div>
+          <div class="footer-col-label">Следите за нами</div>
+          <div class="social-icons-row">
+            <a class="social-btn" href="https://t.me/tickettoshow" target="_blank" rel="noopener" aria-label="Telegram">
+              <svg viewBox="612 141 16 16" fill="none"><path d="M626.053 142.214L613.668 146.99C612.823 147.329 612.828 147.801 613.513 148.011L616.693 149.003L624.05 144.361C624.397 144.149 624.715 144.263 624.454 144.495L618.493 149.875H618.492L618.493 149.875L618.274 153.153C618.595 153.153 618.737 153.005 618.917 152.831L620.462 151.33L623.674 153.703C624.267 154.029 624.692 153.861 624.84 153.154L626.948 143.216C627.164 142.35 626.618 141.958 626.053 142.214Z" fill="currentColor"/></svg>
+            </a>
+            <a class="social-btn" href="https://vk.com/tickettoshow" target="_blank" rel="noopener" aria-label="ВКонтакте">
+              <svg viewBox="660.5 140.5 15 15" fill="currentColor"><path d="M670.302 140.5H665.698C661.495 140.5 660.5 141.495 660.5 145.698V150.302C660.5 154.505 661.495 155.5 665.698 155.5H670.302C674.505 155.5 675.5 154.505 675.5 150.302V145.698C675.5 141.495 674.505 140.5 670.302 140.5ZM672.61 151.202H671.52C671.108 151.202 670.98 150.874 670.239 150.122C669.593 149.497 669.307 149.413 669.149 149.413C668.926 149.413 668.863 149.477 668.863 149.784V150.768C668.863 151.033 668.778 151.192 668.079 151.192C666.926 151.192 665.644 150.493 664.745 149.191C663.657 147.75 663.035 146.259 663.035 145.931C663.035 145.772 663.099 145.624 663.406 145.624H664.496C664.771 145.624 664.877 145.751 664.983 146.048C665.523 147.604 666.423 148.969 666.793 148.969C666.931 148.969 666.994 148.906 666.994 148.557V146.576C666.952 145.834 666.56 145.771 666.56 145.507C666.56 145.379 666.666 145.253 666.835 145.253H668.55C668.783 145.253 668.867 145.379 668.867 145.654V147.825C668.867 148.058 668.974 148.142 669.037 148.142C669.174 148.142 669.291 148.057 669.545 147.804C670.329 146.925 670.889 145.57 670.889 145.57C670.964 145.411 671.091 145.263 671.366 145.263H672.456C672.784 145.263 672.859 145.432 672.784 145.665C672.647 146.301 671.313 148.184 671.313 148.184C671.197 148.375 671.154 148.459 671.313 148.672C671.429 148.831 671.811 149.159 672.065 149.455C672.531 149.984 672.89 150.429 672.986 150.736C673.092 151.043 672.932 151.202 672.626 151.202H672.61Z"/></svg>
+            </a>
+            <a class="social-btn" href="https://instagram.com/tickettoshow" target="_blank" rel="noopener" aria-label="Instagram">
+              <svg viewBox="708.5 140.5 15 15" fill="currentColor"><path d="M716 141.852C718.002 141.852 718.24 141.859 719.031 141.896C721.064 141.988 722.013 142.953 722.106 144.97C722.142 145.761 722.149 145.998 722.149 148.001C722.149 150.004 722.141 150.241 722.106 151.031C722.012 153.047 721.066 154.013 719.031 154.106C718.24 154.142 718.004 154.149 716 154.149C713.997 154.149 713.76 154.142 712.969 154.106C710.932 154.012 709.988 153.044 709.895 151.031C709.859 150.24 709.851 150.003 709.851 148C709.851 145.997 709.859 145.761 709.895 144.969C709.988 142.953 710.935 141.988 712.969 141.895C713.761 141.859 713.997 141.852 716 141.852ZM716 140.5C713.963 140.5 713.708 140.509 712.908 140.545C710.184 140.67 708.671 142.181 708.546 144.908C708.509 145.708 708.5 145.963 708.5 148C708.5 150.037 708.509 150.292 708.545 151.092C708.67 153.816 710.181 155.33 712.908 155.455C713.708 155.491 713.963 155.5 716 155.5C718.037 155.5 718.292 155.491 719.092 155.455C721.814 155.33 723.331 153.819 723.454 151.092C723.491 150.292 723.5 150.037 723.5 148C723.5 145.963 723.491 145.708 723.455 144.908C723.332 142.187 721.819 140.671 719.093 140.546C718.292 140.509 718.037 140.5 716 140.5ZM716 144.149C714.979 144.149 714 144.555 713.277 145.277C712.555 145.999 712.149 146.979 712.149 148C712.149 149.021 712.555 150.001 713.277 150.723C714 151.445 714.979 151.851 716 151.851C717.021 151.851 718.001 151.445 718.723 150.723C719.445 150.001 719.851 149.021 719.851 148C719.851 146.979 719.445 145.999 718.723 145.277C718.001 144.555 717.021 144.149 716 144.149ZM716 150.5C715.337 150.5 714.701 150.237 714.232 149.768C713.763 149.299 713.5 148.663 713.5 148C713.5 147.337 713.763 146.701 714.232 146.232C714.701 145.763 715.337 145.5 716 145.5C716.663 145.5 717.299 145.763 717.768 146.232C718.237 146.701 718.5 147.337 718.5 148C718.5 148.663 718.237 149.299 717.768 149.768C717.299 150.237 716.663 150.5 716 150.5ZM720.004 143.097C719.765 143.097 719.536 143.192 719.367 143.361C719.199 143.529 719.103 143.758 719.103 143.997C719.103 144.236 719.199 144.465 719.367 144.634C719.536 144.803 719.765 144.898 720.004 144.898C720.243 144.898 720.472 144.803 720.64 144.634C720.809 144.465 720.904 144.236 720.904 143.997C720.904 143.758 720.809 143.529 720.64 143.361C720.472 143.192 720.243 143.097 720.004 143.097Z"/></svg>
+            </a>
+            <a class="social-btn" href="https://youtube.com/@tickettoshow" target="_blank" rel="noopener" aria-label="YouTube">
+              <svg viewBox="756.5 140.5 15 15" fill="currentColor"><path d="M771.186 144.366C771.102 144.047 770.934 143.756 770.702 143.522C770.469 143.287 770.179 143.118 769.86 143.031C768.691 142.716 764 142.716 764 142.716C764 142.716 759.309 142.716 758.139 143.031C757.821 143.118 757.531 143.288 757.298 143.522C757.066 143.756 756.898 144.047 756.814 144.366C756.5 145.544 756.5 148 756.5 148C756.5 148 756.5 150.456 756.814 151.634C756.898 151.953 757.066 152.244 757.298 152.479C757.531 152.713 757.821 152.882 758.14 152.969C759.309 153.285 764 153.285 764 153.285C764 153.285 768.691 153.285 769.861 152.969C770.179 152.882 770.47 152.713 770.702 152.479C770.935 152.245 771.102 151.953 771.187 151.634C771.5 150.456 771.5 148 771.5 148C771.5 148 771.5 145.544 771.186 144.366ZM762.466 150.23V145.77L766.386 148L762.466 150.23Z"/></svg>
+            </a>
+            <a class="social-btn" href="https://tiktok.com/@tickettoshow" target="_blank" rel="noopener" aria-label="TikTok">
+              <svg viewBox="1102 1755 33 38" fill="currentColor"><path d="M1124.65 1758.32H1119.65V1780.32C1119.65 1781.21 1119.39 1782.08 1118.89 1782.82C1118.4 1783.56 1117.69 1784.14 1116.87 1784.48C1116.05 1784.82 1115.14 1784.91 1114.27 1784.74C1113.4 1784.56 1112.6 1784.13 1111.97 1783.51C1111.34 1782.88 1110.91 1782.07 1110.74 1781.2C1110.56 1780.33 1110.65 1779.42 1110.99 1778.6C1111.33 1777.78 1111.91 1777.08 1112.65 1776.58C1113.39 1776.09 1114.26 1775.82 1115.15 1775.82C1115.65 1775.82 1116.07 1775.91 1116.57 1776.07V1770.82C1116.07 1770.74 1115.65 1770.74 1115.15 1770.74C1113.25 1770.72 1111.39 1771.27 1109.8 1772.31C1108.22 1773.36 1106.97 1774.85 1106.24 1776.6C1105.5 1778.35 1105.3 1780.28 1105.66 1782.14C1106.02 1784.01 1106.92 1785.72 1108.26 1787.07C1109.6 1788.42 1111.3 1789.34 1113.17 1789.72C1115.03 1790.09 1116.96 1789.91 1118.71 1789.18C1120.47 1788.46 1121.97 1787.23 1123.03 1785.66C1124.08 1784.08 1124.65 1782.22 1124.65 1780.32V1769.57C1126.66 1771.03 1129.08 1771.82 1131.57 1771.82V1766.82C1127.82 1766.74 1124.65 1763.74 1124.65 1758.32Z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-label">Отдел продаж</div>
+          <div class="footer-contact-role">Руководитель департамента продаж</div>
+          <a class="footer-contact-email" href="mailto:partners@example.com">partners@example.com</a>
+        </div>
+      </div>
+
+      <!-- Колонка 3: Кнопки + техподдержка -->
+      <div class="footer-actions">
+        <div class="footer-action-buttons">
+          <div class="footer-col-label">Помощь</div>
+          <a href="https://tickettoshow.ru/return" class="btn btn-dark btn-md btn-full">
+            <svg width="16" height="16" viewBox="833 547 27 27" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M857.04 560.204C857.042 562.609 856.219 564.941 854.708 566.812C853.197 568.682 851.09 569.978 848.739 570.481C846.387 570.985 843.935 570.666 841.79 569.578C839.646 568.49 837.94 566.699 836.957 564.505C835.974 562.31 835.775 559.845 836.391 557.521C837.008 555.197 838.404 553.155 840.345 551.736C842.287 550.317 844.656 549.608 847.058 549.727C849.46 549.845 851.748 550.785 853.54 552.388"/>
+              <path d="M857.04 550.871V556.704H851.207"/>
+            </svg>
+            Возврат билетов
+          </a>
+          <a href="mailto:support@tickettoshow.ru" class="btn btn-dark btn-md btn-full">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+              <rect x="2" y="5" width="16" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M2 7l8 5.5L18 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            Написать в поддержку
+          </a>
+        </div>
+        <div class="footer-tech-support">
+          <div class="footer-col-label">Техническая поддержка</div>
+          <a class="footer-contact-email" href="mailto:support@tickettoshow.ru">support@tickettoshow.ru</a>
+        </div>
+      </div>
+
+    </div><!-- /footer-main -->
+
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2026 Ticket To Show</span>
+      <span class="footer-disclaimer">Instagram признан экстремистской организацией на территории РФ.</span>
+    </div>
+  </div>
+</footer>
+
+</template>
+
+<script>
+// ── Переключение темы ──
+function toggleTheme(btn) {
+  const frame = btn.closest('.frame');
+  const isDark = frame.classList.contains('th-d');
+  frame.classList.toggle('th-d', !isDark);
+  frame.classList.toggle('th-l', isDark);
+  const sun = btn.querySelector('.ico-sun');
+  const moon = btn.querySelector('.ico-moon');
+  const lbl = btn.querySelector('.toggle-lbl');
+  sun.style.display = isDark ? 'block' : 'none';
+  moon.style.display = isDark ? 'none' : 'block';
+  lbl.textContent = isDark ? 'Светлая' : 'Тёмная';
+}
+
+// ── Клонируем контент в 4 фрейма ──
+const tpl = document.getElementById('tpl');
+['f1','f2','f3','f4'].forEach(id => {
+  document.getElementById(id).appendChild(tpl.content.cloneNode(true));
+});
+// Fix toggle state for light frames
+['f2','f4'].forEach(id => {
+  const frame = document.getElementById(id);
+  const btn = frame.querySelector('.theme-toggle');
+  if (btn) {
+    btn.querySelector('.ico-sun').style.display = 'block';
+    btn.querySelector('.ico-moon').style.display = 'none';
+    btn.querySelector('.toggle-lbl').textContent = 'Светлая';
+  }
+});
+
+// ── FAQ ──
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.faq-btn');
+  if (!btn) return;
+  const item = btn.parentElement;
+  const list = item.parentElement;
+  const wasOpen = item.classList.contains('open');
+  list.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+});
+
+// ── Count-up ──
+const fmtRu = n => n.toLocaleString('ru-RU');
+function animNum(el, to, suffix, dur = 700) {
+  const from = el._cur || 0;
+  const t0 = performance.now();
+  function tick(t) {
+    const k = Math.min(1, (t - t0) / dur);
+    const ease = 1 - Math.pow(1 - k, 3);
+    const sfx = suffix.replace('₽', '<span class="rub">₽</span>');
+    el.innerHTML = fmtRu(Math.round(from + (to - from) * ease)) + sfx;
+    if (k < 1) requestAnimationFrame(tick); else el._cur = to;
+  }
+  requestAnimationFrame(tick);
+}
+
+// Статы и premium-кейс — анимация при появлении
+const numObs = new IntersectionObserver(entries => {
+  entries.forEach(en => {
+    if (!en.isIntersecting) return;
+    const el = en.target;
+    animNum(el, parseInt(el.dataset.count, 10), el.dataset.suffix || '', 900);
+    numObs.unobserve(el);
+  });
+}, { threshold: 0.4 });
+document.querySelectorAll('[data-count]').forEach(el => numObs.observe(el));
+
+// ── Reveal ──
+const revObs = new IntersectionObserver(entries => {
+  entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('visible'); revObs.unobserve(en.target); } });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => revObs.observe(el));
+
+// ── Калькулятор на слайдерах ──
+document.addEventListener('input', e => {
+  const calc = e.target.closest('.calc');
+  if (!calc) return;
+  const v = parseFloat(calc.querySelector('.c-visitors').value);
+  const c = parseFloat(calc.querySelector('.c-conv').value);
+  const p = parseFloat(calc.querySelector('.c-price').value);
+  calc.querySelector('.c-val-visitors').textContent = fmtRu(v);
+  calc.querySelector('.c-val-conv').textContent = c.toLocaleString('ru-RU', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + '%';
+  calc.querySelector('.c-val-price').innerHTML = fmtRu(p) + ' <span class="rub">₽</span>';
+  animNum(calc.querySelector('.c-result-val'), Math.round(v * (c / 100) * p * 0.27), ' ₽', 350);
+});
+// Начальное значение результата для count-up
+document.querySelectorAll('.c-result-val').forEach(el => { el._cur = 218700; });
+
+// ── Живая валидация форм ──
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+function validateField(input) {
+  const group = input.closest('.form-group');
+  const msg = group && group.querySelector('.form-msg');
+  const val = input.value.trim();
+  input.classList.remove('error', 'success');
+  if (!msg) return;
+  msg.classList.remove('is-error', 'is-success');
+  if (val === '') {                      // пусто — нейтральная подсказка
+    msg.textContent = 'Введите email-адрес';
+    return;
+  }
+  if (EMAIL_RE.test(val)) {              // корректно — успех
+    input.classList.add('success');
+    msg.classList.add('is-success');
+    msg.textContent = 'Email корректен';
+  } else {                               // ошибка
+    input.classList.add('error');
+    msg.classList.add('is-error');
+    msg.textContent = 'Введите корректный email-адрес';
+  }
+}
+function initFormValidation() {
+  document.querySelectorAll('[data-validate="email"]').forEach(input => {
+    validateField(input);                                  // состояние при загрузке
+    input.addEventListener('input', () => validateField(input));
+    input.addEventListener('blur',  () => validateField(input));
+  });
+}
+// UI-кит объявлен ниже этого <script>, поэтому ждём полного парсинга DOM
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initFormValidation);
+} else {
+  initFormValidation();
+}
+</script>
+
+
+<!-- ════════════════════════ UI КИТ ════════════════════════ -->
+<div class="stage-label">UI КИТ — TTS Design System R14</div>
+
+<!-- ТЁМНАЯ ТЕМА -->
+<div class="stage-label" style="margin-top:4px;color:#4A9EFF;font-size:9px;">ТЁМНАЯ ТЕМА</div>
+<div id="uikit-d" class="frame th-d" style="width:1440px;">
+  <div style="padding:56px;display:flex;flex-direction:column;gap:64px;">
+
+    <!-- ── Цветовые токены ── -->
+    <section>
+      <div class="lbl-accent">Цветовые токены</div>
+      <div style="display:grid;grid-template-columns:repeat(11,1fr);gap:8px;margin-top:16px;">
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="height:40px;background:var(--ink);border:1px solid var(--n800);border-radius:2px;"></div>
+          <div style="font-size:9px;color:var(--n500);font-family:Manrope,sans-serif;">--ink<br>#0D0D0D</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="height:40px;background:var(--n950);border-radius:2px;"></div>
+          <div style="font-size:9px;color:var(--n500);font-family:Manrope,sans-serif;">--n950<br>#111318</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="height:40px;background:var(--n900);border-radius:2px;"></div>
+          <div style="font-size:9px;color:var(--n500);font-family:Manrope,sans-serif;">--n900<br>#191C22</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="height:40px;background:var(--n800);border-radius:2px;"></div>
+          <div style="font-size:9px;color:var(--n500);font-family:Manrope,sans-serif;">--n800<br>#262930</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="height:40px;background:var(--n700);border-radius:2px;"></div>
+          <div style="font-size:9px;color:var(--n500);font-family:Manrope,sans-serif;">--n700<br>#4A4A48</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="height:40px;background:var(--n600);border-radius:2px;"></div>
+          <div style="font-size:9px;color:var(--n500);font-family:Manrope,sans-serif;">--n600<br>#626260</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="height:40px;background:var(--n400);border-radius:2px;"></div>
+          <div style="font-size:9px;color:var(--n500);font-family:Manrope,sans-serif;">--n400<br>#8A8A88</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="height:40px;background:var(--n200);border-radius:2px;"></div>
+          <div style="font-size:9px;color:var(--n500);font-family:Manrope,sans-serif;">--n200<br>#C0C0BC</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="height:40px;background:var(--n100);border-radius:2px;"></div>
+          <div style="font-size:9px;color:var(--n500);font-family:Manrope,sans-serif;">--n100<br>#D6D6D2</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="height:40px;background:var(--accent);border-radius:2px;"></div>
+          <div style="font-size:9px;color:var(--n500);font-family:Manrope,sans-serif;">--accent<br>#0047FF</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="height:40px;background:var(--premium);border-radius:2px;"></div>
+          <div style="font-size:9px;color:var(--n500);font-family:Manrope,sans-serif;">--premium<br>#F5F4EE</div>
+        </div>
+      </div>
+      <!-- Semantic -->
+      <div style="display:grid;grid-template-columns:repeat(6,120px);gap:8px;margin-top:16px;">
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="height:32px;background:#22C55E;border-radius:2px;"></div>
+          <div style="font-size:9px;color:var(--n500);font-family:Manrope,sans-serif;">--success</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="height:32px;background:#0A2210;border:1px solid #1A4428;border-radius:2px;"></div>
+          <div style="font-size:9px;color:var(--n500);font-family:Manrope,sans-serif;">--success-bg</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="height:32px;background:#E53E3E;border-radius:2px;"></div>
+          <div style="font-size:9px;color:var(--n500);font-family:Manrope,sans-serif;">--danger</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="height:32px;background:#2D1010;border:1px solid #7A2020;border-radius:2px;"></div>
+          <div style="font-size:9px;color:var(--n500);font-family:Manrope,sans-serif;">--danger-bg</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="height:32px;background:#0B142A;border:1px solid #091E56;border-radius:2px;"></div>
+          <div style="font-size:9px;color:var(--n500);font-family:Manrope,sans-serif;">--accent-ghost</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="height:32px;background:#06277F;border-radius:2px;"></div>
+          <div style="font-size:9px;color:var(--n500);font-family:Manrope,sans-serif;">--blob-core</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Типографика ── -->
+    <section>
+      <div class="lbl-accent">Типографика R14</div>
+      <div style="display:flex;flex-direction:column;gap:20px;margin-top:20px;">
+        <div style="display:flex;align-items:baseline;gap:32px;">
+          <div style="width:160px;font-size:9px;color:var(--n600);font-family:Manrope,sans-serif;">.t-display<br>Cormorant 400<br>clamp(2.8rem,8vw,5rem) upercase</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(2.8rem,5vw,4rem);line-height:.98;letter-spacing:.01em;text-transform:uppercase;color:var(--n100);">Гамлет</div>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:32px;">
+          <div style="width:160px;font-size:9px;color:var(--n600);font-family:Manrope,sans-serif;">.hero-title<br>Cormorant 400<br>clamp(2.2rem,7vw,4rem)</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(1.8rem,4vw,3rem);line-height:1;text-transform:uppercase;color:var(--n100);">Ticket to Show</div>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:32px;">
+          <div style="width:160px;font-size:9px;color:var(--n600);font-family:Manrope,sans-serif;">.t-h1<br>Forum 400<br>1.6rem+</div>
+          <div style="font-family:'Forum',serif;font-weight:400;font-size:1.6rem;letter-spacing:.04em;color:var(--n100);">Партнёрская программа</div>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:32px;">
+          <div style="width:160px;font-size:9px;color:var(--n600);font-family:Manrope,sans-serif;">.t-h2<br>Forum 400<br>1.3rem</div>
+          <div style="font-family:'Forum',serif;font-weight:400;font-size:1.3rem;letter-spacing:.04em;color:var(--n100);">Ваш потенциальный доход</div>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:32px;">
+          <div style="width:160px;font-size:9px;color:var(--n600);font-family:Manrope,sans-serif;">.t-subtitle<br>Manrope 500<br>13px, letter-spacing</div>
+          <div style="font-family:Manrope,sans-serif;font-weight:500;font-size:13px;letter-spacing:.08em;color:var(--n300);">ПАРТНЁРСКИЕ УСЛОВИЯ</div>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:32px;">
+          <div style="width:160px;font-size:9px;color:var(--n600);font-family:Manrope,sans-serif;">.t-body-lg<br>Manrope 400<br>15px, lh 1.75</div>
+          <div style="font-family:Manrope,sans-serif;font-size:15px;line-height:1.75;color:var(--n200);">Монетизируйте свою аудиторию с помощью реферальных ссылок на билеты.</div>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:32px;">
+          <div style="width:160px;font-size:9px;color:var(--n600);font-family:Manrope,sans-serif;">.t-body<br>Manrope 400<br>14px, lh 1.75</div>
+          <div style="font-family:Manrope,sans-serif;font-size:14px;line-height:1.75;color:var(--n200);">Минимальный размер текста для основного контента страницы.</div>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:32px;">
+          <div style="width:160px;font-size:9px;color:var(--n600);font-family:Manrope,sans-serif;">.t-caption<br>Manrope 500<br>10px, upercase .14em</div>
+          <div style="font-family:Manrope,sans-serif;font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--n500);">Категория · Жанр</div>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:32px;">
+          <div style="width:160px;font-size:9px;color:var(--n600);font-family:Manrope,sans-serif;">.lbl-accent<br>Manrope 600<br>10px, upercase .22em</div>
+          <div class="lbl-accent" style="margin-bottom:0;">Раздел системы</div>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:32px;">
+          <div style="width:160px;font-size:9px;color:var(--n600);font-family:Manrope,sans-serif;">.t-num / .t-price<br>Oranienbaum 400<br>числа и цены</div>
+          <div style="font-family:'Oranienbaum',serif;font-size:32px;color:var(--n100);">1 500 <span class="rub">₽</span> &nbsp;</div>
+          <div style="font-family:'Oranienbaum',serif;font-size:22px;color:var(--n100);">27%</div>
+        </div>
+      </div>
+      <div style="margin-top:16px;padding:12px 16px;background:var(--n950);border:1px solid var(--n800);border-radius:2px;font-size:11px;color:var(--n400);font-family:Manrope,sans-serif;">
+        ⚠ <strong style="color:var(--n200);">R14 правило:</strong> Cormorant Garamond ≤25pt → weight 500 (Medium). &gt;25pt → weight 400 (Regular). Никогда не использовать 300 (Light).
+      </div>
+    </section>
+
+    <!-- ── Кнопки ── -->
+    <section>
+      <div class="lbl-accent">Кнопки</div>
+      <div style="margin-top:20px;display:flex;flex-direction:column;gap:20px;">
+        <!-- LG -->
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <span style="width:80px;font-size:9px;color:var(--n600);font-family:Manrope,sans-serif;">btn-lg</span>
+          <button class="btn btn-primary btn-lg">Стать партнёром</button>
+          <button class="btn btn-ghost btn-lg">Узнать подробнее</button>
+          <button class="btn btn-ghost-accent btn-lg">Ghost accent</button>
+          <button class="btn btn-dark btn-lg">Тёмная</button>
+          <button class="btn btn-danger btn-lg">Удалить</button>
+          <button class="btn btn-primary btn-lg" disabled>Disabled</button>
+        </div>
+        <!-- MD -->
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <span style="width:80px;font-size:9px;color:var(--n600);font-family:Manrope,sans-serif;">btn-md</span>
+          <button class="btn btn-primary btn-md">Стать партнёром</button>
+          <button class="btn btn-ghost btn-md">Узнать подробнее</button>
+          <button class="btn btn-ghost-accent btn-md">Ghost accent</button>
+          <button class="btn btn-dark btn-md">Тёмная</button>
+          <button class="btn btn-danger btn-md">Удалить</button>
+          <button class="btn btn-primary btn-md" disabled>Disabled</button>
+        </div>
+        <!-- SM -->
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <span style="width:80px;font-size:9px;color:var(--n600);font-family:Manrope,sans-serif;">btn-sm</span>
+          <button class="btn btn-primary btn-sm">Купить</button>
+          <button class="btn btn-ghost btn-sm">Отмена</button>
+          <button class="btn btn-ghost-accent btn-sm">Ghost accent</button>
+          <button class="btn btn-dark btn-sm">Тёмная</button>
+          <button class="btn btn-danger btn-sm">Удалить</button>
+          <button class="btn btn-primary btn-sm" disabled>Disabled</button>
+        </div>
+        <!-- Icon + Full -->
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <span style="width:80px;font-size:9px;color:var(--n600);font-family:Manrope,sans-serif;">icon + full</span>
+          <button class="btn btn-icon btn-ghost" aria-label="Поиск"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg></button>
+          <button class="btn btn-icon btn-ghost-accent" aria-label="Фильтр"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 6h18M7 12h10M11 18h2"/></svg></button>
+          <div style="width:200px;"><button class="btn btn-primary btn-md btn-full">Полная ширина</button></div>
+        </div>
+        <div style="padding:12px 16px;background:var(--n950);border:1px solid var(--n800);border-radius:2px;font-size:11px;color:var(--n400);font-family:Manrope,sans-serif;">
+          Размеры: <code style="color:var(--n200);">btn-lg</code> 14px / min-h 44px &nbsp;·&nbsp; <code style="color:var(--n200);">btn-md</code> 11px / min-h 36px &nbsp;·&nbsp; <code style="color:var(--n200);">btn-sm</code> 9px / min-h 28px &nbsp;·&nbsp; <code style="color:var(--n200);">btn-full</code> width:100%
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Формы ── -->
+    <section>
+      <div class="lbl-accent">Формы</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:20px;">
+        <div>
+          <div class="form-group">
+            <label class="form-label">Default input</label>
+            <input class="form-input" type="text" placeholder="Введите значение">
+            <div class="form-helper">Подсказка для пользователя</div>
+          </div>
+        </div>
+        <div>
+          <div class="form-group">
+            <label class="form-label">Email · живая валидация</label>
+            <input class="form-input" type="email" data-validate="email" value="неверный email" placeholder="you@example.com" autocomplete="off">
+            <div class="form-msg">Введите корректный email-адрес</div>
+          </div>
+        </div>
+        <div>
+          <div class="form-group">
+            <label class="form-label">Select</label>
+            <select class="form-select">
+              <option>Блогер</option>
+              <option>Медиа</option>
+              <option>Организатор</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <div class="form-group">
+            <label class="form-label">Success state</label>
+            <input class="form-input success" type="text" value="ivan@example.com" readonly>
+            <div class="form-success">Email подтверждён</div>
+          </div>
+        </div>
+        <div>
+          <div class="form-group">
+            <label class="form-label">Disabled</label>
+            <input class="form-input" type="text" value="Недоступно" disabled>
+            <div class="form-helper">Поле заблокировано</div>
+          </div>
+        </div>
+        <div>
+          <div class="form-group">
+            <label class="form-label">Select · disabled</label>
+            <select class="form-select" disabled>
+              <option>Тип партнёра</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:16px;padding:12px 16px;background:var(--n950);border:1px solid var(--n800);border-radius:2px;font-size:11px;color:var(--n400);font-family:Manrope,sans-serif;">
+        Состояния: <code style="color:var(--n200);">default</code> · <code style="color:var(--n200);">:hover</code> · <code style="color:var(--n200);">:focus</code> (accent) · <code style="color:var(--n200);">.error</code> · <code style="color:var(--n200);">.success</code> · <code style="color:var(--n200);">:disabled</code>. Поле Email валидируется на лету через <code style="color:var(--n200);">data-validate="email"</code>.
+      </div>
+    </section>
+
+    <!-- ── Теги и бейджи ── -->
+    <section>
+      <div class="lbl-accent">Теги и бейджи</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;align-items:center;">
+        <span class="tag tag-default">Театр</span>
+        <span class="tag tag-accent">Премьера</span>
+        <span class="tag tag-orange">Мало мест</span>
+        <span class="tag tag-green">Новинка</span>
+        <span class="tag tag-premium">Premium</span>
+        <span class="badge badge-count">3</span>
+        <span class="badge badge-count">12</span>
+      </div>
+      <div style="margin-top:12px;padding:12px 16px;background:var(--n950);border:1px solid var(--n800);border-radius:2px;font-size:11px;color:var(--n400);font-family:Manrope,sans-serif;">
+        <code style="color:var(--n200);">tag-default</code> — нейтральный &nbsp;·&nbsp; <code style="color:var(--n200);">tag-accent</code> — Cobalt (только интерактив/статус) &nbsp;·&nbsp; <code style="color:var(--n200);">tag-premium</code> — ivory инверсия, только Premium-блоки &nbsp;·&nbsp; <code style="color:var(--n200);">badge-count</code> — числовой счётчик навигации
+      </div>
+    </section>
+
+    <!-- ── Отступы и радиус ── -->
+    <section>
+      <div class="lbl-accent">Spacing & Border Radius</div>
+      <div style="display:flex;gap:4px;align-items:flex-end;margin-top:16px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div style="width:4px;height:4px;background:var(--accent);border-radius:2px;"></div><div style="font-size:8px;color:var(--n600);font-family:Manrope,sans-serif;">sp-1<br>4px</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div style="width:8px;height:8px;background:var(--accent);border-radius:2px;"></div><div style="font-size:8px;color:var(--n600);font-family:Manrope,sans-serif;">sp-2<br>8px</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div style="width:12px;height:12px;background:var(--accent);border-radius:2px;"></div><div style="font-size:8px;color:var(--n600);font-family:Manrope,sans-serif;">sp-3<br>12px</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div style="width:16px;height:16px;background:var(--accent);border-radius:2px;"></div><div style="font-size:8px;color:var(--n600);font-family:Manrope,sans-serif;">sp-4<br>16px</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div style="width:20px;height:20px;background:var(--accent);border-radius:2px;"></div><div style="font-size:8px;color:var(--n600);font-family:Manrope,sans-serif;">sp-5<br>20px</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div style="width:24px;height:24px;background:var(--accent);border-radius:2px;"></div><div style="font-size:8px;color:var(--n600);font-family:Manrope,sans-serif;">sp-6<br>24px</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div style="width:32px;height:32px;background:var(--accent);border-radius:2px;"></div><div style="font-size:8px;color:var(--n600);font-family:Manrope,sans-serif;">sp-8<br>32px</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div style="width:40px;height:40px;background:var(--accent);border-radius:2px;"></div><div style="font-size:8px;color:var(--n600);font-family:Manrope,sans-serif;">sp-10<br>40px</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div style="width:48px;height:48px;background:var(--accent);border-radius:2px;"></div><div style="font-size:8px;color:var(--n600);font-family:Manrope,sans-serif;">sp-12<br>48px</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div style="width:64px;height:64px;background:var(--accent);border-radius:2px;"></div><div style="font-size:8px;color:var(--n600);font-family:Manrope,sans-serif;">sp-16<br>64px</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div style="width:80px;height:80px;background:var(--accent);border-radius:2px;"></div><div style="font-size:8px;color:var(--n600);font-family:Manrope,sans-serif;">sp-20<br>80px</div></div>
+      </div>
+      <div style="display:flex;gap:16px;margin-top:24px;align-items:center;">
+        <div style="width:40px;height:40px;background:var(--n800);border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--n400);font-family:Manrope,sans-serif;">r-sm<br>2px</div>
+        <div style="width:40px;height:40px;background:var(--n800);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--n400);font-family:Manrope,sans-serif;">r-md<br>4px</div>
+        <div style="width:40px;height:40px;background:var(--n800);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--n400);font-family:Manrope,sans-serif;">r-lg<br>8px</div>
+        <div style="width:60px;height:40px;background:var(--n800);border-radius:9999px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--n400);font-family:Manrope,sans-serif;">r-full</div>
+        <div style="padding:12px 16px;background:var(--n950);border:1px solid var(--n800);border-radius:2px;font-size:11px;color:var(--n400);font-family:Manrope,sans-serif;">⚠ Основной радиус — <strong style="color:var(--n200);">2px (--r-sm)</strong>. UI угловатый. Максимум в компонентах — 8px. Пиллы/чипы — r-full.</div>
+      </div>
+    </section>
+
+    <!-- ── Анимации ── -->
+    <section>
+      <div class="lbl-accent">Анимации</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:20px;">
+        <div style="padding:20px;background:var(--n950);border:1px solid var(--n800);border-radius:2px;">
+          <div style="font-size:11px;font-weight:600;color:var(--n200);font-family:Manrope,sans-serif;margin-bottom:8px;">--dur-fast · 120ms</div>
+          <div style="font-size:11px;color:var(--n500);font-family:Manrope,sans-serif;margin-bottom:12px;"><code style="color:var(--accent);">--ease-out</code> — cubic-bezier(.4,0,.2,1)</div>
+          <div style="font-size:11px;color:var(--n400);font-family:Manrope,sans-serif;">Hover-эффекты кнопок и ссылок. Смена цвета border/color. Появление tooltip.</div>
+        </div>
+        <div style="padding:20px;background:var(--n950);border:1px solid var(--n800);border-radius:2px;">
+          <div style="font-size:11px;font-weight:600;color:var(--n200);font-family:Manrope,sans-serif;margin-bottom:8px;">--dur-base · 200ms</div>
+          <div style="font-size:11px;color:var(--n500);font-family:Manrope,sans-serif;margin-bottom:12px;"><code style="color:var(--accent);">--ease-out</code> — cubic-bezier(.4,0,.2,1)</div>
+          <div style="font-size:11px;color:var(--n400);font-family:Manrope,sans-serif;">Открытие/закрытие дропдаунов, аккордеонов. Переход фокуса инпута. Сдвиг панелей.</div>
+        </div>
+        <div style="padding:20px;background:var(--n950);border:1px solid var(--n800);border-radius:2px;">
+          <div style="font-size:11px;font-weight:600;color:var(--n200);font-family:Manrope,sans-serif;margin-bottom:8px;">--dur-slow · 320ms</div>
+          <div style="font-size:11px;color:var(--n500);font-family:Manrope,sans-serif;margin-bottom:12px;"><code style="color:var(--accent);">--ease-bounce</code> — cubic-bezier(.34,1.56,.64,1)</div>
+          <div style="font-size:11px;color:var(--n400);font-family:Manrope,sans-serif;">Появление модальных окон, toast-уведомлений, hero-блоков. Любое масштабирование с bounce.</div>
+        </div>
+      </div>
+      <div style="margin-top:16px;padding:12px 16px;background:var(--n950);border:1px solid var(--n800);border-radius:2px;font-size:11px;color:var(--n400);font-family:Manrope,sans-serif;">
+        Скелетон-лоадер: <code style="color:var(--n200);">animation: shimmer 1.6s ease-in-out infinite</code>. Reveal-анимация: <code style="color:var(--n200);">opacity 0→1 + translateY 24px→0</code> за <code style="color:var(--n200);">500ms ease-out</code> при IntersectionObserver.
+      </div>
+    </section>
+
+    <!-- ── Responsive breakpoints ── -->
+    <section>
+      <div class="lbl-accent">Responsive & Layout</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px;">
+        <div style="padding:20px;background:var(--n950);border:1px solid var(--n800);border-radius:2px;">
+          <div style="font-size:11px;font-weight:600;color:var(--accent);font-family:Manrope,sans-serif;margin-bottom:8px;">Mobile — &lt; 768px</div>
+          <div style="font-size:11px;color:var(--n400);font-family:Manrope,sans-serif;line-height:1.7;">
+            --page-pad: 20px<br>Афиша: 2 колонки<br>Hero: полная ширина<br>Sticky buy: снизу экрана<br>Checkout: 1 колонка<br>Nav: drawer/burger
+          </div>
+        </div>
+        <div style="padding:20px;background:var(--n950);border:1px solid var(--n800);border-radius:2px;">
+          <div style="font-size:11px;font-weight:600;color:var(--accent);font-family:Manrope,sans-serif;margin-bottom:8px;">Tablet — ≥ 768px</div>
+          <div style="font-size:11px;color:var(--n400);font-family:Manrope,sans-serif;line-height:1.7;">
+            --page-pad: 32px<br>Афиша: 3 колонки<br>Hero: 2 колонки<br>Nav: full desktop
+          </div>
+        </div>
+        <div style="padding:20px;background:var(--n950);border:1px solid var(--n800);border-radius:2px;">
+          <div style="font-size:11px;font-weight:600;color:var(--accent);font-family:Manrope,sans-serif;margin-bottom:8px;">Desktop — ≥ 1024px</div>
+          <div style="font-size:11px;color:var(--n400);font-family:Manrope,sans-serif;line-height:1.7;">
+            --page-pad: 56px<br>--content-max: 1200px<br>Афиша: 4 колонки<br>Event: 1.6fr + 1fr<br>Checkout: sidebar справа<br>Seat map: sidebar справа
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Frontend notes ── -->
+    <section>
+      <div class="lbl-accent">Важно для фронтенда</div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:20px;">
+        <div style="padding:20px;background:var(--n950);border:1px solid var(--n800);border-radius:2px;">
+          <div style="font-size:11px;font-weight:700;color:var(--n100);font-family:Manrope,sans-serif;margin-bottom:12px;">Шрифты (Google Fonts)</div>
+          <div style="font-size:11px;color:var(--n400);font-family:Manrope,sans-serif;line-height:1.8;">
+            <code style="background:var(--n900);padding:2px 6px;border-radius:2px;color:var(--n200);font-size:10px;">Cormorant+Garamond:wght@400;500</code><br><br>
+            <code style="background:var(--n900);padding:2px 6px;border-radius:2px;color:var(--n200);font-size:10px;">Oranienbaum</code><br><br>
+            <code style="background:var(--n900);padding:2px 6px;border-radius:2px;color:var(--n200);font-size:10px;">Forum</code><br><br>
+            <code style="background:var(--n900);padding:2px 6px;border-radius:2px;color:var(--n200);font-size:10px;">Manrope:wght@300;400;500;600;700</code><br><br>
+            <span style="color:#E53E3E;">✗</span> <code style="color:var(--n600);font-size:10px;">wght@300;400</code> — не грузить 300 для Cormorant
+          </div>
+        </div>
+        <div style="padding:20px;background:var(--n950);border:1px solid var(--n800);border-radius:2px;">
+          <div style="font-size:11px;font-weight:700;color:var(--n100);font-family:Manrope,sans-serif;margin-bottom:12px;">CSS подключение</div>
+          <div style="font-size:11px;color:var(--n400);font-family:Manrope,sans-serif;line-height:1.8;">
+            Тёмная тема: <code style="background:var(--n900);padding:2px 6px;border-radius:2px;color:var(--n200);font-size:10px;">ds-core-r14.css</code><br><br>
+            Светлая тема: <code style="background:var(--n900);padding:2px 6px;border-radius:2px;color:var(--n200);font-size:10px;">ds-core-r14-light.css</code><br><br>
+            Переключение = замена CSS-файла. Классы одинаковые, меняются только переменные.<br><br>
+            Тема на элемент: класс <code style="background:var(--n900);padding:2px 6px;border-radius:2px;color:var(--n200);font-size:10px;">.th-d</code> / <code style="background:var(--n900);padding:2px 6px;border-radius:2px;color:var(--n200);font-size:10px;">.th-l</code>
+          </div>
+        </div>
+        <div style="padding:20px;background:var(--n950);border:1px solid var(--n800);border-radius:2px;">
+          <div style="font-size:11px;font-weight:700;color:var(--n100);font-family:Manrope,sans-serif;margin-bottom:12px;">Иконки</div>
+          <div style="font-size:11px;color:var(--n400);font-family:Manrope,sans-serif;line-height:1.8;">
+            Стиль: Lucide-style, stroke 1.4, linecap/linejoin round<br>
+            Размер: 24×24 px в SVG, отображается 16px или 20px в UI<br>
+            Цвет: через <code style="background:var(--n900);padding:2px 6px;border-radius:2px;color:var(--n200);font-size:10px;">currentColor</code> → адаптируется к теме<br>
+            Соцсети: Brand filled 48×48 (Instagram, YouTube, Telegram, VK, TikTok)<br>
+            Логотип: только SVG из <code style="background:var(--n900);padding:2px 6px;border-radius:2px;color:var(--n200);font-size:10px;">tts-logo.svg</code>. Никогда текстом.
+          </div>
+        </div>
+        <div style="padding:20px;background:var(--n950);border:1px solid var(--n800);border-radius:2px;">
+          <div style="font-size:11px;font-weight:700;color:var(--n100);font-family:Manrope,sans-serif;margin-bottom:12px;">Запреты</div>
+          <div style="font-size:11px;color:var(--n400);font-family:Manrope,sans-serif;line-height:1.8;">
+            <span style="color:#E53E3E;">✗</span> Никогда не хардкодить цвета и шрифты — только через CSS-переменные<br>
+            <span style="color:#E53E3E;">✗</span> border-radius &gt; 8px в UI-компонентах<br>
+            <span style="color:#E53E3E;">✗</span> font-weight: 300 на Cormorant<br>
+            <span style="color:#E53E3E;">✗</span> --accent на декоративных элементах<br>
+            <span style="color:#E53E3E;">✗</span> --premium декоративно (только Premium-блоки)<br>
+            <span style="color:#E53E3E;">✗</span> Одно событие → несколько карточек в афише<br>
+            <span style="color:#22C55E;">✓</span> Всегда preconnect для Google Fonts<br>
+            <span style="color:#22C55E;">✓</span> Backdrop-filter с webkit-префиксом<br>
+            <span style="color:#22C55E;">✓</span> color-mix() для полупрозрачных фонов
+          </div>
+        </div>
+        <div style="padding:20px;background:var(--n950);border:1px solid var(--n800);border-radius:2px;grid-column:span 2;">
+          <div style="font-size:11px;font-weight:700;color:var(--n100);font-family:Manrope,sans-serif;margin-bottom:12px;">Blob — атмосферные свечения</div>
+          <div style="display:flex;gap:32px;align-items:flex-start;">
+            <div style="position:relative;width:200px;height:120px;background:var(--n950);border-radius:2px;overflow:hidden;flex-shrink:0;">
+              <div style="position:absolute;width:160px;height:160px;top:-40px;right:-40px;background:radial-gradient(ellipse at center,var(--blob-core) 0%,var(--blob-mid) 55%,transparent 75%);filter:blur(40px);opacity:.7;"></div>
+              <div style="position:absolute;width:100px;height:100px;bottom:-20px;left:-20px;background:radial-gradient(ellipse at center,var(--blob-purple) 0%,transparent 70%);filter:blur(30px);opacity:.5;"></div>
+              <div style="position:absolute;bottom:8px;left:12px;font-size:9px;color:var(--n500);font-family:Manrope,sans-serif;">Cool / Theatre</div>
+            </div>
+            <div style="position:relative;width:200px;height:120px;background:var(--n950);border-radius:2px;overflow:hidden;flex-shrink:0;">
+              <div style="position:absolute;width:160px;height:160px;top:-40px;right:-40px;background:radial-gradient(ellipse at center,#4A1F00 0%,#2A1200 55%,transparent 75%);filter:blur(40px);opacity:.7;"></div>
+              <div style="position:absolute;bottom:8px;left:12px;font-size:9px;color:var(--n500);font-family:Manrope,sans-serif;">Warm / Opera</div>
+            </div>
+            <div style="position:relative;width:200px;height:120px;background:var(--n950);border-radius:2px;overflow:hidden;flex-shrink:0;">
+              <div style="position:absolute;width:160px;height:160px;top:-40px;right:-40px;background:radial-gradient(ellipse at center,#0A2A0A 0%,#051205 55%,transparent 75%);filter:blur(40px);opacity:.8;"></div>
+              <div style="position:absolute;bottom:8px;left:12px;font-size:9px;color:var(--n500);font-family:Manrope,sans-serif;">Green / Musical</div>
+            </div>
+            <div style="font-size:11px;color:var(--n400);font-family:Manrope,sans-serif;line-height:1.8;flex:1;">
+              Blob кодирует жанр: <strong style="color:var(--n200);">Cool</strong> (синий, --blob-core #06277F) — классика/театр; <strong style="color:var(--n200);">Warm</strong> (оранжевый, #4A1F00) — опера/джаз; <strong style="color:var(--n200);">Green</strong> (#0A2A0A) — мюзикл/комедия.<br><br>
+              В коде: <code style="background:var(--n900);padding:2px 6px;border-radius:2px;color:var(--n200);font-size:10px;">radial-gradient + filter:blur(40-80px)</code>. Никогда не использовать готовые png-текстуры для blob — только CSS.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /padding -->
+</div><!-- /uikit-d -->
+</body>
+</html>

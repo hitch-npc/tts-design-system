@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TTS DS R14 — Cookie consent card · Хендофф для фронтенда</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../ds-core-r14.css" id="theme-css">
+<style>
+  /* Обвязка страницы хендоффа — только var(--…) */
+  .doc {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 48px var(--page-pad) 64px;
+  }
+  .doc-header { margin-bottom: 48px; }
+  .doc-header .t-display { font-size: clamp(2rem, 5vw, 3rem); }
+  .doc-section { margin-bottom: 48px; }
+  .doc-section > .t-h2 { margin-bottom: 6px; }
+  .doc-lead { font-size: 13px; color: var(--n300); line-height: 1.7; margin-bottom: 16px; max-width: 640px; }
+
+  table.spec {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  table.spec th {
+    text-align: left;
+    font-family: var(--font);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: var(--n500);
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--n800);
+    white-space: nowrap;
+  }
+  table.spec td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--n900);
+    color: var(--n200);
+    vertical-align: top;
+  }
+  table.spec td:first-child { white-space: nowrap; }
+  .spec-wrap { overflow-x: auto; }
+
+  code, .code-inline {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11px;
+    color: var(--n100);
+    background: var(--n900);
+    padding: 1px 5px;
+    border-radius: var(--r-sm);
+  }
+  pre.code-block {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11px;
+    line-height: 1.7;
+    color: var(--n200);
+    background: var(--n950);
+    border: 1px solid var(--n800);
+    border-radius: var(--r-sm);
+    padding: 16px 18px;
+    overflow-x: auto;
+    margin: 12px 0 0;
+  }
+  .note {
+    display: flex;
+    gap: 10px;
+    padding: 12px 14px;
+    background: var(--accent-ghost);
+    border: 1px solid var(--accent-border);
+    border-radius: var(--r-sm);
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--n200);
+    margin-top: 16px;
+  }
+  .note::before { content: "→"; color: var(--accent); flex-shrink: 0; }
+  .doc-controls { display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+  .preview-label { color: var(--n500); margin-bottom: 8px; }
+  .preview-frame {
+    display: block;
+    width: 100%;
+    height: 240px;
+    border: 1px solid var(--n800);
+    border-radius: var(--r-sm);
+    background: transparent;
+  }
+  ul.doc-list { margin: 8px 0 0 16px; padding: 0; font-size: 12px; line-height: 1.8; color: var(--n200); }
+  ul.doc-list li { margin-bottom: 4px; }
+</style>
+</head>
+<body>
+
+<div class="doc">
+
+  <header class="doc-header">
+    <div class="t-label-accent">TTS DS R14 · Хендофф · для Олега (фронтенд)</div>
+    <h1 class="t-display" style="margin: 10px 0 12px;">Cookie consent card</h1>
+    <p class="doc-lead">
+      Floating-карточка согласия на cookies. Появляется по центру внизу вьюпорта.
+      Все стили уже лежат в ядре — <code>ds-core-r14.css</code> / <code>ds-core-r14-light.css</code>
+      (секция <code>/* ─── Cookie consent card ─── */</code>). CSS копировать не нужно —
+      только разметку и JS отсюда. Живые превью обеих тем — сразу ниже.
+    </p>
+    <div class="doc-controls">
+      <button class="btn btn-primary btn-sm" id="replay">Проиграть анимацию заново</button>
+    </div>
+  </header>
+
+  <!-- ═══ 0. Живые превью: обе темы ═══ -->
+  <section class="doc-section">
+    <h2 class="t-h2">0 · Живое демо</h2>
+    <div class="preview-label t-caption">Тёмная тема — ds-core-r14.css</div>
+    <iframe class="preview-frame" src="cookie-banner-preview.html" title="Cookie consent — тёмная тема"></iframe>
+    <div class="preview-label t-caption" style="margin-top: 20px;">Светлая тема — ds-core-r14-light.css</div>
+    <iframe class="preview-frame" src="cookie-banner-preview.html?theme=light" title="Cookie consent — светлая тема"></iframe>
+  </section>
+
+  <!-- ═══ 1. Разметка ═══ -->
+  <section class="doc-section">
+    <h2 class="t-h2">1 · Разметка</h2>
+    <p class="doc-lead">Тексты зафиксированы, не менять. Кнопки — стандартные DS-кнопки.</p>
+<pre class="code-block">&lt;div class="cookie-bar" id="cookie-bar" role="region" aria-label="Cookies"&gt;
+  &lt;div class="cookie-bar-text"&gt;
+    Пользуясь нашим сайтом, вы соглашаетесь с&amp;nbsp;тем, что
+    &lt;a href="/cookies" class="cookie-bar-link"&gt;мы используем cookies.&lt;/a&gt;
+  &lt;/div&gt;
+  &lt;div class="cookie-bar-actions"&gt;
+    &lt;button class="btn btn-primary btn-md" id="cookie-ok"&gt;ОКЕЙ&lt;/button&gt;
+    &lt;button class="btn btn-ghost btn-md" id="cookie-no"&gt;НЕТ&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</pre>
+  </section>
+
+  <!-- ═══ 2. Layout ═══ -->
+  <section class="doc-section">
+    <h2 class="t-h2">2 · Позиционирование и layout</h2>
+    <div class="spec-wrap">
+    <table class="spec">
+      <tr><th>Свойство</th><th>Значение</th><th>Комментарий</th></tr>
+      <tr><td><code>position</code></td><td>fixed; left: 50%; bottom: 24px</td><td>Центрирование через <code>transform: translateX(-50%)</code></td></tr>
+      <tr><td><code>max-width</code></td><td>680px</td><td>ширина <code>calc(100vw − 40px)</code></td></tr>
+      <tr><td><code>z-index</code></td><td>1900</td><td>Ниже toast (2000), выше остального UI</td></tr>
+      <tr><td><code>padding</code></td><td>20px 24px</td><td>—</td></tr>
+      <tr><td>фон / бордер</td><td><code>--n950</code> / 1px <code>--n800</code></td><td>радиус <code>--r-sm</code> (2px) — система угловатая</td></tr>
+      <tr><td><code>overflow</code></td><td>hidden</td><td>Обязательно — обрезает blob-слои по краям карточки</td></tr>
+      <tr><td>внутри</td><td>flex, wrap, gap 24px</td><td>Текст (flex:1, min-width 260px) слева, кнопки справа</td></tr>
+      <tr><td>текст</td><td>13px / 1.65 / <code>--n200</code></td><td>Manrope (<code>--font</code>). Ссылка — <code>--accent</code>, underline offset 3px</td></tr>
+      <tr><td>≤ 560px</td><td>bottom: 12px; width: calc(100vw − 24px)</td><td>Кнопки переносятся вниз на всю ширину (<code>flex: 1</code>)</td></tr>
+    </table>
+    </div>
+    <div class="note">Контент (<code>.cookie-bar-text</code>, <code>.cookie-bar-actions</code>) имеет <code>position: relative; z-index: 1</code> — лежит над blob-слоями.</div>
+  </section>
+
+  <!-- ═══ 3. Анимации ═══ -->
+  <section class="doc-section">
+    <h2 class="t-h2">3 · Анимации — главное</h2>
+    <p class="doc-lead">Все анимации чисто CSS (keyframes уже в ядре), JS только добавляет/убирает классы. Токены: <code>--ease-out: cubic-bezier(.4,0,.2,1)</code>, <code>--ease-bounce: cubic-bezier(.34,1.56,.64,1)</code>.</p>
+    <div class="spec-wrap">
+    <table class="spec">
+      <tr><th>Элемент</th><th>Триггер</th><th>Keyframes</th><th>Длительность / delay</th><th>Easing</th></tr>
+      <tr>
+        <td>Карточка</td><td>Появление</td>
+        <td><code>cookie-in</code>: opacity 0→1, translate(-50%, 28px)→(-50%, 0), scale .96→1</td>
+        <td>500ms / 0</td><td><code>--ease-bounce</code></td>
+      </tr>
+      <tr>
+        <td>Текст</td><td>Появление</td>
+        <td><code>cookie-rise</code>: opacity 0→1, translateY 12px→0</td>
+        <td>450ms / <strong>150ms</strong></td><td><code>--ease-out</code></td>
+      </tr>
+      <tr>
+        <td>Кнопки</td><td>Появление</td>
+        <td><code>cookie-rise</code> (тот же)</td>
+        <td>450ms / <strong>280ms</strong></td><td><code>--ease-out</code></td>
+      </tr>
+      <tr>
+        <td>Blob, слой А (фиолетовый, <code>::before</code>)</td><td>Постоянно</td>
+        <td><code>cookie-blob-a</code>: дрейф ±34px, rotate −9°…+16°, scale .94–1.22, opacity .30–.85</td>
+        <td>11s, infinite <strong>alternate</strong></td><td>ease-in-out</td>
+      </tr>
+      <tr>
+        <td>Blob, слой B (синий, <code>::after</code>)</td><td>Постоянно</td>
+        <td><code>cookie-blob-b</code>: дрейф ±26px, rotate −12°…+10°, scale 1–1.28, opacity .25–.85</td>
+        <td>13s, infinite <strong>alternate</strong></td><td>ease-in-out</td>
+      </tr>
+      <tr>
+        <td>Карточка</td><td>Клик ОКЕЙ / НЕТ</td>
+        <td><code>cookie-out</code>: opacity 1→0, translate(-50%, 0)→(-50%, 18px), scale 1→.96</td>
+        <td>280ms / 0</td><td><code>--ease-out</code></td>
+      </tr>
+    </table>
+    </div>
+    <ul class="doc-list" style="margin-top:16px;">
+      <li><strong>Каскад появления:</strong> карточка → текст (+150ms) → кнопки (+280ms). Все анимации с <code>fill-mode: both</code> — до старта детей не видно.</li>
+      <li><strong>Переливание blob:</strong> два слоя с <em>разными</em> периодами (11s и 13s) в противофазе по opacity. Пока фиолетовый гаснет — синий разгорается, паттерн повторяется только раз в ~143s, выглядит нерегулярно. Это дёшево: анимируются только transform и opacity (композитор, без repaint).</li>
+      <li><strong>Неровная форма:</strong> каждый слой — два смещённых <code>radial-gradient(closest-side at X% Y%)</code> + <code>filter: blur(30px)</code> + rotate. Никаких border-radius.</li>
+      <li><strong>Центрирование и transform:</strong> карточка центрирована transform-ом, поэтому в keyframes входа/выхода <code>translateX(-50%)</code> прописан явно. Если будешь менять анимации — не потеряй его, иначе карточку уведёт вправо.</li>
+    </ul>
+  </section>
+
+  <!-- ═══ 4. JS ═══ -->
+  <section class="doc-section">
+    <h2 class="t-h2">4 · Логика (JS)</h2>
+    <p class="doc-lead">Скрытие — по <code>animationend</code> с проверкой имени анимации (иначе сработает на дочерних keyframes).</p>
+<pre class="code-block">const bar = document.getElementById('cookie-bar');
+
+function hideBar(accepted) {
+  // TODO(Олег): сохранить выбор, напр.
+  // localStorage.setItem('tts-cookie-consent', accepted ? 'yes' : 'no')
+  // и не рендерить баннер при следующих визитах
+  bar.classList.add('cookie-bar-hide');
+  bar.addEventListener('animationend', function onEnd(e) {
+    if (e.animationName !== 'cookie-out') return; // важно!
+    bar.remove();
+    bar.removeEventListener('animationend', onEnd);
+  });
+}
+
+document.getElementById('cookie-ok').addEventListener('click', () => hideBar(true));
+document.getElementById('cookie-no').addEventListener('click', () => hideBar(false));</pre>
+    <div class="note">Персистентность выбора в демо не реализована — на проде решаешь сам (localStorage / cookie), баннер просто не рендерится, если выбор уже сделан.</div>
+  </section>
+
+  <!-- ═══ 5. Токены ═══ -->
+  <section class="doc-section">
+    <h2 class="t-h2">5 · Используемые токены</h2>
+    <div class="spec-wrap">
+    <table class="spec">
+      <tr><th>Токен</th><th>Тёмная</th><th>Светлая</th><th>Где</th></tr>
+      <tr><td><code>--n950</code></td><td>#111318</td><td>#FAFAF7</td><td>Фон карточки</td></tr>
+      <tr><td><code>--n800</code></td><td>#262930</td><td>#E2E1DA</td><td>Бордер</td></tr>
+      <tr><td><code>--n200</code></td><td>#C0C0BC</td><td>#2D2D2B</td><td>Текст (контраст проверен в обеих темах)</td></tr>
+      <tr><td><code>--accent</code> / <code>--accent-hover</code></td><td colspan="2">#0047FF / #0038CC (общие)</td><td>Ссылка, кнопка ОКЕЙ</td></tr>
+      <tr><td><code>--blob-purple</code>, <code>--blob-mid</code></td><td>#200840, #15092A</td><td>#DBC4F0, #E5DAEF</td><td>Blob, слой А</td></tr>
+      <tr><td><code>--blob-core</code></td><td>#06277F</td><td>#BFD0EE</td><td>Blob, слой B</td></tr>
+      <tr><td><code>--blob-faint</code> / <code>--blob-core-cool</code></td><td>#08133D (dark)</td><td>#BFD0EE (light)</td><td>Blob, слой B, второй градиент. <strong>Внимание:</strong> в светлой теме используется <code>--blob-core-cool</code>, т.к. <code>--blob-faint</code> там тёмно-синий</td></tr>
+    </table>
+    </div>
+  </section>
+
+  <!-- ═══ 6. A11y и edge cases ═══ -->
+  <section class="doc-section">
+    <h2 class="t-h2">6 · Доступность и edge cases</h2>
+    <ul class="doc-list">
+      <li>Контейнер: <code>role="region" aria-label="Cookies"</code>. Кнопки — нативные <code>&lt;button&gt;</code>, фокус-порядок: ссылка → ОКЕЙ → НЕТ.</li>
+      <li>Желательно добавить на проде <code>@media (prefers-reduced-motion: reduce)</code>: отключить <code>cookie-blob-a/b</code> и заменить вход/выход на простой fade (в ядро DS пока не включено — на твоё усмотрение).</li>
+      <li>Тексты кнопок «ОКЕЙ» / «НЕТ» и основной текст — зафиксированы, не переформулировать.</li>
+      <li>Баннер не должен перекрывать sticky-buy на страницах события: там либо не показывать одновременно, либо поднять cookie-bar выше (bottom с учётом высоты панели).</li>
+      <li>Тема меняется подключением другого CSS-файла — классы и разметка одинаковые для обеих тем.</li>
+    </ul>
+  </section>
+
+</div>
+
+<script>
+  // Перезапуск анимаций в обоих превью.
+  // Пересборка src вместо contentWindow.reload() — работает и с file://,
+  // где iframe в Chrome считается cross-origin.
+  document.getElementById('replay').addEventListener('click', () => {
+    document.querySelectorAll('.preview-frame').forEach(f => {
+      const src = f.getAttribute('src');
+      f.setAttribute('src', '');
+      requestAnimationFrame(() => f.setAttribute('src', src));
+    });
+  });
+</script>
+</body>
+</html>

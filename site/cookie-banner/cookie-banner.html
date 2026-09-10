@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TTS — Cookie consent bar</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../ds-core-r14.css" id="theme-css">
+<style>
+  /* Только обвязка демо-страницы */
+  .demo-stage {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: var(--page-pad);
+  }
+  .demo-controls { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+</style>
+</head>
+<body>
+
+<div class="demo-stage">
+  <div class="t-caption" style="color: var(--n500);">Cookie consent bar — DS TTS R14</div>
+  <div class="demo-controls">
+    <button class="btn btn-ghost btn-sm" id="replay">Показать баннер снова</button>
+    <button class="btn btn-ghost btn-sm" id="theme-toggle">Светлая тема</button>
+  </div>
+</div>
+
+<!-- ─── Cookie consent bar ─── -->
+<div class="cookie-bar" id="cookie-bar" role="region" aria-label="Cookies">
+  <div class="cookie-bar-text">Пользуясь нашим сайтом, вы соглашаетесь с&nbsp;тем, что <a href="#" class="cookie-bar-link">мы используем cookies.</a></div>
+  <div class="cookie-bar-actions">
+    <button class="btn btn-primary btn-md" id="cookie-ok">ОКЕЙ</button>
+    <button class="btn btn-ghost btn-md" id="cookie-no">НЕТ</button>
+  </div>
+</div>
+
+<script>
+  const bar = document.getElementById('cookie-bar');
+
+  function hideBar() {
+    bar.classList.add('cookie-bar-hide');
+    bar.addEventListener('animationend', function onEnd(e) {
+      if (e.animationName !== 'cookie-out') return;
+      bar.style.display = 'none';
+      bar.removeEventListener('animationend', onEnd);
+    });
+  }
+
+  function showBar() {
+    // display:none → block перезапускает все входные анимации (карточка, линия, текст, кнопки)
+    bar.classList.remove('cookie-bar-hide');
+    bar.style.display = 'none';
+    void bar.offsetWidth;
+    bar.style.display = '';
+  }
+
+  document.getElementById('cookie-ok').addEventListener('click', hideBar);
+  document.getElementById('cookie-no').addEventListener('click', hideBar);
+  document.getElementById('replay').addEventListener('click', showBar);
+
+  // Переключение темы = замена CSS-файла
+  const themeCss = document.getElementById('theme-css');
+  const themeBtn = document.getElementById('theme-toggle');
+  let dark = true;
+  themeBtn.addEventListener('click', () => {
+    dark = !dark;
+    themeCss.href = dark ? '../ds-core-r14.css' : '../ds-core-r14-light.css';
+    themeBtn.textContent = dark ? 'Светлая тема' : 'Тёмная тема';
+  });
+</script>
+</body>
+</html>

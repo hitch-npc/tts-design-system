@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TTS DS R14 — Cookie consent card · Хендофф (standalone)</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Forum&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ════════════════════════════════════════════════════════════
+   STANDALONE-версия хендоффа: весь CSS заинлайнен, внешних
+   зависимостей нет (кроме Google Fonts — деградируют в системные).
+   ИСТОЧНИК ИСТИНЫ — ds-core-r14.css / ds-core-r14-light.css,
+   секция «Cookie consent card». Значения токенов скопированы
+   оттуда 2026-07-10. При расхождении верить ядру.
+   ════════════════════════════════════════════════════════════ */
+
+/* ─── Токены: тёмная тема (по умолчанию, для дока) ─── */
+:root, .theme-dark {
+  --ink:           #0D0D0D;
+  --accent:        #0047FF;
+  --accent-hover:  #0038CC;
+  --accent-ghost:  #0B142A;
+  --accent-border: #091E56;
+  --n100: #D6D6D2; --n200: #C0C0BC; --n300: #A6A6A2; --n400: #8A8A88;
+  --n500: #7A7A78; --n600: #626260; --n700: #4A4A48;
+  --n800: #262930; --n900: #191C22; --n950: #111318;
+  --blob-core:   #06277F;
+  --blob-mid:    #15092A;
+  --blob-purple: #200840;
+  --blob-b2:     #08133D;   /* = --blob-faint в тёмном ядре */
+  --font:   'Manrope', system-ui, sans-serif;
+  --f-head: 'Forum', serif;
+  --f-thin: 'Cormorant Garamond', serif;
+  --ease-out:    cubic-bezier(.4, 0, .2, 1);
+  --ease-bounce: cubic-bezier(.34, 1.56, .64, 1);
+  --dur-fast: 120ms;
+  --r-sm: 2px;
+}
+/* ─── Токены: светлая тема (scoped на превью) ─── */
+.theme-light {
+  --ink:           #FFFFFF;
+  --accent:        #0047FF;
+  --accent-hover:  #0038CC;
+  --accent-ghost:  #EAF0FF;
+  --accent-border: #B8C9F0;
+  --n100: #0D0D0D; --n200: #2D2D2B; --n300: #4A4A48; --n400: #6A6A68;
+  --n500: #888886; --n600: #A8A8A5; --n700: #B5B5B0;
+  --n800: #E2E1DA; --n900: #F2F1EB; --n950: #FAFAF7;
+  --blob-core:   #BFD0EE;
+  --blob-mid:    #E5DAEF;
+  --blob-purple: #DBC4F0;
+  --blob-b2:     #BFD0EE;   /* = --blob-core-cool в светлом ядре (не blob-faint!) */
+}
+
+/* ─── База ─── */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--ink);
+  color: var(--n100);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+button { cursor: pointer; font-family: inherit; border: none; background: none; }
+a { color: inherit; }
+
+/* ─── Кнопки (копия из ядра) ─── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font);
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  border-radius: var(--r-sm);
+  transition: background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+  white-space: nowrap;
+  user-select: none;
+}
+.btn:active { transform: scale(.98); }
+.btn-md { font-size: 10px; padding: 11px 22px; }
+.btn-sm { font-size: 9px; padding: 10px 16px; min-height: 36px; }
+.btn-primary { background: var(--accent); color: #fff; border: 1px solid var(--accent); }
+.btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+.btn-ghost { background: transparent; color: var(--n100); border: 1px solid var(--n700); }
+.btn-ghost:hover { border-color: var(--n400); color: var(--n100); background: var(--n900); }
+
+/* ─── Типографика дока ─── */
+.t-display {
+  font-family: var(--f-thin);
+  font-weight: 400;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  line-height: .95;
+  color: var(--n100);
+}
+.t-h2 {
+  font-family: var(--f-head);
+  font-weight: 400;
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
+  letter-spacing: .10em;
+  text-transform: uppercase;
+  line-height: 1.1;
+  color: var(--n100);
+}
+.t-caption { font-size: 10px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: var(--n500); }
+.t-label-accent { font-size: 10px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); }
+
+/* ════════════════════════════════════════════════════════════
+   COOKIE CONSENT CARD — 1:1 копия секции из ядра DS.
+   Единственное отличие: внутри .preview-stage карточка
+   position:absolute (вместо fixed), чтобы жить в рамке превью.
+   ════════════════════════════════════════════════════════════ */
+.cookie-bar {
+  position: fixed;
+  left: 50%; bottom: 24px;
+  z-index: 1900;
+  max-width: 680px;
+  width: calc(100vw - 40px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding: 20px 24px;
+  background: var(--n950);
+  border: 1px solid var(--n800);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,.06), 0 24px 60px rgba(0,0,0,.16);
+  transform: translateX(-50%);
+  animation: cookie-in .5s var(--ease-bounce) both;
+}
+@keyframes cookie-in {
+  from { opacity: 0; transform: translate(-50%, 28px) scale(.96); }
+  to   { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+.cookie-bar-hide {
+  animation: cookie-out .28s var(--ease-out) both;
+  pointer-events: none;
+}
+@keyframes cookie-out {
+  from { opacity: 1; transform: translate(-50%, 0) scale(1); }
+  to   { opacity: 0; transform: translate(-50%, 18px) scale(.96); }
+}
+.cookie-bar::before,
+.cookie-bar::after {
+  content: "";
+  position: absolute;
+  top: -90px; right: -60px;
+  width: 300px; height: 230px;
+  filter: blur(30px);
+  pointer-events: none;
+}
+.cookie-bar::before { /* фиолетовый слой */
+  background:
+    radial-gradient(closest-side at 32% 58%, var(--blob-purple), transparent),
+    radial-gradient(closest-side at 72% 28%, var(--blob-mid), transparent);
+  animation: cookie-blob-a 11s ease-in-out infinite alternate;
+}
+.cookie-bar::after { /* синий слой */
+  background:
+    radial-gradient(closest-side at 62% 42%, var(--blob-core), transparent),
+    radial-gradient(closest-side at 24% 72%, var(--blob-b2), transparent);
+  animation: cookie-blob-b 13s ease-in-out infinite alternate;
+}
+@keyframes cookie-blob-a {
+  0%   { opacity: .85; transform: translate3d(0,0,0) rotate(0deg) scale(1); }
+  45%  { opacity: .30; transform: translate3d(-34px,16px,0) rotate(16deg) scale(1.22); }
+  100% { opacity: .70; transform: translate3d(12px,-10px,0) rotate(-9deg) scale(.94); }
+}
+@keyframes cookie-blob-b {
+  0%   { opacity: .25; transform: translate3d(10px,8px,0) rotate(-12deg) scale(1.12); }
+  55%  { opacity: .85; transform: translate3d(-26px,-12px,0) rotate(10deg) scale(1.28); }
+  100% { opacity: .35; transform: translate3d(0,0,0) rotate(0deg) scale(1); }
+}
+.cookie-bar-text {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-width: 260px;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--n200);
+  animation: cookie-rise .45s var(--ease-out) .15s both;
+}
+.cookie-bar-link {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.cookie-bar-link:hover { color: var(--accent-hover); }
+.cookie-bar-actions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+  animation: cookie-rise .45s var(--ease-out) .28s both;
+}
+.cookie-bar-actions .btn { min-width: 96px; }
+@keyframes cookie-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (max-width: 560px) {
+  .cookie-bar { bottom: 12px; width: calc(100vw - 24px); }
+  .cookie-bar-actions { width: 100%; }
+  .cookie-bar-actions .btn { flex: 1; }
+}
+
+/* ─── Превью-сцены (только для этой страницы) ─── */
+.preview-stage {
+  position: relative;
+  height: 260px;
+  background: var(--ink);
+  border: 1px solid var(--n800);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+}
+.preview-stage .cookie-bar {
+  position: absolute;   /* вместо fixed — живёт внутри рамки */
+  bottom: 20px;
+  width: calc(100% - 40px);
+}
+.preview-label { color: var(--n500); margin-bottom: 8px; }
+
+/* ─── Обвязка дока ─── */
+.doc { max-width: 860px; margin: 0 auto; padding: 48px 24px 64px; }
+.doc-header { margin-bottom: 48px; }
+.doc-header .t-display { font-size: clamp(2rem, 5vw, 3rem); }
+.doc-section { margin-bottom: 48px; }
+.doc-section > .t-h2 { margin-bottom: 6px; }
+.doc-lead { font-size: 13px; color: var(--n300); line-height: 1.7; margin-bottom: 16px; max-width: 640px; }
+table.spec { width: 100%; border-collapse: collapse; font-size: 12px; line-height: 1.6; }
+table.spec th {
+  text-align: left; font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .12em; color: var(--n500);
+  padding: 10px 12px; border-bottom: 1px solid var(--n800); white-space: nowrap;
+}
+table.spec td { padding: 10px 12px; border-bottom: 1px solid var(--n900); color: var(--n200); vertical-align: top; }
+table.spec td:first-child { white-space: nowrap; }
+.spec-wrap { overflow-x: auto; }
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px; color: var(--n100); background: var(--n900);
+  padding: 1px 5px; border-radius: var(--r-sm);
+}
+pre.code-block {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px; line-height: 1.7; color: var(--n200);
+  background: var(--n950); border: 1px solid var(--n800);
+  border-radius: var(--r-sm); padding: 16px 18px; overflow-x: auto; margin: 12px 0 0;
+}
+.note {
+  display: flex; gap: 10px; padding: 12px 14px;
+  background: var(--accent-ghost); border: 1px solid var(--accent-border);
+  border-radius: var(--r-sm); font-size: 12px; line-height: 1.6;
+  color: var(--n200); margin-top: 16px;
+}
+.note::before { content: "→"; color: var(--accent); flex-shrink: 0; }
+.doc-controls { display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+ul.doc-list { margin: 8px 0 0 16px; padding: 0; font-size: 12px; line-height: 1.8; color: var(--n200); }
+ul.doc-list li { margin-bottom: 4px; }
+</style>
+</head>
+<body>
+
+<div class="doc">
+
+  <header class="doc-header">
+    <div class="t-label-accent">TTS DS R14 · Хендофф · для Олега (фронтенд)</div>
+    <h1 class="t-display" style="margin: 10px 0 12px;">Cookie consent card</h1>
+    <p class="doc-lead">
+      Floating-карточка согласия на cookies. Появляется по центру внизу вьюпорта.
+      Это standalone-версия хендоффа: весь CSS заинлайнен, файл можно пересылать отдельно.
+      <strong>Источник истины</strong> — <code>ds-core-r14.css</code> / <code>ds-core-r14-light.css</code>,
+      секция <code>/* ─── Cookie consent card ─── */</code>: стили уже там, копировать в прод нужно только разметку и JS.
+    </p>
+    <div class="doc-controls">
+      <button class="btn btn-primary btn-sm" id="replay">Проиграть анимацию заново</button>
+    </div>
+  </header>
+
+  <!-- ═══ 0. Живые превью: обе темы ═══ -->
+  <section class="doc-section">
+    <h2 class="t-h2">0 · Живое демо</h2>
+    <p class="doc-lead">Кнопки ОКЕЙ / НЕТ в превью кликабельны — скрывают карточку с выходной анимацией.</p>
+
+    <div class="preview-label t-caption">Тёмная тема — ds-core-r14.css</div>
+    <div class="preview-stage theme-dark">
+      <div class="cookie-bar" role="region" aria-label="Cookies">
+        <div class="cookie-bar-text">Пользуясь нашим сайтом, вы соглашаетесь с&nbsp;тем, что <a href="#" class="cookie-bar-link">мы используем cookies.</a></div>
+        <div class="cookie-bar-actions">
+          <button class="btn btn-primary btn-md" data-hide>ОКЕЙ</button>
+          <button class="btn btn-ghost btn-md" data-hide>НЕТ</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="preview-label t-caption" style="margin-top: 20px;">Светлая тема — ds-core-r14-light.css</div>
+    <div class="preview-stage theme-light">
+      <div class="cookie-bar" role="region" aria-label="Cookies">
+        <div class="cookie-bar-text">Пользуясь нашим сайтом, вы соглашаетесь с&nbsp;тем, что <a href="#" class="cookie-bar-link">мы используем cookies.</a></div>
+        <div class="cookie-bar-actions">
+          <button class="btn btn-primary btn-md" data-hide>ОКЕЙ</button>
+          <button class="btn btn-ghost btn-md" data-hide>НЕТ</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 1. Разметка ═══ -->
+  <section class="doc-section">
+    <h2 class="t-h2">1 · Разметка</h2>
+    <p class="doc-lead">Тексты зафиксированы, не менять. Кнопки — стандартные DS-кнопки.</p>
+<pre class="code-block">&lt;div class="cookie-bar" id="cookie-bar" role="region" aria-label="Cookies"&gt;
+  &lt;div class="cookie-bar-text"&gt;
+    Пользуясь нашим сайтом, вы соглашаетесь с&amp;nbsp;тем, что
+    &lt;a href="/cookies" class="cookie-bar-link"&gt;мы используем cookies.&lt;/a&gt;
+  &lt;/div&gt;
+  &lt;div class="cookie-bar-actions"&gt;
+    &lt;button class="btn btn-primary btn-md" id="cookie-ok"&gt;ОКЕЙ&lt;/button&gt;
+    &lt;button class="btn btn-ghost btn-md" id="cookie-no"&gt;НЕТ&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</pre>
+  </section>
+
+  <!-- ═══ 2. Layout ═══ -->
+  <section class="doc-section">
+    <h2 class="t-h2">2 · Позиционирование и layout</h2>
+    <div class="spec-wrap">
+    <table class="spec">
+      <tr><th>Свойство</th><th>Значение</th><th>Комментарий</th></tr>
+      <tr><td><code>position</code></td><td>fixed; left: 50%; bottom: 24px</td><td>Центрирование через <code>transform: translateX(-50%)</code>. В превью выше заменено на absolute — в проде именно fixed</td></tr>
+      <tr><td><code>max-width</code></td><td>680px</td><td>ширина <code>calc(100vw − 40px)</code></td></tr>
+      <tr><td><code>z-index</code></td><td>1900</td><td>Ниже toast (2000), выше остального UI</td></tr>
+      <tr><td><code>padding</code></td><td>20px 24px</td><td>—</td></tr>
+      <tr><td>фон / бордер</td><td><code>--n950</code> / 1px <code>--n800</code></td><td>радиус <code>--r-sm</code> (2px) — система угловатая</td></tr>
+      <tr><td><code>overflow</code></td><td>hidden</td><td>Обязательно — обрезает blob-слои по краям карточки</td></tr>
+      <tr><td>внутри</td><td>flex, wrap, gap 24px</td><td>Текст (flex:1, min-width 260px) слева, кнопки справа</td></tr>
+      <tr><td>текст</td><td>13px / 1.65 / <code>--n200</code></td><td>Manrope (<code>--font</code>). Ссылка — <code>--accent</code>, underline offset 3px</td></tr>
+      <tr><td>≤ 560px</td><td>bottom: 12px; width: calc(100vw − 24px)</td><td>Кнопки переносятся вниз на всю ширину (<code>flex: 1</code>)</td></tr>
+    </table>
+    </div>
+    <div class="note">Контент (<code>.cookie-bar-text</code>, <code>.cookie-bar-actions</code>) имеет <code>position: relative; z-index: 1</code> — лежит над blob-слоями.</div>
+  </section>
+
+  <!-- ═══ 3. Анимации ═══ -->
+  <section class="doc-section">
+    <h2 class="t-h2">3 · Анимации — главное</h2>
+    <p class="doc-lead">Все анимации чисто CSS (keyframes уже в ядре), JS только добавляет/убирает классы. Токены: <code>--ease-out: cubic-bezier(.4,0,.2,1)</code>, <code>--ease-bounce: cubic-bezier(.34,1.56,.64,1)</code>.</p>
+    <div class="spec-wrap">
+    <table class="spec">
+      <tr><th>Элемент</th><th>Триггер</th><th>Keyframes</th><th>Длительность / delay</th><th>Easing</th></tr>
+      <tr>
+        <td>Карточка</td><td>Появление</td>
+        <td><code>cookie-in</code>: opacity 0→1, translate(-50%, 28px)→(-50%, 0), scale .96→1</td>
+        <td>500ms / 0</td><td><code>--ease-bounce</code></td>
+      </tr>
+      <tr>
+        <td>Текст</td><td>Появление</td>
+        <td><code>cookie-rise</code>: opacity 0→1, translateY 12px→0</td>
+        <td>450ms / <strong>150ms</strong></td><td><code>--ease-out</code></td>
+      </tr>
+      <tr>
+        <td>Кнопки</td><td>Появление</td>
+        <td><code>cookie-rise</code> (тот же)</td>
+        <td>450ms / <strong>280ms</strong></td><td><code>--ease-out</code></td>
+      </tr>
+      <tr>
+        <td>Blob, слой А (фиолетовый, <code>::before</code>)</td><td>Постоянно</td>
+        <td><code>cookie-blob-a</code>: дрейф ±34px, rotate −9°…+16°, scale .94–1.22, opacity .30–.85</td>
+        <td>11s, infinite <strong>alternate</strong></td><td>ease-in-out</td>
+      </tr>
+      <tr>
+        <td>Blob, слой B (синий, <code>::after</code>)</td><td>Постоянно</td>
+        <td><code>cookie-blob-b</code>: дрейф ±26px, rotate −12°…+10°, scale 1–1.28, opacity .25–.85</td>
+        <td>13s, infinite <strong>alternate</strong></td><td>ease-in-out</td>
+      </tr>
+      <tr>
+        <td>Карточка</td><td>Клик ОКЕЙ / НЕТ</td>
+        <td><code>cookie-out</code>: opacity 1→0, translate(-50%, 0)→(-50%, 18px), scale 1→.96</td>
+        <td>280ms / 0</td><td><code>--ease-out</code></td>
+      </tr>
+    </table>
+    </div>
+    <ul class="doc-list" style="margin-top:16px;">
+      <li><strong>Каскад появления:</strong> карточка → текст (+150ms) → кнопки (+280ms). Все анимации с <code>fill-mode: both</code> — до старта детей не видно.</li>
+      <li><strong>Переливание blob:</strong> два слоя с <em>разными</em> периодами (11s и 13s) в противофазе по opacity. Пока фиолетовый гаснет — синий разгорается, паттерн повторяется только раз в ~143s, выглядит нерегулярно. Это дёшево: анимируются только transform и opacity (композитор, без repaint).</li>
+      <li><strong>Неровная форма:</strong> каждый слой — два смещённых <code>radial-gradient(closest-side at X% Y%)</code> + <code>filter: blur(30px)</code> + rotate. Никаких border-radius.</li>
+      <li><strong>Центрирование и transform:</strong> карточка центрирована transform-ом, поэтому в keyframes входа/выхода <code>translateX(-50%)</code> прописан явно. Если будешь менять анимации — не потеряй его, иначе карточку уведёт вправо.</li>
+    </ul>
+  </section>
+
+  <!-- ═══ 4. JS ═══ -->
+  <section class="doc-section">
+    <h2 class="t-h2">4 · Логика (JS)</h2>
+    <p class="doc-lead">Скрытие — по <code>animationend</code> с проверкой имени анимации (иначе сработает на дочерних keyframes).</p>
+<pre class="code-block">const bar = document.getElementById('cookie-bar');
+
+function hideBar(accepted) {
+  // TODO(Олег): сохранить выбор, напр.
+  // localStorage.setItem('tts-cookie-consent', accepted ? 'yes' : 'no')
+  // и не рендерить баннер при следующих визитах
+  bar.classList.add('cookie-bar-hide');
+  bar.addEventListener('animationend', function onEnd(e) {
+    if (e.animationName !== 'cookie-out') return; // важно!
+    bar.remove();
+    bar.removeEventListener('animationend', onEnd);
+  });
+}
+
+document.getElementById('cookie-ok').addEventListener('click', () => hideBar(true));
+document.getElementById('cookie-no').addEventListener('click', () => hideBar(false));</pre>
+    <div class="note">Персистентность выбора в демо не реализована — на проде решаешь сам (localStorage / cookie), баннер просто не рендерится, если выбор уже сделан.</div>
+  </section>
+
+  <!-- ═══ 5. Токены ═══ -->
+  <section class="doc-section">
+    <h2 class="t-h2">5 · Используемые токены</h2>
+    <div class="spec-wrap">
+    <table class="spec">
+      <tr><th>Токен</th><th>Тёмная</th><th>Светлая</th><th>Где</th></tr>
+      <tr><td><code>--n950</code></td><td>#111318</td><td>#FAFAF7</td><td>Фон карточки</td></tr>
+      <tr><td><code>--n800</code></td><td>#262930</td><td>#E2E1DA</td><td>Бордер</td></tr>
+      <tr><td><code>--n200</code></td><td>#C0C0BC</td><td>#2D2D2B</td><td>Текст (контраст проверен в обеих темах)</td></tr>
+      <tr><td><code>--accent</code> / <code>--accent-hover</code></td><td colspan="2">#0047FF / #0038CC (общие)</td><td>Ссылка, кнопка ОКЕЙ</td></tr>
+      <tr><td><code>--blob-purple</code>, <code>--blob-mid</code></td><td>#200840, #15092A</td><td>#DBC4F0, #E5DAEF</td><td>Blob, слой А</td></tr>
+      <tr><td><code>--blob-core</code></td><td>#06277F</td><td>#BFD0EE</td><td>Blob, слой B</td></tr>
+      <tr><td><code>--blob-faint</code> / <code>--blob-core-cool</code></td><td>#08133D (dark)</td><td>#BFD0EE (light)</td><td>Blob, слой B, второй градиент. <strong>Внимание:</strong> в светлой теме используется <code>--blob-core-cool</code>, т.к. <code>--blob-faint</code> там тёмно-синий</td></tr>
+    </table>
+    </div>
+  </section>
+
+  <!-- ═══ 6. A11y и edge cases ═══ -->
+  <section class="doc-section">
+    <h2 class="t-h2">6 · Доступность и edge cases</h2>
+    <ul class="doc-list">
+      <li>Контейнер: <code>role="region" aria-label="Cookies"</code>. Кнопки — нативные <code>&lt;button&gt;</code>, фокус-порядок: ссылка → ОКЕЙ → НЕТ.</li>
+      <li>Желательно добавить на проде <code>@media (prefers-reduced-motion: reduce)</code>: отключить <code>cookie-blob-a/b</code> и заменить вход/выход на простой fade (в ядро DS пока не включено — на твоё усмотрение).</li>
+      <li>Тексты кнопок «ОКЕЙ» / «НЕТ» и основной текст — зафиксированы, не переформулировать.</li>
+      <li>Баннер не должен перекрывать sticky-buy на страницах события: там либо не показывать одновременно, либо поднять cookie-bar выше (bottom с учётом высоты панели).</li>
+      <li>Тема меняется подключением другого CSS-файла — классы и разметка одинаковые для обеих тем.</li>
+    </ul>
+  </section>
+
+</div>
+
+<script>
+  // Скрытие карточки в превью
+  document.querySelectorAll('[data-hide]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const bar = btn.closest('.cookie-bar');
+      bar.classList.add('cookie-bar-hide');
+      bar.addEventListener('animationend', function onEnd(e) {
+        if (e.animationName !== 'cookie-out') return;
+        bar.style.display = 'none';
+        bar.removeEventListener('animationend', onEnd);
+      });
+    });
+  });
+
+  // Перезапуск всех входных анимаций: display none → block рестартует keyframes
+  document.getElementById('replay').addEventListener('click', () => {
+    document.querySelectorAll('.preview-stage .cookie-bar').forEach(bar => {
+      bar.classList.remove('cookie-bar-hide');
+      bar.style.display = 'none';
+      void bar.offsetWidth;
+      bar.style.display = '';
+    });
+  });
+</script>
+</body>
+</html>
