@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TTS — Cobalt Fog</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #080808;
+  --deep: #0A1628;
+  --navy: #0F2847;
+  --cobalt: #1A5CFF;
+  --cobalt-bright: #3D7AFF;
+  --cobalt-dim: #0D3DBF;
+  --cobalt-soft: rgba(26,92,255,.10);
+  --cobalt-glow: rgba(26,92,255,.20);
+  --warm-white: #E8E4DC;
+  --cream: #C8C0B4;
+  --font: 'Manrope', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+::-webkit-scrollbar { display: none; }
+body {
+  font-family: var(--font);
+  color: #FFF;
+  background: var(--black);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ═══ SVG GRAIN ═══ */
+.grain {
+  position: fixed; inset: 0; z-index: 9999;
+  pointer-events: none; opacity: .05; mix-blend-mode: overlay;
+}
+
+/* ═══ KEYFRAMES ═══ */
+@keyframes drift1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(40px, -25px) scale(1.06); }
+  50% { transform: translate(-15px, 20px) scale(.96); }
+  75% { transform: translate(-30px, -12px) scale(1.03); }
+}
+@keyframes drift2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-25px, 30px) scale(1.1); }
+  66% { transform: translate(20px, -18px) scale(.93); }
+}
+@keyframes drift3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  40% { transform: translate(15px, 20px) scale(1.04); }
+  70% { transform: translate(-20px, -8px) scale(.98); }
+}
+@keyframes breathe {
+  0%, 100% { opacity: .25; }
+  50% { opacity: .45; }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes heroShift {
+  0%, 100% { background-position: 50% 50%; }
+  50% { background-position: 52% 47%; }
+}
+
+/* ═══ SECTION ANIMATION ═══ */
+.s-enter {
+  opacity: 0; transform: translateY(40px);
+  animation: fadeUp .9s cubic-bezier(.23,1,.32,1) forwards;
+  animation-play-state: paused;
+}
+
+main { max-width: 880px; margin: 0 auto; padding: 0 24px; }
+.overline {
+  font-size: .6rem; font-weight: 700;
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--cobalt-bright);
+  margin-bottom: 14px;
+}
+.ui-section { padding: 72px 0; }
+
+/* ═══════════════════════════════════════ */
+/*          HERO — PROJECTOR FOG          */
+/* ═══════════════════════════════════════ */
+.hero {
+  position: relative;
+  width: 100%; height: 100vh; min-height: 720px;
+  overflow: hidden;
+  display: flex; align-items: flex-end;
+}
+
+/* Multi-layer atmosphere */
+.hero::before {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 90% 50% at 50% 95%, rgba(232,228,220,.04) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 65% 55%, rgba(26,92,255,.08) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 30% at 35% 60%, rgba(15,40,71,.3) 0%, transparent 50%),
+    linear-gradient(180deg,
+      #080808 0%,
+      #080810 15%,
+      #0A1628 30%,
+      #0F2847 48%,
+      #1A5CFF 58%,
+      #3D7AFF 62%,
+      #6A9AFF 66%,
+      #9AB8E8 72%,
+      #C8C0B4 82%,
+      #E8E4DC 92%,
+      #F5F2EC 100%
+    );
+  animation: heroShift 16s ease-in-out infinite;
+  background-size: 100% 115%;
+}
+
+/* Fog blobs — projector light in smoke */
+.fog { position: absolute; border-radius: 50%; mix-blend-mode: screen; }
+.fog-1 {
+  width: 500px; height: 500px;
+  bottom: 15%; right: 5%;
+  background: radial-gradient(circle, rgba(26,92,255,.22) 0%, rgba(26,92,255,.06) 40%, transparent 70%);
+  filter: blur(80px);
+  animation: drift1 20s ease-in-out infinite;
+}
+.fog-2 {
+  width: 350px; height: 350px;
+  bottom: 30%; left: 10%;
+  background: radial-gradient(circle, rgba(15,40,71,.35) 0%, rgba(15,40,71,.08) 45%, transparent 70%);
+  filter: blur(70px);
+  animation: drift2 25s ease-in-out infinite;
+}
+.fog-3 {
+  width: 250px; height: 250px;
+  bottom: 20%; left: 40%;
+  background: radial-gradient(circle, rgba(232,228,220,.1) 0%, transparent 60%);
+  filter: blur(60px);
+  animation: drift3 18s ease-in-out infinite, breathe 8s ease-in-out infinite;
+}
+.fog-4 {
+  width: 180px; height: 180px;
+  top: 35%; right: 20%;
+  background: radial-gradient(circle, rgba(61,122,255,.1) 0%, transparent 65%);
+  filter: blur(50px);
+  animation: drift2 22s ease-in-out infinite reverse;
+}
+
+.hero-content {
+  position: relative; z-index: 2;
+  padding: 0 40px 72px;
+  max-width: 620px;
+}
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 18px;
+  border-radius: 9999px;
+  background: rgba(26,92,255,.12);
+  border: 1px solid rgba(26,92,255,.2);
+  color: var(--cobalt-bright);
+  font-size: .65rem; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  margin-bottom: 24px;
+  backdrop-filter: blur(16px);
+}
+.tag-pulse {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--cobalt-bright);
+  box-shadow: 0 0 8px rgba(61,122,255,.5);
+  animation: breathe 2.5s infinite;
+}
+.hero-h1 {
+  font-size: 4.5rem; font-weight: 800;
+  letter-spacing: -.045em; line-height: .92;
+  margin-bottom: 16px;
+  text-shadow: 0 4px 60px rgba(0,0,0,.5);
+}
+.hero-sub {
+  font-size: 1rem; line-height: 1.65;
+  color: rgba(255,255,255,.55);
+  margin-bottom: 36px;
+  max-width: 420px;
+}
+.hero-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 18px 38px;
+  border-radius: 14px;
+  border: none;
+  background: var(--cobalt);
+  color: #FFF;
+  font-family: var(--font);
+  font-size: 1rem; font-weight: 700;
+  cursor: pointer;
+  box-shadow:
+    0 0 60px rgba(26,92,255,.25),
+    0 8px 32px rgba(26,92,255,.18),
+    inset 0 1px 0 rgba(255,255,255,.1);
+  transition: all .4s cubic-bezier(.25,.1,.25,1);
+}
+.hero-cta:hover {
+  transform: translateY(-3px);
+  background: var(--cobalt-bright);
+  box-shadow:
+    0 0 80px rgba(26,92,255,.35),
+    0 14px 44px rgba(26,92,255,.22),
+    inset 0 1px 0 rgba(255,255,255,.15);
+}
+
+/* ═══════════════════════════════════════ */
+/*             PALETTE STRIP              */
+/* ═══════════════════════════════════════ */
+.palette {
+  display: flex; height: 88px; border-radius: 16px;
+  overflow: hidden; border: 1px solid rgba(255,255,255,.06);
+  margin-top: 16px;
+}
+.palette > div {
+  flex: 1; display: flex; align-items: flex-end;
+  justify-content: center; padding: 10px 4px;
+}
+.palette span {
+  font-size: .5rem; font-weight: 700;
+  letter-spacing: .04em; font-family: monospace;
+}
+
+/* ═══════════════════════════════════════ */
+/*           PHONE SCREEN                 */
+/* ═══════════════════════════════════════ */
+.phone-center { display: flex; justify-content: center; }
+.phone {
+  width: 375px; max-width: 100%;
+  border-radius: 36px;
+  overflow: hidden;
+  background: var(--black);
+  border: 1px solid rgba(255,255,255,.06);
+  box-shadow:
+    0 24px 80px rgba(0,0,0,.6),
+    0 0 0 1px rgba(255,255,255,.03),
+    0 0 120px rgba(26,92,255,.04);
+}
+.ph-status {
+  display: flex; justify-content: space-between;
+  padding: 14px 24px 0;
+  font-size: .6rem; font-weight: 600;
+  color: rgba(255,255,255,.35);
+}
+.ph-header {
+  padding: 16px 20px 0;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.ph-city-label {
+  font-size: .58rem; color: rgba(255,255,255,.3);
+  font-weight: 600; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 2px;
+}
+.ph-city { font-size: 1.35rem; font-weight: 800; letter-spacing: -.02em; }
+.ph-bell {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.06);
+  display: flex; align-items: center; justify-content: center;
+}
+.ph-search {
+  display: flex; align-items: center; gap: 12px;
+  margin: 14px 16px 0; height: 48px; padding: 0 16px;
+  border-radius: 14px;
+  background: rgba(255,255,255,.04);
+  border: 1.5px solid rgba(255,255,255,.05);
+}
+.ph-search svg { width: 16px; height: 16px; color: rgba(255,255,255,.2); flex-shrink: 0; }
+.ph-search span { font-size: .8rem; color: rgba(255,255,255,.18); font-weight: 500; }
+
+.ph-chips {
+  display: flex; gap: 8px; padding: 14px 16px 0; overflow-x: auto;
+}
+.ph-chip {
+  flex-shrink: 0; padding: 8px 16px; border-radius: 9999px;
+  font-size: .72rem; font-weight: 600; font-family: var(--font);
+  border: 1px solid rgba(255,255,255,.07);
+  background: transparent; color: rgba(255,255,255,.3); cursor: pointer;
+}
+.ph-chip.a {
+  background: var(--cobalt); color: #FFF;
+  border-color: var(--cobalt);
+  box-shadow: 0 0 18px rgba(26,92,255,.2);
+}
+
+/* Phone hero card */
+.ph-hero {
+  position: relative;
+  margin: 16px 16px 0;
+  height: 210px;
+  border-radius: 20px;
+  overflow: hidden;
+}
+.ph-hero::before {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 55% at 65% 75%, rgba(26,92,255,.14) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 30% 65%, rgba(15,40,71,.3) 0%, transparent 50%),
+    linear-gradient(180deg,
+      #080808 0%, #0A1628 30%, #0F2847 55%,
+      rgba(26,92,255,.15) 70%, rgba(200,192,180,.05) 90%, transparent 100%
+    );
+}
+.ph-hero-blob {
+  position: absolute;
+  width: 130px; height: 130px;
+  border-radius: 50%;
+  filter: blur(45px);
+  mix-blend-mode: screen;
+  background: radial-gradient(circle, rgba(26,92,255,.3), transparent 70%);
+  bottom: 8%; right: 12%;
+  animation: drift3 12s ease-in-out infinite;
+}
+.ph-hero-warm {
+  position: absolute;
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  filter: blur(35px);
+  mix-blend-mode: screen;
+  background: radial-gradient(circle, rgba(232,228,220,.08), transparent 70%);
+  bottom: 30%; left: 25%;
+  animation: drift2 15s ease-in-out infinite;
+}
+.ph-hero-content {
+  position: relative; z-index: 2;
+  height: 100%;
+  display: flex; flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+}
+.ph-hero-tag {
+  display: inline-flex; align-self: flex-start;
+  padding: 4px 12px; border-radius: 9999px;
+  background: rgba(26,92,255,.14);
+  border: 1px solid rgba(26,92,255,.2);
+  color: var(--cobalt-bright);
+  font-size: .58rem; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase;
+  margin-bottom: 10px;
+  backdrop-filter: blur(8px);
+}
+.ph-hero-title { font-size: 1.35rem; font-weight: 800; letter-spacing: -.02em; line-height: 1.08; }
+.ph-hero-meta {
+  display: flex; gap: 12px; margin-top: 8px;
+  font-size: .68rem; color: rgba(255,255,255,.4);
+}
+.ph-hero-row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 14px;
+}
+.ph-hero-price { font-size: 1.15rem; font-weight: 800; color: var(--cobalt-bright); }
+.ph-hero-btn {
+  padding: 10px 20px; border-radius: 10px; border: none;
+  background: var(--cobalt); color: #FFF;
+  font-family: var(--font); font-size: .78rem; font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 0 20px rgba(26,92,255,.2);
+}
+
+/* Phone section head */
+.ph-sec { display: flex; justify-content: space-between; align-items: center; padding: 20px 20px 12px; }
+.ph-sec h3 { font-size: 1rem; font-weight: 700; letter-spacing: -.01em; }
+.ph-sec a { font-size: .72rem; color: var(--cobalt-bright); font-weight: 600; text-decoration: none; }
+
+/* Phone cards */
+.ph-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 16px 16px; }
+.ph-card {
+  border-radius: 16px; overflow: hidden;
+  background: #0C0C0C; border: 1px solid rgba(255,255,255,.04);
+}
+.ph-card-vis {
+  position: relative; height: 140px; overflow: hidden;
+}
+.ph-card-vis::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(145deg, #0A1628, #10101a);
+}
+.ph-card-blob {
+  position: absolute;
+  width: 80px; height: 80px; border-radius: 50%;
+  filter: blur(30px);
+  top: 50%; left: 50%; transform: translate(-50%,-50%);
+  mix-blend-mode: screen;
+}
+.ph-card-grad {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 60px; background: linear-gradient(transparent, #0C0C0C);
+}
+.ph-card-price {
+  position: absolute; bottom: 10px; right: 10px;
+  padding: 5px 12px; border-radius: 8px;
+  background: var(--cobalt); color: #FFF;
+  font-size: .72rem; font-weight: 700;
+  box-shadow: 0 0 16px rgba(26,92,255,.2);
+}
+.ph-card-body { padding: 12px; }
+.ph-card-body h4 { font-size: .82rem; font-weight: 700; margin-bottom: 4px; }
+.ph-card-body p { font-size: .62rem; color: rgba(255,255,255,.3); line-height: 1.4; }
+
+/* Phone nav */
+.ph-nav {
+  display: flex; justify-content: space-around; align-items: center;
+  height: 62px;
+  border-top: 1px solid rgba(255,255,255,.04);
+  background: #060606;
+}
+.ph-nav-i {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+}
+.ph-nav-i svg { width: 20px; height: 20px; color: rgba(255,255,255,.18); }
+.ph-nav-i span { font-size: .52rem; color: rgba(255,255,255,.18); font-weight: 600; }
+.ph-nav-i.a svg { color: var(--cobalt-bright); }
+.ph-nav-i.a span { color: var(--cobalt-bright); }
+.ph-nav-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--cobalt-bright); margin-top: -1px; }
+
+/* ═══════════════════════════════════════ */
+/*         ATMOSPHERIC PROMO CARD         */
+/* ═══════════════════════════════════════ */
+.atmos {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  height: 320px;
+  border: 1px solid rgba(255,255,255,.05);
+}
+.atmos::before {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 45% at 70% 65%, rgba(26,92,255,.12) 0%, transparent 50%),
+    radial-gradient(ellipse 45% 35% at 25% 45%, rgba(15,40,71,.25) 0%, transparent 50%),
+    radial-gradient(ellipse 35% 25% at 80% 30%, rgba(232,228,220,.04) 0%, transparent 50%),
+    linear-gradient(155deg, #080808 0%, #0A1628 40%, #0F2847 60%, #0a1225 100%);
+}
+.atmos-fog-1 {
+  position: absolute;
+  width: 200px; height: 200px; border-radius: 50%;
+  filter: blur(55px); mix-blend-mode: screen;
+  background: radial-gradient(circle, rgba(26,92,255,.25), transparent 70%);
+  bottom: 5%; right: 8%;
+  animation: drift1 16s ease-in-out infinite;
+}
+.atmos-fog-2 {
+  position: absolute;
+  width: 130px; height: 130px; border-radius: 50%;
+  filter: blur(45px); mix-blend-mode: screen;
+  background: radial-gradient(circle, rgba(232,228,220,.08), transparent 70%);
+  top: 25%; left: 18%;
+  animation: drift2 20s ease-in-out infinite;
+}
+.atmos-content {
+  position: relative; z-index: 2;
+  height: 100%;
+  display: flex; flex-direction: column;
+  justify-content: flex-end;
+  padding: 32px;
+}
+
+/* ═══ GLASS BENTO ═══ */
+.glass-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 20px; }
+.glass-c {
+  position: relative; border-radius: 18px; padding: 22px;
+  background: linear-gradient(135deg, rgba(255,255,255,.06), rgba(255,255,255,.015));
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,.06);
+  overflow: hidden;
+}
+.glass-c-glow {
+  position: absolute;
+  width: 100px; height: 100px; border-radius: 50%;
+  filter: blur(40px); top: -30px; right: -20px;
+  background: radial-gradient(circle, rgba(26,92,255,.15), transparent 70%);
+}
+.glass-c-label {
+  font-size: .58rem; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: rgba(255,255,255,.3); margin-bottom: 6px;
+}
+.glass-c-val { font-size: 1.5rem; font-weight: 800; letter-spacing: -.02em; position: relative; z-index: 1; }
+.glass-c-val.blue { color: var(--cobalt-bright); }
+
+/* ═══ BUTTONS ═══ */
+.btn-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; align-items: center; }
+.b-p {
+  padding: 16px 32px; border-radius: 14px; border: none;
+  background: var(--cobalt); color: #FFF;
+  font-family: var(--font); font-size: .9rem; font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 0 40px rgba(26,92,255,.18), 0 4px 20px rgba(26,92,255,.12);
+  transition: all .3s;
+}
+.b-p:hover { transform: translateY(-2px); background: var(--cobalt-bright); box-shadow: 0 0 60px rgba(26,92,255,.25), 0 8px 30px rgba(26,92,255,.18); }
+.b-s {
+  padding: 16px 32px; border-radius: 14px;
+  background: rgba(255,255,255,.05);
+  border: 1.5px solid rgba(255,255,255,.08);
+  color: #FFF; font-family: var(--font); font-size: .9rem; font-weight: 600;
+  cursor: pointer; transition: all .3s;
+}
+.b-s:hover { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.12); }
+.b-g {
+  padding: 16px 32px; border-radius: 14px;
+  background: transparent;
+  border: 1.5px solid rgba(255,255,255,.06);
+  color: rgba(255,255,255,.4); font-family: var(--font); font-size: .9rem; font-weight: 600;
+  cursor: pointer; transition: all .3s;
+}
+.b-g:hover { border-color: rgba(255,255,255,.1); color: rgba(255,255,255,.55); }
+
+/* ═══ TAGS ═══ */
+.tags-r { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.t {
+  padding: 6px 16px; border-radius: 9999px;
+  font-size: .68rem; font-weight: 700;
+  letter-spacing: .04em; text-transform: uppercase;
+  font-family: var(--font);
+}
+.t-a { background: var(--cobalt-soft); color: var(--cobalt-bright); border: 1px solid rgba(26,92,255,.18); }
+.t-d { background: rgba(255,255,255,.04); color: rgba(255,255,255,.35); border: 1px solid rgba(255,255,255,.06); }
+.t-l { background: rgba(255,23,68,.1); color: #FF4466; border: 1px solid rgba(255,23,68,.15); display: inline-flex; align-items: center; gap: 6px; }
+.t-l-dot { width: 6px; height: 6px; border-radius: 50%; background: #FF4466; animation: breathe 2s infinite; }
+
+/* ═══ FOOTER ═══ */
+.foot { padding: 60px 0 40px; text-align: center; }
+.foot-badge {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 10px 24px; border-radius: 9999px;
+  background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.05);
+}
+.foot-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--cobalt); box-shadow: 0 0 12px rgba(26,92,255,.35); }
+.foot-txt { font-size: .62rem; font-weight: 600; color: rgba(255,255,255,.25); letter-spacing: .08em; }
+.foot-sub { margin-top: 12px; font-size: .58rem; color: rgba(255,255,255,.12); }
+</style>
+</head>
+<body>
+
+<svg class="grain" width="100%" height="100%">
+  <filter id="g"><feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
+  <rect width="100%" height="100%" filter="url(#g)"/>
+</svg>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="fog fog-1"></div>
+  <div class="fog fog-2"></div>
+  <div class="fog fog-3"></div>
+  <div class="fog fog-4"></div>
+  <div class="hero-content" style="animation:fadeUp .9s cubic-bezier(.23,1,.32,1) forwards">
+    <div class="hero-tag"><span class="tag-pulse"></span> Премьера · 12 апреля</div>
+    <h1 class="hero-h1">Молчат<br>Дома</h1>
+    <p class="hero-sub">Новый альбом «В тишине города» — презентация и лучшие хиты. Adrenaline Stadium, Москва.</p>
+    <button class="hero-cta">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="4" width="14" height="10" rx="2"/><path d="M2 8h14M8 4v10"/></svg>
+      Билеты от 1 800 ₽
+    </button>
+  </div>
+</section>
+
+<main>
+
+<!-- PALETTE -->
+<div class="ui-section s-enter">
+  <div class="overline">Палитра · Cobalt Fog</div>
+  <p style="font-size:.85rem;color:rgba(255,255,255,.38);line-height:1.65;max-width:520px;margin-bottom:4px">
+    Свет проектора в дыму. Чёрная глубина, navy как ночное небо, cobalt как луч, тёплые белые блики как отражённый свет.
+  </p>
+  <div class="palette">
+    <div style="background:#080808"><span style="color:rgba(255,255,255,.25)">#080808</span></div>
+    <div style="background:#0A1628"><span style="color:rgba(255,255,255,.25)">#0A1628</span></div>
+    <div style="background:#0F2847"><span style="color:rgba(255,255,255,.35)">#0F2847</span></div>
+    <div style="background:#1A5CFF"><span style="color:rgba(255,255,255,.8)">#1A5CFF</span></div>
+    <div style="background:#C8C0B4"><span style="color:rgba(0,0,0,.35)">#C8C0B4</span></div>
+    <div style="background:#E8E4DC"><span style="color:rgba(0,0,0,.3)">#E8E4DC</span></div>
+  </div>
+</div>
+
+<!-- PHONE SCREEN -->
+<div class="ui-section s-enter">
+  <div class="overline">Экран · Главная</div>
+  <div class="phone-center">
+    <div class="phone">
+      <div class="ph-status"><span>9:41</span><span style="font-size:.5rem;letter-spacing:2px">● ● ●</span></div>
+      <div class="ph-header">
+        <div>
+          <div class="ph-city-label">Ticket to Show</div>
+          <div class="ph-city">Москва</div>
+        </div>
+        <div class="ph-bell">
+          <svg width="17" height="17" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="1.6"><path d="M17 8A6 6 0 0 0 5 8c0 7-3 9-3 9h16s-3-2-3-9"/><path d="M12.73 20a2 2 0 0 1-3.46 0"/></svg>
+        </div>
+      </div>
+      <div class="ph-search">
+        <svg fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="8" r="5.5"/><path d="m15 15-3-3"/></svg>
+        <span>Концерт, спектакль, стэндап...</span>
+      </div>
+      <div class="ph-chips">
+        <button class="ph-chip a">Все</button>
+        <button class="ph-chip">Концерты</button>
+        <button class="ph-chip">Спектакли</button>
+        <button class="ph-chip">Стэндап</button>
+      </div>
+      <div class="ph-hero">
+        <div class="ph-hero-blob"></div>
+        <div class="ph-hero-warm"></div>
+        <div class="ph-hero-content">
+          <div class="ph-hero-tag">Премьера</div>
+          <div class="ph-hero-title">Молчат Дома</div>
+          <div class="ph-hero-meta"><span>12 апр</span><span>·</span><span>Adrenaline Stadium</span></div>
+          <div class="ph-hero-row">
+            <span class="ph-hero-price">от 1 800 ₽</span>
+            <button class="ph-hero-btn">Билеты →</button>
+          </div>
+        </div>
+      </div>
+      <div class="ph-sec"><h3>Ближайшие</h3><a href="#">Все →</a></div>
+      <div class="ph-cards">
+        <div class="ph-card">
+          <div class="ph-card-vis">
+            <div class="ph-card-blob" style="background:radial-gradient(circle,rgba(26,92,255,.22),transparent 70%)"></div>
+            <div class="ph-card-grad"></div>
+            <div class="ph-card-price">2 200 ₽</div>
+          </div>
+          <div class="ph-card-body"><h4>Звери</h4><p>Крокус · 18 апр, 20:00</p></div>
+        </div>
+        <div class="ph-card">
+          <div class="ph-card-vis">
+            <div class="ph-card-blob" style="background:radial-gradient(circle,rgba(15,40,71,.25),transparent 70%)"></div>
+            <div class="ph-card-grad"></div>
+            <div class="ph-card-price">900 ₽</div>
+          </div>
+          <div class="ph-card-body"><h4>Комеди Клаб</h4><p>ГлавClub · 22 апр</p></div>
+        </div>
+      </div>
+      <div class="ph-nav">
+        <div class="ph-nav-i a">
+          <svg fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21V12h6v9"/></svg>
+          <div class="ph-nav-dot"></div>
+          <span>Главная</span>
+        </div>
+        <div class="ph-nav-i"><svg fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>Обзор</span></div>
+        <div class="ph-nav-i"><svg fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="16" height="12" rx="2"/><path d="M3 9h16M9 5v12"/></svg><span>Билеты</span></div>
+        <div class="ph-nav-i"><svg fill="none" stroke="currentColor" stroke-width="1.7"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg><span>Избранное</span></div>
+        <div class="ph-nav-i"><svg fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="7" r="4"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0"/></svg><span>Профиль</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ATMOS PROMO CARD -->
+<div class="ui-section s-enter">
+  <div class="overline">Промо · Atmospheric Card</div>
+  <div class="atmos">
+    <div class="atmos-fog-1"></div>
+    <div class="atmos-fog-2"></div>
+    <div class="atmos-content">
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <span class="t t-a">Фестиваль</span>
+        <span class="t t-d">18+</span>
+      </div>
+      <div style="font-size:1.9rem;font-weight:800;letter-spacing:-.03em;line-height:1.04;margin-bottom:10px">Signal Festival</div>
+      <div style="font-size:.85rem;color:rgba(255,255,255,.4);line-height:1.55;margin-bottom:22px;max-width:340px">
+        Электронная музыка на закате. Никитский ботанический сад.
+      </div>
+      <button class="b-p" style="align-self:flex-start;padding:14px 28px;font-size:.85rem">Билеты от 3 500 ₽</button>
+    </div>
+  </div>
+</div>
+
+<!-- GLASS BENTO -->
+<div class="ui-section s-enter">
+  <div class="overline">Glass + Bento</div>
+  <div class="glass-grid">
+    <div class="glass-c"><div class="glass-c-glow"></div><div class="glass-c-label">Без сбора</div><div class="glass-c-val blue">0%</div></div>
+    <div class="glass-c"><div class="glass-c-label">Событий</div><div class="glass-c-val">340+</div></div>
+    <div class="glass-c" style="grid-column:span 2">
+      <div class="glass-c-glow" style="width:140px;height:140px;top:-40px;left:28%;background:radial-gradient(circle,rgba(15,40,71,.15),transparent 70%)"></div>
+      <div class="glass-c-label">Главное обещание</div>
+      <div class="glass-c-val" style="position:relative;z-index:1">Цена = цена</div>
+      <div style="font-size:.78rem;color:rgba(255,255,255,.3);margin-top:6px;position:relative;z-index:1">Что видишь — то и платишь. Ничего сверху.</div>
+    </div>
+  </div>
+</div>
+
+<!-- BUTTONS -->
+<div class="ui-section s-enter">
+  <div class="overline">Кнопки</div>
+  <div class="btn-row">
+    <button class="b-p">Купить билет</button>
+    <button class="b-s">Подробнее</button>
+    <button class="b-g">Отмена</button>
+  </div>
+</div>
+
+<!-- TAGS -->
+<div class="ui-section s-enter">
+  <div class="overline">Тэги</div>
+  <div class="tags-r">
+    <span class="t t-a">HOT</span>
+    <span class="t t-d">Концерт</span>
+    <span class="t t-d">Стэндап</span>
+    <span class="t t-a">Новинка</span>
+    <span class="t t-l"><span class="t-l-dot"></span>LIVE</span>
+    <span class="t t-d">16+</span>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="foot">
+  <div class="foot-badge"><div class="foot-dot"></div><span class="foot-txt">TTS · COBALT FOG · 2026</span></div>
+  <div class="foot-sub">Manrope · #080808 → #1A5CFF → #E8E4DC · Projector in Smoke</div>
+</div>
+
+</main>
+
+<script>
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.style.animationPlayState = 'running'; });
+}, { threshold: 0.08 });
+document.querySelectorAll('.s-enter').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

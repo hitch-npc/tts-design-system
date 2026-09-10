@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TTS — Cobalt Fog v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #080808;
+  --cobalt: #1A5CFF;
+  --cobalt-b: #3D7AFF;
+  --cobalt-soft: rgba(26,92,255,.10);
+  --font: 'Manrope', system-ui, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+::-webkit-scrollbar { display: none; }
+body {
+  font-family: var(--font); color: #FFF;
+  background: var(--black);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ═══ GRAIN ═══ */
+.grain {
+  position: fixed; inset: 0; z-index: 10000;
+  pointer-events: none; opacity: .055; mix-blend-mode: overlay;
+}
+
+@keyframes fadeUp { from { opacity:0; transform:translateY(40px); } to { opacity:1; transform:translateY(0); } }
+@keyframes breathe { 0%,100% { opacity:.3; } 50% { opacity:.55; } }
+
+.s-e {
+  opacity: 0; transform: translateY(40px);
+  animation: fadeUp .9s cubic-bezier(.23,1,.32,1) forwards;
+  animation-play-state: paused;
+}
+
+main { max-width: 880px; margin: 0 auto; padding: 0 24px; }
+.ov {
+  font-size: .6rem; font-weight: 700;
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--cobalt-b); margin-bottom: 14px;
+}
+.sec { padding: 72px 0; }
+
+/* ════════════════════════════ */
+/*    HERO — CANVAS FOG        */
+/* ════════════════════════════ */
+.hero {
+  position: relative;
+  width: 100%; height: 100vh; min-height: 740px;
+  overflow: hidden;
+  display: flex; align-items: flex-end;
+}
+.hero canvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+}
+.hero-content {
+  position: relative; z-index: 5;
+  padding: 0 40px 72px;
+  max-width: 620px;
+  animation: fadeUp .9s cubic-bezier(.23,1,.32,1) forwards;
+}
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 18px; border-radius: 9999px;
+  background: rgba(26,92,255,.1);
+  border: 1px solid rgba(26,92,255,.18);
+  color: var(--cobalt-b);
+  font-size: .65rem; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  margin-bottom: 24px;
+  backdrop-filter: blur(16px);
+}
+.tp { width:6px;height:6px;border-radius:50%;background:var(--cobalt-b);box-shadow:0 0 8px rgba(61,122,255,.5);animation:breathe 2.5s infinite; }
+.hero-h1 {
+  font-size: 4.5rem; font-weight: 800;
+  letter-spacing: -.045em; line-height: .92;
+  margin-bottom: 16px;
+  text-shadow: 0 4px 60px rgba(0,0,0,.6);
+}
+.hero-sub {
+  font-size: 1rem; line-height: 1.65;
+  color: rgba(255,255,255,.5);
+  margin-bottom: 36px; max-width: 420px;
+}
+.hero-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 18px 38px; border-radius: 14px; border: none;
+  background: var(--cobalt); color: #FFF;
+  font-family: var(--font); font-size: 1rem; font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 0 60px rgba(26,92,255,.22), 0 8px 32px rgba(26,92,255,.15), inset 0 1px 0 rgba(255,255,255,.1);
+  transition: all .4s cubic-bezier(.25,.1,.25,1);
+}
+.hero-cta:hover {
+  transform: translateY(-3px); background: var(--cobalt-b);
+  box-shadow: 0 0 80px rgba(26,92,255,.32), 0 14px 44px rgba(26,92,255,.2), inset 0 1px 0 rgba(255,255,255,.15);
+}
+
+/* ════════════════════════════ */
+/*         PALETTE              */
+/* ════════════════════════════ */
+.pal { display:flex; height:88px; border-radius:16px; overflow:hidden; border:1px solid rgba(255,255,255,.06); margin-top:16px; }
+.pal>div { flex:1; display:flex; align-items:flex-end; justify-content:center; padding:10px 4px; }
+.pal span { font-size:.5rem; font-weight:700; letter-spacing:.04em; font-family:monospace; }
+
+/* ════════════════════════════ */
+/*    ATMOS CARD (canvas bg)   */
+/* ════════════════════════════ */
+.atmos {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  height: 340px;
+  border: 1px solid rgba(255,255,255,.05);
+}
+.atmos canvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+}
+.atmos-content {
+  position: relative; z-index: 5;
+  height: 100%;
+  display: flex; flex-direction: column;
+  justify-content: flex-end;
+  padding: 32px;
+}
+
+/* ════════════════════════════ */
+/*    PHONE SCREEN              */
+/* ════════════════════════════ */
+.pc { display:flex; justify-content:center; }
+.phone {
+  width: 375px; max-width: 100%;
+  border-radius: 36px; overflow: hidden;
+  background: var(--black);
+  border: 1px solid rgba(255,255,255,.06);
+  box-shadow: 0 24px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.03);
+}
+.ps { display:flex; justify-content:space-between; padding:14px 24px 0; font-size:.6rem; font-weight:600; color:rgba(255,255,255,.35); }
+.ph { padding:16px 20px 0; display:flex; justify-content:space-between; align-items:center; }
+.ph-l1 { font-size:.58rem; color:rgba(255,255,255,.3); font-weight:600; letter-spacing:.1em; text-transform:uppercase; margin-bottom:2px; }
+.ph-l2 { font-size:1.35rem; font-weight:800; letter-spacing:-.02em; }
+.ph-bell { width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center; }
+.ph-sb { display:flex;align-items:center;gap:12px;margin:14px 16px 0;height:48px;padding:0 16px;border-radius:14px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.05); }
+.ph-sb svg { width:16px;height:16px;color:rgba(255,255,255,.2);flex-shrink:0; }
+.ph-sb span { font-size:.8rem;color:rgba(255,255,255,.18);font-weight:500; }
+.ph-ch { display:flex;gap:8px;padding:14px 16px 0;overflow-x:auto; }
+.ph-c { flex-shrink:0;padding:8px 16px;border-radius:9999px;font-size:.72rem;font-weight:600;font-family:var(--font);border:1px solid rgba(255,255,255,.07);background:transparent;color:rgba(255,255,255,.3);cursor:pointer; }
+.ph-c.a { background:var(--cobalt);color:#FFF;border-color:var(--cobalt);box-shadow:0 0 18px rgba(26,92,255,.2); }
+
+/* Phone hero card with canvas */
+.ph-hero { position:relative; margin:16px 16px 0; height:210px; border-radius:20px; overflow:hidden; }
+.ph-hero canvas { position:absolute;inset:0;width:100%;height:100%; }
+.ph-hero-c {
+  position:relative;z-index:5;height:100%;
+  display:flex;flex-direction:column;justify-content:flex-end;padding:20px;
+}
+.ph-hero-tag { display:inline-flex;align-self:flex-start;padding:4px 12px;border-radius:9999px;background:rgba(26,92,255,.12);border:1px solid rgba(26,92,255,.18);color:var(--cobalt-b);font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;backdrop-filter:blur(8px); }
+.ph-hero-t { font-size:1.35rem;font-weight:800;letter-spacing:-.02em;line-height:1.08; }
+.ph-hero-m { display:flex;gap:12px;margin-top:8px;font-size:.68rem;color:rgba(255,255,255,.4); }
+.ph-hero-r { display:flex;justify-content:space-between;align-items:center;margin-top:14px; }
+.ph-hero-p { font-size:1.15rem;font-weight:800;color:var(--cobalt-b); }
+.ph-hero-b { padding:10px 20px;border-radius:10px;border:none;background:var(--cobalt);color:#FFF;font-family:var(--font);font-size:.78rem;font-weight:700;cursor:pointer;box-shadow:0 0 20px rgba(26,92,255,.2); }
+
+.ph-sec { display:flex;justify-content:space-between;align-items:center;padding:20px 20px 12px; }
+.ph-sec h3 { font-size:1rem;font-weight:700;letter-spacing:-.01em; }
+.ph-sec a { font-size:.72rem;color:var(--cobalt-b);font-weight:600;text-decoration:none; }
+
+.ph-cards { display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 16px; }
+.ph-card { border-radius:16px;overflow:hidden;background:#0C0C0C;border:1px solid rgba(255,255,255,.04); }
+.ph-card-v { position:relative;height:140px;overflow:hidden; }
+.ph-card-v canvas { position:absolute;inset:0;width:100%;height:100%; }
+.ph-card-gd { position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(transparent,#0C0C0C);z-index:2; }
+.ph-card-pr { position:absolute;bottom:10px;right:10px;z-index:3;padding:5px 12px;border-radius:8px;background:var(--cobalt);color:#FFF;font-size:.72rem;font-weight:700;box-shadow:0 0 16px rgba(26,92,255,.2); }
+.ph-card-b { padding:12px; }
+.ph-card-b h4 { font-size:.82rem;font-weight:700;margin-bottom:4px; }
+.ph-card-b p { font-size:.62rem;color:rgba(255,255,255,.3);line-height:1.4; }
+
+.ph-nav { display:flex;justify-content:space-around;align-items:center;height:62px;border-top:1px solid rgba(255,255,255,.04);background:#060606; }
+.ph-ni { display:flex;flex-direction:column;align-items:center;gap:3px; }
+.ph-ni svg { width:20px;height:20px;color:rgba(255,255,255,.18); }
+.ph-ni span { font-size:.52rem;color:rgba(255,255,255,.18);font-weight:600; }
+.ph-ni.a svg { color:var(--cobalt-b); }
+.ph-ni.a span { color:var(--cobalt-b); }
+.nd { width:4px;height:4px;border-radius:50%;background:var(--cobalt-b);margin-top:-1px; }
+
+/* ════════════════════════════ */
+/*    GLASS / BUTTONS / TAGS   */
+/* ════════════════════════════ */
+.gg { display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px; }
+.gc {
+  position:relative;border-radius:18px;padding:22px;
+  background:linear-gradient(135deg,rgba(255,255,255,.06),rgba(255,255,255,.015));
+  backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.06);overflow:hidden;
+}
+.gc-g { position:absolute;width:100px;height:100px;border-radius:50%;filter:blur(40px);top:-30px;right:-20px;background:radial-gradient(circle,rgba(26,92,255,.15),transparent 70%); }
+.gc-l { font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:6px; }
+.gc-v { font-size:1.5rem;font-weight:800;letter-spacing:-.02em;position:relative;z-index:1; }
+.gc-v.bl { color:var(--cobalt-b); }
+
+.br { display:flex;flex-wrap:wrap;gap:12px;margin-top:20px;align-items:center; }
+.bp { padding:16px 32px;border-radius:14px;border:none;background:var(--cobalt);color:#FFF;font-family:var(--font);font-size:.9rem;font-weight:700;cursor:pointer;box-shadow:0 0 40px rgba(26,92,255,.18),0 4px 20px rgba(26,92,255,.12);transition:all .3s; }
+.bp:hover { transform:translateY(-2px);background:var(--cobalt-b);box-shadow:0 0 60px rgba(26,92,255,.25),0 8px 30px rgba(26,92,255,.18); }
+.bs { padding:16px 32px;border-radius:14px;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.08);color:#FFF;font-family:var(--font);font-size:.9rem;font-weight:600;cursor:pointer;transition:all .3s; }
+.bs:hover { background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.12); }
+.bg { padding:16px 32px;border-radius:14px;background:transparent;border:1.5px solid rgba(255,255,255,.06);color:rgba(255,255,255,.4);font-family:var(--font);font-size:.9rem;font-weight:600;cursor:pointer;transition:all .3s; }
+.bg:hover { border-color:rgba(255,255,255,.1);color:rgba(255,255,255,.55); }
+
+.tr { display:flex;flex-wrap:wrap;gap:8px;margin-top:20px; }
+.t { padding:6px 16px;border-radius:9999px;font-size:.68rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;font-family:var(--font); }
+.ta { background:var(--cobalt-soft);color:var(--cobalt-b);border:1px solid rgba(26,92,255,.18); }
+.td { background:rgba(255,255,255,.04);color:rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.06); }
+.tl { background:rgba(255,23,68,.1);color:#FF4466;border:1px solid rgba(255,23,68,.15);display:inline-flex;align-items:center;gap:6px; }
+.tld { width:6px;height:6px;border-radius:50%;background:#FF4466;animation:breathe 2s infinite; }
+
+.foot { padding:60px 0 40px; text-align:center; }
+.fb { display:inline-flex;align-items:center;gap:10px;padding:10px 24px;border-radius:9999px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05); }
+.fd { width:8px;height:8px;border-radius:50%;background:var(--cobalt);box-shadow:0 0 12px rgba(26,92,255,.35); }
+.ft { font-size:.62rem;font-weight:600;color:rgba(255,255,255,.25);letter-spacing:.08em; }
+.fss { margin-top:12px;font-size:.58rem;color:rgba(255,255,255,.12); }
+</style>
+</head>
+<body>
+
+<svg class="grain" width="100%" height="100%">
+  <filter id="g"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
+  <rect width="100%" height="100%" filter="url(#g)"/>
+</svg>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-tag"><span class="tp"></span> Премьера · 12 апреля</div>
+    <h1 class="hero-h1">Молчат<br>Дома</h1>
+    <p class="hero-sub">Новый альбом «В тишине города» — презентация и лучшие хиты. Adrenaline Stadium, Москва.</p>
+    <button class="hero-cta">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="4" width="14" height="10" rx="2"/><path d="M2 8h14M8 4v10"/></svg>
+      Билеты от 1 800 ₽
+    </button>
+  </div>
+</section>
+
+<main>
+
+<!-- PALETTE -->
+<div class="sec s-e">
+  <div class="ov">Палитра · Cobalt Fog</div>
+  <p style="font-size:.85rem;color:rgba(255,255,255,.38);line-height:1.65;max-width:520px;margin-bottom:4px">
+    Свет проектора в дыму. Органические формы, перетекающие друг в друга. Никаких линейных полос.
+  </p>
+  <div class="pal">
+    <div style="background:#080808"><span style="color:rgba(255,255,255,.25)">#080808</span></div>
+    <div style="background:#0A1628"><span style="color:rgba(255,255,255,.25)">#0A1628</span></div>
+    <div style="background:#0F2847"><span style="color:rgba(255,255,255,.35)">#0F2847</span></div>
+    <div style="background:#1A5CFF"><span style="color:rgba(255,255,255,.8)">#1A5CFF</span></div>
+    <div style="background:#C8C0B4"><span style="color:rgba(0,0,0,.35)">#C8C0B4</span></div>
+    <div style="background:#E8E4DC"><span style="color:rgba(0,0,0,.3)">#E8E4DC</span></div>
+  </div>
+</div>
+
+<!-- PHONE SCREEN -->
+<div class="sec s-e">
+  <div class="ov">Экран · Главная</div>
+  <div class="pc">
+    <div class="phone">
+      <div class="ps"><span>9:41</span><span style="font-size:.5rem;letter-spacing:2px">● ● ●</span></div>
+      <div class="ph">
+        <div><div class="ph-l1">Ticket to Show</div><div class="ph-l2">Москва</div></div>
+        <div class="ph-bell"><svg width="17" height="17" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="1.6"><path d="M17 8A6 6 0 0 0 5 8c0 7-3 9-3 9h16s-3-2-3-9"/><path d="M12.73 20a2 2 0 0 1-3.46 0"/></svg></div>
+      </div>
+      <div class="ph-sb">
+        <svg fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="8" r="5.5"/><path d="m15 15-3-3"/></svg>
+        <span>Концерт, спектакль, стэндап...</span>
+      </div>
+      <div class="ph-ch">
+        <button class="ph-c a">Все</button>
+        <button class="ph-c">Концерты</button>
+        <button class="ph-c">Спектакли</button>
+        <button class="ph-c">Стэндап</button>
+      </div>
+      <div class="ph-hero">
+        <canvas id="phoneHeroCanvas"></canvas>
+        <div class="ph-hero-c">
+          <div class="ph-hero-tag">Премьера</div>
+          <div class="ph-hero-t">Молчат Дома</div>
+          <div class="ph-hero-m"><span>12 апр</span><span>·</span><span>Adrenaline Stadium</span></div>
+          <div class="ph-hero-r">
+            <span class="ph-hero-p">от 1 800 ₽</span>
+            <button class="ph-hero-b">Билеты →</button>
+          </div>
+        </div>
+      </div>
+      <div class="ph-sec"><h3>Ближайшие</h3><a href="#">Все →</a></div>
+      <div class="ph-cards">
+        <div class="ph-card">
+          <div class="ph-card-v"><canvas class="miniCanvas" data-seed="1"></canvas><div class="ph-card-gd"></div><div class="ph-card-pr">2 200 ₽</div></div>
+          <div class="ph-card-b"><h4>Звери</h4><p>Крокус · 18 апр, 20:00</p></div>
+        </div>
+        <div class="ph-card">
+          <div class="ph-card-v"><canvas class="miniCanvas" data-seed="2"></canvas><div class="ph-card-gd"></div><div class="ph-card-pr">900 ₽</div></div>
+          <div class="ph-card-b"><h4>Комеди Клаб</h4><p>ГлавClub · 22 апр</p></div>
+        </div>
+      </div>
+      <div class="ph-nav">
+        <div class="ph-ni a"><svg fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21V12h6v9"/></svg><div class="nd"></div><span>Главная</span></div>
+        <div class="ph-ni"><svg fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>Обзор</span></div>
+        <div class="ph-ni"><svg fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="16" height="12" rx="2"/><path d="M3 9h16M9 5v12"/></svg><span>Билеты</span></div>
+        <div class="ph-ni"><svg fill="none" stroke="currentColor" stroke-width="1.7"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg><span>Избранное</span></div>
+        <div class="ph-ni"><svg fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="7" r="4"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0"/></svg><span>Профиль</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ATMOS PROMO CARD -->
+<div class="sec s-e">
+  <div class="ov">Промо · Atmospheric Card</div>
+  <div class="atmos">
+    <canvas id="atmosCanvas"></canvas>
+    <div class="atmos-content">
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <span class="t ta">Фестиваль</span>
+        <span class="t td">18+</span>
+      </div>
+      <div style="font-size:1.9rem;font-weight:800;letter-spacing:-.03em;line-height:1.04;margin-bottom:10px">Signal Festival</div>
+      <div style="font-size:.85rem;color:rgba(255,255,255,.4);line-height:1.55;margin-bottom:22px;max-width:340px">Электронная музыка на закате. Никитский ботанический сад.</div>
+      <button class="bp" style="align-self:flex-start;padding:14px 28px;font-size:.85rem">Билеты от 3 500 ₽</button>
+    </div>
+  </div>
+</div>
+
+<!-- GLASS BENTO -->
+<div class="sec s-e">
+  <div class="ov">Glass + Bento</div>
+  <div class="gg">
+    <div class="gc"><div class="gc-g"></div><div class="gc-l">Без сбора</div><div class="gc-v bl">0%</div></div>
+    <div class="gc"><div class="gc-l">Событий</div><div class="gc-v">340+</div></div>
+    <div class="gc" style="grid-column:span 2"><div class="gc-g" style="width:140px;height:140px;top:-40px;left:28%;background:radial-gradient(circle,rgba(15,40,71,.15),transparent 70%)"></div><div class="gc-l">Главное обещание</div><div class="gc-v" style="position:relative;z-index:1">Цена = цена</div><div style="font-size:.78rem;color:rgba(255,255,255,.3);margin-top:6px;position:relative;z-index:1">Что видишь — то и платишь. Ничего сверху.</div></div>
+  </div>
+</div>
+
+<!-- BUTTONS -->
+<div class="sec s-e">
+  <div class="ov">Кнопки</div>
+  <div class="br"><button class="bp">Купить билет</button><button class="bs">Подробнее</button><button class="bg">Отмена</button></div>
+</div>
+
+<!-- TAGS -->
+<div class="sec s-e">
+  <div class="ov">Тэги</div>
+  <div class="tr">
+    <span class="t ta">HOT</span><span class="t td">Концерт</span><span class="t td">Стэндап</span>
+    <span class="t ta">Новинка</span><span class="t tl"><span class="tld"></span>LIVE</span><span class="t td">16+</span>
+  </div>
+</div>
+
+<div class="foot">
+  <div class="fb"><div class="fd"></div><span class="ft">TTS · COBALT FOG · 2026</span></div>
+  <div class="fss">Manrope · Canvas Fog · Projector in Smoke</div>
+</div>
+
+</main>
+
+<script>
+// ═══════════════════════════════════════
+//   ORGANIC FOG RENDERER (Canvas 2D)
+//   Soft metaball-like blobs that blend
+// ═══════════════════════════════════════
+
+class FogRenderer {
+  constructor(canvas, config) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.blobs = [];
+    this.config = Object.assign({
+      bgColor: [8, 8, 8],
+      blobs: [],
+      speed: 0.0003,
+      animated: true
+    }, config);
+
+    this.config.blobs.forEach(b => {
+      this.blobs.push({
+        x: b.x, y: b.y,
+        baseX: b.x, baseY: b.y,
+        radius: b.radius,
+        color: b.color,
+        drift: b.drift || 40,
+        phase: Math.random() * Math.PI * 2,
+        phaseY: Math.random() * Math.PI * 2,
+        freqX: 0.3 + Math.random() * 0.4,
+        freqY: 0.2 + Math.random() * 0.3,
+        breathePhase: Math.random() * Math.PI * 2,
+        breatheAmp: b.breatheAmp || 0.08,
+      });
+    });
+
+    this.resize();
+    this.t = 0;
+    if (this.config.animated) this.loop();
+    else this.draw(0);
+  }
+
+  resize() {
+    const rect = this.canvas.parentElement.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio, 2);
+    this.w = rect.width;
+    this.h = rect.height;
+    this.canvas.width = this.w * dpr;
+    this.canvas.height = this.h * dpr;
+    this.canvas.style.width = this.w + 'px';
+    this.canvas.style.height = this.h + 'px';
+    this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  draw(t) {
+    const ctx = this.ctx;
+    const w = this.w;
+    const h = this.h;
+
+    // Fill bg
+    const [br, bg, bb] = this.config.bgColor;
+    ctx.fillStyle = `rgb(${br},${bg},${bb})`;
+    ctx.fillRect(0, 0, w, h);
+
+    // Draw each blob as radial gradient circle
+    for (const blob of this.blobs) {
+      const speed = this.config.speed;
+
+      // Organic drift
+      blob.x = blob.baseX * w + Math.sin(t * speed * blob.freqX + blob.phase) * blob.drift;
+      blob.y = blob.baseY * h + Math.cos(t * speed * blob.freqY + blob.phaseY) * blob.drift * 0.8;
+
+      // Breathe (radius oscillation)
+      const breathe = 1 + Math.sin(t * speed * 0.5 + blob.breathePhase) * blob.breatheAmp;
+      const r = blob.radius * Math.min(w, h) * breathe;
+
+      const [cr, cg, cb, ca] = blob.color;
+      const grad = ctx.createRadialGradient(blob.x, blob.y, 0, blob.x, blob.y, r);
+      grad.addColorStop(0, `rgba(${cr},${cg},${cb},${ca})`);
+      grad.addColorStop(0.3, `rgba(${cr},${cg},${cb},${ca * 0.6})`);
+      grad.addColorStop(0.6, `rgba(${cr},${cg},${cb},${ca * 0.2})`);
+      grad.addColorStop(1, `rgba(${cr},${cg},${cb},0)`);
+
+      ctx.globalCompositeOperation = 'screen';
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+    }
+
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  loop() {
+    this.t++;
+    this.draw(this.t);
+    this._raf = requestAnimationFrame(() => this.loop());
+  }
+}
+
+// ═══ HERO FOG ═══
+new FogRenderer(document.getElementById('heroCanvas'), {
+  bgColor: [8, 8, 10],
+  speed: 0.0004,
+  blobs: [
+    // Main cobalt mass — bottom center-right
+    { x: 0.6, y: 0.6, radius: 0.45, color: [15, 40, 71, 0.55], drift: 30 },
+    // Bright cobalt core
+    { x: 0.55, y: 0.55, radius: 0.25, color: [26, 92, 255, 0.3], drift: 25, breatheAmp: 0.12 },
+    // Secondary deep navy — left
+    { x: 0.25, y: 0.5, radius: 0.35, color: [10, 22, 40, 0.5], drift: 35 },
+    // Warm white highlight — bottom
+    { x: 0.5, y: 0.85, radius: 0.3, color: [232, 228, 220, 0.08], drift: 20, breatheAmp: 0.1 },
+    // Small bright accent
+    { x: 0.7, y: 0.45, radius: 0.15, color: [61, 122, 255, 0.2], drift: 40, breatheAmp: 0.15 },
+    // Cream edge glow
+    { x: 0.5, y: 0.95, radius: 0.35, color: [200, 192, 180, 0.06], drift: 15 },
+    // Deep atmosphere top
+    { x: 0.4, y: 0.2, radius: 0.3, color: [10, 15, 30, 0.4], drift: 25 },
+    // Subtle warm top-right
+    { x: 0.8, y: 0.25, radius: 0.2, color: [40, 60, 100, 0.15], drift: 30, breatheAmp: 0.1 },
+  ]
+});
+
+// ═══ PHONE HERO FOG ═══
+new FogRenderer(document.getElementById('phoneHeroCanvas'), {
+  bgColor: [8, 8, 10],
+  speed: 0.0005,
+  blobs: [
+    { x: 0.6, y: 0.55, radius: 0.5, color: [15, 40, 71, 0.5], drift: 15 },
+    { x: 0.5, y: 0.5, radius: 0.3, color: [26, 92, 255, 0.25], drift: 12, breatheAmp: 0.12 },
+    { x: 0.3, y: 0.4, radius: 0.35, color: [10, 22, 40, 0.45], drift: 18 },
+    { x: 0.5, y: 0.85, radius: 0.25, color: [232, 228, 220, 0.06], drift: 10 },
+    { x: 0.7, y: 0.35, radius: 0.15, color: [61, 122, 255, 0.18], drift: 20, breatheAmp: 0.15 },
+  ]
+});
+
+// ═══ ATMOS CARD FOG ═══
+new FogRenderer(document.getElementById('atmosCanvas'), {
+  bgColor: [8, 8, 12],
+  speed: 0.0004,
+  blobs: [
+    { x: 0.65, y: 0.6, radius: 0.4, color: [15, 40, 71, 0.45], drift: 20 },
+    { x: 0.5, y: 0.45, radius: 0.25, color: [26, 92, 255, 0.22], drift: 18, breatheAmp: 0.12 },
+    { x: 0.3, y: 0.35, radius: 0.3, color: [10, 20, 35, 0.4], drift: 22 },
+    { x: 0.7, y: 0.3, radius: 0.18, color: [232, 228, 220, 0.06], drift: 15 },
+    { x: 0.4, y: 0.7, radius: 0.2, color: [61, 122, 255, 0.15], drift: 25, breatheAmp: 0.1 },
+  ]
+});
+
+// ═══ MINI CARD CANVASES ═══
+document.querySelectorAll('.miniCanvas').forEach(c => {
+  const seed = parseInt(c.dataset.seed);
+  new FogRenderer(c, {
+    bgColor: [10, 14, 24],
+    speed: 0.0003,
+    blobs: seed === 1 ? [
+      { x: 0.5, y: 0.5, radius: 0.5, color: [15, 40, 71, 0.4], drift: 10 },
+      { x: 0.6, y: 0.4, radius: 0.3, color: [26, 92, 255, 0.2], drift: 8, breatheAmp: 0.12 },
+      { x: 0.3, y: 0.6, radius: 0.2, color: [232, 228, 220, 0.05], drift: 6 },
+    ] : [
+      { x: 0.45, y: 0.5, radius: 0.45, color: [10, 22, 40, 0.45], drift: 10 },
+      { x: 0.55, y: 0.45, radius: 0.25, color: [20, 50, 90, 0.25], drift: 8 },
+      { x: 0.6, y: 0.6, radius: 0.18, color: [61, 122, 255, 0.12], drift: 12, breatheAmp: 0.1 },
+    ]
+  });
+});
+
+// ═══ SCROLL OBSERVER ═══
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.style.animationPlayState = 'running'; });
+}, { threshold: 0.08 });
+document.querySelectorAll('.s-e').forEach(el => obs.observe(el));
+
+// ═══ RESIZE ═══
+window.addEventListener('resize', () => location.reload());
+</script>
+</body>
+</html>
