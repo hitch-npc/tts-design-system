@@ -1,0 +1,70 @@
+# ─────────────────────────────────────────────────────────────
+# TTS DS — ПУБЛИЧНЫЙ репозиторий. Режим белого списка:
+# в корне закрыто всё, открыто только перечисленное ниже.
+# Новый файл или папка в корне не попадёт в git, пока его явно
+# не откроют здесь — и только если это не жалко показать всем.
+# Приватное, не публикуется никогда: decks/ docs/ figma/ smm/
+# uploads/ _archive/ brand/source/ — см. CLAUDE.md, «Git и публикация».
+# ─────────────────────────────────────────────────────────────
+/*
+
+# Файлы репозитория
+!/.gitignore
+!/.gitattributes
+!/.nojekyll
+!/.github/
+!/.githooks/
+!/README.md
+!/CHANGELOG.md
+!/CLAUDE.md
+!/VERSION
+!/index.html
+!/package.json
+!/package-lock.json
+
+# Ядро дизайн-системы
+!/tokens.json
+!/smm.tokens.json
+!/ds-core-r14.css
+!/ds-core-r14-light.css
+!/ds-doc.css
+!/ds-doc-light.css
+!/ds-smm.css
+!/tts-logo.svg
+!/tooling/
+
+# Продукт и контент
+!/site/
+!/tg-emoji/
+!/emails/
+!/concepts/
+!/brand/
+
+# ── Исключения внутри открытых папок ──
+/tooling/backup/
+/brand/source/
+/tg-emoji/ref/
+/tg-emoji/*.zip
+/tg-emoji/packs/custom/venetian-mask/source/
+# неразобранные выгрузки в корне custom/ (канон — packs/reactions/ и packs/<вариант>/)
+/tg-emoji/packs/custom/*.webm
+/tg-emoji/packs/custom/tts-tg-emoji-*/
+* (1).*
+
+# ── Никогда, где бы ни лежало ──
+.DS_Store
+node_modules/
+*.fig
+*.ai
+*.psd
+*.sketch
+*.pptx
+*.key
+*.pdf
+*.zip
+*.mp4
+*.mov
+*.bak
+.env*
+*.pem
+*.p12

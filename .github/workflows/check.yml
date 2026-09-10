@@ -1,0 +1,23 @@
+name: check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      # Сборка и проверки без зависимостей — npm install не нужен
+      - name: Токены и страж правил
+        run: npm run check
+      - name: Проверка перед публикацией
+        run: npm run security

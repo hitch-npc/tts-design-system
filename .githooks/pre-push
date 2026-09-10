@@ -1,0 +1,8 @@
+#!/bin/sh
+# Репозиторий публичный: не пушим, если security-check нашёл секрет, личные данные или приватный файл.
+# Включается один раз после клона: git config core.hooksPath .githooks
+node tooling/security-check.mjs || {
+  echo ""
+  echo "Push отменён: исправьте находки выше и повторите."
+  exit 1
+}

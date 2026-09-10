@@ -1,0 +1,12 @@
+* text=auto eol=lf
+
+*.webm  binary
+*.png   binary
+*.jpg   binary
+*.woff2 binary
+
+# Бандлы редизайна — одна строка на 2 МБ, в diff не показываем
+site/redesign-v2-*.html -diff linguist-generated
+# Генерируется из токенов
+ds-smm.css linguist-generated
+tooling/build/* linguist-generated
