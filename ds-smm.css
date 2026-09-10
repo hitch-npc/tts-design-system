@@ -1,0 +1,95 @@
+/* ═══ GENERATED FROM smm.tokens.json + tokens.json — НЕ РЕДАКТИРОВАТЬ ВРУЧНУЮ ═══ */
+:root {
+  /* Холсты (соц-форматы) */
+  --smm-story-w:       1080px;
+  --smm-story-h:       1920px;
+  --smm-post-w:        1080px;
+  --smm-post-h:        1350px;
+  --smm-square:        1080px;
+  --smm-margin:        112px;
+  --smm-gutter:        44px;
+  --smm-safe-top:      150px;
+
+  /* Типошкала (под 1080px холст) */
+  --smm-fs-display:    118px;
+  --smm-fs-title:      54px;
+  --smm-fs-subtitle:   40px;
+  --smm-fs-meta:       34px;
+  --smm-fs-caption:    28px;
+
+  /* Цвета (из брендовых примитивов) */
+  --smm-bg:            #0D0D0D;
+  --smm-fg:            #D6D6D2;
+  --smm-muted:         #A6A6A2;
+  --smm-accent:        #0047FF;
+  --smm-premium:       #F5F4EE;
+  --smm-blob-cool:     #06277F;
+  --smm-blob-warm:     #4A1F00;
+  --smm-blob-green:    #0A2A0A;
+
+  /* Шрифты */
+  --smm-f-display:     'Cormorant Garamond', serif;
+  --smm-f-head:        'Forum', serif;
+  --smm-f-ui:          'Manrope', system-ui, sans-serif;
+  --smm-f-num:         'Oranienbaum', serif;
+}
+
+/* ───── SMM: формат «обложка» как в ленте @tickettoshow.ru ───── */
+.smm-canvas {
+  position: relative; overflow: hidden; box-sizing: border-box;
+  background: var(--smm-bg); color: var(--smm-fg);
+  font-family: var(--smm-f-ui);
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: var(--smm-margin);
+  /* тонкое монохромное зерно (feTurbulence) */
+  --smm-grain: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='140'%20height='140'%3E%3Cfilter%20id='n'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.85'%20numOctaves='2'%20stitchTiles='stitch'/%3E%3CfeColorMatrix%20type='saturate'%20values='0'/%3E%3C/filter%3E%3Crect%20width='140'%20height='140'%20filter='url(%23n)'/%3E%3C/svg%3E");
+  --smm-glow: var(--smm-blob-cool);
+}
+.smm-canvas--story  { width: var(--smm-story-w); height: var(--smm-story-h); padding-top: calc(var(--smm-margin) + var(--smm-safe-top)); }
+.smm-canvas--post   { width: var(--smm-post-w);  height: var(--smm-post-h); }
+.smm-canvas--square { width: var(--smm-square);   height: var(--smm-square); }
+.smm-canvas--cool  { --smm-glow: var(--smm-blob-cool); }
+.smm-canvas--warm  { --smm-glow: var(--smm-blob-warm); }
+.smm-canvas--green { --smm-glow: var(--smm-blob-green); }
+
+/* кобальтовое свечение — фирменный blob */
+.smm-canvas::before {
+  content: ""; position: absolute; right: -12%; bottom: -16%; z-index: 0;
+  width: 86%; aspect-ratio: 1; border-radius: 9999px; pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, var(--smm-glow) 0%, transparent 62%);
+  opacity: .8; filter: blur(8px);
+}
+/* лёгкое зерно по всему холсту */
+.smm-canvas::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background-image: var(--smm-grain); opacity: .06; mix-blend-mode: overlay;
+}
+
+/* ФОТО — обложка с вылетом за верх/право, растворяется в фон (вырезанное фото) */
+.smm-photo {
+  position: absolute; top: 0; right: 0; z-index: 1; width: 82%; height: 62%; overflow: hidden;
+  -webkit-mask-image: linear-gradient(180deg, black 50%, transparent 100%);
+  mask-image: linear-gradient(180deg, black 50%, transparent 100%);
+}
+.smm-photo > img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; filter: grayscale(.12) contrast(1.02); }
+.smm-photo::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, var(--smm-bg) 0%, transparent 42%); }
+.smm-photo::after  { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: var(--smm-grain); opacity: .15; mix-blend-mode: overlay; }
+.smm-photo--empty  { background: radial-gradient(120% 90% at 72% 8%, color-mix(in srgb, var(--smm-glow) 55%, transparent) 0%, transparent 60%), var(--smm-bg); box-shadow: inset 0 0 0 1px rgba(214,214,210,.07); }
+.smm-photo__hint   { position: absolute; left: 50%; top: 40%; transform: translate(-50%,-50%); font-weight: 600; font-size: var(--smm-fs-caption); text-transform: uppercase; letter-spacing: .2em; color: var(--smm-fg); opacity: .3; }
+
+/* шапка — логотип слева (вставь <svg>/<img> из tts-logo.svg, заливка --n100 на тёмном) */
+.smm-head { position: relative; z-index: 3; display: flex; align-items: flex-start; }
+.smm-logo { width: 232px; flex: none; }
+.smm-logo svg, .smm-logo img { display: block; width: 100%; height: auto; }
+
+/* низ — кикер · название · черта · описание · город · точки */
+.smm-foot { position: relative; z-index: 3; }
+.smm-kicker { font-family: var(--smm-f-ui); font-weight: 600; font-size: var(--smm-fs-caption); text-transform: uppercase; letter-spacing: .26em; color: var(--smm-accent); }
+.smm-title { font-family: var(--smm-f-display); font-weight: 500; font-size: var(--smm-fs-display); line-height: .92; letter-spacing: .01em; text-transform: uppercase; margin-top: 30px; }
+.smm-rule  { width: 64px; height: 2px; background: var(--smm-accent); margin-top: 38px; }
+.smm-desc  { font-family: var(--smm-f-ui); font-size: var(--smm-fs-meta); line-height: 1.5; color: var(--smm-muted); margin-top: 34px; max-width: 78%; }
+.smm-city  { display: inline-block; margin-top: 40px; font-family: var(--smm-f-ui); font-weight: 600; font-size: var(--smm-fs-caption); text-transform: uppercase; letter-spacing: .16em; color: var(--smm-accent); border: 2px solid var(--smm-accent); border-radius: 2px; padding: 15px 26px; }
+.smm-dots  { display: flex; gap: 14px; margin-top: 46px; }
+.smm-dot   { width: 58px; height: 4px; border-radius: 2px; background: var(--smm-fg); opacity: .22; }
+.smm-dot--active { opacity: 1; }
+.smm-premium { color: var(--smm-premium); }

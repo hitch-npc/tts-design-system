@@ -1,0 +1,22 @@
+{
+  "name": "tts-ds-r14",
+  "version": "14.1.0",
+  "private": true,
+  "type": "module",
+  "description": "TTS (Ticket to Show) Design System R14 — tokens.json как единый источник истины: сайт (dark/light) + SMM-слой.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hitch-npc/tts-design-system.git"
+  },
+  "scripts": {
+    "build": "node tooling/build-tokens.mjs && node tooling/build-smm.mjs",
+    "build:check": "node tooling/build-tokens.mjs --check",
+    "lint": "node tooling/guardrail.mjs",
+    "lint:strict": "node tooling/guardrail.mjs --strict",
+    "check": "node tooling/build-tokens.mjs --check && node tooling/guardrail.mjs",
+    "security": "node tooling/security-check.mjs"
+  },
+  "dependencies": {
+    "ffmpeg-static": "^5.3.0"
+  }
+}

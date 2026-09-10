@@ -1,0 +1,41 @@
+{
+  "smm": {
+    "canvas": {
+      "story-w":  { "value": "1080", "type": "sizing", "description": "--smm-story-w  (9:16 Stories/Reels)" },
+      "story-h":  { "value": "1920", "type": "sizing", "description": "--smm-story-h" },
+      "post-w":   { "value": "1080", "type": "sizing", "description": "--smm-post-w   (4:5 лента)" },
+      "post-h":   { "value": "1350", "type": "sizing", "description": "--smm-post-h" },
+      "square":   { "value": "1080", "type": "sizing", "description": "--smm-square   (1:1)" },
+      "margin":   { "value": "112",  "type": "sizing", "description": "--smm-margin   безопасное поле" },
+      "gutter":   { "value": "44",   "type": "sizing", "description": "--smm-gutter" },
+      "safe-top": { "value": "150",  "type": "sizing", "description": "--smm-safe-top доп. верхнее поле Stories" }
+    },
+    "type": {
+      "display":  { "value": "118", "type": "fontSizes", "description": "--smm-fs-display (Cormorant, название)" },
+      "title":    { "value": "54",  "type": "fontSizes", "description": "--smm-fs-title   (Forum, площадка)" },
+      "subtitle": { "value": "40",  "type": "fontSizes", "description": "--smm-fs-subtitle (Manrope)" },
+      "meta":     { "value": "34",  "type": "fontSizes", "description": "--smm-fs-meta (дата/площадка)" },
+      "caption":  { "value": "28",  "type": "fontSizes", "description": "--smm-fs-caption uppercase" }
+    },
+    "color": {
+      "bg":       { "value": "{dark.color.ink}",                 "type": "color", "description": "--smm-bg (тёмный театральный)" },
+      "fg":       { "value": "{dark.color.n100}",                "type": "color", "description": "--smm-fg основной текст" },
+      "muted":    { "value": "{dark.color.n300}",               "type": "color", "description": "--smm-muted" },
+      "accent":   { "value": "{global.primitives.blue.cobalt}", "type": "color", "description": "--smm-accent" },
+      "premium":  { "value": "#F5F4EE",                          "type": "color", "description": "--smm-premium (ivory, только premium)" },
+      "blob-cool":  { "value": "{dark.color.blob-core-cool}",  "type": "color", "description": "--smm-blob-cool классика/театр" },
+      "blob-warm":  { "value": "{dark.color.blob-core-warm}",  "type": "color", "description": "--smm-blob-warm опера" },
+      "blob-green": { "value": "{dark.color.blob-core-green}", "type": "color", "description": "--smm-blob-green мюзикл" }
+    },
+    "font": {
+      "display": { "value": "{global.font.stack.display}", "type": "fontFamilies", "description": "--smm-f-display" },
+      "head":    { "value": "{global.font.stack.heading}", "type": "fontFamilies", "description": "--smm-f-head" },
+      "ui":      { "value": "{global.font.stack.ui}",      "type": "fontFamilies", "description": "--smm-f-ui" },
+      "num":     { "value": "{global.font.stack.number}",  "type": "fontFamilies", "description": "--smm-f-num" }
+    }
+  },
+
+  "$metadata": {
+    "tokenSetOrder": ["smm"]
+  }
+}
