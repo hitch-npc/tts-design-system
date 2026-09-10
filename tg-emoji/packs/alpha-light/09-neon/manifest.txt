@@ -1,0 +1,6 @@
+TTS — Telegram custom emoji
+лента: 09 · Neon glow
+вариант: без фона (альфа), светлая тема  (alpha-light)
+файлов: 3 · VP9, 100×100, 30 fps, 3.000 s
+
+Загрузка: @Stickers → /newemojipack → перетащить .webm по порядку имён.

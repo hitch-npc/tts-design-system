@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TTS — TG emoji · превью наборов</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Forum&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0D0D0D;--n950:#111318;--n900:#191C22;--n800:#262930;--n500:#7A7A78;--n300:#A6A6A2;--n100:#D6D6D2;--accent:#0047FF;--r-sm:2px;--r-lg:8px;
+ --font:'Manrope',system-ui,sans-serif;--f-thin:'Cormorant Garamond',Georgia,serif;--gap:0px;--tile:100px;--pane:#0D0D0D;--fg:#D6D6D2;--tint:none}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--n100);font-family:var(--font);font-size:14px;padding:36px 32px 80px}
+h1{font-family:var(--f-thin);font-weight:400;font-size:2.4rem;text-transform:uppercase;margin:0 0 8px}
+.sub{color:var(--n300);max-width:74ch;margin:0 0 24px}
+.ctl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.ctl.top{position:sticky;top:0;background:color-mix(in srgb,var(--ink) 94%,transparent);backdrop-filter:blur(8px);padding:12px 0 4px;z-index:5}
+.bar{border-bottom:1px solid var(--n900);margin-bottom:32px;padding-bottom:12px}
+.btn{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;padding:9px 16px;min-height:36px;border-radius:var(--r-sm);border:1px solid var(--n800);background:transparent;color:var(--n300);cursor:pointer;font-family:var(--font)}
+.btn.on{background:var(--n100);border-color:var(--n100);color:var(--ink)}
+.lab{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--n500);margin-right:4px}
+.setnote{color:var(--n500);font-size:12px;margin:0 0 24px;max-width:74ch}
+section{margin-bottom:48px;border-top:1px solid var(--n900);padding-top:22px}
+h2{font-family:var(--f-thin);font-weight:500;font-size:1.4rem;margin:0 0 4px}
+.meta{color:var(--n500);font-size:12px;margin-bottom:14px}
+.pane{background:var(--pane);border-radius:var(--r-sm);padding:14px;display:inline-block;max-width:100%}
+.row{display:flex;gap:var(--gap);flex-wrap:wrap;background:var(--pane);padding:12px;border-radius:var(--r-sm);width:max-content;max-width:100%}
+video{width:var(--tile);height:var(--tile);display:block;background:transparent;filter:var(--tint)}
+.chess .row,.chess .chat{background-color:#2A2A28;background-image:linear-gradient(45deg,#1B1B1A 25%,transparent 25%,transparent 75%,#1B1B1A 75%),linear-gradient(45deg,#1B1B1A 25%,transparent 25%,transparent 75%,#1B1B1A 75%);background-size:16px 16px;background-position:0 0,8px 8px}
+.chat{background:var(--pane);border-radius:var(--r-lg);padding:14px;max-width:560px;margin-top:12px;color:var(--fg)}
+.bub{max-width:520px}
+.chat .row{margin:8px 0;padding:0;background:transparent}
+.mini video{width:26px;height:26px}
+.files{color:var(--n500);font-size:11px;font-family:ui-monospace,Menlo,monospace;margin-top:10px}
+</style></head><body>
+<h1>TG-эмодзи · превью</h1>
+<p class="sub">Четыре набора одних и тех же лент плюс реакции — одиночные эмодзи на один слот. Переключи набор и фон: так видно, какой файл под какой чат. Файлы лежат рядом, в папках с теми же именами.</p>
+<div class="ctl top">
+  <span class="lab">Набор</span>
+  <button class="btn setBtn" data-v="packs/plate-dark">С фоном · тёмная</button>
+  <button class="btn setBtn on" data-v="packs/alpha-dark">Без фона · тёмная</button>
+  <button class="btn setBtn" data-v="packs/alpha-light">Без фона · светлая</button>
+</div>
+<div class="ctl bar">
+  <span class="lab">Фон</span>
+  <button class="btn bgBtn on" data-v="#17212B" data-fg="#E6EBF0">Чат тёмный</button>
+  <button class="btn bgBtn" data-v="#EFEFEF" data-fg="#0D0D0D">Чат светлый</button>
+  <button class="btn bgBtn" data-v="chess" data-fg="#D6D6D2">Шахматка</button>
+  <span class="lab" style="margin-left:12px">Зазор</span>
+  <button class="btn gapBtn on" data-v="0">0</button>
+  <button class="btn gapBtn" data-v="2">2px</button>
+  <button class="btn gapBtn" data-v="6">6px</button>
+  <span class="lab" style="margin-left:12px">Размер</span>
+  <button class="btn sizeBtn" data-v="34">34</button>
+  <button class="btn sizeBtn on" data-v="100">100</button>
+  <button class="btn sizeBtn" data-v="160">160</button>
+</div>
+<p class="setnote" id="setnote"></p>
+<section>
+  <h2>15–25 · Реакции</h2>
+  <div class="meta">по одному слоту, без склеек · 11 × 100×100 · packs/reactions/&lt;вариант&gt;/</div>
+  <div class="row"><video data-root="react" data-src="15-rlike.webm" autoplay loop muted playsinline></video><video data-root="react" data-src="16-rmask.webm" autoplay loop muted playsinline></video><video data-root="react" data-src="17-rticket.webm" autoplay loop muted playsinline></video><video data-root="react" data-src="18-reye.webm" autoplay loop muted playsinline></video><video data-root="react" data-src="19-rspot.webm" autoplay loop muted playsinline></video><video data-root="react" data-src="20-rspotl.webm" autoplay loop muted playsinline></video><video data-root="react" data-src="21-rspotr.webm" autoplay loop muted playsinline></video><video data-root="react" data-src="22-rage0.webm" autoplay loop muted playsinline></video><video data-root="react" data-src="23-rage12.webm" autoplay loop muted playsinline></video><video data-root="react" data-src="24-rage16.webm" autoplay loop muted playsinline></video><video data-root="react" data-src="25-rage18.webm" autoplay loop muted playsinline></video></div>
+  <div class="chat"><div class="bub">Пример поста в канале<div class="row mini"><video data-root="react" data-src="15-rlike.webm" autoplay loop muted playsinline></video><video data-root="react" data-src="16-rmask.webm" autoplay loop muted playsinline></video><video data-root="react" data-src="17-rticket.webm" autoplay loop muted playsinline></video><video data-root="react" data-src="18-reye.webm" autoplay loop muted playsinline></video><video data-root="react" data-src="19-rspot.webm" autoplay loop muted playsinline></video><video data-root="react" data-src="20-rspotl.webm" autoplay loop muted playsinline></video><video data-root="react" data-src="21-rspotr.webm" autoplay loop muted playsinline></video><video data-root="react" data-src="22-rage0.webm" autoplay loop muted playsinline></video><video data-root="react" data-src="23-rage12.webm" autoplay loop muted playsinline></video><video data-root="react" data-src="24-rage16.webm" autoplay loop muted playsinline></video><video data-root="react" data-src="25-rage18.webm" autoplay loop muted playsinline></video></div>реакции под текстом</div></div>
+  <div class="files">15-rlike.webm · 16-rmask.webm · 17-rticket.webm · 18-reye.webm · 19-rspot.webm · 20-rspotl.webm · 21-rspotr.webm · 22-rage0.webm · 23-rage12.webm · 24-rage16.webm · 25-rage18.webm</div>
+</section>
+<section>
+  <h2>01 · Софит включается</h2>
+  <div class="meta">анонс · 5 × 100×100</div>
+  <div class="row"><video data-src="01-spot/01-spot-1of5.webm" autoplay loop muted playsinline></video><video data-src="01-spot/01-spot-2of5.webm" autoplay loop muted playsinline></video><video data-src="01-spot/01-spot-3of5.webm" autoplay loop muted playsinline></video><video data-src="01-spot/01-spot-4of5.webm" autoplay loop muted playsinline></video><video data-src="01-spot/01-spot-5of5.webm" autoplay loop muted playsinline></video></div>
+  <div class="chat"><div class="bub">Пример строки в канале<div class="row mini"><video data-src="01-spot/01-spot-1of5.webm" autoplay loop muted playsinline></video><video data-src="01-spot/01-spot-2of5.webm" autoplay loop muted playsinline></video><video data-src="01-spot/01-spot-3of5.webm" autoplay loop muted playsinline></video><video data-src="01-spot/01-spot-4of5.webm" autoplay loop muted playsinline></video><video data-src="01-spot/01-spot-5of5.webm" autoplay loop muted playsinline></video></div>от 1 500 ₽</div></div>
+  <div class="files">01-spot/ — 5 шт. + manifest.txt</div>
+</section>
+<section>
+  <h2>02 · Волна точек</h2>
+  <div class="meta">премьера · 6 × 100×100</div>
+  <div class="row"><video data-src="02-dots/02-dots-1of6.webm" autoplay loop muted playsinline></video><video data-src="02-dots/02-dots-2of6.webm" autoplay loop muted playsinline></video><video data-src="02-dots/02-dots-3of6.webm" autoplay loop muted playsinline></video><video data-src="02-dots/02-dots-4of6.webm" autoplay loop muted playsinline></video><video data-src="02-dots/02-dots-5of6.webm" autoplay loop muted playsinline></video><video data-src="02-dots/02-dots-6of6.webm" autoplay loop muted playsinline></video></div>
+  <div class="chat"><div class="bub">Пример строки в канале<div class="row mini"><video data-src="02-dots/02-dots-1of6.webm" autoplay loop muted playsinline></video><video data-src="02-dots/02-dots-2of6.webm" autoplay loop muted playsinline></video><video data-src="02-dots/02-dots-3of6.webm" autoplay loop muted playsinline></video><video data-src="02-dots/02-dots-4of6.webm" autoplay loop muted playsinline></video><video data-src="02-dots/02-dots-5of6.webm" autoplay loop muted playsinline></video><video data-src="02-dots/02-dots-6of6.webm" autoplay loop muted playsinline></video></div>от 1 500 ₽</div></div>
+  <div class="files">02-dots/ — 6 шт. + manifest.txt</div>
+</section>
+<section>
+  <h2>03 · Shadow Ink Reveal</h2>
+  <div class="meta">текст, автоширина · 4 × 100×100</div>
+  <div class="row"><video data-src="03-premiere/03-premiere-1of4.webm" autoplay loop muted playsinline></video><video data-src="03-premiere/03-premiere-2of4.webm" autoplay loop muted playsinline></video><video data-src="03-premiere/03-premiere-3of4.webm" autoplay loop muted playsinline></video><video data-src="03-premiere/03-premiere-4of4.webm" autoplay loop muted playsinline></video></div>
+  <div class="chat"><div class="bub">Пример строки в канале<div class="row mini"><video data-src="03-premiere/03-premiere-1of4.webm" autoplay loop muted playsinline></video><video data-src="03-premiere/03-premiere-2of4.webm" autoplay loop muted playsinline></video><video data-src="03-premiere/03-premiere-3of4.webm" autoplay loop muted playsinline></video><video data-src="03-premiere/03-premiere-4of4.webm" autoplay loop muted playsinline></video></div>от 1 500 ₽</div></div>
+  <div class="files">03-premiere/ — 4 шт. + manifest.txt</div>
+</section>
+<section>
+  <h2>04 · Скан и отрыв билета</h2>
+  <div class="meta">старт продаж · 5 × 100×100</div>
+  <div class="row"><video data-src="04-ticket/04-ticket-1of5.webm" autoplay loop muted playsinline></video><video data-src="04-ticket/04-ticket-2of5.webm" autoplay loop muted playsinline></video><video data-src="04-ticket/04-ticket-3of5.webm" autoplay loop muted playsinline></video><video data-src="04-ticket/04-ticket-4of5.webm" autoplay loop muted playsinline></video><video data-src="04-ticket/04-ticket-5of5.webm" autoplay loop muted playsinline></video></div>
+  <div class="chat"><div class="bub">Пример строки в канале<div class="row mini"><video data-src="04-ticket/04-ticket-1of5.webm" autoplay loop muted playsinline></video><video data-src="04-ticket/04-ticket-2of5.webm" autoplay loop muted playsinline></video><video data-src="04-ticket/04-ticket-3of5.webm" autoplay loop muted playsinline></video><video data-src="04-ticket/04-ticket-4of5.webm" autoplay loop muted playsinline></video><video data-src="04-ticket/04-ticket-5of5.webm" autoplay loop muted playsinline></video></div>от 1 500 ₽</div></div>
+  <div class="files">04-ticket/ — 5 шт. + manifest.txt</div>
+</section>
+<section>
+  <h2>05 · Switch</h2>
+  <div class="meta">react-fx-sandbox · Toggles · 2 × 100×100</div>
+  <div class="row"><video data-src="05-switch/05-switch-1of2.webm" autoplay loop muted playsinline></video><video data-src="05-switch/05-switch-2of2.webm" autoplay loop muted playsinline></video></div>
+  <div class="chat"><div class="bub">Пример строки в канале<div class="row mini"><video data-src="05-switch/05-switch-1of2.webm" autoplay loop muted playsinline></video><video data-src="05-switch/05-switch-2of2.webm" autoplay loop muted playsinline></video></div>от 1 500 ₽</div></div>
+  <div class="files">05-switch/ — 2 шт. + manifest.txt</div>
+</section>
+<section>
+  <h2>06 · Checkbox draw</h2>
+  <div class="meta">react-fx-sandbox · Toggles · 1 × 100×100</div>
+  <div class="row"><video data-src="06-check/06-check-1of1.webm" autoplay loop muted playsinline></video></div>
+  <div class="chat"><div class="bub">Пример строки в канале<div class="row mini"><video data-src="06-check/06-check-1of1.webm" autoplay loop muted playsinline></video></div>от 1 500 ₽</div></div>
+  <div class="files">06-check/ — 1 шт. + manifest.txt</div>
+</section>
+<section>
+  <h2>07 · Like burst</h2>
+  <div class="meta">react-fx-sandbox · StateButtons · 3 × 100×100</div>
+  <div class="row"><video data-src="07-like/07-like-1of3.webm" autoplay loop muted playsinline></video><video data-src="07-like/07-like-2of3.webm" autoplay loop muted playsinline></video><video data-src="07-like/07-like-3of3.webm" autoplay loop muted playsinline></video></div>
+  <div class="chat"><div class="bub">Пример строки в канале<div class="row mini"><video data-src="07-like/07-like-1of3.webm" autoplay loop muted playsinline></video><video data-src="07-like/07-like-2of3.webm" autoplay loop muted playsinline></video><video data-src="07-like/07-like-3of3.webm" autoplay loop muted playsinline></video></div>от 1 500 ₽</div></div>
+  <div class="files">07-like/ — 3 шт. + manifest.txt</div>
+</section>
+<section>
+  <h2>08 · Icon slide</h2>
+  <div class="meta">react-fx-sandbox · HoverButtons · 4 × 100×100</div>
+  <div class="row"><video data-src="08-icon/08-icon-1of4.webm" autoplay loop muted playsinline></video><video data-src="08-icon/08-icon-2of4.webm" autoplay loop muted playsinline></video><video data-src="08-icon/08-icon-3of4.webm" autoplay loop muted playsinline></video><video data-src="08-icon/08-icon-4of4.webm" autoplay loop muted playsinline></video></div>
+  <div class="chat"><div class="bub">Пример строки в канале<div class="row mini"><video data-src="08-icon/08-icon-1of4.webm" autoplay loop muted playsinline></video><video data-src="08-icon/08-icon-2of4.webm" autoplay loop muted playsinline></video><video data-src="08-icon/08-icon-3of4.webm" autoplay loop muted playsinline></video><video data-src="08-icon/08-icon-4of4.webm" autoplay loop muted playsinline></video></div>от 1 500 ₽</div></div>
+  <div class="files">08-icon/ — 4 шт. + manifest.txt</div>
+</section>
+<section>
+  <h2>09 · Neon glow</h2>
+  <div class="meta">react-fx-sandbox · HoverButtons · 3 × 100×100</div>
+  <div class="row"><video data-src="09-neon/09-neon-1of3.webm" autoplay loop muted playsinline></video><video data-src="09-neon/09-neon-2of3.webm" autoplay loop muted playsinline></video><video data-src="09-neon/09-neon-3of3.webm" autoplay loop muted playsinline></video></div>
+  <div class="chat"><div class="bub">Пример строки в канале<div class="row mini"><video data-src="09-neon/09-neon-1of3.webm" autoplay loop muted playsinline></video><video data-src="09-neon/09-neon-2of3.webm" autoplay loop muted playsinline></video><video data-src="09-neon/09-neon-3of3.webm" autoplay loop muted playsinline></video></div>от 1 500 ₽</div></div>
+  <div class="files">09-neon/ — 3 шт. + manifest.txt</div>
+</section>
+<section>
+  <h2>10 · Border draw</h2>
+  <div class="meta">react-fx-sandbox · HoverButtons · 3 × 100×100</div>
+  <div class="row"><video data-src="10-border/10-border-1of3.webm" autoplay loop muted playsinline></video><video data-src="10-border/10-border-2of3.webm" autoplay loop muted playsinline></video><video data-src="10-border/10-border-3of3.webm" autoplay loop muted playsinline></video></div>
+  <div class="chat"><div class="bub">Пример строки в канале<div class="row mini"><video data-src="10-border/10-border-1of3.webm" autoplay loop muted playsinline></video><video data-src="10-border/10-border-2of3.webm" autoplay loop muted playsinline></video><video data-src="10-border/10-border-3of3.webm" autoplay loop muted playsinline></video></div>от 1 500 ₽</div></div>
+  <div class="files">10-border/ — 3 шт. + manifest.txt</div>
+</section>
+<section>
+  <h2>11 · Gloss shine</h2>
+  <div class="meta">react-fx-sandbox · HoverButtons · 3 × 100×100</div>
+  <div class="row"><video data-src="11-gloss/11-gloss-1of3.webm" autoplay loop muted playsinline></video><video data-src="11-gloss/11-gloss-2of3.webm" autoplay loop muted playsinline></video><video data-src="11-gloss/11-gloss-3of3.webm" autoplay loop muted playsinline></video></div>
+  <div class="chat"><div class="bub">Пример строки в канале<div class="row mini"><video data-src="11-gloss/11-gloss-1of3.webm" autoplay loop muted playsinline></video><video data-src="11-gloss/11-gloss-2of3.webm" autoplay loop muted playsinline></video><video data-src="11-gloss/11-gloss-3of3.webm" autoplay loop muted playsinline></video></div>от 1 500 ₽</div></div>
+  <div class="files">11-gloss/ — 3 шт. + manifest.txt</div>
+</section>
+<section>
+  <h2>12 · Fill sweep</h2>
+  <div class="meta">react-fx-sandbox · HoverButtons · 4 × 100×100</div>
+  <div class="row"><video data-src="12-fill/12-fill-1of4.webm" autoplay loop muted playsinline></video><video data-src="12-fill/12-fill-2of4.webm" autoplay loop muted playsinline></video><video data-src="12-fill/12-fill-3of4.webm" autoplay loop muted playsinline></video><video data-src="12-fill/12-fill-4of4.webm" autoplay loop muted playsinline></video></div>
+  <div class="chat"><div class="bub">Пример строки в канале<div class="row mini"><video data-src="12-fill/12-fill-1of4.webm" autoplay loop muted playsinline></video><video data-src="12-fill/12-fill-2of4.webm" autoplay loop muted playsinline></video><video data-src="12-fill/12-fill-3of4.webm" autoplay loop muted playsinline></video><video data-src="12-fill/12-fill-4of4.webm" autoplay loop muted playsinline></video></div>от 1 500 ₽</div></div>
+  <div class="files">12-fill/ — 4 шт. + manifest.txt</div>
+</section>
+<section>
+  <h2>13 · Счётчик</h2>
+  <div class="meta">цифры, автоширина · 3 × 100×100</div>
+  <div class="row"><video data-src="13-count/13-count-1of3.webm" autoplay loop muted playsinline></video><video data-src="13-count/13-count-2of3.webm" autoplay loop muted playsinline></video><video data-src="13-count/13-count-3of3.webm" autoplay loop muted playsinline></video></div>
+  <div class="chat"><div class="bub">Пример строки в канале<div class="row mini"><video data-src="13-count/13-count-1of3.webm" autoplay loop muted playsinline></video><video data-src="13-count/13-count-2of3.webm" autoplay loop muted playsinline></video><video data-src="13-count/13-count-3of3.webm" autoplay loop muted playsinline></video></div>от 1 500 ₽</div></div>
+  <div class="files">13-count/ — 3 шт. + manifest.txt</div>
+</section>
+<section>
+  <h2>14 · Счётчик serif</h2>
+  <div class="meta">Cormorant, автоширина · 3 × 100×100</div>
+  <div class="row"><video data-src="14-countserif/14-countserif-1of3.webm" autoplay loop muted playsinline></video><video data-src="14-countserif/14-countserif-2of3.webm" autoplay loop muted playsinline></video><video data-src="14-countserif/14-countserif-3of3.webm" autoplay loop muted playsinline></video></div>
+  <div class="chat"><div class="bub">Пример строки в канале<div class="row mini"><video data-src="14-countserif/14-countserif-1of3.webm" autoplay loop muted playsinline></video><video data-src="14-countserif/14-countserif-2of3.webm" autoplay loop muted playsinline></video><video data-src="14-countserif/14-countserif-3of3.webm" autoplay loop muted playsinline></video></div>от 1 500 ₽</div></div>
+  <div class="files">14-countserif/ — 3 шт. + manifest.txt</div>
+</section>
+<script>
+const SETS = [{"dir":"packs/plate-dark","note":"Подложка впечатана цветом тёмной темы — для тёмного чата.","missing":false},{"dir":"packs/alpha-dark","note":"Альфа-канал, светлая графика: тёмный чат.","missing":false},{"dir":"packs/alpha-light","note":"Альфа-канал, чёрная графика: светлый чат.","missing":false}];
+let set = 'packs/alpha-dark', bg = '#17212B', fg = '#E6EBF0';
+function apply() {
+  const s = SETS.find(x => x.dir === set) || SETS[0];
+  document.getElementById('setnote').textContent = s.note;
+  document.querySelectorAll('video').forEach(v => {
+    /* реакции живут не внутри набора, а в packs/reactions/<вариант>/ */
+    const base = v.dataset.root === 'react' ? 'packs/reactions/' + set.split('/')[1] : set;
+    const want = base + '/' + v.dataset.src;
+    if (v.getAttribute('src') !== want) { v.setAttribute('src', want); v.load(); v.play().catch(() => {}); }
+  });
+  const chess = bg === 'chess';
+  document.body.classList.toggle('chess', chess);
+  document.documentElement.style.setProperty('--pane', chess ? 'transparent' : bg);
+  document.documentElement.style.setProperty('--fg', fg);
+}
+document.querySelectorAll('.setBtn').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.setBtn').forEach(x => x.classList.toggle('on', x === b)); set = b.dataset.v; apply();
+});
+document.querySelectorAll('.bgBtn').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.bgBtn').forEach(x => x.classList.toggle('on', x === b));
+  bg = b.dataset.v; fg = b.dataset.fg; apply();
+});
+document.querySelectorAll('.gapBtn').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.gapBtn').forEach(x => x.classList.toggle('on', x === b));
+  document.documentElement.style.setProperty('--gap', b.dataset.v + 'px');
+});
+document.querySelectorAll('.sizeBtn').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.sizeBtn').forEach(x => x.classList.toggle('on', x === b));
+  document.documentElement.style.setProperty('--tile', b.dataset.v + 'px');
+});
+apply();
+</script>
+</body></html>

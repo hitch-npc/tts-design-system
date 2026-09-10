@@ -1,0 +1,135 @@
+<meta charset="utf-8"><title>sprite → webm</title>
+<script>
+/* ── EBML/WebM: одна дорожка VP9, альфа вторым потоком в BlockAdditional ──
+   Повторяет муксер сэндбокса: длительность задаём сами, поэтому 89 кадров ×
+   33.333 мс = 2.967 с ровно, с запасом под лимит Telegram в 3 секунды. */
+const te = new TextEncoder();
+const cat = arrs => { let n=0; for(const a of arrs) n+=a.length; const o=new Uint8Array(n); let p=0; for(const a of arrs){o.set(a,p);p+=a.length;} return o; };
+function vint(n){let len=1;for(;len<=8;len++) if(n<Math.pow(2,7*len)-1) break;const o=new Uint8Array(len);let v=n;for(let i=len-1;i>=0;i--){o[i]=v&255;v=Math.floor(v/256);}o[0]|=1<<(8-len);return o;}
+const uB = n => { const a=[]; let v=n; do{a.unshift(v&255); v=Math.floor(v/256);}while(v>0); return new Uint8Array(a); };
+const ebml = (id,p) => cat([new Uint8Array(id), vint(p.length), p]);
+const uEl = (id,n) => ebml(id, uB(n));
+const sEl = (id,s) => ebml(id, te.encode(s));
+const fEl = (id,f) => { const b=new Uint8Array(8); new DataView(b.buffer).setFloat64(0,f); return ebml(id,b); };
+const sB = v => { const a=[]; do{a.unshift(v&255); v>>=8;}while(a[0]&0x80 ? v!==-1 : v!==0); return new Uint8Array(a); };
+
+function mux(chunks, alphaChunks, w, h, fps, durMs){
+  const header = ebml([0x1A,0x45,0xDF,0xA3], cat([
+    uEl([0x42,0x86],1),uEl([0x42,0xF7],1),uEl([0x42,0xF2],4),uEl([0x42,0xF3],8),
+    sEl([0x42,0x82],'webm'),uEl([0x42,0x87],2),uEl([0x42,0x85],2)]));
+  const info = ebml([0x15,0x49,0xA9,0x66], cat([
+    uEl([0x2A,0xD7,0xB1],1000000), sEl([0x4D,0x80],'TTS sprite→webm'), sEl([0x57,0x41],'TTS sprite→webm'),
+    fEl([0x44,0x89], durMs)]));
+  const video = ebml([0xE0], cat([uEl([0xB0],w),uEl([0xBA],h),...(alphaChunks?[uEl([0x53,0xC0],1)]:[])]));
+  const track = ebml([0xAE], cat([uEl([0xD7],1),uEl([0x73,0xC5],1),uEl([0x9C],0),uEl([0x83],1),
+    sEl([0x86],'V_VP9'), uEl([0x23,0xE3,0x83], Math.round(1e9/fps)), video]));
+  const tracks = ebml([0x16,0x54,0xAE,0x6B], track);
+  const am = alphaChunks ? new Map(alphaChunks.map(a=>[a.t,a.d])) : null;
+  const durTicks = Math.round(1000/fps);
+  const blocks = chunks.map(c=>{
+    const body = flags => { const p=new Uint8Array(4+c.d.length); p[0]=0x81;
+      /* floor, а не round: округление вверх толкает последний кадр за лимит длительности */
+      new DataView(p.buffer).setInt16(1, Math.floor(c.t/1000)); p[3]=flags; p.set(c.d,4); return p; };
+    if(!am) return ebml([0xA3], body(c.key?0x80:0));
+    const a = am.get(c.t); if(!a) throw new Error('нет альфа-кадра на '+c.t);
+    const parts=[ebml([0xA1],body(0)), uEl([0x9B],durTicks)];
+    if(!c.key) parts.push(ebml([0xFB], sB(-durTicks)));
+    parts.push(ebml([0x75,0xA1], ebml([0xA6], cat([uEl([0xEE],1), ebml([0xA5],a)]))));
+    return ebml([0xA0], cat(parts));
+  });
+  const cluster = ebml([0x1F,0x43,0xB6,0x75], cat([uEl([0xE7],0), ...blocks]));
+  return new Blob([header, ebml([0x18,0x53,0x80,0x67], cat([info,tracks,cluster]))],{type:'video/webm'});
+}
+
+/* ── нарезка спрайта ── */
+async function sliceSheet(src, tile, fillPct){
+  const img = await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=src;});
+  const W=img.naturalWidth,H=img.naturalHeight;
+  const cv=document.createElement('canvas');cv.width=W;cv.height=H;
+  const g=cv.getContext('2d',{willReadFrequently:true});g.drawImage(img,0,0);
+  const d=g.getImageData(0,0,W,H).data;
+  const A=(x,y)=>d[(y*W+x)*4+3];
+  const colHas=new Uint8Array(W),rowHas=new Uint8Array(H);
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(A(x,y)>24){colHas[x]=1;rowHas[y]=1;}
+  const bands=a=>{const o=[];let s=-1;for(let i=0;i<a.length;i++){if(a[i]&&s<0)s=i;else if(!a[i]&&s>=0){o.push([s,i-1]);s=-1;}}if(s>=0)o.push([s,a.length-1]);return o;};
+  /* полосы короче 60 px — это остатки подписей, не маски */
+  const cols=bands(colHas).filter(b=>b[1]-b[0]>60), rows=bands(rowHas).filter(b=>b[1]-b[0]>60);
+  const boxes=[];
+  for(const [y0,y1] of rows) for(const [x0,x1] of cols){
+    let mnx=1e9,mny=1e9,mxx=-1,mxy=-1;
+    for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++) if(A(x,y)>24){
+      if(x<mnx)mnx=x; if(x>mxx)mxx=x; if(y<mny)mny=y; if(y>mxy)mxy=y; }
+    boxes.push({x:mnx,y:mny,w:mxx-mnx+1,h:mxy-mny+1});
+  }
+  /* единый масштаб на весь набор: иначе маска «дышит» между кадрами.
+     По X держим центр, по Y — верхний край: лоб стоит намертво, играет подбородок. */
+  const maxH=Math.max(...boxes.map(b=>b.h)), maxW=Math.max(...boxes.map(b=>b.w));
+  const k=Math.min(tile*fillPct/maxH, tile*fillPct/maxW);
+  const topPad=(tile-maxH*k)/2;
+  const frames=[];
+  for(const b of boxes){
+    const f=document.createElement('canvas'); f.width=tile; f.height=tile;
+    const fg=f.getContext('2d'); fg.imageSmoothingEnabled=true; fg.imageSmoothingQuality='high';
+    fg.drawImage(cv, b.x,b.y,b.w,b.h, (tile-b.w*k)/2, topPad, b.w*k, b.h*k);
+    frames.push(f);
+  }
+  return {frames, boxes, k};
+}
+
+/* ── кодирование ── */
+async function encode(frames, order, fps, totalFrames, bitrate, withAlpha, tile){
+  const mk = (bits, sink) => { const e=new VideoEncoder({
+      output:(chunk)=>{const b=new Uint8Array(chunk.byteLength);chunk.copyTo(b);
+        sink.push({t:chunk.timestamp,d:b,key:chunk.type==='key'});},
+      error:e=>{throw e;} });
+    e.configure({codec:'vp09.00.10.08',width:tile,height:tile,bitrate:bits,framerate:fps,latencyMode:'quality'});
+    return e; };
+  const chunks=[], aChunks=[];
+  const enc=mk(bitrate.c,chunks), aenc=withAlpha?mk(bitrate.a,aChunks):null;
+  const tmp=document.createElement('canvas'); tmp.width=tile; tmp.height=tile;
+  const tg=tmp.getContext('2d',{willReadFrequently:true});
+  const aBufY=new Uint8Array(tile*tile), aBufUV=new Uint8Array(tile*tile/2).fill(128);
+  for(let i=0;i<totalFrames;i++){
+    const src=frames[order[i]];
+    const ts=Math.round(i*1e6/fps), dur=Math.round(1e6/fps);
+    const vf=new VideoFrame(src,{timestamp:ts,duration:dur});
+    enc.encode(vf,{keyFrame:i===0}); vf.close();
+    if(withAlpha){
+      tg.clearRect(0,0,tile,tile); tg.drawImage(src,0,0);
+      const px=tg.getImageData(0,0,tile,tile).data;
+      for(let p=0,q=3;p<aBufY.length;p++,q+=4) aBufY[p]=px[q];
+      const buf=new Uint8Array(tile*tile*1.5); buf.set(aBufY,0); buf.set(aBufUV,tile*tile);
+      const af=new VideoFrame(buf,{format:'I420',codedWidth:tile,codedHeight:tile,timestamp:ts,duration:dur});
+      aenc.encode(af,{keyFrame:i===0}); af.close();
+    }
+  }
+  await enc.flush(); enc.close();
+  if(aenc){await aenc.flush(); aenc.close();}
+  return {chunks,aChunks};
+}
+
+window.build = async (opts) => {
+  const {src, tile=100, fillPct=0.98, fps=30, totalFrames=89, mode='forward', bitrate} = opts;
+  const {frames, boxes} = await sliceSheet(src, tile, fillPct);
+  const N=frames.length;
+  /* раскладка уникальных кадров по слотам: дубликаты VP9 кодирует почти даром */
+  const order=[];
+  if(mode==='pingpong'){
+    const seq=[...Array(N).keys(), ...[...Array(N-2).keys()].map(i=>N-2-i)];
+    for(let i=0;i<totalFrames;i++) order.push(seq[Math.min(seq.length-1, Math.floor(i*seq.length/totalFrames))]);
+  } else {
+    for(let i=0;i<totalFrames;i++) order.push(Math.min(N-1, Math.floor(i*N/totalFrames)));
+  }
+  const withAlpha = (()=>{ try{const f=new VideoFrame(new Uint8Array(6),{format:'I420',codedWidth:2,codedHeight:2,timestamp:0});f.close();return true;}catch{return false;} })();
+  const {chunks,aChunks} = await encode(frames, order, fps, totalFrames, bitrate, withAlpha, tile);
+  const blob = mux(chunks, withAlpha?aChunks:null, tile, tile, fps, totalFrames*1000/fps);
+  const b64 = await new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result.split(',')[1]);fr.readAsDataURL(blob);});
+  const bytes = cs => cs.reduce((t,c)=>t+c.d.length,0);
+  return {b64, size:blob.size, uniqueFrames:N, withAlpha,
+          split:{color:bytes(chunks), alpha:bytes(aChunks)}, boxes:boxes.length};
+};
+window.sliceOnly = async (src,tile,fillPct) => {
+  const {frames}=await sliceSheet(src,tile,fillPct);
+  return frames.map(f=>f.toDataURL('image/png').split(',')[1]);
+};
+</script>

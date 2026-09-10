@@ -1,0 +1,10 @@
+TTS — Telegram custom emoji · реакции
+вариант: с фоном (подложки), светлая тема  (plate-light)
+файлов: 4 · VP9, 100×100, 30 fps, 2.967 s, по одному слоту
+
+22-rage0.webm — Рейтинг 0+
+23-rage12.webm — Рейтинг 12+
+24-rage16.webm — Рейтинг 16+
+25-rage18.webm — Рейтинг 18+
+
+Загрузка: @Stickers → /newemojipack → перетащить .webm по порядку имён.

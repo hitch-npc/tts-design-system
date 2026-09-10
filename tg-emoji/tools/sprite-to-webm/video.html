@@ -1,0 +1,170 @@
+<meta charset="utf-8"><title>video → tg emoji</title>
+<script src="webm.js"></script>
+<script>
+/* Видео (например из Higgsfield) → Telegram custom emoji.
+ *
+ * Три вещи, которые делает конвейер помимо кодирования:
+ *
+ * 1. Снимает фон — ТОЛЬКО вокруг маски, заливкой от краёв. Порогом яркости нельзя:
+ *    маска ivory почти того же значения, что белый фон, и порог съедает её целиком.
+ *
+ *    Внутри маски сквозных дырок не делаем. В исходнике белые не только прорези глаз
+ *    и рта, но и просветы резьбы на лбу и щель носа — вырезав всё «белое замкнутое»,
+ *    получаем маску в дырках. Поэтому крупные проёмы (глаза, рот) ЗАЛИВАЮТСЯ тёмным,
+ *    а мелочь резьбы остаётся как есть: она почти в цвет ivory и не читается.
+ *
+ * 2. Стабилизирует. Генератор дышит: между первым и последним кадром объект
+ *    уезжает и меняет габарит на несколько процентов. Каждый кадр ставится по
+ *    центру своего bbox, масштаб на весь клип один — иначе маска дрожит.
+ *
+ * 3. Добавляет парение. Синус по вертикали плюс встречный наклон, период равен
+ *    длине клипа — поэтому колебание замыкается и стык цикла не виден.
+ */
+window.buildFromVideo = async (opt) => {
+  const src      = opt.src;
+  const TILE     = opt.tile     ?? 100;
+  const FPS      = opt.fps      ?? 30;
+  const FRAMES   = opt.frames   ?? 89;      /* 89 × 33.3 мс = 2.967 с */
+  /* Запас по краям считается под худший кадр качания. При наклоне θ вертикальный
+     габарит объекта = H·cosθ + W·sinθ, и на 8° он вырастает почти на 10 %. Плюс зум
+     и смещение по вертикали, плюс сам генератор к концу клипа раздувает маску.
+     0.76 — то, при чём угол маски не срезается ни в одной фазе. */
+  const FILL     = opt.fill     ?? 0.76;
+  const BG       = opt.bg       ?? 244;
+  /* доля от площади маски, начиная с которой белый проём считается глазом или ртом.
+     Замеры на исходнике: глаза ≈1.2 %, рот 1–2 %, щель носа 0.33 %, резьба лба <0.1 % */
+  const MIN_DARK = opt.minDark  ?? 0.007;
+  const DARK_RGB = opt.darkRgb  ?? [13,13,13];   /* --ink */
+  const SC       = opt.scale    ?? 0.4;     /* рабочее разрешение для кея */
+  const FLOAT_Y  = opt.floatY   ?? 4.5;     /* амплитуда парения по вертикали, px из TILE */
+  const FLOAT_R  = opt.floatRot ?? 8;       /* амплитуда качания, градусы */
+  const FLOAT_Z  = opt.floatZoom?? 0.05;    /* дыхание масштабом, доля */
+  const bitrate  = opt.bitrate;
+  const mode     = opt.mode     ?? 'forward';
+
+  const v=document.createElement('video'); v.src=src; v.muted=true;
+  await new Promise((res,rej)=>{v.onloadedmetadata=res;v.onerror=()=>rej(new Error('видео не открылось'));setTimeout(res,8000)});
+  const VW=v.videoWidth, VH=v.videoHeight, DUR=v.duration;
+  const t0 = opt.from ?? 0, t1 = opt.to ?? DUR;
+
+  const w=Math.round(VW*SC), h=Math.round(VH*SC);
+  const mid=document.createElement('canvas'); mid.width=w; mid.height=h;
+  const mg=mid.getContext('2d',{willReadFrequently:true});
+
+  /* сколько разных кадров тянуть из видео: в pingpong вторая половина — те же */
+  const uniqueCount = mode==='pingpong' ? Math.ceil(FRAMES/2)+1 : FRAMES;
+  const crops=[];
+  for(let i=0;i<uniqueCount;i++){
+    const t = t0 + (t1-t0) * (uniqueCount===1?0:i/(uniqueCount-1)) * 0.999;
+    v.currentTime=t;
+    await new Promise(r=>{v.onseeked=r;setTimeout(r,600)});
+    mg.clearRect(0,0,w,h); mg.drawImage(v,0,0,w,h);
+    const im=mg.getImageData(0,0,w,h), d=im.data;
+    const isBg=p=>{const q=p*4;return Math.min(d[q],d[q+1],d[q+2])>=BG;};
+
+    /* внешний фон */
+    const bg=new Uint8Array(w*h); const st=[];
+    const seed=p=>{if(!bg[p]&&isBg(p)){bg[p]=1;st.push(p);}};
+    for(let x=0;x<w;x++){seed(x);seed((h-1)*w+x);}
+    for(let y=0;y<h;y++){seed(y*w);seed(y*w+w-1);}
+    while(st.length){const p=st.pop(),x=p%w,y=(p-x)/w;
+      if(x>0)seed(p-1); if(x<w-1)seed(p+1); if(y>0)seed(p-w); if(y<h-1)seed(p+w);}
+
+    /* габарит маски — нужен, чтобы мерить проёмы в долях от неё */
+    let mnx=1e9,mny=1e9,mxx=-1,mxy=-1;
+    for(let y=0;y<h;y++)for(let x=0;x<w;x++){const p=y*w+x;
+      if(bg[p])continue;
+      if(x<mnx)mnx=x; if(x>mxx)mxx=x; if(y<mny)mny=y; if(y>mxy)mxy=y;}
+    const areaMask=(mxx-mnx+1)*(mxy-mny+1);
+
+    /* крупные белые проёмы внутри маски — глаза и рот — заливаем тёмным.
+       Не вырезаем: сквозная дырка на тёмном фоне чата выглядит провалом,
+       а рядом такими же белыми идут резьба лба и щель носа, которые трогать нельзя. */
+    const seen=new Uint8Array(w*h); let filled=0;
+    for(let p=0;p<w*h;p++){
+      if(bg[p]||seen[p]||!isBg(p))continue;
+      const q=[p];seen[p]=1;const cells=[p];
+      while(q.length){const c=q.pop(),cx=c%w,cy=(c-cx)/w;
+        for(const r of [cx>0?c-1:-1,cx<w-1?c+1:-1,cy>0?c-w:-1,cy<h-1?c+w:-1]){
+          if(r<0||seen[r]||bg[r]||!isBg(r))continue; seen[r]=1;q.push(r);cells.push(r);}}
+      /* Порога по площади мало: когда губы смыкаются посередине, щель рта распадается
+         на две половины примерно по 0.48 % — ниже порога, и рот остаётся белым.
+         Поэтому широкий проём в нижней половине маски заливается независимо от площади.
+         Щель носа мимо не пройдёт: она узкая и высокая (w/h ≈ 0.18). */
+      let ax=1e9,ay=1e9,bx=-1,by=-1;
+      for(const c of cells){const cx=c%w, cy=(c-cx)/w;
+        if(cx<ax)ax=cx; if(cx>bx)bx=cx; if(cy<ay)ay=cy; if(cy>by)by=cy;}
+      const cw=bx-ax+1, ch=by-ay+1;
+      const big  = cells.length/areaMask >= MIN_DARK;
+      const mouth= cells.length>=300 && cw>=ch*1.5 && (ay+by)/2 > mny+(mxy-mny)*0.5;
+      if(!big && !mouth) continue;
+      filled++;
+      const inSet=new Set(cells);
+      for(const c of cells){
+        const cx=c%w, cy=(c-cx)/w;
+        /* по краю проёма подмешиваем тёмное частично — иначе граница режет глаз */
+        let edge=false;
+        for(const r of [cx>0?c-1:-1,cx<w-1?c+1:-1,cy>0?c-w:-1,cy<h-1?c+w:-1])
+          if(r<0||!inSet.has(r)) edge=true;
+        const m=edge?0.55:1, q4=c*4;
+        d[q4]  =Math.round(d[q4]  *(1-m)+DARK_RGB[0]*m);
+        d[q4+1]=Math.round(d[q4+1]*(1-m)+DARK_RGB[1]*m);
+        d[q4+2]=Math.round(d[q4+2]*(1-m)+DARK_RGB[2]*m);
+      }
+    }
+    for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+      const p=y*w+x, q=p*4;
+      if(bg[p]){d[q]=d[q+1]=d[q+2]=0;d[q+3]=0;continue;}
+      let edge=false;
+      if(x>0&&bg[p-1])edge=true; if(x<w-1&&bg[p+1])edge=true;
+      if(y>0&&bg[p-w])edge=true; if(y<h-1&&bg[p+w])edge=true;
+      d[q+3]=edge?128:255;
+    }
+    mg.putImageData(im,0,0);
+    const cw=mxx-mnx+1, ch=mxy-mny+1;
+    const cc=document.createElement('canvas'); cc.width=cw; cc.height=ch;
+    cc.getContext('2d').drawImage(mid,mnx,mny,cw,ch,0,0,cw,ch);
+    crops.push({cv:cc,w:cw,h:ch});
+  }
+
+  /* масштаб один на весь клип: иначе объект дышит между кадрами */
+  const maxW=Math.max(...crops.map(c=>c.w)), maxH=Math.max(...crops.map(c=>c.h));
+  const k=Math.min(TILE*FILL/maxW, TILE*FILL/maxH);
+
+  const order=[];
+  if(mode==='pingpong'){
+    const seq=[...crops.keys(), ...[...crops.keys()].slice(1,-1).reverse()];
+    for(let i=0;i<FRAMES;i++) order.push(seq[Math.min(seq.length-1, Math.floor(i*seq.length/FRAMES))]);
+  } else for(let i=0;i<FRAMES;i++) order.push(Math.min(crops.length-1, Math.floor(i*crops.length/FRAMES)));
+
+  const out=document.createElement('canvas'); out.width=TILE; out.height=TILE;
+  const og=out.getContext('2d');
+  og.imageSmoothingEnabled=true; og.imageSmoothingQuality='high';
+  const getFrame = async i => {
+    const c=crops[order[i]];
+    /* период = длина цикла, поэтому колебание замыкается и стык не виден.
+       Фазы разведены: качание идёт по косинусу — маска кренится на верхней и нижней
+       точке дуги, а не в момент подъёма; масштаб в противофазе к высоте — внизу
+       объект мельче, вверху крупнее, это и читается как парение, а не как дрожь. */
+    const ph = 2*Math.PI*i/FRAMES;
+    const dy = FLOAT_Y*Math.sin(ph);
+    const rot= FLOAT_R*Math.cos(ph)*Math.PI/180;
+    const sc = 1 - FLOAT_Z*Math.sin(ph);
+    og.clearRect(0,0,TILE,TILE);
+    og.save();
+    og.translate(TILE/2, TILE/2 + dy);
+    og.rotate(rot);
+    og.scale(sc, sc);
+    og.drawImage(c.cv, -c.w*k/2, -c.h*k/2, c.w*k, c.h*k);
+    og.restore();
+    return out;
+  };
+
+  const {chunks,aChunks,withAlpha} = await encodeFrames(getFrame, FRAMES, FPS, bitrate, TILE);
+  const blob = mux(chunks, withAlpha?aChunks:null, TILE, TILE, FPS, FRAMES*1000/FPS);
+  const bytes = cs => cs.reduce((t,c)=>t+c.d.length,0);
+  return {b64:await blobToB64(blob), size:blob.size, videoW:VW, videoH:VH, duration:+DUR.toFixed(2),
+          uniqueFrames:crops.length, withAlpha, split:{color:bytes(chunks),alpha:bytes(aChunks)},
+          maxW,maxH};
+};
+</script>

@@ -1,0 +1,105 @@
+<meta charset="utf-8"><title>keyout</title>
+<script>
+/* Выбивание фона из спрайта масок.
+ *
+ * Фон ищется заливкой от краёв, а не порогом яркости: кожа маски — почти белый
+ * ivory, и любой порог по «белизне» съедает её вместе с фоном (первый заход
+ * именно так и превратил мрамор в металл).
+ *
+ * Отверстия маски — прорези глаз и открытый рот — заливкой от края недостижимы,
+ * поэтому берутся вторым проходом: замкнутые области фонового цвета крупнее
+ * MIN_HOLE. Мелочь отсекается, иначе блики на коже превращаются в дырки.
+ *
+ * Тёмная полость рта (бывает, когда генератор рисует внутрь тень) снимается
+ * третьим проходом с жёстким порогом: тени резьбы и золото на маске тоже тёмные,
+ * поэтому кандидат обязан быть широким, замкнутым и лежать в нижней половине кадра.
+ */
+window.processSheet = async (src, opt={}) => {
+  const BG      = opt.bg      ?? 244;   /* min-канал ≥ этого — цвет фона        */
+  const MIN_HOLE= opt.minHole ?? 400;   /* меньше — блик, а не отверстие        */
+  const DARK    = opt.dark    ?? 62;    /* порог тёмной полости                 */
+  const DARK_MIN= opt.darkMin ?? 250;
+  const DARK_MAX= opt.darkMax ?? 9000;
+  const FEATHER = opt.feather ?? true;
+
+  const img=await new Promise((r,j)=>{const i=new Image();i.onload=()=>r(i);i.onerror=j;i.src=src;});
+  const W=img.naturalWidth,H=img.naturalHeight;
+  const cv=document.createElement('canvas');cv.width=W;cv.height=H;
+  const g=cv.getContext('2d',{willReadFrequently:true});g.drawImage(img,0,0);
+  const im=g.getImageData(0,0,W,H), d=im.data;
+  const mn=p=>{const i=p*4;return Math.min(d[i],d[i+1],d[i+2]);};
+  const lum=p=>{const i=p*4;return .299*d[i]+.587*d[i+1]+.114*d[i+2];};
+  const isBg=p=>mn(p)>=BG;
+
+  /* 1. внешний фон — заливка от краёв */
+  const bg=new Uint8Array(W*H); const st=[];
+  const seed=p=>{if(!bg[p]&&isBg(p)){bg[p]=1;st.push(p);}};
+  for(let x=0;x<W;x++){seed(x);seed((H-1)*W+x);}
+  for(let y=0;y<H;y++){seed(y*W);seed(y*W+W-1);}
+  while(st.length){const p=st.pop(),x=p%W,y=(p-x)/W;
+    if(x>0)seed(p-1); if(x<W-1)seed(p+1); if(y>0)seed(p-W); if(y<H-1)seed(p+W);}
+
+  /* 2. сетка кадров (нужна для третьего прохода и для отчёта);
+        полосы короче 60 px — подписи под масками, не кадры */
+  const colHas=new Uint8Array(W),rowHas=new Uint8Array(H);
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(!bg[y*W+x]){colHas[x]=1;rowHas[y]=1;}
+  const bands=a=>{const o=[];let s=-1;for(let i=0;i<a.length;i++){if(a[i]&&s<0)s=i;else if(!a[i]&&s>=0){o.push([s,i-1]);s=-1;}}if(s>=0)o.push([s,a.length-1]);return o;};
+  const cols=bands(colHas).filter(b=>b[1]-b[0]>60), rows=bands(rowHas).filter(b=>b[1]-b[0]>60);
+
+  /* 3. отверстия фонового цвета: прорези глаз, открытый светлый рот */
+  const seen=new Uint8Array(W*H); let holes=0, holeCount=0;
+  for(let p=0;p<W*H;p++){
+    if(bg[p]||seen[p]||!isBg(p))continue;
+    const q=[p];seen[p]=1;const cells=[p];
+    while(q.length){const c=q.pop(),x=c%W,y=(c-x)/W;
+      for(const r of [x>0?c-1:-1,x<W-1?c+1:-1,y>0?c-W:-1,y<H-1?c+W:-1]){
+        if(r<0||seen[r]||bg[r]||!isBg(r))continue; seen[r]=1;q.push(r);cells.push(r);}}
+    if(cells.length>=MIN_HOLE){ for(const c of cells) bg[c]=1; holes+=cells.length; holeCount++; }
+  }
+
+  /* 4. тёмная полость рта — только широкая, замкнутая, в нижней половине кадра */
+  const seenD=new Uint8Array(W*H); let darkCut=0, darkCount=0; const darkList=[];
+  for(const [y0,y1] of rows) for(const [x0,x1] of cols){
+    const midY=y0+(y1-y0)*0.5;
+    for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){
+      const p=y*W+x;
+      if(seenD[p]||bg[p]||lum(p)>=DARK)continue;
+      const q=[p];seenD[p]=1;const cells=[p];let touch=false;
+      let mnx=x,mxx=x,mny=y,mxy=y;
+      while(q.length){const c=q.pop(),cx=c%W,cy=(c-cx)/W;
+        if(cx<mnx)mnx=cx;if(cx>mxx)mxx=cx;if(cy<mny)mny=cy;if(cy>mxy)mxy=cy;
+        for(const r of [c-1,c+1,c-W,c+W]){ if(r<0||r>=W*H)continue;
+          if(bg[r]){touch=true;continue;}
+          if(seenD[r]||lum(r)>=DARK)continue; seenD[r]=1;q.push(r);cells.push(r);}}
+      const w=mxx-mnx+1,h=mxy-mny+1;
+      const ok = !touch && cells.length>=DARK_MIN && cells.length<=DARK_MAX
+                 && w>h*0.9 && mny>midY;
+      if(ok){ for(const c of cells) bg[c]=1; darkCut+=cells.length; darkCount++;
+              darkList.push({n:cells.length,x:mnx,y:mny,w,h}); }
+    }
+  }
+
+  /* 5. альфа: бинарная, край съедаем на пиксель — там сидит светлая кайма JPEG */
+  const alpha=new Float32Array(W*H);
+  for(let p=0;p<W*H;p++) alpha[p]=bg[p]?0:1;
+  if(FEATHER){
+    const er=new Float32Array(W*H);
+    for(let y=0;y<H;y++)for(let x=0;x<W;x++){const p=y*W+x;
+      if(!alpha[p]){er[p]=0;continue;}
+      let edge=false;
+      if(x>0&&!alpha[p-1])edge=true; if(x<W-1&&!alpha[p+1])edge=true;
+      if(y>0&&!alpha[p-W])edge=true; if(y<H-1&&!alpha[p+W])edge=true;
+      er[p]=edge?0.5:1;}
+    alpha.set(er);
+  }
+  for(let p=0,i=0;p<W*H;p++,i+=4){
+    const a=alpha[p];
+    if(a<=0){d[i]=d[i+1]=d[i+2]=0;d[i+3]=0;}
+    else d[i+3]=Math.round(a*255);
+  }
+  g.putImageData(im,0,0);
+  return {W,H,cols,rows,cells:cols.length*rows.length,
+          holeCount,holePixels:holes,darkCount,darkPixels:darkCut,darkList,
+          sheet:cv.toDataURL('image/png').split(',')[1]};
+};
+</script>

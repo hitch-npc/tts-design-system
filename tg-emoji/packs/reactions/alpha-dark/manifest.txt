@@ -1,0 +1,17 @@
+TTS — Telegram custom emoji · реакции
+вариант: без фона (альфа), тёмная тема  (alpha-dark)
+файлов: 11 · VP9, 100×100, 30 fps, 2.967 s, по одному слоту
+
+15-rlike.webm — Лайк
+16-rmask.webm — Маска: комедия ↔ трагедия
+17-rticket.webm — Билетик
+18-reye.webm — Глаз-лого
+19-rspot.webm — Софит прямо
+20-rspotl.webm — Софит влево
+21-rspotr.webm — Софит вправо
+22-rage0.webm — Рейтинг 0+
+23-rage12.webm — Рейтинг 12+
+24-rage16.webm — Рейтинг 16+
+25-rage18.webm — Рейтинг 18+
+
+Загрузка: @Stickers → /newemojipack → перетащить .webm по порядку имён.
