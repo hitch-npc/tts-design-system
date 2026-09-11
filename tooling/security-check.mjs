@@ -4,7 +4,7 @@
  * ────────────────────────────────────────────────────
  * Репозиторий ПУБЛИЧНЫЙ. Скрипт проверяет всё, что уйдёт в git: отслеживаемые файлы
  * и новые, не закрытые .gitignore. Выход 1, если нашлось хоть одно:
- *   • запрещённый путь или формат: decks/ docs/ figma/ smm/ uploads/ _archive/ brand/source/,
+ *   • запрещённый путь или формат: decks/ docs/ smm/ uploads/ _archive/ brand/source/, в figma/ — всё, кроме .js,
  *     .fig .ai .psd .pptx .key .pdf .zip .mp4 .bak .pem, .env, .DS_Store
  *   • секрет: приватный ключ, токены GitHub / OpenAI / Anthropic / AWS / Google / Slack / Telegram
  *   • личные данные: e-mail не из списка заглушек, путь /Users/…, имя автора
@@ -28,7 +28,8 @@ const SELF = fileURLToPath(import.meta.url);
 const ROOT = join(dirname(SELF), '..');
 const SELF_REL = relative(ROOT, SELF);
 
-const FORBIDDEN_DIR = /^(decks|docs|figma|smm|uploads|_archive|brand\/source|node_modules)\//;
+const FORBIDDEN_DIR = /^(decks|docs|smm|uploads|_archive|brand\/source|node_modules)\//;
+const FIGMA_OK = /^figma\/[^/]+\.js$/; // Scripter-скрипты публичны, макеты — нет
 const FORBIDDEN_FILE = /(^|\/)(\.DS_Store|\.env[^/]*)$/;
 const FORBIDDEN_EXT = new Set(['.fig', '.ai', '.psd', '.sketch', '.pptx', '.key', '.pdf', '.zip', '.mp4', '.mov', '.bak', '.pem', '.p12']);
 const TEXT_EXT = new Set(['', '.html', '.css', '.js', '.mjs', '.json', '.md', '.txt', '.svg', '.yml', '.yaml']);
@@ -93,7 +94,7 @@ files = [...new Set(files)].filter((f) => existsSync(join(ROOT, f)));
 let scanned = 0, assets = 0;
 for (const file of files) {
   const ext = extname(file).toLowerCase();
-  if (FORBIDDEN_DIR.test(file) || FORBIDDEN_FILE.test(file) || FORBIDDEN_EXT.has(ext)) {
+  if (FORBIDDEN_DIR.test(file) || FORBIDDEN_FILE.test(file) || FORBIDDEN_EXT.has(ext) || (file.startsWith('figma/') && !FIGMA_OK.test(file))) {
     errors.push(`${file}  приватный путь или формат — не для публичного репозитория`);
     continue;
   }

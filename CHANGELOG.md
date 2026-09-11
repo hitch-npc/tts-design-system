@@ -14,6 +14,7 @@
 - Cookie-баннер: компонент, превью и спецификация: `site/cookie-banner/`.
 - Hero-блоки для Behance: `site/behance-hero-blocks.html`.
 - Telegram custom emoji: 14 лент и 11 реакций, сэндбокс, пакетный рендер в `.webm`, превью наборов: `tg-emoji/`.
+- Скрипты для Figma (плагин Scripter): переменные, стили и компоненты R14 собираются из токенов — `figma/*.js`.
 - Почтовые кампании v3 (`emails/`), ранние концепты DS (`concepts/`), логотипы (`brand/`).
 - Витрина `index.html` для GitHub Pages.
 - Проверка перед публикацией `tooling/security-check.mjs` (`npm run security`), pre-push хук `.githooks/pre-push`, CI `.github/workflows/check.yml`.
