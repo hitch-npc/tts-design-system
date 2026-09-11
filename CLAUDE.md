@@ -59,7 +59,8 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 - `.gitignore` работает как **белый список**: в корне закрыто всё, открыто только перечисленное. Новая папка
   не попадёт в git, пока её явно не откроют строкой `!/папка/` — и только если в ней нет приватного.
 - **Никогда не публикуются:** `decks/`, `docs/` (аудиты, советы, референсы), `figma/*.fig` (скрипты `figma/*.js` — публичны), `smm/`
-  (контент-планы), `uploads/`, `brand/source/` (.ai), `_archive/`, `tg-emoji/ref/`, `*/source/`, архивы .zip.
+  (контент-планы), `uploads/`, `brand/source/` (.ai), `_archive/`, `tg-emoji/ref/`, `*/source/`, архивы .zip,
+  `site/behance-hero-blocks.html` (кейс Behance — дизайн устарел, живёт только на Behance).
 - **Никаких личных данных:** реальные почты, телефоны, имена, пути `/Users/…`. В демо — только заглушки
   (`ivan@example.com`, `+7 (999) 000-00-00`). Список разрешённых заглушек — в `tooling/security-check.mjs`.
 - Перед push: `npm run check && npm run security`. Хук `.githooks/pre-push` запускает security сам

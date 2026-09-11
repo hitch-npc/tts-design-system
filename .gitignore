@@ -45,6 +45,8 @@
 !/figma/*.js
 
 # ── Исключения внутри открытых папок ──
+# кейс Behance: дизайн устарел (старая схема зала), живёт только на Behance
+/site/behance-hero-blocks.html
 /tooling/backup/
 /brand/source/
 /tg-emoji/ref/

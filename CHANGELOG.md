@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+## [14.1.1] — 2026-09-11
+
+### Удалено
+- Hero-блоки Behance (`site/behance-hero-blocks.html`): это кейс для Behance, его дизайн, включая схему зала, расходится с актуальной версией. Файл остаётся в истории под тегом `v14.1.0`.
+
 ## [14.1.0] — 2026-09-11
 
 Первая публикация R14 и продуктовых сборок в открытом репозитории.
@@ -48,6 +53,7 @@
 
 Версии R10–R11 в открытый репозиторий не выкладывались.
 
-[Unreleased]: https://github.com/hitch-npc/tts-design-system/compare/v14.1.0...HEAD
+[Unreleased]: https://github.com/hitch-npc/tts-design-system/compare/v14.1.1...HEAD
+[14.1.1]: https://github.com/hitch-npc/tts-design-system/compare/v14.1.0...v14.1.1
 [14.1.0]: https://github.com/hitch-npc/tts-design-system/compare/v9.2.0...v14.1.0
 [9.2.0]: https://github.com/hitch-npc/tts-design-system/releases/tag/v9.2.0
