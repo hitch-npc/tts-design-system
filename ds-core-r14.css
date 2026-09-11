@@ -59,14 +59,10 @@
   --danger-border:   #7A2020;
   --danger-text:     #FF8080;
 
-  /* Покупка — только кнопка перехода к оплате */
-  --buy:             #22C55E;
-  --buy-hover:       #16A34A;
-  --buy-text:        #FFFFFF;
-
   /* Схема зала */
   --seat-sel:        #22C55E;
   --seat-sold:       #2C2F36;
+  --seat-check:      #FFFFFF;
   --zone-1:          #C9975A;
   --zone-2:          #3F73E3;
   --zone-3:          #2BA7B8;
@@ -474,9 +470,6 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 }
 .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
 
-/* Покупка: зелёная только «Купить» на последнем шаге перед оплатой. Все остальные главные — .btn-primary */
-.btn-buy { background: var(--buy); color: var(--buy-text); border: 1px solid var(--buy); font-weight: 700; }
-.btn-buy:hover { background: var(--buy-hover); border-color: var(--buy-hover); }
 
 
 .btn-ghost {
@@ -3018,7 +3011,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .ds-footer-note { font-size: 10px; color: var(--n700); letter-spacing: .05em; }
 
 /* Выбранное место — зелёное с галочкой (новая схема зала) */
-.smap-dot-selected::after { content: '✓'; position: absolute; inset: 0; display: grid; place-items: center; font: 700 9px/1 var(--font); color: var(--buy-text); }
+.smap-dot-selected::after { content: '✓'; position: absolute; inset: 0; display: grid; place-items: center; font: 700 9px/1 var(--font); color: var(--seat-check); }
 
 /* 14.3 — капс только в коротких промо-надписях (до трёх слов); названия событий — никогда */
 .t-caps { text-transform: uppercase; letter-spacing: .04em; }

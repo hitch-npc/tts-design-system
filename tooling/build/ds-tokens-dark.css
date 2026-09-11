@@ -44,14 +44,10 @@
   --danger-border:   #7A2020;
   --danger-text:     #FF8080;
 
-  /* Покупка — только кнопка перехода к оплате */
-  --buy:             #22C55E;
-  --buy-hover:       #16A34A;
-  --buy-text:        #FFFFFF;
-
   /* Схема зала */
   --seat-sel:        #22C55E;
   --seat-sold:       #2C2F36;
+  --seat-check:      #FFFFFF;
   --zone-1:          #C9975A;
   --zone-2:          #3F73E3;
   --zone-3:          #2BA7B8;

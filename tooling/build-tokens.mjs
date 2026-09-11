@@ -57,7 +57,7 @@ function valueMap(theme) {
   m['--font']   = resolve(g.font.stack.ui.value);
   m['--f-head'] = resolve(g.font.stack.heading.value);
   m['--f-thin'] = resolve(g.font.stack.display.value);
-  for (const k of ['n850','buy','buy-hover','buy-text','seat-sel','seat-sold','zone-1','zone-2','zone-3','zone-4','zone-5']) m[`--${k}`] = c(k);
+  for (const k of ['n850','seat-sel','seat-sold','seat-check','zone-1','zone-2','zone-3','zone-4','zone-5']) m[`--${k}`] = c(k);
   m['--f-num']  = resolve(g.font.stack.number.value);
   for (const k of ['sp-1','sp-2','sp-3','sp-4','sp-5','sp-6','sp-8','sp-10','sp-12','sp-16','sp-20']) m[`--${k}`] = px(g.spacing[k].value);
   m['--section-gap-sm'] = px(g.spacing['section-sm'].value);
@@ -85,8 +85,7 @@ const GROUPS = [
   ['Блоб-атмосфера (solid)', ['--blob-core','--blob-mid','--blob-purple','--blob-faint']],
   ['Blob presets для событий', ['--blob-core-warm','--blob-mid-warm','--blob-core-cool','--blob-mid-cool','--blob-core-green','--blob-mid-green']],
   ['Семантические цвета', ['--success','--success-bg','--success-border','--danger','--danger-bg','--danger-border','--danger-text']],
-  ['Покупка — только кнопка перехода к оплате', ['--buy','--buy-hover','--buy-text']],
-  ['Схема зала', ['--seat-sel','--seat-sold','--zone-1','--zone-2','--zone-3','--zone-4','--zone-5']],
+  ['Схема зала', ['--seat-sel','--seat-sold','--seat-check','--zone-1','--zone-2','--zone-3','--zone-4','--zone-5']],
   ['Шрифты', ['--font','--f-head','--f-thin','--f-num']],
   ['Отступы', ['--sp-1','--sp-2','--sp-3','--sp-4','--sp-5','--sp-6','--sp-8','--sp-10','--sp-12','--sp-16','--sp-20']],
   ['Межсекционные отступы', ['--section-gap-sm','--section-gap-md','--section-gap-lg']],

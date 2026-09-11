@@ -59,14 +59,10 @@
   --danger-border:   #FCA5A5;
   --danger-text:     #DC2626;
 
-  /* Покупка — только кнопка перехода к оплате */
-  --buy:             #22C55E;
-  --buy-hover:       #16A34A;
-  --buy-text:        #FFFFFF;
-
   /* Схема зала */
   --seat-sel:        #22C55E;
   --seat-sold:       #C0C3C9;
+  --seat-check:      #FFFFFF;
   --zone-1:          #C9975A;
   --zone-2:          #3F73E3;
   --zone-3:          #2BA7B8;
@@ -477,9 +473,6 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 }
 .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
 
-/* Покупка: зелёная только «Купить» на последнем шаге перед оплатой. Все остальные главные — .btn-primary */
-.btn-buy { background: var(--buy); color: var(--buy-text); border: 1px solid var(--buy); font-weight: 700; }
-.btn-buy:hover { background: var(--buy-hover); border-color: var(--buy-hover); }
 
 
 .btn-ghost {
@@ -670,7 +663,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .tag-accent  { background: var(--accent); color: #fff; border: 1px solid var(--accent); }
 .tag-green   { background: #DCFCE7; color: #16A34A; border: 1px solid #86EFAC; }
 .tag-red     { background: #FEE2E2; color: #DC2626; border: 1px solid #FCA5A5; }
-.tag-orange  { background: #221408; color: #FB923C; border: 1px solid #442810; }
+.tag-orange  { background: #FFEDD5; color: #C2410C; border: 1px solid #FED7AA; }
 .tag-premium { background: #0D0D0D; color: #FFFFFF; border: 1px solid #0D0D0D; }  /* ivory-инверсия, только Premium */
 
 /* Бейдж (круглый) */
@@ -3021,7 +3014,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .ds-footer-note { font-size: 10px; color: var(--n700); letter-spacing: .05em; }
 
 /* Выбранное место — зелёное с галочкой (новая схема зала) */
-.smap-dot-selected::after { content: '✓'; position: absolute; inset: 0; display: grid; place-items: center; font: 700 9px/1 var(--font); color: var(--buy-text); }
+.smap-dot-selected::after { content: '✓'; position: absolute; inset: 0; display: grid; place-items: center; font: 700 9px/1 var(--font); color: var(--seat-check); }
 
 /* 14.3 — капс только в коротких промо-надписях (до трёх слов); названия событий — никогда */
 .t-caps { text-transform: uppercase; letter-spacing: .04em; }
