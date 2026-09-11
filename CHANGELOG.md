@@ -4,6 +4,20 @@
 
 ## [Unreleased]
 
+## [14.2.0] — 2026-09-11
+
+### Добавлено
+- Новая схема зала для десктопа, тестовая сборка: `site/Схема зала - десктоп (для теста).html`.
+- Транзакционные письма в `emails/`: подтверждение оплаты, напоминание о спектакле, все шаблоны в одном файле.
+
+### Изменено
+- Письма переведены на R14: Cormorant в заголовках-дисплеях — 400, в остальных строках — 500, Google Fonts — `wght@400;500`.
+
+### Удалено
+- Ранние концепты DS (`concepts/`): дизайн устарел.
+- Письма-кампании v3 (`emails/campaigns-v3-final.html`, `emails/mobile-v3.html`): перенесены в приватный архив.
+- `brand/ds-thumbnails.png`.
+
 ## [14.1.1] — 2026-09-11
 
 ### Удалено
@@ -53,7 +67,8 @@
 
 Версии R10–R11 в открытый репозиторий не выкладывались.
 
-[Unreleased]: https://github.com/hitch-npc/tts-design-system/compare/v14.1.1...HEAD
+[Unreleased]: https://github.com/hitch-npc/tts-design-system/compare/v14.2.0...HEAD
+[14.2.0]: https://github.com/hitch-npc/tts-design-system/compare/v14.1.1...v14.2.0
 [14.1.1]: https://github.com/hitch-npc/tts-design-system/compare/v14.1.0...v14.1.1
 [14.1.0]: https://github.com/hitch-npc/tts-design-system/compare/v9.2.0...v14.1.0
 [9.2.0]: https://github.com/hitch-npc/tts-design-system/releases/tag/v9.2.0

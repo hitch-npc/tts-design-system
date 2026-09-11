@@ -32,12 +32,12 @@
 
 | Папка | Что внутри |
 |-------|-----------|
-| `site/` | Продуктовые сборки: `redesign-v2-dark.html` / `-light.html` (оффлайн, всё внутри одного файла), `behance-hero-blocks.html`, `cookie-banner/`, `partner-program/` (актуальный html + `handoff/` — пакет для передачи) |
-| `concepts/` | Ранние концепты DS (март 2026): Cobalt, CobaltFog, AcidLime, Stone v3, Horizon, Light in Darkness, мобильные v1/v2. Историческая витрина, не эталон — эталон R14 |
-| `emails/` | Почтовые кампании v3 (`campaigns-v3-final.html`, `mobile-v3.html`). Более старые письма — в `_archive/emails/` |
+| `site/` | Продуктовые сборки: `redesign-v2-dark.html` / `-light.html` (оффлайн, всё внутри одного файла), `Схема зала - десктоп (для теста).html` (новая схема зала, тест), `behance-hero-blocks.html` (только локально), `cookie-banner/`, `partner-program/` (актуальный html + `handoff/` — пакет для передачи) |
+| `concepts/` | Ранние концепты DS (март 2026): Cobalt, CobaltFog, AcidLime, Stone v3, Horizon, Light in Darkness, мобильные v1/v2. Историческая витрина, не эталон — эталон R14. В публичный репо не входит |
+| `emails/` | Транзакционные письма на R14: `email-1-payment-confirmation.html`, `email-2-reminder.html`, `emails-all.html`. Кампании v3 — в `_archive/emails/` |
 | `docs/` | `audits/` (SEO, UX, redesign v1/v2, рынок), `council/` (репорты и транскрипты советов), `refs/` (референсы, скриншоты интерфейса), `metrika-goals.pdf`, `skills-review.html` |
 | `smm/` | SMM-система и контент-планы (md + pdf), борд email-кампаний |
-| `brand/` | `logo/` — все варианты логотипа (png/svg), `source/` — исходники градиентов и рассылки (.ai), `ds-thumbnails.png` |
+| `brand/` | `logo/` — все варианты логотипа (png/svg), `source/` — исходники градиентов и рассылки (.ai) |
 | `decks/` | Питч-деки (pptx), презентации и демо (pdf) |
 | `figma/` | `DS R14.fig` + Scripter-скрипты: `figma-script.js` (переменные и стили, запускать первым), затем `figma-button.js`, `figma-components-2.js`, `figma-ds-all.js` |
 | `tg-emoji/` | Telegram custom emoji: сэндбокс, рендер, `packs/<вариант>/<лента>/` — ленты-склейки, `packs/reactions/<вариант>/` — одиночные реакции. См. `tg-emoji/README.md` |
@@ -60,7 +60,8 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
   не попадёт в git, пока её явно не откроют строкой `!/папка/` — и только если в ней нет приватного.
 - **Никогда не публикуются:** `decks/`, `docs/` (аудиты, советы, референсы), `figma/*.fig` (скрипты `figma/*.js` — публичны), `smm/`
   (контент-планы), `uploads/`, `brand/source/` (.ai), `_archive/`, `tg-emoji/ref/`, `*/source/`, архивы .zip,
-  `site/behance-hero-blocks.html` (кейс Behance — дизайн устарел, живёт только на Behance).
+  `site/behance-hero-blocks.html` (кейс Behance — дизайн устарел, живёт только на Behance),
+  `concepts/` (ранние концепты, дизайн устарел).
 - **Никаких личных данных:** реальные почты, телефоны, имена, пути `/Users/…`. В демо — только заглушки
   (`ivan@example.com`, `+7 (999) 000-00-00`). Список разрешённых заглушек — в `tooling/security-check.mjs`.
 - Перед push: `npm run check && npm run security`. Хук `.githooks/pre-push` запускает security сам

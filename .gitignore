@@ -4,7 +4,7 @@
 # Новый файл или папка в корне не попадёт в git, пока его явно
 # не откроют здесь — и только если это не жалко показать всем.
 # Приватное, не публикуется никогда: decks/ docs/ figma/*.fig smm/
-# uploads/ _archive/ brand/source/ — см. CLAUDE.md, «Git и публикация».
+# uploads/ _archive/ brand/source/ concepts/ — см. CLAUDE.md, «Git и публикация».
 # ─────────────────────────────────────────────────────────────
 /*
 
@@ -37,7 +37,6 @@
 !/site/
 !/tg-emoji/
 !/emails/
-!/concepts/
 !/brand/
 # из figma/ — только Scripter-скрипты, макет .fig закрыт
 !/figma/
