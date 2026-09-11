@@ -11,6 +11,7 @@
  * ОШИБКИ:
  *   • font-weight:300 вне разрешённого .smap-zoom-btn (R14: Cormorant ≥400/500; Light только для smap)
  *   • border-radius > 8px (система угловатая, потолок --r-lg = 8px; 9999/--r-full и % допустимы)
+ *   • Cormorant мельче 22px (с 14.3: ниже 22px — Forum, --f-head)
  * ПРЕДУПРЕЖДЕНИЯ (ошибки при --strict):
  *   • сырой #hex вне :root (CLAUDE.md: цвета только через переменные)
  *
@@ -65,7 +66,19 @@ for (const name of FILES) {
       }
     }
 
-    // 3) сырой #hex вне :root
+    // 3) Cormorant мельче 22px — с 14.3 такие названия набираются Forum
+    if (/font-family:\s*(var\(--f-thin\)|['"]?Cormorant)/.test(body)) {
+      const fsm = /font-size:\s*([^;]+);/.exec(body);
+      const first = fsm ? (fsm[1].trim().match(/^clamp\(\s*([^,]+),/) || [, fsm[1].trim()])[1].trim() : '';
+      const mm = first.match(/^([\d.]+)(px|rem)$/);
+      const px = mm ? (mm[2] === 'rem' ? mm[1] * 16 : +mm[1]) : null;
+      if (px !== null && px < 22) {
+        errors++;
+        fileMsgs.push(`  ✗ ОШИБКА  стр.${lineOf(css, bodyStart + fsm.index)}  Cormorant ${first} в "${selector}" — мельче 22px, используй Forum (--f-head)`);
+      }
+    }
+
+    // 4) сырой #hex вне :root
     if (!isRoot) {
       let hx; const hxRe = /#[0-9a-fA-F]{3,8}\b/g;
       while ((hx = hxRe.exec(body))) {

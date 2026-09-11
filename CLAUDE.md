@@ -70,6 +70,28 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 - Версии — SemVer, MAJOR = релиз DS. Новая версия: номер в `VERSION` + `package.json` + `package-lock.json`,
   запись в `CHANGELOG.md`, аннотированный тег `vX.Y.Z`.
 
+### Единый стиль по эталонам (с 14.3, 2026-09-11)
+Эталоны: редизайн v2 (обе темы), cookie-баннер, TTS партнёрам, Telegram-эмодзи, новая схема зала.
+Если старое правило ниже спорит с этим блоком — прав этот блок. Решения приняты на сверке стиля.
+- **Заголовки** — Cormorant обычным регистром, без разрядки: `.t-display` 500, `.t-h1` 400, `.t-h2` 500.
+  Forum — `.t-h3`: плитки категорий, подзаголовки карточек. Названия событий — никогда капсом.
+  Капс (`.t-caps`, `.promo-title`) — только короткие промо-надписи, до трёх слов.
+- **Кнопки** — капс, разрядка .16em; заливные 700, контурные 600 со светлым текстом (`--n100`, рамка `--n700`),
+  чтобы не выглядели неактивными. Размеры: lg 12px, md 11px, sm 9px.
+- **Кнопка покупки** `.btn-buy` (зелёная, белый текст, токены `--buy*`) — только «Купить» на самом последнем шаге
+  перед оплатой. Все остальные главные кнопки, включая «Перейти к оформлению» на схеме зала, — кобальт `.btn-primary`.
+- **Кобальт в тексте** — только крупно (от 17px) и в ссылках. Мелкие подписи и капс до 11px — серые. Светлого кобальта нет.
+- **Надзаголовок** — строка `.t-eyebrow` (10px, 600, .22em, `--n300`), без плашки и рамки.
+- **Серые подписи капсом** — один стиль: 10px, 500, .14em, `--n500` (`.t-caption`, `.form-label`, подписи к цифрам и полям).
+- **Меню** — капс, Manrope 500, 11px, .16em; неактивные пункты `--n300`, активный `--n100`.
+- **Активный чип / фильтр** — `--accent-ghost` + рамка `--accent` + текст `--n100`.
+- **Теги** — цвет по смыслу (оранжевый, зелёный, ivory); «Премьера» — сплошной кобальт, белый текст.
+- **Схема зала** — зоны `--zone-1…5` (ложа, партер, амфитеатр, бельэтаж, балкон) — `.smap-t-vip / partet / amphi / belet / balkon`;
+  выбранное место — зелёное с галочкой (`--seat-sel`), проданное — `--seat-sold`. На зелёной зоне (балкон) выбранное —
+  инверсия: светлое место, зелёная галочка. Новые зоны не делать в оттенках, близких к `--seat-sel`.
+- **Cormorant — только от 22px** (до 25pt — 500). Мельче — Forum 400: карточки афиши, горизонтальные карточки.
+  Страж (`npm run lint`) ловит Cormorant мельче 22px как ошибку.
+
 ### Что нового в R14 (2026-05-30)
 - **Cormorant Garamond ≤ 25pt** → толщина не меньше **Medium (500)**.
 - **Cormorant Garamond > 25pt** → толщина не меньше **Regular (400)**.
@@ -83,8 +105,8 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 |------|--------|-----|-----|
 | `.t-display` | clamp(2.8rem, 8vw, 5rem) | 300 | **400** |
 | `.t-h3` | clamp(1.3rem, 3vw, 1.8rem) | 300 | **500** |
-| `.event-card-title` | 1.3rem | 300 | **500** |
-| `.card-h-title` | 1rem | 300 | **500** |
+| `.event-card-title` | 1.3rem | 300 | **500** → с 14.3 Forum 400 |
+| `.card-h-title` | 1rem | 300 | **500** → с 14.3 Forum 400 |
 | `.empty-title` | 1.5rem | 300 | **500** |
 | `.hero-title` | clamp(2.2rem, 7vw, 4rem) | 300 | **400** |
 | `.promo-title` | clamp(1.8rem, 5vw, 2.8rem) | 300 | **500** |
@@ -110,7 +132,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 
 1. **Тёмная атмосфера** — фон `#0D0D0D` (--ink) имитирует театральный зал
 2. **Serif + Sans** — Forum/Cormorant для контента, Manrope для UI
-3. **Cobalt + Inversion** — единственный акцент `#0047FF`; Premium = ivory `#F5F4EE` + чёрный текст на тёмном фоне
+3. **Cobalt + Inversion** — единственный акцент `#0047FF`; Premium = ivory `#F5F4EE` + чёрный текст на тёмном фоне. Зелёный (`--buy`) — только у кнопки «Купить» на последнем шаге перед оплатой
 4. **Blob = жанр** — декоративные свечения кодируют жанр (cool=синий, warm=оранжевый, green=зелёный)
 
 ---
@@ -198,22 +220,23 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 | Переменная | Шрифт | Применение |
 |-----------|-------|-----------|
 | `--font` | Manrope | UI-элементы, кнопки, метки |
-| `--f-head` | Forum | Заголовки секций, навигация |
-| `--f-thin` | Cormorant Garamond 400/500 | Display-заголовки, названия событий (R14: 500 для ≤25pt, 400 для >25pt) |
+| `--f-head` | Forum | Названия мельче 22px: карточки афиши, плитки, подзаголовки (`.t-h3`) |
+| `--f-thin` | Cormorant Garamond 400/500 | Display и заголовки **от 22px** (до 25pt — 500, крупнее — 400/500) |
 | `--f-num` | Oranienbaum | Числа (цены, даты) |
 
 ### Классы типографики
 ```
-.t-display    — Cormorant, очень крупный, uppercase
-.t-h1         — Forum, 1.6rem+
-.t-h2         — Forum, 1.3rem
-.t-h3         — Forum, 1.1rem
+.t-display    — Cormorant 500, очень крупный, обычный регистр
+.t-h1         — Cormorant 400, 1.8–2.4rem, обычный регистр
+.t-h2         — Cormorant 500, 1.3–1.6rem, обычный регистр
+.t-h3         — Forum 400, 1.1rem — плитки категорий, подзаголовки карточек
 .t-subtitle   — Manrope 500, letter-spacing
 .t-body-lg    — 15px, line-height 1.75
 .t-body       — 14px, line-height 1.75
 .t-body-sm    — 12px
-.t-caption    — 10px, uppercase, letter-spacing .14em
-.t-label-accent — 9px, uppercase, letter-spacing .22em, color accent
+.t-caption    — 10px, 500, uppercase, .14em, --n500 — единственный стиль серых подписей капсом
+.t-eyebrow    — 10px, 600, uppercase, .22em, --n300 — надзаголовок строкой, без плашки
+                (.t-label-accent — устаревший алиас; кобальта на мелком тексте больше нет)
 .t-num        — Oranienbaum, числа и цены
 .t-price      — Oranienbaum, крупная цена
 ```
@@ -257,8 +280,9 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 
 ### Кнопки
 ```html
-<!-- Размеры: btn-lg (14px/28px) | btn-md (11px/22px) | btn-sm (9px/16px) -->
+<!-- Размеры: btn-lg 12px | btn-md 11px | btn-sm 9px (min 36px). Капс, разрядка .16em; заливные 700, контурные 600 -->
 <button class="btn btn-primary btn-md">CTA</button>
+<button class="btn btn-buy btn-md">Купить</button>  <!-- ТОЛЬКО последний шаг перед оплатой; «Перейти к оформлению» — btn-primary -->
 <button class="btn btn-ghost btn-md">Вторичное</button>
 <button class="btn btn-ghost-accent btn-md">Ghost с акцентом</button>
 <button class="btn btn-dark btn-md">Тёмная</button>
@@ -282,7 +306,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 ### Теги / бейджи
 ```html
 <span class="tag tag-default">Театр</span>
-<span class="tag tag-accent">Премьера</span>   <!-- blue -->
+<span class="tag tag-accent">Премьера</span>   <!-- сплошной кобальт, белый текст -->
 <span class="tag tag-orange">Мало мест</span>
 <span class="tag tag-green">Новинка</span>
 <span class="tag tag-premium">Premium</span>   <!-- ivory inversion -->
@@ -300,7 +324,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
   </div>
   <div class="event-card-body">
     <div class="event-card-meta">Театр · Москва</div>
-    <div class="event-card-title">Название</div>           <!-- Cormorant 300 -->
+    <div class="event-card-title">Название</div>           <!-- Forum 400 (мельче 22px), обычный регистр — никогда капсом -->
     <div class="event-card-sub">Площадка</div>
     <div class="event-card-footer">
       <div><span class="event-card-price-label">от</span>
@@ -409,7 +433,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 ```
 
 **Правила:**
-- `venue-chip-active` использует инверсионный паттерн (`--n100` фон + `--ink` текст), не accent — чтобы не конкурировать с CTA
+- `venue-chip-active` и любой активный чип: фон `--accent-ghost` + рамка `--accent` + текст `--n100` — тот же принцип, что у выбранной строки сеанса
 - Выбранная строка: `border --accent` + `background --accent-ghost` + цена окрашивается в `--accent`
 - Кнопка `Выбрать места` — `disabled` до клика по строке. Disabled-стиль уже в `.btn:disabled` (фон `--n800`, цвет `--n600`)
 - Не использовать цветные плашки цен как CTA (это разрушает принцип «один акцент»)
@@ -456,9 +480,10 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
   <div class="smap-scene">Сцена</div>
   <div class="smap-rows">
     <div class="smap-row">
-      <div class="seat seat-avail"></div>   <!-- доступно: --accent -->
-      <div class="seat seat-sold"></div>    <!-- продано: --n800 -->
-      <div class="seat seat-sel"></div>     <!-- выбрано: белый -->
+      <button class="smap-dot smap-t-partet"></button>                    <!-- доступно: цвет зоны -->
+      <button class="smap-dot smap-t-partet smap-dot-sold"></button>      <!-- продано: --seat-sold -->
+      <button class="smap-dot smap-t-partet smap-dot-selected"></button>  <!-- выбрано: зелёное с галочкой -->
+      <!-- зоны: .smap-t-vip (ложа) · .smap-t-partet · .smap-t-amphi · .smap-t-belet · .smap-t-balkon = --zone-1…5 -->
     </div>
   </div>
 </div>
@@ -509,7 +534,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 
 - **Никогда** не задавай цвет или шрифт вручную — только через CSS-переменные
 - **Никогда** не используй border-radius > 8px в UI-компонентах (система угловатая)
-- Accent (`--accent`) только для интерактивных элементов и статусных тегов
+- Accent (`--accent`) только для интерактивных элементов и статусных тегов; в тексте — только крупно (от 17px: цифры, выбранный день, скидка) и в ссылках, на мелких подписях никогда
 - Ivory (`--premium`) только для Premium-блоков, не декоративно
 - Blob только через `.cover-blob-1/.cover-blob-2` или radial-gradient с blur
 - Шрифт Cormorant — только названия событий и display. Для UI — Manrope

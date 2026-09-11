@@ -17,6 +17,7 @@
   --n600:            #A8A8A5;
   --n700:            #B5B5B0;
   --n800:            #E2E1DA;
+  --n850:            #EAE9E2;
   --n900:            #F2F1EB;
   --n950:            #FAFAF7;
 
@@ -42,6 +43,20 @@
   --danger-bg:       #FEE2E2;
   --danger-border:   #FCA5A5;
   --danger-text:     #DC2626;
+
+  /* Покупка — только кнопка перехода к оплате */
+  --buy:             #22C55E;
+  --buy-hover:       #16A34A;
+  --buy-text:        #FFFFFF;
+
+  /* Схема зала */
+  --seat-sel:        #22C55E;
+  --seat-sold:       #C0C3C9;
+  --zone-1:          #C9975A;
+  --zone-2:          #3F73E3;
+  --zone-3:          #2BA7B8;
+  --zone-4:          #7E6FD0;
+  --zone-5:          #33B978;
 
   /* Шрифты */
   --font:            'Manrope', system-ui, sans-serif;

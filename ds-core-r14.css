@@ -32,6 +32,7 @@
   --n600:            #626260;
   --n700:            #4A4A48;
   --n800:            #262930;
+  --n850:            #1F222A;
   --n900:            #191C22;
   --n950:            #111318;
 
@@ -57,6 +58,20 @@
   --danger-bg:       #2D1010;
   --danger-border:   #7A2020;
   --danger-text:     #FF8080;
+
+  /* Покупка — только кнопка перехода к оплате */
+  --buy:             #22C55E;
+  --buy-hover:       #16A34A;
+  --buy-text:        #FFFFFF;
+
+  /* Схема зала */
+  --seat-sel:        #22C55E;
+  --seat-sold:       #2C2F36;
+  --zone-1:          #C9975A;
+  --zone-2:          #3F73E3;
+  --zone-3:          #2BA7B8;
+  --zone-4:          #7E6FD0;
+  --zone-5:          #33B978;
 
   /* Шрифты */
   --font:            'Manrope', system-ui, sans-serif;
@@ -250,7 +265,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   font-weight: 600;
   letter-spacing: .25em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--n300);
 }
 .ds-section-title {
   font-family: var(--f-head);
@@ -330,37 +345,37 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 /* Стили типографики — site tokens */
 .t-display {
   font-family: var(--f-thin);
-  font-weight: 400;
-  font-size: clamp(2.8rem, 8vw, 5rem);
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  line-height: .95;
+  font-weight: 500;
+  font-size: clamp(2.6rem, 6vw, 4.4rem);
+  letter-spacing: 0;
+  
+  line-height: 1.02;
   color: var(--n100);
 }
 .t-h1 {
-  font-family: var(--f-head);
+  font-family: var(--f-thin);
   font-weight: 400;
-  font-size: clamp(1.8rem, 5vw, 2.8rem);
-  letter-spacing: .10em;
-  text-transform: uppercase;
-  line-height: 1;
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  letter-spacing: 0;
+  
+  line-height: 1.1;
   color: var(--n100);
 }
 .t-h2 {
-  font-family: var(--f-head);
-  font-weight: 400;
-  font-size: clamp(1.3rem, 3vw, 1.8rem);
-  letter-spacing: .10em;
-  text-transform: uppercase;
-  line-height: 1.1;
+  font-family: var(--f-thin);
+  font-weight: 500;
+  font-size: clamp(1.375rem, 2.6vw, 1.6rem);
+  letter-spacing: 0;
+  
+  line-height: 1.15;
   color: var(--n100);
 }
 .t-h3 {
-  font-family: var(--f-thin);
-  font-weight: 500;
-  font-size: clamp(1.3rem, 3vw, 1.8rem);
-  letter-spacing: .08em;
-  line-height: 1.1;
+  font-family: var(--f-head);
+  font-weight: 400;
+  font-size: 1.1rem;
+  letter-spacing: .04em;
+  line-height: 1.2;
   color: var(--n100);
 }
 .t-subtitle {
@@ -377,16 +392,16 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .t-caption {
   font-size: 10px;
   font-weight: 500;
-  letter-spacing: .18em;
+  letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--n500);
 }
-.t-label-accent {
+.t-eyebrow, .t-label-accent {
   font-size: 10px;
   font-weight: 600;
   letter-spacing: .22em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--n300);
 }
 .t-num {
   font-family: var(--f-num);
@@ -436,7 +451,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   gap: 8px;
   font-family: var(--font);
   font-weight: 600;
-  letter-spacing: .14em;
+  letter-spacing: .16em;
   text-transform: uppercase;
   border-radius: var(--r-sm);
   transition: background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
@@ -446,8 +461,8 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .btn:active { transform: scale(.98); }
 
 /* Размеры */
-.btn-lg { font-size: 11px; padding: 14px 28px; }
-.btn-md { font-size: 10px; padding: 11px 22px; }
+.btn-lg { font-size: 12px; padding: 16px 32px; }
+.btn-md { font-size: 11px; padding: 13px 24px; }
 .btn-sm { font-size: 9px;  padding: 10px 16px; min-height: 36px; }
 
 /* Варианты */
@@ -455,8 +470,14 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   background: var(--accent);
   color: #fff;
   border: 1px solid var(--accent);
+  font-weight: 700;
 }
 .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+
+/* Покупка: зелёная только «Купить» на последнем шаге перед оплатой. Все остальные главные — .btn-primary */
+.btn-buy { background: var(--buy); color: var(--buy-text); border: 1px solid var(--buy); font-weight: 700; }
+.btn-buy:hover { background: var(--buy-hover); border-color: var(--buy-hover); }
+
 
 .btn-ghost {
   background: transparent;
@@ -537,8 +558,8 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 }
 .form-label {
   font-size: 10px;
-  font-weight: 600;
-  letter-spacing: .16em;
+  font-weight: 500;
+  letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--n500);
 }
@@ -643,10 +664,11 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   white-space: nowrap;
 }
 .tag-default { background: var(--n900); color: var(--n400); border: 1px solid var(--n800); }
-.tag-accent  { background: var(--accent-ghost); color: #7A9FFF; border: 1px solid var(--accent-border); }
+.tag-accent  { background: var(--accent); color: #fff; border: 1px solid var(--accent); }
 .tag-green   { background: #0A2210; color: #4ADE80; border: 1px solid #1A4428; }
 .tag-red     { background: #220A0A; color: #F87171; border: 1px solid #441414; }
 .tag-orange  { background: #221408; color: #FB923C; border: 1px solid #442810; }
+.tag-premium { background: #F5F4EE; color: #0D0D0D; border: 1px solid #F5F4EE; }  /* ivory-инверсия, только Premium */
 
 /* Бейдж (круглый) */
 .badge {
@@ -746,12 +768,12 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   flex: 1;
 }
 .event-card-title {
-  font-family: var(--f-thin);
+  font-family: var(--f-head);
   font-size: 1.3rem;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.2;
   color: var(--n100);
-  letter-spacing: .04em;
+  letter-spacing: .01em;
 }
 .event-card-sub {
   font-size: 11px;
@@ -772,11 +794,11 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   color: var(--n100);
 }
 .event-card-price-label {
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 500;
-  letter-spacing: .12em;
+  letter-spacing: .14em;
   text-transform: uppercase;
-  color: var(--n600);
+  color: var(--n500);
   display: block;
   margin-bottom: 2px;
 }
@@ -820,11 +842,11 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 }
 .event-card-h .card-h-body .tag-row { margin-bottom: 2px; }
 .event-card-h .card-h-title {
-  font-family: var(--f-thin);
+  font-family: var(--f-head);
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--n100);
-  letter-spacing: .02em;
+  letter-spacing: .01em;
   line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;
@@ -841,9 +863,9 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   margin-left: auto;
 }
 .event-card-h .card-h-price .event-card-price-label {
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: .16em;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--n500);
 }
@@ -906,10 +928,10 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 }
 .section-label {
   font-size: 10px;
-  font-weight: 600;
-  letter-spacing: .25em;
+  font-weight: 500;
+  letter-spacing: .14em;
   text-transform: uppercase;
-  color: var(--n600);
+  color: var(--n500);
   margin-bottom: 8px;
   display: flex;
   align-items: center;
@@ -1147,9 +1169,9 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .nav-drawer-meta {
   font-size: 10px;
   font-weight: 500;
-  letter-spacing: .1em;
+  letter-spacing: .14em;
   text-transform: uppercase;
-  color: var(--n600);
+  color: var(--n500);
   text-decoration: none;
   transition: color .15s;
 }
@@ -1194,9 +1216,9 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .nav-desktop-link {
   font-size: 11px;
   font-weight: 500;
-  letter-spacing: .10em;
+  letter-spacing: .16em;
   text-transform: uppercase;
-  color: var(--n500);
+  color: var(--n300);
   padding: 6px 12px;
   border-radius: var(--r-sm);
   text-decoration: none;
@@ -1287,8 +1309,8 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   font-family: var(--f-thin);
   font-weight: 500;
   font-size: 1.5rem;
-  letter-spacing: .06em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  
   color: var(--n200);
   margin-bottom: 8px;
 }
@@ -1362,11 +1384,11 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 }
 .hero-title {
   font-family: var(--f-thin);
-  font-weight: 400;
+  font-weight: 500;
   font-size: clamp(2.2rem, 7vw, 4rem);
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  line-height: .95;
+  letter-spacing: 0;
+  
+  line-height: 1.02;
   color: var(--n100);
   margin-bottom: 16px;
 }
@@ -1527,11 +1549,12 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   font-family: var(--f-thin);
   font-weight: 500;
   font-size: clamp(1.8rem, 5vw, 2.8rem);
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  line-height: .95;
+  letter-spacing: .04em;
+  
+  line-height: 1.05;
   color: var(--n100);
   margin-bottom: 12px;
+  text-transform: uppercase;
 }
 .promo-sub {
   font-size: 13px;
@@ -1608,9 +1631,9 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   font-family: var(--f-thin);
   font-weight: 500;
   font-size: clamp(2rem, 6vw, 3.6rem);
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  line-height: .95;
+  letter-spacing: 0;
+  
+  line-height: 1.05;
   color: var(--n100);
   margin-bottom: 10px;
 }
@@ -1649,11 +1672,11 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   flex-shrink: 0;
 }
 .ev-meta-label {
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: .18em;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .14em;
   text-transform: uppercase;
-  color: var(--n600);
+  color: var(--n500);
 }
 .ev-meta-value {
   font-size: 13px;
@@ -1724,10 +1747,10 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 /* Time slots */
 .ev-times-label {
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: .14em;
   text-transform: uppercase;
-  color: var(--n600);
+  color: var(--n500);
   margin-bottom: 10px;
 }
 .ev-times-row { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -1815,9 +1838,9 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 }
 .venue-chip:hover { border-color: var(--n600); color: var(--n100); }
 .venue-chip-active {
-  background: var(--n100);
-  color: var(--ink);
-  border-color: var(--n100);
+  background: var(--accent-ghost);
+  color: var(--n100);
+  border-color: var(--accent);
 }
 
 .session-count {
@@ -1938,7 +1961,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .session-summary-head {
   font-size: 11px;
   font-weight: 600;
-  color: var(--accent);
+  color: var(--n100);
   letter-spacing: .04em;
   text-transform: uppercase;
 }
@@ -2045,7 +2068,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   border-bottom: 1px solid var(--n900);
 }
 .cast-item:last-child { border-bottom: none; }
-.cast-role { font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--n600); min-width: 80px; }
+.cast-role { font-size: 10px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--n500); min-width: 80px; }
 .cast-name { font-size: 13px; color: var(--n200); text-align: right; }
 
 /* ─── Seat Map v2 — dot seats, Yandex-style ─── */
@@ -2082,7 +2105,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   border-radius: 50%;
   flex-shrink: 0;
 }
-.smap-legend-dot-sold { background: rgba(255,255,255,.12) !important; }
+.smap-legend-dot-sold { background: var(--seat-sold) !important; }
 .smap-legend-price {
   color: var(--n600);
   font-size: 9px;
@@ -2136,10 +2159,10 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .smap-zone-label {
   align-self: flex-start;
   font-size: 8px;
-  font-weight: 700;
-  letter-spacing: .18em;
+  font-weight: 500;
+  letter-spacing: .14em;
   text-transform: uppercase;
-  color: var(--n700);
+  color: var(--n500);
   margin: 14px 0 5px 20px;
 }
 
@@ -2170,37 +2193,43 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .smap-dot {
   width: 12px;
   height: 12px;
-  border-radius: 0;
+  border-radius: var(--r-sm);
   border: none;
   padding: 0;
   cursor: pointer;
   flex-shrink: 0;
   transition: background var(--dur-fast) var(--ease-out);
+  position: relative;
 }
 .smap-dot-sold {
-  background: rgba(255,255,255,.07) !important;
+  background: var(--seat-sold) !important;
   cursor: not-allowed;
 }
 
 /* ─ Tier: VIP ─ */
-.smap-t-vip { background: rgba(201,151,90,.38); }
-.smap-t-vip:hover:not(.smap-dot-sold) { background: rgba(201,151,90,.85); }
-.smap-t-vip.smap-dot-selected { background: #C9975A; outline: 1.5px solid #F5F4EE; outline-offset: 1px; }
+.smap-t-vip { background: var(--zone-1); }
+.smap-t-vip:hover:not(.smap-dot-sold) { background: var(--zone-1); filter: brightness(1.18); }
+.smap-t-vip.smap-dot-selected { background: var(--seat-sel);   }
 
 /* ─ Tier: Партер ─ */
-.smap-t-partet { background: rgba(74,140,255,.38); }
-.smap-t-partet:hover:not(.smap-dot-sold) { background: rgba(74,140,255,.85); }
-.smap-t-partet.smap-dot-selected { background: #4A8CFF; outline: 1.5px solid #F5F4EE; outline-offset: 1px; }
+.smap-t-partet { background: var(--zone-2); }
+.smap-t-partet:hover:not(.smap-dot-sold) { background: var(--zone-2); filter: brightness(1.18); }
+.smap-t-partet.smap-dot-selected { background: var(--seat-sel);   }
 
 /* ─ Tier: Амфитеатр ─ */
-.smap-t-amphi { background: rgba(43,196,216,.32); }
-.smap-t-amphi:hover:not(.smap-dot-sold) { background: rgba(43,196,216,.85); }
-.smap-t-amphi.smap-dot-selected { background: #2BC4D8; outline: 1.5px solid #F5F4EE; outline-offset: 1px; }
+.smap-t-amphi { background: var(--zone-3); }
+.smap-t-amphi:hover:not(.smap-dot-sold) { background: var(--zone-3); filter: brightness(1.18); }
+.smap-t-amphi.smap-dot-selected { background: var(--seat-sel);   }
 
 /* ─ Tier: Балкон ─ */
-.smap-t-balkon { background: rgba(56,212,138,.28); }
-.smap-t-balkon:hover:not(.smap-dot-sold) { background: rgba(56,212,138,.8); }
-.smap-t-balkon.smap-dot-selected { background: #38D48A; outline: 1.5px solid #F5F4EE; outline-offset: 1px; }
+.smap-t-balkon { background: var(--zone-5); }
+.smap-t-balkon:hover:not(.smap-dot-sold) { background: var(--zone-5); filter: brightness(1.18); }
+.smap-t-balkon.smap-dot-selected { background: var(--n100);   }
+
+/* ─ Tier: Бельэтаж ─ */
+.smap-t-belet { background: var(--zone-4); }
+.smap-t-belet:hover:not(.smap-dot-sold) { background: var(--zone-4); filter: brightness(1.18); }
+.smap-t-belet.smap-dot-selected { background: var(--seat-sel); }
 
 /* Tooltip */
 .smap-tooltip {
@@ -2217,7 +2246,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 }
 .smap-tt-zone {
   font-size: 8px;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--n500);
@@ -2311,10 +2340,10 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 }
 .step-label {
   font-size: 9px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: .14em;
   text-transform: uppercase;
-  color: var(--n700);
+  color: var(--n500);
   white-space: nowrap;
 }
 .step-active .step-circle {
@@ -2350,9 +2379,9 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 }
 .checkout-main { display: flex; flex-direction: column; gap: 0; }
 .checkout-section-title {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .18em;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--n500);
   margin-bottom: 14px;
@@ -2391,9 +2420,9 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   height: fit-content;
 }
 .order-summary-head {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .18em;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--n500);
   margin-bottom: 16px;
@@ -2429,7 +2458,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   border-top: 1px solid var(--n800);
   margin-bottom: 16px;
 }
-.order-total-label { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--n500); }
+.order-total-label { font-size: 10px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--n500); }
 .order-total-val { font-family: var(--f-num); font-size: 1.3rem; color: var(--n100); }
 .order-promo { display: flex; gap: 8px; margin-top: 16px; }
 .order-promo .form-input { font-size: 12px; padding: 10px 12px; }
@@ -2537,10 +2566,10 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   font-family: var(--f-thin);
   font-weight: 500;
   font-size: clamp(1.8rem, 5vw, 2.6rem);
-  letter-spacing: .08em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  
   color: var(--n100);
-  line-height: 1;
+  line-height: 1.05;
   margin-bottom: 8px;
   text-align: center;
 }
@@ -2677,8 +2706,8 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .filter-group:last-child { margin-bottom: 0; }
 .filter-group-label {
   font-size: 10px;
-  font-weight: 600;
-  letter-spacing: .18em;
+  font-weight: 500;
+  letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--n500);
   margin-bottom: 10px;
@@ -2789,10 +2818,10 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   font-family: var(--f-thin);
   font-weight: 500;
   font-size: clamp(1.6rem, 4vw, 2.2rem);
-  letter-spacing: .06em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  
   color: var(--n100);
-  line-height: .95;
+  line-height: 1.05;
   margin-bottom: 14px;
 }
 .postsale-sub {
@@ -2988,3 +3017,13 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 }
 .ds-footer-note { font-size: 10px; color: var(--n700); letter-spacing: .05em; }
 
+/* Выбранное место — зелёное с галочкой (новая схема зала) */
+.smap-dot-selected::after { content: '✓'; position: absolute; inset: 0; display: grid; place-items: center; font: 700 9px/1 var(--font); color: var(--buy-text); }
+
+/* 14.3 — капс только в коротких промо-надписях (до трёх слов); названия событий — никогда */
+.t-caps { text-transform: uppercase; letter-spacing: .04em; }
+/* На зелёной зоне выбранное место — инверсия: светлое место, зелёная галочка */
+.smap-t-balkon.smap-dot-selected::after { color: var(--seat-sel); }
+
+/* 14.3 — видимый фокус с клавиатуры */
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
