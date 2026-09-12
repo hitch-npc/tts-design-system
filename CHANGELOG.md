@@ -4,6 +4,15 @@
 
 ## [Unreleased]
 
+## [14.4.1] — 2026-09-12
+
+### Добавлено
+- `DECISIONS.md` — файл был заявлен в 14.4.0, но не попал в коммит: скрипт правок упал до записи. Теперь на месте: 12 решений с причиной, датой и условием пересмотра, список исключений и перечень того, что защищено автопроверками.
+
+### Исправлено
+- `CLAUDE.md`: правило тега «Премьера» приведено к коду — фон `--accent-ghost`, рамка и текст кобальтом (описание отставало от 14.4.0).
+- Ссылки на `DECISIONS.md` в правилах, README и белом списке публикации.
+
 ## [14.4.0] — 2026-09-12
 
 Замечания по итогам внешнего ревью репозитория: доступность, чистота токенов и защита решений.
@@ -129,7 +138,8 @@
 
 Версии R10–R11 в открытый репозиторий не выкладывались.
 
-[Unreleased]: https://github.com/hitch-npc/tts-design-system/compare/v14.4.0...HEAD
+[Unreleased]: https://github.com/hitch-npc/tts-design-system/compare/v14.4.1...HEAD
+[14.4.1]: https://github.com/hitch-npc/tts-design-system/compare/v14.4.0...v14.4.1
 [14.4.0]: https://github.com/hitch-npc/tts-design-system/compare/v14.3.1...v14.4.0
 [14.3.1]: https://github.com/hitch-npc/tts-design-system/compare/v14.3.0...v14.3.1
 [14.3.0]: https://github.com/hitch-npc/tts-design-system/compare/v14.2.0...v14.3.0

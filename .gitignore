@@ -16,6 +16,7 @@
 !/.githooks/
 !/README.md
 !/CHANGELOG.md
+!/DECISIONS.md
 !/CLAUDE.md
 !/VERSION
 !/index.html

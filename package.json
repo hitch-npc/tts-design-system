@@ -1,6 +1,6 @@
 {
   "name": "tts-ds-r14",
-  "version": "14.4.0",
+  "version": "14.4.1",
   "private": true,
   "type": "module",
   "description": "TTS (Ticket to Show) Design System R14 — tokens.json как единый источник истины: сайт (dark/light) + SMM-слой.",
