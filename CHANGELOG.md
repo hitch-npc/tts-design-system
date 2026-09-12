@@ -4,6 +4,24 @@
 
 ## [Unreleased]
 
+## [14.4.0] — 2026-09-12
+
+Замечания по итогам внешнего ревью репозитория: доступность, чистота токенов и защита решений.
+
+### Добавлено
+- Видимый фокус с клавиатуры для всего интерактива — ссылки, кнопки, поля, чипы, места на схеме, меню: обводка 2px `--accent` через `:focus-visible`. Фокус от мыши не рисуется.
+- Поддержка «меньше движения» (`prefers-reduced-motion`) в ядре, на странице партнёров и в cookie-баннере: анимации и переходы отключаются, бегущая строка и парение билета останавливаются.
+- 21 токен вместо сырых значений: `--accent-soft`, `--on-accent`, `--premium-bg`, `--premium-ink`, теги (`--tag-o-*`, `--tag-g-*`, `--tag-r-*`), `--info`, `--error-fg`, `--error-bd`, `--input-focus-bg`, `--danger-hover-bg`, `--scrim`, `--overlay`, `--shadow-color`.
+- `DECISIONS.md` — решения системы: причина, дата и условие пересмотра. Решение меняется только вместе с записью.
+- `npm run check:strict`; CI переведён на него — любой новый сырой `#hex` вне `:root` теперь валит сборку.
+
+### Изменено
+- `.tag-accent` («Премьера», «Реферальная ссылка») — снова фон `--accent-ghost`, рамка и текст кобальтом; сплошная заливка из 14.3.0 отменена.
+- Бегущая строка на странице партнёров: ромб снова кобальтовый и встал по центру строки — вместо глифа Forum, сидящего на базовой линии, рисуется квадрат 6×6 под 45°.
+- Светлая тема: `.form-error`, `.form-input.error`, `.form-input:focus` и `.btn-danger:hover` больше не тянут цвета тёмной темы — та же ошибка, что была у `.tag-orange`.
+- Сырых `#hex` вне `:root` в ядре — ноль; было 68 предупреждений стража.
+- Передача фронтенду получила постоянное имя `site/handoff/frontend-changes.html`, ссылка больше не меняется от версии к версии.
+
 ## [14.3.1] — 2026-09-12
 
 ### Изменено
@@ -111,7 +129,8 @@
 
 Версии R10–R11 в открытый репозиторий не выкладывались.
 
-[Unreleased]: https://github.com/hitch-npc/tts-design-system/compare/v14.3.1...HEAD
+[Unreleased]: https://github.com/hitch-npc/tts-design-system/compare/v14.4.0...HEAD
+[14.4.0]: https://github.com/hitch-npc/tts-design-system/compare/v14.3.1...v14.4.0
 [14.3.1]: https://github.com/hitch-npc/tts-design-system/compare/v14.3.0...v14.3.1
 [14.3.0]: https://github.com/hitch-npc/tts-design-system/compare/v14.2.0...v14.3.0
 [14.2.0]: https://github.com/hitch-npc/tts-design-system/compare/v14.1.1...v14.2.0

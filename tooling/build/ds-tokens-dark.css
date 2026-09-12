@@ -8,6 +8,7 @@
   --accent-dim:      #0436B6;
   --accent-ghost:    #0B142A;
   --accent-border:   #091E56;
+  --accent-soft:     #7A9FFF;
 
   --n100:            #D6D6D2;
   --n200:            #C0C0BC;
@@ -34,6 +35,34 @@
   --blob-mid-cool:   #15092A;
   --blob-core-green: #0A2A0A;
   --blob-mid-green:  #051205;
+
+  /* Инверсия и premium */
+  --on-accent:       #FFFFFF;
+  --premium-bg:      #F5F4EE;
+  --premium-ink:     #0D0D0D;
+
+  /* Теги */
+  --tag-o-bg:        #221408;
+  --tag-o-fg:        #FB923C;
+  --tag-o-bd:        #442810;
+  --tag-g-bg:        #0A2210;
+  --tag-g-fg:        #4ADE80;
+  --tag-g-bd:        #1A4428;
+  --tag-r-bg:        #220A0A;
+  --tag-r-fg:        #F87171;
+  --tag-r-bd:        #441414;
+
+  /* Состояния форм и тостов */
+  --info:            #60A5FA;
+  --error-fg:        #FF6B6B;
+  --error-bd:        #FF4444;
+  --input-focus-bg:  #0D0D1A;
+  --danger-hover-bg: #3D1212;
+
+  /* Затемнение и тень */
+  --scrim:           #000000;
+  --overlay:         #00000088;
+  --shadow-color:    #000000AA;
 
   /* Семантические цвета */
   --success:         #22C55E;

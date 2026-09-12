@@ -23,6 +23,7 @@
   --accent-dim:      #0436B6;
   --accent-ghost:    #0B142A;
   --accent-border:   #091E56;
+  --accent-soft:     #7A9FFF;
 
   --n100:            #D6D6D2;
   --n200:            #C0C0BC;
@@ -49,6 +50,34 @@
   --blob-mid-cool:   #15092A;
   --blob-core-green: #0A2A0A;
   --blob-mid-green:  #051205;
+
+  /* Инверсия и premium */
+  --on-accent:       #FFFFFF;
+  --premium-bg:      #F5F4EE;
+  --premium-ink:     #0D0D0D;
+
+  /* Теги */
+  --tag-o-bg:        #221408;
+  --tag-o-fg:        #FB923C;
+  --tag-o-bd:        #442810;
+  --tag-g-bg:        #0A2210;
+  --tag-g-fg:        #4ADE80;
+  --tag-g-bd:        #1A4428;
+  --tag-r-bg:        #220A0A;
+  --tag-r-fg:        #F87171;
+  --tag-r-bd:        #441414;
+
+  /* Состояния форм и тостов */
+  --info:            #60A5FA;
+  --error-fg:        #FF6B6B;
+  --error-bd:        #FF4444;
+  --input-focus-bg:  #0D0D1A;
+  --danger-hover-bg: #3D1212;
+
+  /* Затемнение и тень */
+  --scrim:           #000000;
+  --overlay:         #00000088;
+  --shadow-color:    #000000AA;
 
   /* Семантические цвета */
   --success:         #22C55E;
@@ -189,7 +218,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   border: 1px solid var(--n800);
   padding: 4px;
   border-radius: var(--r-full);
-  box-shadow: 0 4px 24px #000;
+  box-shadow: 0 4px 24px var(--scrim);
 }
 .mode-btn {
   font-size: 11px;
@@ -204,7 +233,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 }
 .mode-btn.active {
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
 }
 .mode-btn:hover:not(.active) { color: var(--n200); }
 
@@ -464,7 +493,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 /* Варианты */
 .btn-primary {
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   border: 1px solid var(--accent);
   font-weight: 700;
 }
@@ -499,7 +528,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   color: var(--danger-text);
 }
 .btn-danger:hover {
-  background: #3D1212;
+  background: var(--danger-hover-bg);
   border-color: var(--danger);
 }
 
@@ -572,13 +601,13 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .form-input::placeholder { color: var(--n600); }
 .form-input:focus {
   border-color: var(--accent-border);
-  background: #0D0D1A;
+  background: var(--input-focus-bg);
 }
-.form-input.error { border-color: #FF4444; }
-.form-input.success { border-color: #22C55E; }
+.form-input.error { border-color: var(--error-bd); }
+.form-input.success { border-color: var(--success); }
 
 .form-helper { font-size: 11px; color: var(--n600); }
-.form-error  { font-size: 11px; color: #FF6B6B; }
+.form-error  { font-size: 11px; color: var(--error-fg); }
 
 /* Select */
 .form-select {
@@ -657,11 +686,11 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   white-space: nowrap;
 }
 .tag-default { background: var(--n900); color: var(--n400); border: 1px solid var(--n800); }
-.tag-accent  { background: var(--accent); color: #fff; border: 1px solid var(--accent); }
-.tag-green   { background: #0A2210; color: #4ADE80; border: 1px solid #1A4428; }
-.tag-red     { background: #220A0A; color: #F87171; border: 1px solid #441414; }
-.tag-orange  { background: #221408; color: #FB923C; border: 1px solid #442810; }
-.tag-premium { background: #F5F4EE; color: #0D0D0D; border: 1px solid #F5F4EE; }  /* ivory-инверсия, только Premium */
+.tag-accent  { background: var(--accent-ghost); color: var(--accent-soft); border: 1px solid var(--accent-border); }
+.tag-green   { background: var(--tag-g-bg); color: var(--tag-g-fg); border: 1px solid var(--tag-g-bd); }
+.tag-red     { background: var(--tag-r-bg); color: var(--tag-r-fg); border: 1px solid var(--tag-r-bd); }
+.tag-orange  { background: var(--tag-o-bg); color: var(--tag-o-fg); border: 1px solid var(--tag-o-bd); }
+.tag-premium { background: var(--premium-bg); color: var(--premium-ink); border: 1px solid var(--premium-bg); }  /* ivory-инверсия, только Premium */
 
 /* Бейдж (круглый) */
 .badge {
@@ -676,7 +705,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   font-weight: 700;
   line-height: 1;
 }
-.badge-accent { background: var(--accent); color: #fff; }
+.badge-accent { background: var(--accent); color: var(--on-accent); }
 .badge-muted  { background: var(--n800); color: var(--n400); }
 
 /* Теги в ряд */
@@ -1069,7 +1098,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   min-width: 14px;
   height: 14px;
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   font-size: 8px;
   font-weight: 700;
   border-radius: var(--r-full);
@@ -1084,7 +1113,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .nav-drawer-overlay {
   position: absolute;
   inset: 0;
-  background: #000;
+  background: var(--scrim);
   opacity: 0;
   pointer-events: none;
   transition: opacity .25s;
@@ -1324,9 +1353,9 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   font-weight: 700;
   letter-spacing: .18em;
   text-transform: uppercase;
-  color: #0D0D0D;
-  background: #F5F4EE;
-  border: 1px solid #F5F4EE;
+  color: var(--premium-ink);
+  background: var(--premium-bg);
+  border: 1px solid var(--premium-bg);
   border-radius: var(--r-sm);
   padding: 3px 9px;
 }
@@ -1713,7 +1742,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   color: var(--n100);
   line-height: 1;
 }
-.date-chip-active .date-chip-day { color: #fff; }
+.date-chip-active .date-chip-day { color: var(--on-accent); }
 .date-chip-mon {
   font-size: 10px;
   font-weight: 600;
@@ -1733,7 +1762,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   font-weight: 700;
   letter-spacing: .1em;
   text-transform: uppercase;
-  color: #F87171;
+  color: var(--tag-r-fg);
   opacity: .9;
 }
 
@@ -2643,7 +2672,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: #00000088;
+  background: var(--overlay);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2665,7 +2694,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   border-radius: var(--r-sm);
   width: 100%;
   max-width: 440px;
-  box-shadow: 0 24px 64px #000a;
+  box-shadow: 0 24px 64px var(--shadow-color);
   transform: translateY(12px);
   transition: transform var(--dur-slow) var(--ease-out);
   overflow: hidden;
@@ -2871,9 +2900,9 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   from { opacity:0; transform:translateY(10px); }
   to   { opacity:1; transform:translateY(0); }
 }
-.toast-success { border-left: 3px solid #4ADE80; }
-.toast-error   { border-left: 3px solid #F87171; }
-.toast-info    { border-left: 3px solid #60A5FA; }
+.toast-success { border-left: 3px solid var(--tag-g-fg); }
+.toast-error   { border-left: 3px solid var(--tag-r-fg); }
+.toast-info    { border-left: 3px solid var(--info); }
 .toast-text {
   flex: 1;
   font-size: 12px;
@@ -3020,3 +3049,23 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 
 /* 14.3 — видимый фокус с клавиатуры */
 .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* 14.4 — видимый фокус с клавиатуры для всего интерактива (мышиный фокус не показываем) */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible,
+summary:focus-visible, [tabindex]:not([tabindex="-1"]):focus-visible,
+.venue-chip:focus-visible, .date-chip:focus-visible, .session-row:focus-visible, .smap-dot:focus-visible,
+.nav-desktop-link:focus-visible, .nav-icon-btn:focus-visible, .pay-method-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+:focus:not(:focus-visible) { outline: none; }
+
+/* 14.4 — «меньше движения»: отключаем анимации и переходы */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
