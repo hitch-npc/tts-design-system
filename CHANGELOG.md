@@ -4,6 +4,12 @@
 
 ## [Unreleased]
 
+## [14.6.1] — 2026-09-15
+
+### Изменено
+- Футер в редизайне заменён на `site-footer` со страницы партнёров — по решению владельца, чтобы на всём сайте был один футер: 4 правовых документа, 5 соцсетей с TikTok, «Отдел продаж», «Помощь» с возвратом и поддержкой, «Техническая поддержка», линия кобальтом сверху. Вариант, собранный в 14.6.0 по макету из SVG, убран. Почта руководителя продаж — заглушка, как на странице партнёров.
+- Витрина открыта на GitHub Pages — https://hitch-npc.github.io/tts-design-system/; ссылка в README и CLAUDE.md.
+
 ## [14.6.0] — 2026-09-15
 
 Сверка редизайна 15.09: варианты выбирались в интерактивной странице, выбор сохранён и перенесён сюда. Решения — в `DECISIONS.md` (14, 17–20).
@@ -179,7 +185,8 @@
 
 Версии R10–R11 в открытый репозиторий не выкладывались.
 
-[Unreleased]: https://github.com/hitch-npc/tts-design-system/compare/v14.6.0...HEAD
+[Unreleased]: https://github.com/hitch-npc/tts-design-system/compare/v14.6.1...HEAD
+[14.6.1]: https://github.com/hitch-npc/tts-design-system/compare/v14.6.0...v14.6.1
 [14.6.0]: https://github.com/hitch-npc/tts-design-system/compare/v14.5.0...v14.6.0
 [14.5.0]: https://github.com/hitch-npc/tts-design-system/compare/v14.4.1...v14.5.0
 [14.4.1]: https://github.com/hitch-npc/tts-design-system/compare/v14.4.0...v14.4.1
