@@ -29,22 +29,23 @@ function vFill(variable) {
 
 // ─── Load fonts ──────────────────────────────
 await figma.loadFontAsync({ family: 'Manrope', style: 'SemiBold' });
+await figma.loadFontAsync({ family: 'Manrope', style: 'Bold' });
 
 const page = figma.currentPage;
 const DARK = 'Color/Dark';
 
 // ─── Styles ───────────────────────────────────
 const STYLES = [
-  { name: 'Primary',      bg: gv(DARK,'accent'),        bd: gv(DARK,'accent'),         tx: gv(DARK,'n100') },
-  { name: 'Ghost',        bg: null,                      bd: gv(DARK,'n700'),            tx: gv(DARK,'n300') },
-  { name: 'Ghost Accent', bg: null,                      bd: gv(DARK,'accent-border'),   tx: gv(DARK,'accent') },
-  { name: 'Danger',       bg: gv(DARK,'danger-bg'),      bd: gv(DARK,'danger-border'),   tx: gv(DARK,'danger-text') },
+  { name: 'Primary',      bg: gv(DARK,'accent'),        bd: gv(DARK,'accent'),         tx: gv(DARK,'n100'),        w: 'Bold' },
+  { name: 'Ghost',        bg: null,                      bd: gv(DARK,'n700'),            tx: gv(DARK,'n100'),        w: 'SemiBold' },
+  { name: 'Ghost Accent', bg: null,                      bd: gv(DARK,'accent-border'),   tx: gv(DARK,'accent'),      w: 'SemiBold' },
+  { name: 'Danger',       bg: gv(DARK,'danger-bg'),      bd: gv(DARK,'danger-border'),   tx: gv(DARK,'danger-text'), w: 'Bold' },
 ];
 
 // ─── Sizes ────────────────────────────────────
 const SIZES = [
-  { name: 'Large',  fs: 11, pH: 28, pV: 14 },
-  { name: 'Medium', fs: 10, pH: 22, pV: 11 },
+  { name: 'Large',  fs: 12, pH: 32, pV: 16 },
+  { name: 'Medium', fs: 11, pH: 24, pV: 13 },
   { name: 'Small',  fs: 9,  pH: 16, pV: 10 },
 ];
 
@@ -70,7 +71,7 @@ for (const st of STYLES) {
     c.paddingRight  = sz.pH;
     c.paddingTop    = sz.pV;
     c.paddingBottom = sz.pV;
-    c.cornerRadius  = 9999;
+    c.cornerRadius  = 2;   // система угловатая: --r-sm
 
     // Background
     c.fills = st.bg ? [vFill(st.bg)] : [];
@@ -83,9 +84,9 @@ for (const st of STYLES) {
     const t = figma.createText();
     t.name          = 'label';
     t.characters    = 'Button';
-    t.fontName      = { family: 'Manrope', style: 'SemiBold' };
+    t.fontName      = { family: 'Manrope', style: st.w };   // заливные 700, контурные 600
     t.fontSize      = sz.fs;
-    t.letterSpacing = { unit: 'PERCENT', value: 18 };
+    t.letterSpacing = { unit: 'PERCENT', value: 16 };
     t.textCase      = 'UPPER';
     t.fills         = st.tx ? [vFill(st.tx)] : [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 } }];
 

@@ -67,14 +67,14 @@ function place(node){ node.x=startX; node.y=Y; Y+=node.height+GAP; }
 //   Размер: Large / Medium / Small
 // ════════════════════════════════════════════════
 const BTN_ST=[
-  {n:'Primary',     bg:gv(D,'accent'),       bd:gv(D,'accent'),        tx:gv(D,'n100')},
-  {n:'Ghost',       bg:null,                  bd:gv(D,'n700'),           tx:gv(D,'n300')},
-  {n:'Ghost Accent',bg:null,                  bd:gv(D,'accent-border'),  tx:gv(D,'accent')},
-  {n:'Danger',      bg:gv(D,'danger-bg'),     bd:gv(D,'danger-border'),  tx:gv(D,'danger-text')},
+  {n:'Primary',     bg:gv(D,'accent'),       bd:gv(D,'accent'),        tx:gv(D,'n100'),        w:'Bold'},
+  {n:'Ghost',       bg:null,                  bd:gv(D,'n700'),           tx:gv(D,'n100'),        w:'SemiBold'},
+  {n:'Ghost Accent',bg:null,                  bd:gv(D,'accent-border'),  tx:gv(D,'accent'),      w:'SemiBold'},
+  {n:'Danger',      bg:gv(D,'danger-bg'),     bd:gv(D,'danger-border'),  tx:gv(D,'danger-text'), w:'Bold'},
 ];
 const BTN_SZ=[
-  {n:'Large', fs:11,pH:28,pV:14},
-  {n:'Medium',fs:10,pH:22,pV:11},
+  {n:'Large', fs:12,pH:32,pV:16},
+  {n:'Medium',fs:11,pH:24,pV:13},
   {n:'Small', fs:9, pH:16,pV:10},
 ];
 const btnComps=[];
@@ -84,13 +84,13 @@ for(const st of BTN_ST) for(const sz of BTN_SZ){
   c.layoutMode='HORIZONTAL'; c.primaryAxisAlignItems='CENTER'; c.counterAxisAlignItems='CENTER';
   c.primaryAxisSizingMode='AUTO'; c.counterAxisSizingMode='AUTO';
   c.paddingLeft=sz.pH; c.paddingRight=sz.pH; c.paddingTop=sz.pV; c.paddingBottom=sz.pV;
-  setR(c,9999,rFull);
+  c.cornerRadius=2;   // система угловатая: --r-sm
   c.fills  =st.bg?[vf(st.bg)]:[];
   c.strokes=st.bd?[vf(st.bd)]:[];
   if(st.bd){c.strokeWeight=1;c.strokeAlign='INSIDE';}
   const t=figma.createText();
-  t.name='label'; t.characters='Купить'; t.fontName={family:'Manrope',style:'SemiBold'};
-  t.fontSize=sz.fs; t.letterSpacing={unit:'PERCENT',value:18}; t.textCase='UPPER';
+  t.name='label'; t.characters='Купить'; t.fontName={family:'Manrope',style:st.w};
+  t.fontSize=sz.fs; t.letterSpacing={unit:'PERCENT',value:16}; t.textCase='UPPER';
   t.fills=st.tx?[vf(st.tx)]:[sf('#FFFFFF')];
   c.appendChild(t); page.appendChild(c); btnComps.push(c);
 }
