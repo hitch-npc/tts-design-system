@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+## [14.6.3] — 2026-09-16
+
+### Изменено
+- Футер страницы партнёров затемнён так же, как в редизайне: в тёмной теме фон `#080808` вместо `--n950`, соцсети и кнопки «Возврат билетов» / «Написать в поддержку» — `#111318` с рамкой `#1F222A`, наведение `#191C22`; в светлой фон `#F2F1EB`, соцсети и кнопки `#FAFAF7`. Цвета вынесены в переменные темы `--foot-bg`, `--foot-surface`, `--foot-line`, `--foot-hover`; `.btn-dark` в витрине компонентов не изменился. Копия в `handoff/` синхронизирована.
+
 ## [14.6.2] — 2026-09-15
 
 ### Изменено
@@ -196,6 +201,7 @@
 Версии R10–R11 в открытый репозиторий не выкладывались.
 
 [Unreleased]: https://github.com/hitch-npc/tts-design-system/compare/v14.6.1...HEAD
+[14.6.3]: https://github.com/hitch-npc/tts-design-system/compare/v14.6.2...v14.6.3
 [14.6.2]: https://github.com/hitch-npc/tts-design-system/compare/v14.6.1...v14.6.2
 [14.6.1]: https://github.com/hitch-npc/tts-design-system/compare/v14.6.0...v14.6.1
 [14.6.0]: https://github.com/hitch-npc/tts-design-system/compare/v14.5.0...v14.6.0
