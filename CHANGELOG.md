@@ -4,6 +4,16 @@
 
 ## [Unreleased]
 
+## [14.8.3] — 2026-09-17
+
+### Безопасность
+- `.gitignore`: папка `source/` закрыта на любой глубине правилом `**/source/`. Раньше были закрыты только `brand/source/` и `tg-emoji/packs/custom/venetian-mask/source/`, а новую папку `site/handoff/source/` git показывал как неотслеживаемую (`??`), то есть её можно было закоммитить. Правило стоит после всех строк с `!`, поэтому белый список его не отменяет. Два частных правила удалены: их покрывает общее.
+- `tooling/security-check.mjs`: файл в папке `source/` на любой глубине считается ошибкой, даже если его добавили через `git add -f`. Раньше скрипт ловил только `brand/source/`. Приватные папки (`decks/`, `docs/`, `smm/`, `uploads/`, `_archive/`, `concepts/`, `source/`) теперь проверяются без учёта регистра, как их сравнивает git на Mac (`core.ignorecase`), поэтому `Source/` тоже запрещена. Шапка скрипта обновлена.
+
+### Заметки
+- Утечки не было: ни в текущем дереве, ни во всех 28 коммитах истории нет ни одного файла из `source/`.
+- Правило из `CLAUDE.md` о том, что `*/source/` никогда не публикуется, теперь проверяется автоматически.
+
 ## [14.8.2] — 2026-09-17
 
 ### Исправлено
@@ -254,7 +264,8 @@
 
 Версии R10–R11 в открытый репозиторий не выкладывались.
 
-[Unreleased]: https://github.com/hitch-npc/tts-design-system/compare/v14.8.2...HEAD
+[Unreleased]: https://github.com/hitch-npc/tts-design-system/compare/v14.8.3...HEAD
+[14.8.3]: https://github.com/hitch-npc/tts-design-system/compare/v14.8.2...v14.8.3
 [14.8.2]: https://github.com/hitch-npc/tts-design-system/compare/v14.8.1...v14.8.2
 [14.8.1]: https://github.com/hitch-npc/tts-design-system/compare/v14.8.0...v14.8.1
 [14.8.0]: https://github.com/hitch-npc/tts-design-system/compare/v14.7.1...v14.8.0

@@ -4,7 +4,8 @@
  * ────────────────────────────────────────────────────
  * Репозиторий ПУБЛИЧНЫЙ. Скрипт проверяет всё, что уйдёт в git: отслеживаемые файлы
  * и новые, не закрытые .gitignore. Выход 1, если нашлось хоть одно:
- *   • запрещённый путь или формат: decks/ docs/ smm/ uploads/ _archive/ brand/source/ concepts/, в figma/ — всё, кроме .js,
+ *   • запрещённый путь или формат: decks/ docs/ smm/ uploads/ _archive/ concepts/ и source/ на любой глубине
+ *     (brand/source/, site/…/source/) — без учёта регистра; в figma/ — всё, кроме .js;
  *     .fig .ai .psd .pptx .key .pdf .zip .mp4 .bak .pem, .env, .DS_Store
  *   • секрет: приватный ключ, токены GitHub / OpenAI / Anthropic / AWS / Google / Slack / Telegram
  *   • личные данные: e-mail не из списка заглушек, путь /Users/…, имя автора
@@ -28,7 +29,8 @@ const SELF = fileURLToPath(import.meta.url);
 const ROOT = join(dirname(SELF), '..');
 const SELF_REL = relative(ROOT, SELF);
 
-const FORBIDDEN_DIR = /^(decks|docs|smm|uploads|_archive|brand\/source|concepts|node_modules)\//;
+/* приватные разделы в корне и source/ на любой глубине; без учёта регистра — git на Mac его тоже не различает (core.ignorecase) */
+const FORBIDDEN_DIR = /^(decks|docs|smm|uploads|_archive|concepts|node_modules)\/|(^|\/)source\//i;
 const FIGMA_OK = /^figma\/[^/]+\.js$/; // Scripter-скрипты публичны, макеты — нет
 const FORBIDDEN_FILE = /(^|\/)(\.DS_Store|\.env[^/]*)$/;
 const FORBIDDEN_EXT = new Set(['.fig', '.ai', '.psd', '.sketch', '.pptx', '.key', '.pdf', '.zip', '.mp4', '.mov', '.bak', '.pem', '.p12']);

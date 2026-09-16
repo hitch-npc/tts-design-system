@@ -4,7 +4,7 @@
 # Новый файл или папка в корне не попадёт в git, пока его явно
 # не откроют здесь — и только если это не жалко показать всем.
 # Приватное, не публикуется никогда: decks/ docs/ figma/*.fig smm/
-# uploads/ _archive/ brand/source/ concepts/ — см. CLAUDE.md, «Git и публикация».
+# uploads/ _archive/ concepts/, source/ на любой глубине — см. CLAUDE.md, «Git и публикация».
 # ─────────────────────────────────────────────────────────────
 /*
 
@@ -48,16 +48,17 @@
 # кейс Behance: дизайн устарел (старая схема зала), живёт только на Behance
 /site/behance-hero-blocks.html
 /tooling/backup/
-/brand/source/
 /tg-emoji/ref/
 /tg-emoji/*.zip
-/tg-emoji/packs/custom/venetian-mask/source/
 # неразобранные выгрузки в корне custom/ (канон — packs/reactions/ и packs/<вариант>/)
 /tg-emoji/packs/custom/*.webm
 /tg-emoji/packs/custom/tts-tg-emoji-*/
 * (1).*
 
 # ── Никогда, где бы ни лежало ──
+# исходники (.ai, спрайты, ролики, рабочие файлы): brand/source/, tg-emoji/…/source/, site/…/source/.
+# Правило стоит после всех строк «!» — белый список папку не переоткроет.
+**/source/
 .DS_Store
 node_modules/
 *.fig
