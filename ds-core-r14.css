@@ -511,10 +511,11 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 }
 .btn-ghost:hover { border-color: var(--n400); color: var(--n100); background: var(--n900); }
 
+/* Кобальт только в рамке: текст кнопок 9–12px — светлый (решения 2 и 3) */
 .btn-ghost-accent {
   background: transparent;
-  color: var(--accent);
-  border: 1px solid var(--accent-border);
+  color: var(--n100);
+  border: 1px solid var(--accent);
 }
 .btn-ghost-accent:hover { background: var(--accent-ghost); }
 
@@ -1804,7 +1805,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   color: var(--n100);
   line-height: 1;
 }
-.date-chip-active .date-chip-day { color: var(--on-accent); }
+.date-chip-active .date-chip-day { color: var(--n100); }
 .date-chip-mon {
   font-size: 10px;
   font-weight: 600;

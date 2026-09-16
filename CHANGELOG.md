@@ -4,6 +4,18 @@
 
 ## [Unreleased]
 
+## [14.8.2] — 2026-09-17
+
+### Исправлено
+- Ядро, обе темы: число выбранной даты `.date-chip-active .date-chip-day` — `--n100` вместо `--on-accent`. В светлой теме белое число на `--accent-ghost` (#EAF0FF) давало 1,1 : 1, теперь 17,0 : 1; в тёмной — 12,6 : 1. Кобальт не подошёл: на тёмном фоне чипа это 2,9 : 1. Решение 9.
+- Ядро, обе темы: `.btn-ghost-accent` — текст `--n100` вместо кобальта, рамка `--accent` вместо `--accent-border`. Кобальт на тексте 9–12px нарушал решение 3 (3,1 : 1 в тёмной теме), а рамка давала 1,2 : 1. Теперь в тёмной теме текст 13,3 : 1 и рамка 3,1 : 1, в светлой — 19,4 : 1 и 6,3 : 1. Толщина прежняя, 600 (решение 2). При наведении кнопка выглядит как активный чип.
+- Страница партнёров и её копия в `handoff/`: в витрине кнопок UI-кита у `.btn-ghost-accent`, `.btn-danger` и `.btn-icon` не было правил, и браузер рисовал их серыми кнопками. Добавлены правила как в ядре (ghost-accent — в новом виде) и переменные `--danger-bg`, `--danger-border`, `--danger-hover-bg` в обе темы страницы.
+- Figma-скрипты `figma-button.js` и `figma-ds-all.js`: у стиля Ghost Accent текст `n100` и рамка `accent`. Компонент в `DS R14.fig` обновится после повторного запуска скрипта.
+
+### Изменено
+- `CLAUDE.md` и `DECISIONS.md` (решения 2 и 9): записаны цвета `.btn-ghost-accent` и числа выбранной даты.
+- Не тронута схема зала: `.btn-ghost-accent` и `.date-chip` есть только во встроенной в файл старой копии ядра, в разметке они не используются.
+
 ## [14.8.1] — 2026-09-16
 
 ### Изменено
@@ -242,7 +254,8 @@
 
 Версии R10–R11 в открытый репозиторий не выкладывались.
 
-[Unreleased]: https://github.com/hitch-npc/tts-design-system/compare/v14.8.1...HEAD
+[Unreleased]: https://github.com/hitch-npc/tts-design-system/compare/v14.8.2...HEAD
+[14.8.2]: https://github.com/hitch-npc/tts-design-system/compare/v14.8.1...v14.8.2
 [14.8.1]: https://github.com/hitch-npc/tts-design-system/compare/v14.8.0...v14.8.1
 [14.8.0]: https://github.com/hitch-npc/tts-design-system/compare/v14.7.1...v14.8.0
 [14.7.1]: https://github.com/hitch-npc/tts-design-system/compare/v14.7.0...v14.7.1

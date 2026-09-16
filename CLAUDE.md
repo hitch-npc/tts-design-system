@@ -80,7 +80,8 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
   Forum — `.t-h3`: плитки категорий, подзаголовки карточек. Названия событий — никогда капсом.
   Капс (`.t-caps`, `.promo-title`) — только короткие промо-надписи, до трёх слов.
 - **Кнопки** — капс, разрядка .16em; заливные 700, контурные 600 со светлым текстом (`--n100`, рамка `--n700`),
-  чтобы не выглядели неактивными. Размеры: lg 12px, md 11px, sm 9px.
+  чтобы не выглядели неактивными. Контурная с акцентом `.btn-ghost-accent` — тот же текст `--n100`, кобальт только
+  в рамке (`--accent`). Размеры: lg 12px, md 11px, sm 9px.
 - **Главные кнопки — всегда кобальт** `.btn-primary`, включая «Перейти к оформлению» и «Купить». Зелёную кнопку
   пробовали в 14.3.0 и отменили в 14.3.1: белый текст на зелёном давал контраст 2,3 : 1 при норме 4,5 : 1.
   Зелёный остаётся только у выбранного места на схеме зала.
@@ -367,7 +368,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 <!-- Размеры: btn-lg 12px | btn-md 11px | btn-sm 9px (min 36px). Капс, разрядка .16em; заливные 700, контурные 600 -->
 <button class="btn btn-primary btn-md">CTA</button>
 <button class="btn btn-ghost btn-md">Вторичное</button>
-<button class="btn btn-ghost-accent btn-md">Ghost с акцентом</button>
+<button class="btn btn-ghost-accent btn-md">Ghost с акцентом</button>   <!-- текст --n100, рамка --accent -->
 <button class="btn btn-dark btn-md">Тёмная</button>
 <button class="btn btn-danger btn-sm">Удалить</button>
 <button class="btn btn-icon"><svg/></button>
@@ -548,6 +549,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 </div>
 ```
 Использовать **только** когда у события одна площадка и до 4 дат. Во всех остальных случаях — `session-list`.
+Выбранный чип — как любой активный: фон `--accent-ghost`, рамка `--accent`, число `--n100` (белое на светлом фоне не читается).
 
 ### Sticky Buy (мобильная фиксированная панель)
 ```html

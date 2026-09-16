@@ -32,6 +32,7 @@ html, body { background: #161616; -webkit-font-smoothing: antialiased; -moz-osx-
   --blob-core: #06277F; --blob-mid: #15092A; --blob-purple: #200840; --blob-faint: #08133D;
   --premium: #F5F4EE;
   --success: #22C55E; --danger: #E53E3E; --danger-text: #FF8080;
+  --danger-bg: #2D1010; --danger-border: #7A2020; --danger-hover-bg: #3D1212;
   --logo: var(--n100);
   /* футер темнее страницы */
   --foot-bg: #080808; --foot-surface: #111318; --foot-line: #1F222A; --foot-hover: #191C22;
@@ -47,6 +48,7 @@ html, body { background: #161616; -webkit-font-smoothing: antialiased; -moz-osx-
   --blob-core: #BFD0EE; --blob-mid: #E5DAEF; --blob-purple: #E5DAEF; --blob-faint: #E8EEF8;
   --premium: #F5F4EE;
   --success: #16A34A; --danger: #DC2626; --danger-text: #C62828;
+  --danger-bg: #FEE2E2; --danger-border: #FCA5A5; --danger-hover-bg: #FEE2E2;
   --logo: #808174;
   /* футер темнее страницы */
   --foot-bg: #F2F1EB; --foot-surface: #FAFAF7; --foot-line: #E2E1DA; --foot-hover: #E2E1DA;
@@ -106,6 +108,13 @@ html, body { background: #161616; -webkit-font-smoothing: antialiased; -moz-osx-
 .btn-primary:hover { background: var(--accent-hover); }
 .btn-ghost { background: transparent; border-color: var(--n700); color: var(--n100); }
 .btn-ghost:hover { border-color: var(--n500); color: var(--n100); }
+/* как в ядре: кобальт только в рамке, текст светлый */
+.btn-ghost-accent { background: transparent; border-color: var(--accent); color: var(--n100); }
+.btn-ghost-accent:hover { background: var(--accent-ghost); }
+.btn-danger { background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger-text); }
+.btn-danger:hover { background: var(--danger-hover-bg); border-color: var(--danger); }
+.btn-icon { padding: 10px; background: var(--n900); border-color: var(--n800); color: var(--n400); }
+.btn-icon:hover { color: var(--n100); border-color: var(--n600); }
 .btn-ink { background: #0D0D0D; color: #F5F4EE; }
 .btn-ink:hover { background: #262930; }
 
