@@ -130,13 +130,6 @@ a{ color:var(--accent); }
 @keyframes ctr-out{ 0%,34%{ opacity:1; transform:none; } 46%,92%{ opacity:.18; transform:translateY(6px); } 100%{ opacity:1; transform:none; } }
 @keyframes ctr-in{ 0%,34%{ opacity:.18; transform:translateY(6px); } 46%,92%{ opacity:1; transform:none; } 100%{ opacity:.18; transform:translateY(6px); } }
 
-/* ── Иконка: торец штриха ─────────────────────────────── */
-.cap-demo{ display:flex; gap:var(--sp-8); flex-wrap:wrap; }
-.cap-demo figure{ margin:0; display:grid; gap:var(--sp-2); justify-items:center; }
-.cap-demo svg{ width:72px; height:72px; color:var(--error-fg); }
-.is-live .cap-zoom{ animation:cap-pulse 5s var(--ease-out) infinite; }
-@keyframes cap-pulse{ 0%,70%,100%{ transform:scale(1); } 35%{ transform:scale(1.25); } }
-
 /* ── Штрихкод ─────────────────────────────────────────── */
 .bc{ display:flex; gap:var(--sp-5); flex-wrap:wrap; }
 .bc-plate{ position:relative; width:220px; height:92px; border-radius:var(--r-sm); overflow:hidden; display:flex; align-items:center; justify-content:center; }
@@ -368,7 +361,7 @@ a{ color:var(--accent); }
 <path d="M120.717 33.877C187.382 33.8789 241.427 95.3157 241.427 95.3157C240.957 95.8482 187.094 156.746 120.717 156.748C54.2542 156.748 0.333887 95.6944 0 95.3157C0 95.3157 54.0501 33.877 120.717 33.877ZM120.633 49.6928C95.4466 49.6928 75.0306 70.1087 75.0306 95.2949C75.0306 120.481 95.4459 140.897 120.633 140.897C145.818 140.896 166.234 120.481 166.234 95.2949C166.234 70.109 145.818 49.6933 120.633 49.6928ZM120.639 68.0628C135.682 68.0646 147.879 80.2592 147.879 95.3021C147.878 110.344 135.681 122.539 120.639 122.541C105.596 122.541 93.3945 110.345 93.393 95.3021C93.393 80.2577 105.596 68.0628 120.639 68.0628Z" fill="#808174"></path>
 </g>
 </svg>
-    <span class="tag tag-default">R14 · 14.7.0</span>
+    <span class="tag tag-default">R14 · 14.7.1</span>
   </div>
 
   <div class="cs-cover-mid">
@@ -493,32 +486,6 @@ a{ color:var(--accent); }
         <div class="dm-cap"><div class="t-caption">Решение №1 · главные кнопки всегда кобальт</div><div class="t-caption dm-ok">14.3.1</div></div>
       </article>
 
-      <!-- иконка -->
-      <article class="dm">
-        <div class="dm-body">
-          <div class="cap-demo">
-            <figure>
-              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
-                <circle cx="24" cy="24" r="20"></circle>
-                <path d="M24 14 V27"></path>
-                <path d="M24 33 V33"></path>
-              </svg>
-              <figcaption class="t-caption dm-bad">Торец по умолчанию — точки нет</figcaption>
-            </figure>
-            <figure class="cap-zoom">
-              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
-                <circle cx="24" cy="24" r="20"></circle>
-                <path d="M24 14 V27"></path>
-                <path d="M24 33 V33"></path>
-              </svg>
-              <figcaption class="t-caption dm-ok">stroke-linecap="round"</figcaption>
-            </figure>
-          </div>
-          <p class="cs-card-t" style="margin-top:var(--sp-5)">Точка восклицательного знака рисуется отрезком нулевой длины. С торцом по умолчанию она не рисуется вовсе: замер дал 6 пикселей с непрозрачностью 10 из 255 против 52 пикселей при 255 у круглого торца. Затронуто 8 иконок в обеих темах.</p>
-        </div>
-        <div class="dm-cap"><div class="t-caption">Решение №15 · круглый торец, длина не меняется</div><div class="t-caption dm-ok">14.5.0</div></div>
-      </article>
-
       <!-- штрихкод -->
       <article class="dm">
         <div class="dm-body">
@@ -532,9 +499,9 @@ a{ color:var(--accent); }
               <div class="bc-scan"></div>
             </div>
           </div>
-          <p class="cs-card-t" style="margin-top:var(--sp-5)">В тёмной теме штрихкод сначала сделали «по теме» — тёмные полосы на тёмном фоне. Сканеру нужен светлый фон и тёмные полосы, инверсию читают не все модели. Теперь плашка светлая в обеих темах и совпадает с ivory-билетом на десктопе.</p>
+          <p class="cs-card-t" style="margin-top:var(--sp-5)">Тёмная тема доходит до физического мира и останавливается. Инверсный код читают не все сканеры на входе, а билет проверяют один раз и в очереди: цена ошибки — человек, которого не пустили. Плашка светлая в обеих темах — интерфейс подстраивается под сканер, а не наоборот.</p>
         </div>
-        <div class="dm-cap"><div class="t-caption">Решение №13 · светлая плашка везде</div><div class="t-caption dm-ok">14.5.0</div></div>
+        <div class="dm-cap"><div class="t-caption">Решение №13 · система считается с железом</div><div class="t-caption dm-ok">14.5.0</div></div>
       </article>
 
       <!-- сглаживание -->
@@ -880,7 +847,7 @@ a{ color:var(--accent); }
 
 <footer class="cs-foot">
   <div class="cs-foot-in">
-    <span>TTS Design System · R14 · 14.7.0</span>
+    <span>TTS Design System · R14 · 14.7.1</span>
     <span><a href="https://github.com/hitch-npc/tts-design-system">GitHub</a> · <a href="https://github.com/hitch-npc/tts-design-system/blob/main/CHANGELOG.md">История версий</a> · <a href="https://github.com/hitch-npc/tts-design-system/blob/main/DECISIONS.md">Решения</a></span>
   </div>
 </footer>
