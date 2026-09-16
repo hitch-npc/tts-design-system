@@ -1267,6 +1267,65 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   border-radius: 1px;
 }
 
+/* ─── Theme toggle — кнопка светлой / тёмной темы (14.8) ───
+   Иконка показывает текущую тему: луна — тёмная, солнце — светлая.
+   Состояние — атрибут data-mode="dark|light" на кнопке, смена атрибута запускает анимацию.
+   .theme-toggle — квадрат с рамкой: десктопная шапка, между полем поиска и городом.
+   .theme-toggle-bare — без рамки: мобильная шапка, перед бургером. */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  color: var(--n100);
+  border: 1px solid var(--n800);
+  border-radius: var(--r-sm);
+  transition: border-color var(--dur-base) var(--ease-out);
+}
+.theme-toggle:hover { border-color: var(--n700); }
+.theme-toggle-bare,
+.theme-toggle-bare:hover { border-color: transparent; }
+.theme-toggle svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+  overflow: visible;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.theme-toggle-bare svg { width: 20px; height: 20px; }
+.theme-toggle:active svg { transform: scale(.9); }
+.theme-toggle .tt-moon,
+.theme-toggle .tt-sun,
+.theme-toggle .tt-ray { transform-box: view-box; transform-origin: 50% 50%; }
+.theme-toggle .tt-moon { transition: transform 520ms var(--ease-bounce), opacity 200ms var(--ease-out); }
+.theme-toggle .tt-sun {
+  opacity: 0;
+  transform: rotate(-90deg) scale(.5);
+  transition: transform 520ms var(--ease-bounce), opacity 200ms var(--ease-out);
+}
+.theme-toggle .tt-ray {
+  opacity: 0;
+  transform: scale(.5);
+  transition: transform 420ms var(--ease-bounce), opacity 160ms var(--ease-out);
+}
+.theme-toggle[data-mode="light"] .tt-moon { opacity: 0; transform: rotate(90deg) scale(.5); }
+.theme-toggle[data-mode="light"] .tt-sun { opacity: 1; transform: none; }
+.theme-toggle[data-mode="light"] .tt-ray {
+  opacity: 1;
+  transform: none;
+  transition-delay: calc(120ms + var(--i, 0) * 28ms); /* лучи выходят по очереди, по часовой */
+}
+/* наведение: луна покачивается, лучи солнца проворачиваются на шаг */
+.theme-toggle[data-mode="dark"]:hover .tt-moon { transform: rotate(-14deg); }
+.theme-toggle[data-mode="light"]:hover .tt-sun { transform: rotate(45deg); }
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle .tt-ray { transition-delay: 0s !important; }
+  .theme-toggle[data-mode="dark"]:hover .tt-moon,
+  .theme-toggle[data-mode="light"]:hover .tt-sun { transform: none; }
+}
+
 /* ─── Skeleton Loading ─── */
 @keyframes skeleton-pulse {
   0%   { opacity: 1; }

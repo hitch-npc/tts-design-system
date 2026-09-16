@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TTS — Cookie consent bar</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../ds-core-r14.css" id="theme-css">
+<link rel="stylesheet" href="../../ds-core-r14.css" data-theme-css>
 <style>
   /* Только обвязка демо-страницы */
   .demo-stage {
@@ -26,7 +26,7 @@
   <div class="t-caption" style="color: var(--n500);">Cookie consent bar — DS TTS R14</div>
   <div class="demo-controls">
     <button class="btn btn-ghost btn-sm" id="replay">Показать баннер снова</button>
-    <button class="btn btn-ghost btn-sm" id="theme-toggle">Светлая тема</button>
+    <button class="theme-toggle" type="button" id="theme-toggle" data-mode="dark" aria-label="Включить светлую тему" title="Включить светлую тему"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path class="tt-moon" d="M20 12.19A8 8 0 1 1 11.81 4A6.5 6.5 0 0 0 20 12.19Z"/><g class="tt-sun"><circle cx="12" cy="12" r="4"/><path class="tt-ray" style="--i:0" d="M12 2v2.25"/><path class="tt-ray" style="--i:1" d="M19.07 4.93l-1.59 1.59"/><path class="tt-ray" style="--i:2" d="M22 12h-2.25"/><path class="tt-ray" style="--i:3" d="M19.07 19.07l-1.59-1.59"/><path class="tt-ray" style="--i:4" d="M12 22v-2.25"/><path class="tt-ray" style="--i:5" d="M4.93 19.07l1.59-1.59"/><path class="tt-ray" style="--i:6" d="M2 12h2.25"/><path class="tt-ray" style="--i:7" d="M4.93 4.93l1.59 1.59"/></g></svg></button>
   </div>
 </div>
 
@@ -63,14 +63,26 @@
   document.getElementById('cookie-no').addEventListener('click', hideBar);
   document.getElementById('replay').addEventListener('click', showBar);
 
-  // Переключение темы = замена CSS-файла
-  const themeCss = document.getElementById('theme-css');
+  // Переключение темы = замена CSS-файла. Новый файл подключается рядом и снимает старый
+  // только после загрузки — без вспышки нестилизованной страницы посреди анимации кнопки.
   const themeBtn = document.getElementById('theme-toggle');
-  let dark = true;
+  let themeReq = 0;
   themeBtn.addEventListener('click', () => {
-    dark = !dark;
-    themeCss.href = dark ? '../ds-core-r14.css' : '../ds-core-r14-light.css';
-    themeBtn.textContent = dark ? 'Светлая тема' : 'Тёмная тема';
+    const dark = themeBtn.dataset.mode !== 'dark';
+    const label = dark ? 'Включить светлую тему' : 'Включить тёмную тему';
+    themeBtn.dataset.mode = dark ? 'dark' : 'light';
+    themeBtn.setAttribute('aria-label', label);
+    themeBtn.title = label;
+
+    const links = document.querySelectorAll('link[data-theme-css]');
+    const next = links[links.length - 1].cloneNode();
+    next.href = dark ? '../../ds-core-r14.css' : '../../ds-core-r14-light.css';
+    const req = ++themeReq;
+    next.addEventListener('load', () => {
+      if (req !== themeReq) { next.remove(); return; } // уже запрошена другая тема
+      document.querySelectorAll('link[data-theme-css]').forEach(l => { if (l !== next) l.remove(); });
+    }, { once: true });
+    links[links.length - 1].after(next);
   });
 </script>
 </body>

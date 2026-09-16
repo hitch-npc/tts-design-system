@@ -475,17 +475,43 @@ textarea.input { resize: none; }
 .pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 36px; }
 
 
-/* ── Theme toggle ── */
+/* ── Theme toggle — иконка текущей темы: луна — тёмная, солнце — светлая (как .theme-toggle в ядре, 14.8) ── */
 .theme-toggle {
-  display: flex; align-items: center; gap: 7px; cursor: pointer;
-  background: var(--n900); border: 1px solid var(--n800); border-radius: 2px;
-  padding: 7px 12px; color: var(--n400);
-  font-family: "Manrope", sans-serif; font-size: 9px; font-weight: 600;
-  letter-spacing: .16em; text-transform: uppercase;
-  transition: border-color .18s, color .18s;
+  display: inline-flex; align-items: center; justify-content: center; flex: none;
+  width: 36px; height: 36px; padding: 0; cursor: pointer;
+  background: transparent; border: 1px solid var(--n800); border-radius: 2px;
+  color: var(--n100);
+  transition: border-color .2s cubic-bezier(.4,0,.2,1);
 }
-.theme-toggle:hover { border-color: var(--n600); color: var(--n100); }
-.theme-toggle svg { width: 14px; height: 14px; display: block; flex-shrink: 0; }
+.theme-toggle:hover { border-color: var(--n600); }
+.theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.theme-toggle svg {
+  display: block; width: 16px; height: 16px; overflow: visible;
+  transition: transform .12s cubic-bezier(.4,0,.2,1);
+}
+.theme-toggle:active svg { transform: scale(.9); }
+.theme-toggle .tt-moon, .theme-toggle .tt-sun, .theme-toggle .tt-ray { transform-box: view-box; transform-origin: 50% 50%; }
+.theme-toggle .tt-moon { transition: transform .52s cubic-bezier(.34,1.56,.64,1), opacity .2s cubic-bezier(.4,0,.2,1); }
+.theme-toggle .tt-sun {
+  opacity: 0; transform: rotate(-90deg) scale(.5);
+  transition: transform .52s cubic-bezier(.34,1.56,.64,1), opacity .2s cubic-bezier(.4,0,.2,1);
+}
+.theme-toggle .tt-ray {
+  opacity: 0; transform: scale(.5);
+  transition: transform .42s cubic-bezier(.34,1.56,.64,1), opacity .16s cubic-bezier(.4,0,.2,1);
+}
+.theme-toggle[data-mode="light"] .tt-moon { opacity: 0; transform: rotate(90deg) scale(.5); }
+.theme-toggle[data-mode="light"] .tt-sun { opacity: 1; transform: none; }
+.theme-toggle[data-mode="light"] .tt-ray { opacity: 1; transform: none; transition-delay: calc(120ms + var(--i) * 28ms); }
+.theme-toggle[data-mode="dark"]:hover .tt-moon { transform: rotate(-14deg); }
+.theme-toggle[data-mode="light"]:hover .tt-sun { transform: rotate(45deg); }
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle, .theme-toggle svg, .theme-toggle .tt-moon, .theme-toggle .tt-sun, .theme-toggle .tt-ray {
+    transition-duration: .01ms !important; transition-delay: 0s !important;
+  }
+  .theme-toggle[data-mode="dark"]:hover .tt-moon,
+  .theme-toggle[data-mode="light"]:hover .tt-sun { transform: none; }
+}
 
 /* ── STICKY CTA ── */
 .cta-bar {
@@ -726,10 +752,8 @@ textarea.input { resize: none; }
     <li><a href="#">Партнёрам</a></li>
   </ul>
   <div style="display:flex;align-items:center;gap:10px;">
-    <button class="theme-toggle" onclick="toggleTheme(this)" aria-label="Переключить тему">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" class="ico-sun" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" class="ico-moon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
-      <span class="toggle-lbl">Тёмная</span>
+    <button class="theme-toggle" type="button" onclick="toggleTheme(this)" data-mode="dark" aria-label="Включить светлую тему" title="Включить светлую тему">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path class="tt-moon" d="M20 12.19A8 8 0 1 1 11.81 4A6.5 6.5 0 0 0 20 12.19Z"/><g class="tt-sun"><circle cx="12" cy="12" r="4"/><path class="tt-ray" style="--i:0" d="M12 2v2.25"/><path class="tt-ray" style="--i:1" d="M19.07 4.93l-1.59 1.59"/><path class="tt-ray" style="--i:2" d="M22 12h-2.25"/><path class="tt-ray" style="--i:3" d="M19.07 19.07l-1.59-1.59"/><path class="tt-ray" style="--i:4" d="M12 22v-2.25"/><path class="tt-ray" style="--i:5" d="M4.93 19.07l1.59-1.59"/><path class="tt-ray" style="--i:6" d="M2 12h2.25"/><path class="tt-ray" style="--i:7" d="M4.93 4.93l1.59 1.59"/></g></svg>
     </button>
     <a href="#" class="btn btn-primary btn-sm">Стать партнёром</a>
   </div>
@@ -1158,33 +1182,30 @@ textarea.input { resize: none; }
 
 <script>
 // ── Переключение темы ──
+// Иконка показывает текущую тему; смена data-mode запускает анимацию луна ↔ солнце.
+function setToggle(btn, mode) {
+  const label = mode === 'dark' ? 'Включить светлую тему' : 'Включить тёмную тему';
+  btn.dataset.mode = mode;
+  btn.setAttribute('aria-label', label);
+  btn.title = label;
+}
 function toggleTheme(btn) {
   const frame = btn.closest('.frame');
   const isDark = frame.classList.contains('th-d');
   frame.classList.toggle('th-d', !isDark);
   frame.classList.toggle('th-l', isDark);
-  const sun = btn.querySelector('.ico-sun');
-  const moon = btn.querySelector('.ico-moon');
-  const lbl = btn.querySelector('.toggle-lbl');
-  sun.style.display = isDark ? 'block' : 'none';
-  moon.style.display = isDark ? 'none' : 'block';
-  lbl.textContent = isDark ? 'Светлая' : 'Тёмная';
+  setToggle(btn, isDark ? 'light' : 'dark');
 }
 
 // ── Клонируем контент в 4 фрейма ──
+// в светлых фреймах кнопка получает «солнце» до вставки, чтобы при загрузке не было анимации
 const tpl = document.getElementById('tpl');
 ['f1','f2','f3','f4'].forEach(id => {
-  document.getElementById(id).appendChild(tpl.content.cloneNode(true));
-});
-// Fix toggle state for light frames
-['f2','f4'].forEach(id => {
   const frame = document.getElementById(id);
-  const btn = frame.querySelector('.theme-toggle');
-  if (btn) {
-    btn.querySelector('.ico-sun').style.display = 'block';
-    btn.querySelector('.ico-moon').style.display = 'none';
-    btn.querySelector('.toggle-lbl').textContent = 'Светлая';
-  }
+  const content = tpl.content.cloneNode(true);
+  const btn = content.querySelector('.theme-toggle');
+  if (btn && frame.classList.contains('th-l')) setToggle(btn, 'light');
+  frame.appendChild(content);
 });
 
 // ── FAQ ──

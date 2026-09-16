@@ -105,6 +105,11 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
   и остаётся, пока окно открыто. Окно — не модальное по центру: разворачивается из-под строки поиска в 6px, той же ширины;
   появление 420 мс `cubic-bezier(.16,1,.3,1)`, уход 252 мс, строки проявляются по очереди; лёгкое затемнение ниже меню;
   при `prefers-reduced-motion` без анимации. Мобильная версия — иконка и нижняя шторка.
+- **Кнопка темы** — `.theme-toggle`: квадрат с иконкой текущей темы (луна — тёмная, солнце — светлая), без подписи.
+  Десктоп — между полем поиска и городом; мобильная шапка — `.theme-toggle-bare` без рамки, перед бургером.
+  Состояние — атрибут `data-mode="dark|light"`; смена: луна уходит с поворотом, солнце входит с лёгким перелётом,
+  лучи выходят по очереди (520 мс, `--ease-bounce`); при `prefers-reduced-motion` без анимации.
+  В макете редизайна кнопка меняет только иконку — темы там в двух отдельных файлах.
 - **Теги** — цвет по смыслу (оранжевый, зелёный, ivory); «Премьера» — фон `--accent-ghost`, рамка и текст кобальтом.
   «Премьера» сейчас не используется в редизайне (убрана после правок Азамата), но остаётся в системе — понадобится позже.
 - **Схема зала** — зоны `--zone-1…5` (ложа, партер, амфитеатр, бельэтаж, балкон) — `.smap-t-vip / partet / amphi / belet / balkon`;
@@ -449,6 +454,24 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
   <div class="nav-desktop-right"><!-- search + login + cart --></div>
 </nav>
 <span class="nav-cart-badge">3</span>  <!-- бейдж корзины -->
+```
+
+### Кнопка темы (14.8)
+```html
+<!-- Иконка = текущая тема: data-mode="dark" — луна, "light" — солнце. Смена атрибута запускает анимацию.
+     Десктоп: между полем поиска и городом. Мобильная шапка: class="theme-toggle theme-toggle-bare", перед бургером. -->
+<button class="theme-toggle" type="button" data-mode="dark" aria-label="Включить светлую тему" title="Включить светлую тему">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+    <path class="tt-moon" d="M20 12.19A8 8 0 1 1 11.81 4A6.5 6.5 0 0 0 20 12.19Z"/>
+    <g class="tt-sun"><circle cx="12" cy="12" r="4"/>
+      <path class="tt-ray" style="--i:0" d="M12 2v2.25"/><path class="tt-ray" style="--i:1" d="M19.07 4.93l-1.59 1.59"/>
+      <path class="tt-ray" style="--i:2" d="M22 12h-2.25"/><path class="tt-ray" style="--i:3" d="M19.07 19.07l-1.59-1.59"/>
+      <path class="tt-ray" style="--i:4" d="M12 22v-2.25"/><path class="tt-ray" style="--i:5" d="M4.93 19.07l1.59-1.59"/>
+      <path class="tt-ray" style="--i:6" d="M2 12h2.25"/><path class="tt-ray" style="--i:7" d="M4.93 4.93l1.59 1.59"/>
+    </g>
+  </svg>
+</button>
+<!-- По нажатию: переключить тему, затем data-mode, aria-label и title — на противоположные -->
 ```
 
 ### Session list — выбор сеанса (multi-venue / multi-date) ⭐ основной паттерн
