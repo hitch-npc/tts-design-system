@@ -1,6 +1,6 @@
 {
   "name": "tts-ds-r14",
-  "version": "14.8.3",
+  "version": "14.9.0",
   "private": true,
   "type": "module",
   "description": "TTS (Ticket to Show) Design System R14 — tokens.json как единый источник истины: сайт (dark/light) + SMM-слой.",
@@ -11,6 +11,7 @@
   "scripts": {
     "build": "node tooling/build-tokens.mjs && node tooling/build-smm.mjs",
     "build:check": "node tooling/build-tokens.mjs --check",
+    "build:emails": "python3 tooling/build-emails.py",
     "lint": "node tooling/guardrail.mjs",
     "lint:strict": "node tooling/guardrail.mjs --strict",
     "check": "node tooling/build-tokens.mjs --check && node tooling/guardrail.mjs",

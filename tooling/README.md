@@ -15,6 +15,7 @@
 | `ds-smm.css` | SMM: генерируется целиком из `smm.tokens.json` | **НЕТ — генерируется** |
 | `tooling/build-tokens.mjs` | Генератор `:root` сайта | по необходимости |
 | `tooling/build-smm.mjs` | Генератор `ds-smm.css` | по необходимости |
+| `tooling/build-emails.py` | Генератор писем-рассылок `emails/mailings/*.html` (Python 3, без зависимостей) | **ДА — здесь меняешь письма** |
 | `tooling/guardrail.mjs` | Страж правил CLAUDE.md | по необходимости |
 | `tooling/security-check.mjs` | Проверка перед публикацией: секреты, личные данные, приватные файлы (`npm run security`) | по необходимости |
 | `tooling/build/` | Автономные `ds-tokens-{dark,light}.css` (для Figma/импорта) | генерируется |
@@ -36,6 +37,13 @@
 1. Правишь `smm.tokens.json` (`smm.canvas.*`, `smm.type.*`, `smm.color.*`).
 2. `npm run build` → пересобирается `ds-smm.css`.
 3. Пример вёрстки постера — `tooling/examples/smm-example.html`.
+
+**Поменять письмо-рассылку** (после спектакля, перенос, напоминание, промокод, подборка)
+1. Правишь `tooling/build-emails.py`: общие блоки (`header`, `footer`, `button`, `caption`) — сразу во всех
+   письмах; текст и порядок блоков — в функции письма (`after_show`, `reschedule`, `reminder`, `promo`, `personal`).
+2. `npm run build:emails` → пересобираются все 5 файлов в `emails/mailings/`. Готовые HTML руками не правятся.
+3. Цвета в письмах — hex из `tokens.json` (почтовики не понимают `var(--…)`): поменял токен — поменяй и константу
+   в начале скрипта. Правила R14 те же: радиус 2px, Cormorant от 22px, кобальт в тексте только крупно.
 
 **Перед тем как «закрыть» правки**
 - `npm run check` — собирает в режиме проверки (без записи) и гоняет стража.

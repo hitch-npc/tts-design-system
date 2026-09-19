@@ -35,7 +35,7 @@
 |-------|-----------|
 | `site/` | Продуктовые сборки: `case-r14.html` (кейс системы для портфолио, публичный), `redesign-v2-dark.html` / `-light.html` (оффлайн, всё внутри одного файла), `Схема зала - десктоп (для теста).html` (новая схема зала, тест), `behance-hero-blocks.html` (только локально), `cookie-banner/`, `partner-program/` (актуальный html + `handoff/` — пакет для передачи), `handoff/` — передача фронтенду: `frontend-changes.html` и `redesign-changes.html` («было / стало» с 8 сентября) |
 | `concepts/` | Ранние концепты DS (март 2026): Cobalt, CobaltFog, AcidLime, Stone v3, Horizon, Light in Darkness, мобильные v1/v2. Историческая витрина, не эталон — эталон R14. В публичный репо не входит |
-| `emails/` | Транзакционные письма на R14: `email-1-payment-confirmation.html`, `email-2-reminder.html`, `emails-all.html`. Кампании v3 — в `_archive/emails/` |
+| `emails/` | Транзакционные письма на R14: `email-1-payment-confirmation.html`, `email-2-reminder.html`, `emails-all.html`. Кампании v3 — в `_archive/emails/`. `mailings/` — рассылки на R14 (тёмная тема): после спектакля, перенос, напоминание, промокод, подборка; **генерируются** `tooling/build-emails.py` (`npm run build:emails`), руками не править |
 | `docs/` | `audits/` (SEO, UX, redesign v1/v2, рынок), `council/` (репорты и транскрипты советов), `refs/` (референсы, скриншоты интерфейса), `metrika-goals.pdf`, `skills-review.html` |
 | `smm/` | SMM-система и контент-планы (md + pdf), борд email-кампаний |
 | `brand/` | `logo/` — все варианты логотипа (png/svg), `source/` — исходники градиентов и рассылки (.ai) |
