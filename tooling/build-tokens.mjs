@@ -72,9 +72,19 @@ function valueMap(theme) {
   m['--r-md']   = px(g.radius.md.value);
   m['--r-lg']   = px(g.radius.lg.value);
   m['--r-full'] = px(g.radius.full.value);
-  m['--content-max'] = g.layout['content-max'].value;
+  m['--content-max']  = g.layout['content-max'].value;
+  m['--content-cap']  = g.layout['content-cap'].value;
+  m['--content-wide'] = g.layout['content-wide'].value;
+  m['--content-wide-cap'] = g.layout['content-wide-cap'].value;
+  m['--measure']      = g.layout['measure'].value;
+  m['--measure-sm']   = g.layout['measure-sm'].value;
+  m['--form-max']     = g.layout['form-max'].value;
+  m['--card-max']     = g.layout['card-max'].value;
+  m['--card-min']     = g.layout['card-min'].value;
   m['--page-pad']    = g.layout['page-pad'].value;
+  m['--page-pad-max'] = g.layout['page-pad-max'].value;
   m['--col-gap']     = g.layout['col-gap'].value;
+  m['--col-gap-max'] = g.layout['col-gap-max'].value;
   return m;
 }
 
@@ -95,8 +105,8 @@ const GROUPS = [
   ['Межсекционные отступы', ['--section-gap-sm','--section-gap-md','--section-gap-lg']],
   ['Анимации', ['--ease-out','--ease-bounce','--dur-fast','--dur-base','--dur-slow']],
   ['Радиус', ['--r-sm','--r-md','--r-lg','--r-full']],
-  ['Контент', ['--content-max']],
-  ['Режим по умолчанию — mobile', ['--page-pad','--col-gap']],
+  ['Ширины', ['--content-max','--content-cap','--content-wide','--content-wide-cap','--measure','--measure-sm','--form-max','--card-max','--card-min']],
+  ['Поля и промежутки — минимум, дальше тянутся', ['--page-pad','--page-pad-max','--col-gap','--col-gap-max']],
 ];
 
 function renderRoot(theme) {

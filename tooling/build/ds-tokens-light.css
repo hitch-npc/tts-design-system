@@ -120,10 +120,20 @@
   --r-lg:            8px;
   --r-full:          9999px;
 
-  /* Контент */
+  /* Ширины */
   --content-max:     1200px;
+  --content-cap:     1920px;
+  --content-wide:    1440px;
+  --content-wide-cap: 2240px;
+  --measure:         640px;
+  --measure-sm:      480px;
+  --form-max:        440px;
+  --card-max:        360px;
+  --card-min:        256px;
 
-  /* Режим по умолчанию — mobile */
+  /* Поля и промежутки — минимум, дальше тянутся */
   --page-pad:        20px;
+  --page-pad-max:    56px;
   --col-gap:         16px;
+  --col-gap-max:     32px;
 }

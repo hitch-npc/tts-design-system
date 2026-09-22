@@ -135,12 +135,22 @@
   --r-lg:            8px;
   --r-full:          9999px;
 
-  /* Контент */
+  /* Ширины */
   --content-max:     1200px;
+  --content-cap:     1920px;
+  --content-wide:    1440px;
+  --content-wide-cap: 2240px;
+  --measure:         640px;
+  --measure-sm:      480px;
+  --form-max:        440px;
+  --card-max:        360px;
+  --card-min:        256px;
 
-  /* Режим по умолчанию — mobile */
+  /* Поля и промежутки — минимум, дальше тянутся */
   --page-pad:        20px;
+  --page-pad-max:    56px;
   --col-gap:         16px;
+  --col-gap-max:     32px;
 }
 
 /* ─── СБРОС ─── */
@@ -165,29 +175,18 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
    РЕЖИМЫ: MOBILE / DESKTOP
    ══════════════════════════════════════════════════════════ */
 
-/* По умолчанию — mobile (360–480px) */
-[data-mode="mobile"] {
-  --page-pad: 20px;
-  --col-gap: 16px;
-}
-
-/* Desktop — 1200px */
-[data-mode="desktop"] {
-  --page-pad: 48px;
-  --col-gap: 24px;
-}
+/* Поле и промежуток больше не зависят от режима: их тянет --pad-fluid / --gap-fluid
+   от минимума (20 / 16) до потолка (56 / 32). Режим остаётся только для превью
+   мобильной раскладки в макетах. */
 [data-mode="mobile"] body {
   max-width: 480px;
   margin: 0 auto;
 }
+/* Нижнего упора нет: тело сжимается вместе с окном, дальше работает лестница
+   --page-width и сетка .grid-cards. Горизонтального скролла на планшете не будет. */
 [data-mode="desktop"] body {
-  min-width: 1200px;
   max-width: none;
   margin: 0;
-}
-[data-mode="desktop"] .container {
-  max-width: var(--content-max);
-  margin: 0 auto;
 }
 [data-mode="desktop"] .grid-2 { grid-template-columns: 1fr 1fr; }
 [data-mode="desktop"] .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
@@ -198,12 +197,12 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .grid-2, .grid-3, .grid-4 {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--col-gap);
+  gap: var(--gap-fluid);
 }
 .grid-auto {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: var(--col-gap);
+  gap: var(--gap-fluid);
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -273,7 +272,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .ds-header p {
   font-size: 13px;
   color: var(--n400);
-  max-width: 560px;
+  max-width: var(--measure-sm);
   line-height: 1.75;
 }
 
@@ -553,7 +552,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 }
 
 /* Full-width */
-.btn-full { width: 100%; }
+.btn-full { width: 100%; max-width: var(--form-max); }
 
 /* Компонент кнопок в ДС */
 .btn-row {
@@ -779,8 +778,12 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   bottom: 12px;
   left: 12px;
   padding: 4px 9px;
-  background: var(--n950);
-  border: 1px solid var(--n800);
+  /* Подложка полупрозрачная: обложка читается под датой, а не закрывается
+     чёрным прямоугольником. Размытие держит текст читаемым на светлом кадре. */
+  background: color-mix(in srgb, var(--n950) 72%, transparent);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid color-mix(in srgb, var(--n800) 70%, transparent);
   border-radius: 2px;
   z-index: 2;
 }
@@ -800,11 +803,24 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   line-height: 1.2;
   color: var(--n100);
   letter-spacing: .01em;
+  /* Длинное название не растит карточку: ровно две строки, место под них
+     зарезервировано — цены во всём ряду стоят на одной линии. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  min-height: calc(2 * 1.2em);
+  overflow-wrap: anywhere;
 }
 .event-card-sub {
   font-size: 11px;
   color: var(--n500);
   line-height: 1.5;
+  /* Длинное имя площадки — в одну строку с многоточием, без переноса вёрстки */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .event-card-footer {
   display: flex;
@@ -980,7 +996,36 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 /* ══════════════════════════════════════════════════════════
    10 — УТИЛИТЫ
    ══════════════════════════════════════════════════════════ */
-.container { padding-left: var(--page-pad); padding-right: var(--page-pad); }
+/* Ширины: один потолок на все страницы. Лишняя ширина монитора уходит в поля,
+   а не в макет — колонки и карточки не раздуваются. */
+/* Потолок страницы одной формулой: растёт вместе с монитором — 1200 на ноутбуке,
+   1920 на 4K, дальше только поля. Страницы берут var(--page-width), а не пишут clamp руками.
+   Значения ступеней — в tokens.json, здесь только правило. */
+:where(html) {
+  --page-width:      clamp(var(--content-max), 78vw, var(--content-cap));
+  --page-width-wide: clamp(var(--content-wide), 90vw, var(--content-wide-cap));
+  /* Поле и промежуток тянутся вместе с экраном: телефон 20/16, 1440 — 46/23, 4K — 56/32.
+     Ступеней и медиазапросов не нужно, токены задают только пол и потолок. */
+  --pad-fluid:       clamp(var(--page-pad), 3.2vw, var(--page-pad-max));
+  --gap-fluid:       clamp(var(--col-gap), 1.6vw, var(--col-gap-max));
+}
+.container {
+  width: 100%;
+  max-width: var(--page-width);
+  margin-inline: auto;
+  padding-inline: var(--pad-fluid);
+}
+.container-wide   { max-width: var(--page-width-wide); }
+.container-text   { max-width: var(--measure); }       /* абзац: 640 — предел читаемой строки */
+.container-narrow { max-width: var(--measure-sm); }    /* лид под заголовком, подпись */
+
+/* Сетка карточек: с шириной экрана растёт число колонок, а не размер карточки.
+   1200 → 4 колонки, 1920 → 5, 4K → 6; сама карточка держится около --card-min. */
+.grid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--card-min), 1fr));
+  gap: var(--gap-fluid);
+}
 .stack { display: flex; flex-direction: column; }
 .stack-4  { gap: 4px; }
 .stack-8  { gap: 8px; }
@@ -1403,7 +1448,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   font-size: 13px;
   color: var(--n500);
   line-height: 1.7;
-  max-width: 300px;
+  max-width: var(--card-max);
   margin-bottom: 24px;
 }
 
@@ -1458,7 +1503,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .hero-inner {
   position: relative;
   z-index: 2;
-  max-width: 600px;
+  max-width: var(--measure);
 }
 .hero-eyebrow {
   display: flex;
@@ -1506,7 +1551,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   border-radius: var(--r-sm);
   overflow: hidden;
   width: 100%;
-  max-width: 520px;
+  max-width: var(--measure-sm);
   margin-bottom: 16px;
 }
 .hero-search-icon {
@@ -1628,7 +1673,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .promo-inner {
   position: relative;
   z-index: 2;
-  max-width: 480px;
+  max-width: var(--measure-sm);
 }
 .promo-title {
   font-family: var(--f-thin);
@@ -1685,7 +1730,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   background: radial-gradient(circle, var(--blob-purple) 0%, var(--blob-faint) 55%, transparent 72%);
   opacity: .35;
 }
-.ev-hero-inner { position: relative; z-index: 2; max-width: 700px; }
+.ev-hero-inner { position: relative; z-index: 2; max-width: var(--measure); }
 
 .ev-breadcrumb {
   display: flex;
@@ -2635,7 +2680,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: 440px;
+  max-width: var(--form-max);
 }
 .success-icon {
   width: 52px; height: 52px;
@@ -2756,7 +2801,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   border: 1px solid var(--n800);
   border-radius: var(--r-sm);
   width: 100%;
-  max-width: 440px;
+  max-width: var(--form-max);
   box-shadow: 0 24px 64px var(--shadow-color);
   transform: translateY(12px);
   transition: transform var(--dur-slow) var(--ease-out);
@@ -2865,7 +2910,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .modal-postsale-box {
   position: relative;
   overflow: hidden;
-  max-width: 460px;
+  max-width: var(--form-max);
   background: var(--ink);
 }
 .postsale-blob {
@@ -2914,7 +2959,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   color: var(--n400);
   line-height: 1.7;
   margin-bottom: 22px;
-  max-width: 340px;
+  max-width: var(--card-max);
 }
 .postsale-form {
   display: flex;
