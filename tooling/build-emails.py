@@ -1,52 +1,75 @@
 #!/usr/bin/env python3
-"""Генератор писем-рассылок Ticket to Show на DS R14 (тёмная тема).
+"""Генератор писем Ticket to Show на DS R14.
 
 Запуск из корня репозитория: npm run build:emails  (или python3 tooling/build-emails.py)
-Результат — самодостаточные HTML в emails/mailings/: after-show, reschedule, reminder, promo, personal.
+Результат — самодостаточные HTML:
+  emails/mailings/  — рассылки, светлая тема (MAILINGS_THEME): after-show, reschedule, reminder, promo, personal;
+  emails/           — транзакционные, светлая тема: email-1-payment-confirmation, email-2-reminder
+                      и витрина emails-all (оба письма + письмо после события).
 Готовые HTML руками не править: меняешь шапку, футер, кнопку или текст здесь и пересобираешь.
 
 Разметка — как у писем до редизайна: таблицы, цвета зафиксированы градиентом (тёмный режим
-почтовиков их не перекрашивает), картинки с tickettoshow.ru. Цвета — hex из tokens.json (тёмная тема):
-почтовики не понимают var(--…), поэтому токены продублированы ниже.
+почтовиков их не перекрашивает), картинки с tickettoshow.ru. Цвета — hex из tokens.json:
+почтовики не понимают var(--…), поэтому токены обеих тем продублированы ниже (THEMES).
 """
 import os
 import re
 
-OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'emails', 'mailings')
+EMAILS = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'emails')
+OUT = os.path.join(EMAILS, 'mailings')
+MAILINGS_THEME = 'light'   # тема рассылок; 'dark' — прежняя тёмная версия (14.9.0)
 IMG = 'https://tickettoshow.ru'
 
-# ── Токены R14, тёмная тема (tokens.json) ──
-INK = '#0D0D0D'
-FOOT = '#080808'   # футер темнее страницы (решение 20)
-N950 = '#111318'
-N900 = '#191C22'
-N850 = '#1F222A'
-N800 = '#262930'
-N700 = '#4A4A48'
-N600 = '#626260'
-N500 = '#7A7A78'
-N400 = '#8A8A88'
-N300 = '#A6A6A2'
-N200 = '#C0C0BC'
-N100 = '#D6D6D2'
+# ── Токены R14 (tokens.json). Тема включается use_theme() перед сборкой письма ──
 ACC = '#0047FF'
-ACC_GHOST = '#0B142A'
 WHITE = '#FFFFFF'
-DANGER_BG = '#2D1010'
-DANGER_BD = '#7A2020'
-FAINT = '#08133D'
-TAGS = {
-    'red': ('#220A0A', '#F87171', '#441414'),
-    'green': ('#0A2210', '#4ADE80', '#1A4428'),
-    'orange': ('#221408', '#FB923C', '#442810'),
-    'default': (N900, N300, N800),
+THEMES = {
+    'dark': dict(
+        THEME='dark', INK='#0D0D0D',
+        FOOT='#080808', FOOT_BTN='#111318', FOOT_LINE='#1F222A',   # футер темнее страницы (решение 20)
+        N950='#111318', N900='#191C22', N850='#1F222A', N800='#262930', N700='#4A4A48', N600='#626260',
+        N500='#7A7A78', N400='#8A8A88', N300='#A6A6A2', N200='#C0C0BC', N100='#D6D6D2',
+        ACC_GHOST='#0B142A', DANGER_BG='#2D1010', DANGER_BD='#7A2020', FAINT='#08133D',
+        TAGS={
+            'red': ('#220A0A', '#F87171', '#441414'),
+            'green': ('#0A2210', '#4ADE80', '#1A4428'),
+            'orange': ('#221408', '#FB923C', '#442810'),
+            'default': ('#191C22', '#A6A6A2', '#262930'),
+        },
+        BLOB={  # blob = жанр
+            'cool': ('#06277F', '#15092A'),
+            'warm': ('#4A1F00', '#2A1200'),
+            'green': ('#0A2A0A', '#051205'),
+            'purple': ('#200840', '#15092A'),
+        },
+    ),
+    'light': dict(
+        THEME='light', INK='#FFFFFF',
+        FOOT='#F2F1EB', FOOT_BTN='#FAFAF7', FOOT_LINE='#E2E1DA',   # футер светлой темы — --n900
+        N950='#FAFAF7', N900='#F2F1EB', N850='#EAE9E2', N800='#E2E1DA', N700='#B5B5B0', N600='#A8A8A5',
+        N500='#888886', N400='#6A6A68', N300='#4A4A48', N200='#2D2D2B', N100='#0D0D0D',
+        ACC_GHOST='#EAF0FF', DANGER_BG='#FEE2E2', DANGER_BD='#FCA5A5', FAINT=None,
+        TAGS={
+            'red': ('#FEE2E2', '#DC2626', '#FCA5A5'),
+            'green': ('#DCFCE7', '#16A34A', '#86EFAC'),
+            'orange': ('#FFEDD5', '#C2410C', '#FED7AA'),
+            'default': ('#F2F1EB', '#4A4A48', '#E2E1DA'),
+        },
+        BLOB={
+            'cool': ('#BFD0EE', '#E5DAEF'),
+            'warm': ('#F2D5B0', '#F2DCC0'),
+            'green': ('#C7E8C8', '#E5DAEF'),
+            'purple': ('#DBC4F0', '#E5DAEF'),
+        },
+    ),
 }
-BLOB = {  # blob = жанр
-    'cool': ('#06277F', '#15092A'),
-    'warm': ('#4A1F00', '#2A1200'),
-    'green': ('#0A2A0A', '#051205'),
-    'purple': ('#200840', '#15092A'),
-}
+
+
+def use_theme(name):
+    globals().update(THEMES[name])
+
+
+use_theme('dark')
 
 SANS = "'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif"
 DISP = "'Cormorant Garamond',Georgia,'Times New Roman',serif"   # только от 22px
@@ -74,11 +97,17 @@ def card(b, bd):
             f'background-origin:border-box;background-clip:padding-box,border-box;')
 
 
+def clear(h):
+    """Тот же цвет с нулевой прозрачностью — край радиального градиента."""
+    return f'rgba({int(h[1:3], 16)},{int(h[3:5], 16)},{int(h[5:7], 16)},0)'
+
+
 def blob(kind):
     core, mid = BLOB[kind]
+    faint = f'radial-gradient(circle at 6% 0%,{FAINT} 0%,{clear(N900)} 48%),' if FAINT else ''
     return (f'background-color:{N900};'
-            f'background-image:radial-gradient(circle at 82% 92%,{core} 0%,{mid} 38%,rgba(25,28,34,0) 72%),'
-            f'radial-gradient(circle at 6% 0%,{FAINT} 0%,rgba(25,28,34,0) 48%),linear-gradient({N900},{N900});')
+            f'background-image:radial-gradient(circle at 82% 92%,{core} 0%,{mid} 38%,{clear(N900)} 72%),'
+            f'{faint}linear-gradient({N900},{N900});')
 
 
 def ty(s):
@@ -119,9 +148,9 @@ def S(text, color, extra=''):
     return f'<span style="{extra}{tc(color)}">{text}</span>'
 
 
-def caption(text, mb=12, color=N500, align=None):
+def caption(text, mb=12, color=None, align=None):
     """Серая подпись капсом — один стиль (решение 5): 10px / 500 / .14em."""
-    return T(text, 10, 14, color, 500, ls='.14em', upper=True, mb=mb, align=align)
+    return T(text, 10, 14, color or N500, 500, ls='.14em', upper=True, mb=mb, align=align)
 
 
 def eyebrow(text, mb=0, tag='p'):
@@ -129,9 +158,9 @@ def eyebrow(text, mb=0, tag='p'):
     return T(text, 10, 14, N300, 600, ls='.22em', upper=True, mb=mb, tag=tag)
 
 
-def link(text, href='#', color=N100, line=ACC):
-    return (f'<a href="{href}" target="_blank" style="text-decoration:none;border-bottom:1px solid {line};'
-            f'{tc(color)}">{text}</a>')
+def link(text, href='#', color=None, line=None):
+    return (f'<a href="{href}" target="_blank" style="text-decoration:none;border-bottom:1px solid {line or ACC};'
+            f'{tc(color or N100)}">{text}</a>')
 
 
 def tag(text, kind, align=None):
@@ -143,9 +172,11 @@ def tag(text, kind, align=None):
 def button(text, href='#', kind='primary', size='lg'):
     """Кнопки R14: капс, .16em; заливная 700 (всегда кобальт), контурные 600 со светлым текстом."""
     fs, lh = (12, 14) if size == 'lg' else (11, 14)
-    if kind == 'primary':
-        cell = f' bgcolor="{ACC}" style="border-radius:2px;{bg(ACC)}"'
-        color, weight, pad = WHITE, 700, ('17px 24px' if size == 'lg' else '13px 20px')
+    if kind in ('primary', 'invert'):
+        # invert — тёмная заливка: кнопка Apple Wallet в паре с контурной Google Wallet
+        fill, color = (ACC, WHITE) if kind == 'primary' else (N100, INK)
+        cell = f' bgcolor="{fill}" style="border-radius:2px;{bg(fill)}"'
+        weight, pad = 700, ('17px 24px' if size == 'lg' else '13px 20px')
     else:
         border = ACC if kind == 'ghost-accent' else N700
         cell = f' bgcolor="{INK}" style="{card(INK, border)}"'
@@ -156,8 +187,8 @@ def button(text, href='#', kind='primary', size='lg'):
     return tbl(f'<tr><td align="center"{cell}>{a}</td></tr>')
 
 
-def line(color=N850):
-    return f'<div style="height:1px;line-height:1px;font-size:0;{bg(color)}">&nbsp;</div>'
+def line(color=None):
+    return f'<div style="height:1px;line-height:1px;font-size:0;{bg(color or N850)}">&nbsp;</div>'
 
 
 def row(inner, pad='0 32px', cls='pad', tr=''):
@@ -169,9 +200,11 @@ def comment(text):
 
 
 # ── Общие блоки ──
-def header(label):
+def header(label, tagline=None):
     logo = (f'<img class="logo" src="{IMG}/logo-post.png" alt="Ticket to Show" width="128" height="32"'
             f' style="display:block;width:128px;height:32px;border:0;">')
+    if tagline:
+        logo += T(tagline, 10, 14, N500, 500, ls='.14em', upper=True, extra='margin-top:12px;')
     inner = tbl(f'<tr><td valign="middle" style="vertical-align:middle;">{logo}</td>'
                 f'<td align="right" valign="middle" style="vertical-align:middle;">{label}</td></tr>')
     return (comment('ШАПКА') + row(inner, '28px 32px 24px', 'pad hdr')
@@ -210,7 +243,7 @@ def footer(extra_link=None, unsub='Отписаться'):
     icons = ''.join(
         f'<td style="padding-right:8px;"><a href="#" target="_blank" style="display:block;text-decoration:none;">'
         + tbl(f'<tr><td width="36" height="36" align="center" valign="middle" style="width:36px;height:36px;'
-              f'text-align:center;vertical-align:middle;{card(N950, N850)}">'
+              f'text-align:center;vertical-align:middle;{card(FOOT_BTN, FOOT_LINE)}">'
               f'<img src="{IMG}/{f}" alt="{alt}" width="{w}" height="{h}" style="display:inline-block;'
               f'vertical-align:middle;width:{w}px;height:{h}px;border:0;"></td></tr>', width='36')
         + '</a></td>'
@@ -222,12 +255,12 @@ def footer(extra_link=None, unsub='Отписаться'):
              11, 16, N600)
     inner = (
         f'\n      <!-- линия кобальтом с растворением -->'
-        f'\n      <div style="height:1px;line-height:1px;font-size:0;background-color:{N850};'
+        f'\n      <div style="height:1px;line-height:1px;font-size:0;background-color:{FOOT_LINE};'
         f'background-image:linear-gradient(90deg,{ACC} 0%,rgba(0,71,255,0) 55%);">&nbsp;</div>'
         f'\n      ' + tbl(
             row(team + ref, '32px 32px 0', 'pad foot')
             + row(tbl(f'<tr>{icons}</tr>', width='auto'), '20px 32px 24px')
-            + row(line(), '0 32px')
+            + row(line(FOOT_LINE), '0 32px')
             + row(copy, '18px 32px 32px'),
             style='width:100%;max-width:600px;', cls='ew', align='center'))
     return (comment('ФУТЕР (на всю ширину, темнее страницы)')
@@ -239,7 +272,7 @@ BASE_CSS = """
     table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-collapse: collapse; }
     img { -ms-interpolation-mode: bicubic; border: 0; outline: none; text-decoration: none; display: block; }
     a { text-decoration: none; }
-    body { margin: 0; padding: 0; width: 100% !important; background-color: #0D0D0D;
+    body { margin: 0; padding: 0; width: 100% !important; background-color: %INK%;
            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
     @media only screen and (max-width: 600px) {
       .ew { width: 100% !important; max-width: 100% !important; }
@@ -263,23 +296,27 @@ BASE_CSS = """
 """
 
 
-def page(title, label, body, foot, extra_css=''):
-    css = BASE_CSS.replace('%EXTRA%', extra_css)
+def head(title, extra_css=''):
+    css = BASE_CSS.replace('%EXTRA%', extra_css).replace('%INK%', INK)
+    scheme = 'dark' if THEME == 'dark' else 'light only'
     return f"""<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="x-apple-disable-message-reformatting">
-  <meta name="color-scheme" content="dark">
-  <meta name="supported-color-schemes" content="dark">
+  <meta name="color-scheme" content="{scheme}">
+  <meta name="supported-color-schemes" content="{scheme}">
   <title>{title}</title>
   <link href="{FONTS}" rel="stylesheet">
   <style>{css}  </style>
-</head>
-<body bgcolor="{INK}" style="margin:0;padding:0;{bg(INK)}">
+</head>"""
 
-<!-- Ticket to Show · письмо на DS R14 (тёмная тема) -->
+
+def email(label, body, foot, tagline=None):
+    """Письмо целиком: таблица на всю ширину — шапка, тело, футер."""
+    theme = 'тёмная' if THEME == 'dark' else 'светлая'
+    return f"""<!-- Ticket to Show · письмо на DS R14 ({theme} тема) -->
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="{INK}" style="{bg(INK)}">
 <tr>
   <td align="center" bgcolor="{INK}" style="{bg(INK)}">
@@ -287,14 +324,23 @@ def page(title, label, body, foot, extra_css=''):
 <!-- ══════════════ WRAPPER 600px ══════════════ -->
 <table class="ew" role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="{INK}"
        style="width:100%;max-width:600px;{bg(INK)}">
-{header(label)}{body}
+{header(label, tagline)}{body}
 
 </table>
 <!-- ══════════════ /WRAPPER ══════════════ -->
 
   </td>
 </tr>{foot}
-</table>
+</table>"""
+
+
+def page(title, label, body, foot, extra_css='', preheader=None, tagline=None):
+    pre = (f'<div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all;">{preheader}</div>\n\n'
+           if preheader else '')
+    return f"""{head(title, extra_css)}
+<body bgcolor="{INK}" style="margin:0;padding:0;{bg(INK)}">
+
+{pre}{email(label, body, foot, tagline)}
 
 </body>
 </html>
@@ -358,12 +404,12 @@ def reschedule():
                 pre=warn + '<div style="height:20px;line-height:20px;font-size:0;">&nbsp;</div>')
 
     body += comment('СОБЫТИЕ') + row(
-        event_h('Спиваков и Герзмава', 'Дом музыки&nbsp;&nbsp;·&nbsp;&nbsp;Партер, ряд&nbsp;6, места 11–12', 'cool'),
+        event_h('Спиваков и Герзмава', 'Дом музыки&nbsp;&nbsp;·&nbsp;&nbsp;Партер, ряд&nbsp;6, места&nbsp;<span style="white-space:nowrap;">11–12</span>', 'cool'),
         '32px 32px 0', 'pad sec')
 
     def date_card(label, date, sub, active):
         b, bd = (ACC_GHOST, ACC) if active else (N950, N800)
-        num, subc, lab = (N100, N300, N300) if active else (N600, N600, N500)
+        num, subc, lab = (N100, N300, N300) if active else (N500, N500, N500)
         return tbl(f'<tr><td class="date-pad" style="padding:18px 20px;">'
                    f'{caption(label, mb=8, color=lab)}'
                    f'{T(date, 28, 32, num, font=NUM, cls="num-lg", mb=4)}'
@@ -435,7 +481,7 @@ def reminder():
         for s in seats)
     body += comment('МЕСТА') + row(caption('Места', mb=10) + rows_, '32px 32px 0', 'pad sec')
 
-    body += comment('СКАЧАТЬ БИЛЕТЫ') + row(button('Скачать PDF (билет/-ы)'), '28px 32px 0', 'pad sec')
+    body += comment('СКАЧАТЬ БИЛЕТЫ') + row(button('Скачать билет/ы&nbsp;(PDF)'), '28px 32px 0', 'pad sec')
 
     qr = tbl(f'<tr><td width="104" height="104" align="center" valign="middle" style="width:104px;height:104px;'
              f'text-align:center;vertical-align:middle;{card(N900, N800)}">'
@@ -599,11 +645,295 @@ def personal():
                 footer(unsub='Отписаться от&nbsp;рекомендаций'), css)
 
 
+# ════════════════════════════════════════════════════════════════════
+# ТРАНЗАКЦИОННЫЕ ПИСЬМА — светлая тема (use_theme('light') перед сборкой)
+# ════════════════════════════════════════════════════════════════════
+TAGLINE = 'Билеты на&nbsp;лучшие шоу&nbsp;— без&nbsp;наценки'
+
+TX_CSS = """
+      .poster-cell { width: 96px !important; padding: 14px !important; }
+      .poster { width: 96px !important; height: 96px !important; }
+      .ev-disp { font-size: 22px !important; line-height: 26px !important; }
+      .disp-sm { font-size: 22px !important; line-height: 26px !important; }
+      .num-lg { font-size: 22px !important; line-height: 26px !important; }
+      .num-xl { font-size: 28px !important; line-height: 32px !important; }
+      .wallet { display: block !important; width: 100% !important; padding: 0 0 10px 0 !important; }
+      .meta-cell { display: block !important; width: 100% !important; box-sizing: border-box !important;
+                   padding: 16px 20px !important; border-left: 0 !important; border-top: 1px solid #E2E1DA !important; }
+      .meta-first { border-top: 0 !important; }
+      .venue-col { display: block !important; width: 100% !important; box-sizing: border-box !important;
+                   padding: 18px 20px 0 !important; }
+      .venue-last { padding: 16px 20px 20px !important; }
+      .frame { width: 100% !important; }"""
+
+TG_ITEMS = ['отобранные события без лишней афиши',
+            'ранний доступ к лучшим местам',
+            'приглашения и редкие форматы',
+            'персональные условия на часть мероприятий в течение месяца']
+
+
+def spacer(h):
+    return f'<div style="height:{h}px;line-height:{h}px;font-size:0;">&nbsp;</div>'
+
+
+def para(text, mb=0):
+    return T(ty(text), 15, 26, N300, mb=mb, cls='lead')
+
+
+def dashes(items):
+    return tbl(''.join(
+        f'<tr><td width="22" valign="top" style="width:22px;padding:5px 0;vertical-align:top;">'
+        f'{T("—", 14, 22, N600)}</td>'
+        f'<td valign="top" style="padding:5px 0;vertical-align:top;">{T(ty(t), 14, 22, N200)}</td></tr>'
+        for t in items))
+
+
+def event_poster(genre, venue, title, when, kind='cool'):
+    """Карточка события с квадратной афишей; жанр — плашкой на афише."""
+    chip = tbl(f'<tr><td style="padding:4px 9px;{card(N950, N800)}">'
+               f'{T(genre, 10, 14, N300, 600, ls=".14em", upper=True, tag="span", extra="display:block;white-space:nowrap;")}'
+               f'</td></tr>', width='auto')
+    poster = tbl(f'<tr><td class="poster" width="144" height="144" valign="bottom" style="width:144px;height:144px;'
+                 f'vertical-align:bottom;border-radius:2px;{blob(kind)}">'
+                 + tbl(f'<tr><td style="padding:10px;">{chip}</td></tr>', width='auto') + '</td></tr>', width='144', cls='poster')
+    return tbl(
+        f'<tr><td class="poster-cell" width="144" valign="middle" style="width:144px;padding:16px;vertical-align:middle;">'
+        f'<!-- афиша события: в проде <img> 144×144 -->{poster}</td>'
+        f'<td valign="middle" style="vertical-align:middle;padding:16px 20px 16px 4px;">'
+        f'{caption(venue, mb=8)}{T(title, 26, 30, N100, 500, font=DISP, cls="ev-disp", mb=10)}'
+        f'{T(when, 13, 20, N300)}</td></tr>',
+        style=card(N950, N800), bgc=N950)
+
+
+def stat_card(cells, size=26, cls='num-lg'):
+    """Цифры в ряд: подпись, число Oranienbaum, подпись под числом. На мобильном — столбиком."""
+    w = 100 // len(cells)
+    tds = ''
+    for i, (label, value, sub) in enumerate(cells):
+        border = '' if i == 0 else f'border-left:1px solid {N800};'
+        c = 'meta-cell meta-first' if i == 0 else 'meta-cell'
+        tds += (f'<td class="{c}" width="{w}%" valign="top" style="width:{w}%;padding:18px 16px 18px 20px;'
+                f'vertical-align:top;{border}">{caption(label, mb=8)}'
+                f'{T(value, size, size + 4, N100, font=NUM, cls=cls, mb=(6 if sub else 0), extra="white-space:nowrap;")}'
+                f'{caption(sub, mb=0) if sub else ""}</td>')
+    return tbl(f'<tr>{tds}</tr>', style=card(N950, N800), bgc=N950)
+
+
+def price_card(promo, full, discount, total):
+    def r(label, right):
+        return (f'<tr><td valign="middle" style="padding:14px 0;vertical-align:middle;">{label}</td>'
+                f'<td align="right" valign="middle" style="padding:14px 0;vertical-align:middle;text-align:right;">'
+                f'{right}</td></tr>')
+    sep = f'<tr><td colspan="2">{line(N800)}</td></tr>'
+    rows = (r(T('Промокод', 13, 20, N300), T(promo, 12, 20, N100, 600, ls='.14em', align='right')) + sep
+            # зачёркивание рисуется цветом текста — здесь цвет обычный, не градиентом
+            + r(T('Стоимость', 13, 20, N300),
+                f'<span style="font-family:{NUM};font-size:17px;line-height:20px;color:{N500};'
+                f'text-decoration:line-through;">{full}</span>') + sep
+            + r(T('Скидка по&nbsp;промокоду', 13, 20, N300), T(discount, 17, 20, N300, font=NUM, align='right'))
+            + sep
+            + r(caption('Итого к&nbsp;оплате', mb=0),
+                T(total, 32, 36, N100, font=NUM, cls='num-xl', align='right')))
+    return tbl(f'<tr><td style="padding:4px 20px;">{tbl(rows)}</td></tr>', style=card(N950, N800), bgc=N950)
+
+
+def wallet(label):
+    return caption(label) + tbl(
+        f'<tr><td class="wallet" width="50%" valign="top" style="width:50%;padding-right:6px;vertical-align:top;">'
+        f'<!-- билет в Apple Wallet -->{button("Apple Wallet", kind="invert")}</td>'
+        f'<td class="wallet" width="50%" valign="top" style="width:50%;padding-left:6px;vertical-align:top;">'
+        f'<!-- билет в Google Wallet -->{button("Google Wallet", kind="ghost")}</td></tr>') + (
+        # тем же видом, что «Открыть на карте»: текст --n100, подчёркивание кобальтом
+        f'{spacer(16)}<!-- ссылка на PDF с билетами -->'
+        f'{T(link("Скачать билет/ы&nbsp;(PDF)&nbsp;↓"), 13, 20, N100, 500)}')
+
+
+def tg_card():
+    icon = tbl(f'<tr><td width="40" height="40" align="center" valign="middle" style="width:40px;height:40px;'
+               f'text-align:center;vertical-align:middle;{card(N900, N800)}">'
+               f'<img src="{IMG}/tg-post.png" alt="" width="18" height="13" style="display:inline-block;'
+               f'vertical-align:middle;width:18px;height:13px;border:0;"></td></tr>', width='40')
+    top = tbl(f'<tr><td width="40" valign="middle" style="width:40px;vertical-align:middle;">{icon}</td>'
+              f'<td valign="middle" style="vertical-align:middle;padding-left:16px;">'
+              f'{eyebrow("Закрытый канал", mb=6)}'
+              f'{T("Telegram для гостей TTS", 26, 30, N100, 500, font=DISP, cls="disp-sm")}</td></tr>')
+    return tbl(f'<tr><td class="card-pad" style="padding:28px;">{top}{spacer(16)}{dashes(TG_ITEMS)}{spacer(24)}'
+               f'<!-- ссылка на Telegram-канал -->{button("Присоединиться")}</td></tr>',
+               style=card(N950, N800), bgc=N950)
+
+
+def footer_tx(reason=True):
+    """Футер светлой темы: фон --n900, сверху кобальтовая линия; соцсети ссылками, дисклеймер Instagram."""
+    logo = (f'<img src="{IMG}/logo-post.png" alt="Ticket to Show" width="96" height="24"'
+            f' style="display:block;width:96px;height:24px;border:0;">')
+    socials = '&nbsp;&nbsp;·&nbsp;&nbsp;'.join(link(n, color=N300, line=N700) for n in ('Telegram', 'Instagram', 'VK'))
+    top = tbl(f'<tr><td valign="middle" style="vertical-align:middle;">{logo}</td>'
+              f'<td align="right" valign="middle" style="vertical-align:middle;text-align:right;">'
+              f'{T(socials, 12, 18, N300)}</td></tr>')
+    about = 'Ticket to&nbsp;Show&nbsp;·&nbsp;билеты без&nbsp;наценки'
+    if reason:
+        about += '<br>Вы получили это письмо, потому что оформили заказ на&nbsp;tickettoshow.ru'
+    legal = (link('Отписаться', color=N500, line=N700) + '&nbsp;&nbsp;·&nbsp;&nbsp;'
+             + link('Условия', color=N500, line=N700))
+    disclaimer = ('Instagram&nbsp;— продукт компании Meta, признанной экстремистской организацией '
+                  'и&nbsp;запрещённой в&nbsp;России.')
+    inner = (
+        f'\n      <!-- линия кобальтом с растворением -->'
+        f'\n      <div style="height:1px;line-height:1px;font-size:0;background-color:{FOOT_LINE};'
+        f'background-image:linear-gradient(90deg,{ACC} 0%,rgba(0,71,255,0) 55%);">&nbsp;</div>'
+        f'\n      ' + tbl(
+            row(top, '32px 32px 0', 'pad foot')
+            + row(T(about, 12, 18, N500), '16px 32px 0')
+            + row(line(FOOT_LINE), '20px 32px 0')
+            + row(T(legal, 11, 16, N500, mb=8) + T(disclaimer, 11, 16, N500), '18px 32px 32px'),
+            style='width:100%;max-width:600px;', cls='ew', align='center'))
+    return (comment('ФУТЕР (на всю ширину, фон --n900)')
+            + f'\n<tr>\n  <td bgcolor="{FOOT}" style="{bg(FOOT)}">{inner}\n  </td>\n</tr>')
+
+
+def payment():
+    body = hero('Ваши билеты<br>и&nbsp;информация по&nbsp;мероприятию',
+                ty('Билеты во вложении к письму, а также доступны в Apple и Google Wallet — ниже.'),
+                pre=tag('Оплата прошла', 'green') + spacer(16))
+    body += comment('СОБЫТИЕ') + row(event_poster(
+        'Театр', 'Театр эстрады', 'Мастер и&nbsp;Маргарита',
+        '14&nbsp;июня&nbsp;2026&nbsp;&nbsp;· 19:00&nbsp;&nbsp;· Суббота'), '32px 32px 0', 'pad sec')
+    body += comment('МЕСТА') + row(stat_card([('Ряд / места', 'Ряд&nbsp;7&nbsp;·&nbsp;12,&nbsp;13', None),
+                                              ('Билетов', '2&nbsp;шт.', None)]), '12px 32px 0')
+    body += comment('ПРОМОКОД И ОПЛАТА') + row(
+        price_card('TTS&nbsp;·&nbsp;FRIEND10', '7&nbsp;000&nbsp;₽', '&minus;700&nbsp;₽', '6&nbsp;300&nbsp;₽'),
+        '12px 32px 0')
+    body += comment('WALLET') + row(wallet('Добавить билет'), '32px 32px 0', 'pad sec')
+    body += comment('ПЕРЕД СПЕКТАКЛЕМ') + row(
+        line(N800) + spacer(32) + T('Перед спектаклем', 20, 26, N100, font=HEAD, mb=12)
+        + para('Рекомендуем прийти за 30–60 минут до начала — чтобы насладиться буфетом, спокойно пройти в зал и занять места.', mb=14)
+        + para('Мы работаем напрямую с организаторами — поэтому билеты идут без наценок, а часть мероприятий появляется у нас раньше, чем на других площадках.'),
+        '30px 32px 0', 'pad sec')
+    body += comment('TELEGRAM') + row(tg_card(), '32px 32px 0', 'pad sec')
+    body += comment('ПОМОЩЬ') + row(T(ty('Если понадобится помощь — просто ответьте на это письмо.'), 14, 22, N400),
+                                    '28px 32px 48px', 'pad sec end')
+    return dict(title='Ваши билеты — Ticket to Show', label=eyebrow('Заказ&nbsp;№&nbsp;248&nbsp;591', tag='span'),
+                body=body, foot=footer_tx(),
+                pre='Ваши билеты на мероприятие — добавьте в Wallet и приходите за 30–60 минут до начала.')
+
+
+def reminder_tx():
+    body = hero('Мастер<br>и&nbsp;Маргарита', 'Театр эстрады&nbsp;&nbsp;·&nbsp;&nbsp;Большой зал', over='Уже завтра')
+    body += comment('ДАТА, НАЧАЛО, МЕСТА') + row(stat_card([
+        ('Дата', '14', 'Июня&nbsp;·&nbsp;Сб'),
+        ('Начало', '19:00', 'Двери&nbsp;·&nbsp;18:00'),
+        ('Места', '7&nbsp;·&nbsp;12,&nbsp;13', 'Ряд&nbsp;·&nbsp;2&nbsp;билета')], size=30, cls='num-xl'),
+        '32px 32px 0', 'pad sec')
+    body += comment('WALLET') + row(wallet('Билет под рукой'), '32px 32px 0', 'pad sec')
+    body += comment('ПЕРЕД СПЕКТАКЛЕМ') + row(
+        T('Перед спектаклем', 20, 26, N100, font=HEAD, mb=12)
+        + para('Рекомендуем прийти за 30–60 минут до начала — чтобы насладиться буфетом, спокойно пройти в зал и занять места.'),
+        '40px 32px 0', 'pad sec')
+    venue = tbl(
+        f'<tr><td class="venue-col" width="40%" valign="top" style="width:40%;padding:20px 12px 20px 20px;vertical-align:top;">'
+        f'{caption("Площадка", mb=8)}{T("Театр эстрады", 20, 26, N100, font=HEAD, mb=6)}'
+        f'{T("Берсеневская наб.,&nbsp;20/9", 13, 20, N300)}</td>'
+        f'<td class="venue-col venue-last" valign="top" style="padding:20px 20px 20px 12px;vertical-align:top;">'
+        f'{caption("Как добраться", mb=8)}'
+        f'{T("м.&nbsp;Кропоткинская&nbsp;— 7&nbsp;мин пешком<br>м.&nbsp;Полянка&nbsp;— 10&nbsp;мин пешком", 13, 21, N200, mb=14)}'
+        f'<!-- ссылка на карту -->{T(link("Открыть на&nbsp;карте&nbsp;›"), 13, 20, N100, 500)}</td></tr>',
+        style=card(N950, N800), bgc=N950)
+    body += comment('ПЛОЩАДКА') + row(venue, '20px 32px 0')
+    body += comment('ПОЧЕМУ TTS') + row(
+        para('Мы работаем напрямую с организаторами — поэтому билеты идут без наценок, а часть мероприятий появляется у нас раньше, чем на других площадках.'),
+        '32px 32px 0', 'pad sec')
+    body += comment('TELEGRAM') + row(tg_card(), '32px 32px 0', 'pad sec')
+    body += comment('ПОМОЩЬ') + row(T(ty('Если понадобится помощь — просто ответьте на это письмо.'), 14, 22, N400),
+                                    '28px 32px 48px', 'pad sec end')
+    return dict(title='Завтра спектакль — Ticket to Show', label=eyebrow('Напоминание', tag='span'),
+                body=body, foot=footer_tx(),
+                pre='Напоминание: завтра ваш спектакль. Билет в Wallet и пара слов о площадке.')
+
+
+def after_event():
+    body = hero('Как прошёл вечер?',
+                ty('Надеемся, постановка всё ещё не отпускает. Спасибо, что были с нами — и выбрали TTS, '
+                   'чтобы попасть на «Мастера и Маргариту» в Театре эстрады.'),
+                over='После спектакля')
+    handles = [('Instagram', '@tickettoshow'), ('Telegram', '@tickettoshow'), ('VK', 'vk.com/tickettoshow')]
+    rows = line(N800) + ''.join(
+        tbl(f'<tr><td valign="middle" style="padding:14px 0;vertical-align:middle;">{caption(n, mb=0)}</td>'
+            f'<td align="right" valign="middle" style="padding:14px 0;vertical-align:middle;text-align:right;">'
+            f'<a href="#" target="_blank" style="font-family:{SANS};font-size:14px;font-weight:600;line-height:20px;'
+            f'text-decoration:none;{tc(N100)}">{h}</a></td></tr>') + line(N800)
+        for n, h in handles)
+    story = tbl(
+        f'<tr><td class="card-pad" style="padding:28px;">'
+        f'{eyebrow("Если снимали&nbsp;— отметьте нас", mb=12)}'
+        f'{T("Покажите ваш вечер<br>в&nbsp;сториз", 26, 30, N100, 500, font=DISP, cls="disp-sm", mb=12)}'
+        f'{T(ty("Поставьте отметку — репостнем лучшие моменты у себя и поделимся подборкой постановки в канале."), 14, 22, N300, mb=22)}'
+        f'{rows}{spacer(24)}<!-- ссылка на Instagram -->{button("Открыть Instagram")}</td></tr>',
+        style=card(N950, N800), bgc=N950)
+    body += comment('СТОРИЗ') + row(story, '32px 32px 0', 'pad sec')
+    body += comment('ОБРАТНАЯ СВЯЗЬ') + row(
+        para('Если что-то понравилось особенно — или, наоборот, не понравилось, ответьте на это письмо. '
+             'Мы читаем сами и передаём организаторам.'), '36px 32px 0', 'pad sec')
+    body += comment('TELEGRAM') + row(tg_card(), '32px 32px 48px', 'pad sec end')
+    return dict(title='Как прошёл вечер? — Ticket to Show', label='', body=body, foot=footer_tx(reason=False),
+                pre=None)
+
+
+def tx_page(e):
+    return page(e['title'], e['label'], e['body'], e['foot'], TX_CSS, e['pre'], TAGLINE)
+
+
+def showcase(items):
+    """Витрина: все транзакционные письма на одной странице, каждое в рамке 600px."""
+    parts = ''
+    for num, label, e in items:
+        parts += f"""
+
+<!-- ═══════════════ {num} · {label} ═══════════════ -->
+<tr>
+  <td align="center" style="padding:56px 12px 20px;">
+    {T(num, 28, 32, N100, font=NUM, align='center', mb=6)}
+    {caption(label, mb=0, align='center')}
+  </td>
+</tr>
+<tr>
+  <td align="center" style="padding:0 12px;">
+<table class="frame" role="presentation" width="600" cellpadding="0" cellspacing="0" border="0"
+       style="width:600px;max-width:600px;border:1px solid {N800};">
+<tr><td>
+{email(e['label'], e['body'], e['foot'], TAGLINE)}
+</td></tr>
+</table>
+  </td>
+</tr>"""
+    return f"""{head('TTS — Email templates', TX_CSS)}
+<body bgcolor="{N900}" style="margin:0;padding:0;{bg(N900)}">
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="{N900}" style="{bg(N900)}">{parts}
+<tr><td style="height:80px;line-height:80px;font-size:0;">&nbsp;</td></tr>
+</table>
+
+</body>
+</html>
+"""
+
+
 if __name__ == '__main__':
+    def save(path, html):
+        with open(path, 'w', encoding='utf-8') as f:
+            f.write(html)
+        print(f'{os.path.relpath(path, os.path.join(EMAILS, ".."))}  {os.path.getsize(path)} B')
+
+    use_theme(MAILINGS_THEME)
     os.makedirs(OUT, exist_ok=True)
     for name, fn in [('after-show', after_show), ('reschedule', reschedule), ('reminder', reminder),
                      ('promo', promo), ('personal', personal)]:
-        path = os.path.join(OUT, f'{name}.html')
-        with open(path, 'w', encoding='utf-8') as f:
-            f.write(fn())
-        print(f'emails/mailings/{name}.html  {os.path.getsize(path)} B')
+        save(os.path.join(OUT, f'{name}.html'), fn())
+
+    use_theme('light')
+    save(os.path.join(EMAILS, 'email-1-payment-confirmation.html'), tx_page(payment()))
+    save(os.path.join(EMAILS, 'email-2-reminder.html'), tx_page(reminder_tx()))
+    save(os.path.join(EMAILS, 'emails-all.html'), showcase([
+        ('01', 'Сразу после оплаты', payment()),
+        ('02', 'За&nbsp;день до&nbsp;события', reminder_tx()),
+        ('03', 'На&nbsp;следующее утро после события', after_event()),
+    ]))

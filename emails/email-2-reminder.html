@@ -1,249 +1,171 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="x-apple-disable-message-reformatting">
-<title>Завтра спектакль — Ticket to Show</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
-  table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-collapse: collapse; }
-  img { -ms-interpolation-mode: bicubic; border: 0; outline: none; text-decoration: none; display: block; }
-  body { margin: 0; padding: 0; width: 100% !important; background: #F2F1EB; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
-  a { color: #0047FF; text-decoration: none; }
-  .px { padding-left: 32px; padding-right: 32px; }
-  @media only screen and (max-width: 600px) {
-    .px { padding-left: 20px !important; padding-right: 20px !important; }
-    .stack { display: block !important; width: 100% !important; }
-    .stack-pad { padding-bottom: 12px !important; }
-    .h-display { font-size: 28px !important; line-height: 1.1 !important; }
-    .wallet-row td { display: block !important; width: 100% !important; padding: 0 0 10px 0 !important; }
-    .countdown-num { font-size: 56px !important; }
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="x-apple-disable-message-reformatting">
+  <meta name="color-scheme" content="light only">
+  <meta name="supported-color-schemes" content="light only">
+  <title>Завтра спектакль — Ticket to Show</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Forum&family=Oranienbaum&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-collapse: collapse; }
+    img { -ms-interpolation-mode: bicubic; border: 0; outline: none; text-decoration: none; display: block; }
+    a { text-decoration: none; }
+    body { margin: 0; padding: 0; width: 100% !important; background-color: #FFFFFF;
+           -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    @media only screen and (max-width: 600px) {
+      .ew { width: 100% !important; max-width: 100% !important; }
+      .pad { padding-left: 20px !important; padding-right: 20px !important; }
+      .hdr { padding-top: 20px !important; padding-bottom: 18px !important; }
+      .logo { width: 112px !important; height: 28px !important; }
+      .hero { padding-top: 36px !important; }
+      .h1 { font-size: 30px !important; line-height: 34px !important; }
+      .lead { font-size: 14px !important; line-height: 22px !important; }
+      .sec { padding-top: 28px !important; }
+      .end { padding-bottom: 40px !important; }
+      .foot { padding-top: 28px !important; }
+      .card-pad { padding: 20px !important; }
+      .ev-title { font-size: 17px !important; line-height: 22px !important; }
+      .hide-mob { display: none !important; }
+      .show-mob { display: table-row !important; }
+      .col { display: block !important; width: 100% !important; box-sizing: border-box !important; }
+      .col-l { padding: 0 0 12px 0 !important; }
+      .col-r { padding: 0 0 12px 0 !important; }
+      .poster-cell { width: 96px !important; padding: 14px !important; }
+      .poster { width: 96px !important; height: 96px !important; }
+      .ev-disp { font-size: 22px !important; line-height: 26px !important; }
+      .disp-sm { font-size: 22px !important; line-height: 26px !important; }
+      .num-lg { font-size: 22px !important; line-height: 26px !important; }
+      .num-xl { font-size: 28px !important; line-height: 32px !important; }
+      .wallet { display: block !important; width: 100% !important; padding: 0 0 10px 0 !important; }
+      .meta-cell { display: block !important; width: 100% !important; box-sizing: border-box !important;
+                   padding: 16px 20px !important; border-left: 0 !important; border-top: 1px solid #E2E1DA !important; }
+      .meta-first { border-top: 0 !important; }
+      .venue-col { display: block !important; width: 100% !important; box-sizing: border-box !important;
+                   padding: 18px 20px 0 !important; }
+      .venue-last { padding: 16px 20px 20px !important; }
+      .frame { width: 100% !important; }
+    }
+  </style>
 </head>
-<body style="margin:0; padding:0; background:#F2F1EB;">
+<body bgcolor="#FFFFFF" style="margin:0;padding:0;background-color:#FFFFFF;background-image:linear-gradient(#FFFFFF,#FFFFFF);">
 
-<div style="display:none; max-height:0; overflow:hidden; opacity:0;">Напоминание: завтра ваш спектакль. Билет в Wallet и пара слов о площадке.</div>
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all;">Напоминание: завтра ваш спектакль. Билет в Wallet и пара слов о площадке.</div>
 
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#F2F1EB">
+<!-- Ticket to Show · письмо на DS R14 (светлая тема) -->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFFFFF" style="background-color:#FFFFFF;background-image:linear-gradient(#FFFFFF,#FFFFFF);">
+<tr>
+  <td align="center" bgcolor="#FFFFFF" style="background-color:#FFFFFF;background-image:linear-gradient(#FFFFFF,#FFFFFF);">
+
+<!-- ══════════════ WRAPPER 600px ══════════════ -->
+<table class="ew" role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFFFFF"
+       style="width:100%;max-width:600px;background-color:#FFFFFF;background-image:linear-gradient(#FFFFFF,#FFFFFF);">
+
+
+  <!-- ═══ ШАПКА ═══ -->
   <tr>
-    <td align="center" style="padding: 24px 12px;">
-
-      <!-- Container -->
-      <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px; max-width:600px; background:#FFFFFF; border:1px solid #E2E1DA;">
-
-        <!-- Header / Logo -->
-        <tr>
-          <td class="px" style="padding: 28px 32px 20px 32px; border-bottom: 1px solid #E2E1DA;">
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-              <tr>
-                <td align="left" valign="middle">
-                  <div style="font-family:'Forum', Georgia, serif; font-size:22px; line-height:1; color:#0D0D0D; letter-spacing:0.02em;">
-                    TICKET <span style="color:#0047FF;">TO</span> SHOW
-                  </div>
-                  <div style="font-family:'Manrope', sans-serif; font-size:10px; line-height:1; letter-spacing:0.22em; text-transform:uppercase; color:#888886; margin-top:10px;">
-                    Билеты на лучшие шоу&nbsp;— без наценки
-                  </div>
-                </td>
-                <td align="right" valign="middle" style="font-family:'Manrope', sans-serif; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:#0047FF;">
-                  Напоминание
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-
-        <!-- Hero countdown -->
-        <tr>
-          <td class="px" style="padding: 40px 32px 8px 32px;">
-            <div style="font-family:'Manrope', sans-serif; font-size:10px; letter-spacing:0.22em; text-transform:uppercase; color:#0047FF;">Уже завтра</div>
-            <div class="h-display" style="font-family:'Cormorant Garamond', Georgia, serif; font-weight:400; font-size:38px; line-height:1.08; color:#0D0D0D; margin-top:14px; letter-spacing:-0.01em;">
-              Мастер<br>и&nbsp;Маргарита
-            </div>
-            <div style="font-family:'Manrope', sans-serif; font-size:14px; line-height:1.6; color:#4A4A48; margin-top:16px;">
-              Театр эстрады · Большой зал
-            </div>
-          </td>
-        </tr>
-
-        <!-- Date / Time / Day grid -->
-        <tr>
-          <td class="px" style="padding: 28px 32px 0 32px;">
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #E2E1DA; border-bottom:1px solid #E2E1DA;">
-              <tr>
-                <td class="stack stack-pad" valign="top" width="33%" style="padding:22px 8px 22px 0;">
-                  <div style="font-family:'Manrope', sans-serif; font-size:10px; letter-spacing:0.22em; text-transform:uppercase; color:#888886;">Дата</div>
-                  <div class="countdown-num" style="font-family:'Oranienbaum', Georgia, serif; font-size:42px; line-height:1; color:#0D0D0D; margin-top:8px;">14</div>
-                  <div style="font-family:'Manrope', sans-serif; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#4A4A48; margin-top:6px;">Июня · Сб</div>
-                </td>
-                <td class="stack stack-pad" valign="top" width="33%" style="padding:22px 8px;">
-                  <div style="font-family:'Manrope', sans-serif; font-size:10px; letter-spacing:0.22em; text-transform:uppercase; color:#888886;">Начало</div>
-                  <div class="countdown-num" style="font-family:'Oranienbaum', Georgia, serif; font-size:42px; line-height:1; color:#0D0D0D; margin-top:8px;">19:00</div>
-                  <div style="font-family:'Manrope', sans-serif; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#4A4A48; margin-top:6px;">Двери · 18:00</div>
-                </td>
-                <td class="stack" valign="top" width="33%" style="padding:22px 0 22px 8px;">
-                  <div style="font-family:'Manrope', sans-serif; font-size:10px; letter-spacing:0.22em; text-transform:uppercase; color:#888886;">Места</div>
-                  <div class="countdown-num" style="font-family:'Oranienbaum', Georgia, serif; font-size:42px; line-height:1; color:#0D0D0D; margin-top:8px;">7&nbsp;·&nbsp;12,13</div>
-                  <div style="font-family:'Manrope', sans-serif; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#4A4A48; margin-top:6px;">Ряд&nbsp;· 2 билета</div>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-
-        <!-- Wallet buttons -->
-        <tr>
-          <td class="px" style="padding: 28px 32px 0 32px;">
-            <div style="font-family:'Manrope', sans-serif; font-size:10px; letter-spacing:0.22em; text-transform:uppercase; color:#888886; margin-bottom:14px;">
-              Билет под рукой
-            </div>
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="wallet-row">
-              <tr>
-                <td width="50%" style="padding-right:6px;">
-                  <a href="#" style="display:block; background:#0D0D0D; color:#FFFFFF; font-family:'Manrope', sans-serif; font-size:13px; font-weight:500; letter-spacing:0.04em; text-align:center; padding:14px 12px; text-decoration:none; border-radius:2px;">
-                    &#xF8FF;&nbsp; Apple Wallet
-                  </a>
-                </td>
-                <td width="50%" style="padding-left:6px;">
-                  <a href="#" style="display:block; background:#FFFFFF; color:#0D0D0D; font-family:'Manrope', sans-serif; font-size:13px; font-weight:500; letter-spacing:0.04em; text-align:center; padding:13px 12px; text-decoration:none; border:1px solid #0D0D0D; border-radius:2px;">
-                    Google Wallet
-                  </a>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-
-        <!-- Practical info -->
-        <tr>
-          <td class="px" style="padding: 36px 32px 0 32px;">
-            <div style="font-family:'Forum', Georgia, serif; font-size:18px; line-height:1.3; color:#0D0D0D;">
-              Перед спектаклем
-            </div>
-            <div style="font-family:'Manrope', sans-serif; font-size:14px; line-height:1.75; color:#4A4A48; margin-top:12px;">
-              Рекомендуем прийти за&nbsp;30–60 минут до&nbsp;начала&nbsp;— чтобы насладиться буфетом, спокойно пройти в&nbsp;зал и&nbsp;занять места.
-            </div>
-          </td>
-        </tr>
-
-        <!-- Venue card -->
-        <tr>
-          <td class="px" style="padding: 22px 32px 0 32px;">
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #E2E1DA; background:#FAFAF7;">
-              <tr>
-                <td class="stack stack-pad" valign="top" width="40%" style="padding:18px 0 18px 18px;">
-                  <div style="font-family:'Manrope', sans-serif; font-size:10px; letter-spacing:0.22em; text-transform:uppercase; color:#888886;">Площадка</div>
-                  <div style="font-family:'Forum', Georgia, serif; font-weight:400; font-size:20px; line-height:1.2; color:#0D0D0D; margin-top:8px;">
-                    Театр эстрады
-                  </div>
-                  <div style="font-family:'Manrope', sans-serif; font-size:13px; line-height:1.6; color:#4A4A48; margin-top:8px;">
-                    Берсеневская наб., 20/9
-                  </div>
-                </td>
-                <td class="stack" valign="top" style="padding:18px 18px;">
-                  <div style="font-family:'Manrope', sans-serif; font-size:10px; letter-spacing:0.22em; text-transform:uppercase; color:#888886;">Как добраться</div>
-                  <div style="font-family:'Manrope', sans-serif; font-size:13px; line-height:1.7; color:#0D0D0D; margin-top:8px;">
-                    м.&nbsp;Кропоткинская&nbsp;— 7&nbsp;мин пешком<br>
-                    м.&nbsp;Полянка&nbsp;— 10&nbsp;мин пешком
-                  </div>
-                  <div style="margin-top:14px;">
-                    <a href="#" style="font-family:'Manrope', sans-serif; font-size:12px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:#0047FF;">
-                      Открыть на карте&nbsp;›
-                    </a>
-                  </div>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-
-        <!-- Why TTS line -->
-        <tr>
-          <td class="px" style="padding: 32px 32px 0 32px;">
-            <div style="font-family:'Manrope', sans-serif; font-size:14px; line-height:1.75; color:#4A4A48;">
-              Мы работаем напрямую с&nbsp;организаторами&nbsp;— поэтому билеты идут без наценок, а&nbsp;часть мероприятий появляется у&nbsp;нас раньше, чем на&nbsp;других площадках.
-            </div>
-          </td>
-        </tr>
-
-        <!-- Telegram block -->
-        <tr>
-          <td class="px" style="padding: 32px 32px 32px 32px;">
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#0D0D0D;">
-              <tr>
-                <td style="padding:28px 24px;">
-                  <div style="font-family:'Manrope', sans-serif; font-size:10px; letter-spacing:0.22em; text-transform:uppercase; color:#F5F4EE; opacity:0.6;">
-                    Закрытый канал
-                  </div>
-                  <div style="font-family:'Cormorant Garamond', Georgia, serif; font-weight:500; font-size:26px; line-height:1.15; color:#F5F4EE; margin-top:12px;">
-                    Telegram для гостей TTS
-                  </div>
-                  <div style="font-family:'Manrope', sans-serif; font-size:13px; line-height:1.75; color:#A8A8A5; margin-top:14px;">
-                    — отобранные события без лишней афиши<br>
-                    — ранний доступ к&nbsp;лучшим местам<br>
-                    — приглашения и&nbsp;редкие форматы<br>
-                    — персональные условия на&nbsp;часть мероприятий в&nbsp;течение месяца
-                  </div>
-                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:20px;">
-                    <tr>
-                      <td style="background:#0047FF;">
-                        <a href="#" style="display:block; padding:12px 22px; font-family:'Manrope', sans-serif; font-size:13px; font-weight:600; letter-spacing:0.06em; color:#FFFFFF; text-decoration:none; text-transform:uppercase;">
-                          Присоединиться
-                        </a>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-
-        <!-- Help line -->
-        <tr>
-          <td class="px" style="padding: 0 32px 28px 32px;">
-            <div style="font-family:'Manrope', sans-serif; font-size:13px; line-height:1.7; color:#888886;">
-              Если понадобится помощь&nbsp;— просто ответьте на&nbsp;это письмо.
-            </div>
-          </td>
-        </tr>
-
-        <!-- Footer -->
-        <tr>
-          <td class="px" style="padding: 24px 32px 32px 32px; border-top:1px solid #E2E1DA; background:#FAFAF7;">
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-              <tr>
-                <td>
-                  <div style="font-family:'Forum', Georgia, serif; font-size:14px; line-height:1; color:#0D0D0D; letter-spacing:0.02em;">
-                    TICKET <span style="color:#0047FF;">TO</span> SHOW
-                  </div>
-                </td>
-                <td align="right" style="font-family:'Manrope', sans-serif; font-size:11px; letter-spacing:0.06em;">
-                  <a href="#" style="color:#4A4A48; text-decoration:none;">Telegram</a>
-                  &nbsp;·&nbsp;
-                  <a href="#" style="color:#4A4A48; text-decoration:none;">Instagram</a>
-                  &nbsp;·&nbsp;
-                  <a href="#" style="color:#4A4A48; text-decoration:none;">VK</a>
-                </td>
-              </tr>
-              <tr>
-                <td colspan="2" style="padding-top:16px; font-family:'Manrope', sans-serif; font-size:10px; line-height:1.6; letter-spacing:0.04em; color:#888886;">
-                  Ticket to Show · билеты без наценки<br>
-                  Вы получили это письмо, потому что оформили заказ на tickettoshow.ru<br>
-                  <a href="#" style="color:#888886; text-decoration:underline;">Отписаться</a> · <a href="#" style="color:#888886; text-decoration:underline;">Условия</a>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-
-      </table>
-      <!-- /Container -->
-
+    <td class="pad hdr" style="padding:28px 32px 24px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style=""><tr><td valign="middle" style="vertical-align:middle;"><img class="logo" src="https://tickettoshow.ru/logo-post.png" alt="Ticket to Show" width="128" height="32" style="display:block;width:128px;height:32px;border:0;"><p style="margin:0 0 0px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:10px;font-weight:500;line-height:14px;letter-spacing:.14em;text-transform:uppercase;margin-top:12px;background-image:linear-gradient(#888886,#888886);-webkit-background-clip:text;background-clip:text;color:transparent;">Билеты на&nbsp;лучшие шоу&nbsp;— без&nbsp;наценки</p></td><td align="right" valign="middle" style="vertical-align:middle;"><span style="margin:0 0 0px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:10px;font-weight:600;line-height:14px;letter-spacing:.22em;text-transform:uppercase;background-image:linear-gradient(#4A4A48,#4A4A48);-webkit-background-clip:text;background-clip:text;color:transparent;">Напоминание</span></td></tr></table>
     </td>
   </tr>
+  <tr>
+    <td class="pad" style="padding:0 32px;">
+<div style="height:1px;line-height:1px;font-size:0;background-color:#EAE9E2;background-image:linear-gradient(#EAE9E2,#EAE9E2);">&nbsp;</div>
+    </td>
+  </tr>
+
+  <!-- ═══ ЗАГОЛОВОК ═══ -->
+  <tr>
+    <td class="pad hero" style="padding:48px 32px 0;">
+<p style="margin:0 0 16px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:10px;font-weight:600;line-height:14px;letter-spacing:.22em;text-transform:uppercase;background-image:linear-gradient(#4A4A48,#4A4A48);-webkit-background-clip:text;background-clip:text;color:transparent;">Уже завтра</p><h1 class="h1" style="margin:0 0 0px 0;font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;font-size:40px;font-weight:500;line-height:44px;background-image:linear-gradient(#0D0D0D,#0D0D0D);-webkit-background-clip:text;background-clip:text;color:transparent;">Мастер<br>и&nbsp;Маргарита</h1><p class="lead" style="margin:0 0 0px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:15px;font-weight:400;line-height:26px;margin-top:16px;background-image:linear-gradient(#4A4A48,#4A4A48);-webkit-background-clip:text;background-clip:text;color:transparent;">Театр эстрады&nbsp;&nbsp;·&nbsp;&nbsp;Большой зал</p>
+    </td>
+  </tr>
+
+  <!-- ═══ ДАТА, НАЧАЛО, МЕСТА ═══ -->
+  <tr>
+    <td class="pad sec" style="padding:32px 32px 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#FAFAF7" style="border:1px solid transparent;border-radius:2px;background-color:#FAFAF7;background-image:linear-gradient(#FAFAF7,#FAFAF7),linear-gradient(#E2E1DA,#E2E1DA);background-origin:border-box;background-clip:padding-box,border-box;"><tr><td class="meta-cell meta-first" width="33%" valign="top" style="width:33%;padding:18px 16px 18px 20px;vertical-align:top;"><p style="margin:0 0 8px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:10px;font-weight:500;line-height:14px;letter-spacing:.14em;text-transform:uppercase;background-image:linear-gradient(#888886,#888886);-webkit-background-clip:text;background-clip:text;color:transparent;">Дата</p><p class="num-xl" style="margin:0 0 6px 0;font-family:'Oranienbaum',Georgia,'Times New Roman',serif;font-size:30px;font-weight:400;line-height:34px;white-space:nowrap;background-image:linear-gradient(#0D0D0D,#0D0D0D);-webkit-background-clip:text;background-clip:text;color:transparent;">14</p><p style="margin:0 0 0px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:10px;font-weight:500;line-height:14px;letter-spacing:.14em;text-transform:uppercase;background-image:linear-gradient(#888886,#888886);-webkit-background-clip:text;background-clip:text;color:transparent;">Июня&nbsp;·&nbsp;Сб</p></td><td class="meta-cell" width="33%" valign="top" style="width:33%;padding:18px 16px 18px 20px;vertical-align:top;border-left:1px solid #E2E1DA;"><p style="margin:0 0 8px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:10px;font-weight:500;line-height:14px;letter-spacing:.14em;text-transform:uppercase;background-image:linear-gradient(#888886,#888886);-webkit-background-clip:text;background-clip:text;color:transparent;">Начало</p><p class="num-xl" style="margin:0 0 6px 0;font-family:'Oranienbaum',Georgia,'Times New Roman',serif;font-size:30px;font-weight:400;line-height:34px;white-space:nowrap;background-image:linear-gradient(#0D0D0D,#0D0D0D);-webkit-background-clip:text;background-clip:text;color:transparent;">19:00</p><p style="margin:0 0 0px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:10px;font-weight:500;line-height:14px;letter-spacing:.14em;text-transform:uppercase;background-image:linear-gradient(#888886,#888886);-webkit-background-clip:text;background-clip:text;color:transparent;">Двери&nbsp;·&nbsp;18:00</p></td><td class="meta-cell" width="33%" valign="top" style="width:33%;padding:18px 16px 18px 20px;vertical-align:top;border-left:1px solid #E2E1DA;"><p style="margin:0 0 8px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:10px;font-weight:500;line-height:14px;letter-spacing:.14em;text-transform:uppercase;background-image:linear-gradient(#888886,#888886);-webkit-background-clip:text;background-clip:text;color:transparent;">Места</p><p class="num-xl" style="margin:0 0 6px 0;font-family:'Oranienbaum',Georgia,'Times New Roman',serif;font-size:30px;font-weight:400;line-height:34px;white-space:nowrap;background-image:linear-gradient(#0D0D0D,#0D0D0D);-webkit-background-clip:text;background-clip:text;color:transparent;">7&nbsp;·&nbsp;12,&nbsp;13</p><p style="margin:0 0 0px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:10px;font-weight:500;line-height:14px;letter-spacing:.14em;text-transform:uppercase;background-image:linear-gradient(#888886,#888886);-webkit-background-clip:text;background-clip:text;color:transparent;">Ряд&nbsp;·&nbsp;2&nbsp;билета</p></td></tr></table>
+    </td>
+  </tr>
+
+  <!-- ═══ WALLET ═══ -->
+  <tr>
+    <td class="pad sec" style="padding:32px 32px 0;">
+<p style="margin:0 0 12px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:10px;font-weight:500;line-height:14px;letter-spacing:.14em;text-transform:uppercase;background-image:linear-gradient(#888886,#888886);-webkit-background-clip:text;background-clip:text;color:transparent;">Билет под рукой</p><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style=""><tr><td class="wallet" width="50%" valign="top" style="width:50%;padding-right:6px;vertical-align:top;"><!-- билет в Apple Wallet --><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style=""><tr><td align="center" bgcolor="#0D0D0D" style="border-radius:2px;background-color:#0D0D0D;background-image:linear-gradient(#0D0D0D,#0D0D0D);"><a href="#" target="_blank" style="display:block;padding:17px 24px;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:12px;font-weight:700;line-height:14px;letter-spacing:.16em;text-transform:uppercase;text-align:center;text-decoration:none;white-space:nowrap;"><span style="background-image:linear-gradient(#FFFFFF,#FFFFFF);-webkit-background-clip:text;background-clip:text;color:transparent;">Apple Wallet</span></a></td></tr></table></td><td class="wallet" width="50%" valign="top" style="width:50%;padding-left:6px;vertical-align:top;"><!-- билет в Google Wallet --><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style=""><tr><td align="center" bgcolor="#FFFFFF" style="border:1px solid transparent;border-radius:2px;background-color:#FFFFFF;background-image:linear-gradient(#FFFFFF,#FFFFFF),linear-gradient(#B5B5B0,#B5B5B0);background-origin:border-box;background-clip:padding-box,border-box;"><a href="#" target="_blank" style="display:block;padding:16px 24px;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;line-height:14px;letter-spacing:.16em;text-transform:uppercase;text-align:center;text-decoration:none;white-space:nowrap;"><span style="background-image:linear-gradient(#0D0D0D,#0D0D0D);-webkit-background-clip:text;background-clip:text;color:transparent;">Google Wallet</span></a></td></tr></table></td></tr></table><div style="height:16px;line-height:16px;font-size:0;">&nbsp;</div><!-- ссылка на PDF с билетами --><p style="margin:0 0 0px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:13px;font-weight:500;line-height:20px;background-image:linear-gradient(#0D0D0D,#0D0D0D);-webkit-background-clip:text;background-clip:text;color:transparent;"><a href="#" target="_blank" style="text-decoration:none;border-bottom:1px solid #0047FF;background-image:linear-gradient(#0D0D0D,#0D0D0D);-webkit-background-clip:text;background-clip:text;color:transparent;">Скачать билет/ы&nbsp;(PDF)&nbsp;↓</a></p>
+    </td>
+  </tr>
+
+  <!-- ═══ ПЕРЕД СПЕКТАКЛЕМ ═══ -->
+  <tr>
+    <td class="pad sec" style="padding:40px 32px 0;">
+<p style="margin:0 0 12px 0;font-family:'Forum',Georgia,'Times New Roman',serif;font-size:20px;font-weight:400;line-height:26px;background-image:linear-gradient(#0D0D0D,#0D0D0D);-webkit-background-clip:text;background-clip:text;color:transparent;">Перед спектаклем</p><p class="lead" style="margin:0 0 0px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:15px;font-weight:400;line-height:26px;background-image:linear-gradient(#4A4A48,#4A4A48);-webkit-background-clip:text;background-clip:text;color:transparent;">Рекомендуем прийти за&nbsp;30–60&nbsp;минут до&nbsp;начала&nbsp;— чтобы насладиться буфетом, спокойно пройти в&nbsp;зал и&nbsp;занять места.</p>
+    </td>
+  </tr>
+
+  <!-- ═══ ПЛОЩАДКА ═══ -->
+  <tr>
+    <td class="pad" style="padding:20px 32px 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#FAFAF7" style="border:1px solid transparent;border-radius:2px;background-color:#FAFAF7;background-image:linear-gradient(#FAFAF7,#FAFAF7),linear-gradient(#E2E1DA,#E2E1DA);background-origin:border-box;background-clip:padding-box,border-box;"><tr><td class="venue-col" width="40%" valign="top" style="width:40%;padding:20px 12px 20px 20px;vertical-align:top;"><p style="margin:0 0 8px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:10px;font-weight:500;line-height:14px;letter-spacing:.14em;text-transform:uppercase;background-image:linear-gradient(#888886,#888886);-webkit-background-clip:text;background-clip:text;color:transparent;">Площадка</p><p style="margin:0 0 6px 0;font-family:'Forum',Georgia,'Times New Roman',serif;font-size:20px;font-weight:400;line-height:26px;background-image:linear-gradient(#0D0D0D,#0D0D0D);-webkit-background-clip:text;background-clip:text;color:transparent;">Театр эстрады</p><p style="margin:0 0 0px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:13px;font-weight:400;line-height:20px;background-image:linear-gradient(#4A4A48,#4A4A48);-webkit-background-clip:text;background-clip:text;color:transparent;">Берсеневская наб.,&nbsp;20/9</p></td><td class="venue-col venue-last" valign="top" style="padding:20px 20px 20px 12px;vertical-align:top;"><p style="margin:0 0 8px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:10px;font-weight:500;line-height:14px;letter-spacing:.14em;text-transform:uppercase;background-image:linear-gradient(#888886,#888886);-webkit-background-clip:text;background-clip:text;color:transparent;">Как добраться</p><p style="margin:0 0 14px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:13px;font-weight:400;line-height:21px;background-image:linear-gradient(#2D2D2B,#2D2D2B);-webkit-background-clip:text;background-clip:text;color:transparent;">м.&nbsp;Кропоткинская&nbsp;— 7&nbsp;мин пешком<br>м.&nbsp;Полянка&nbsp;— 10&nbsp;мин пешком</p><!-- ссылка на карту --><p style="margin:0 0 0px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:13px;font-weight:500;line-height:20px;background-image:linear-gradient(#0D0D0D,#0D0D0D);-webkit-background-clip:text;background-clip:text;color:transparent;"><a href="#" target="_blank" style="text-decoration:none;border-bottom:1px solid #0047FF;background-image:linear-gradient(#0D0D0D,#0D0D0D);-webkit-background-clip:text;background-clip:text;color:transparent;">Открыть на&nbsp;карте&nbsp;›</a></p></td></tr></table>
+    </td>
+  </tr>
+
+  <!-- ═══ ПОЧЕМУ TTS ═══ -->
+  <tr>
+    <td class="pad sec" style="padding:32px 32px 0;">
+<p class="lead" style="margin:0 0 0px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:15px;font-weight:400;line-height:26px;background-image:linear-gradient(#4A4A48,#4A4A48);-webkit-background-clip:text;background-clip:text;color:transparent;">Мы&nbsp;работаем напрямую с&nbsp;организаторами&nbsp;— поэтому билеты идут без наценок, а&nbsp;часть мероприятий появляется у&nbsp;нас раньше, чем на&nbsp;других площадках.</p>
+    </td>
+  </tr>
+
+  <!-- ═══ TELEGRAM ═══ -->
+  <tr>
+    <td class="pad sec" style="padding:32px 32px 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#FAFAF7" style="border:1px solid transparent;border-radius:2px;background-color:#FAFAF7;background-image:linear-gradient(#FAFAF7,#FAFAF7),linear-gradient(#E2E1DA,#E2E1DA);background-origin:border-box;background-clip:padding-box,border-box;"><tr><td class="card-pad" style="padding:28px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style=""><tr><td width="40" valign="middle" style="width:40px;vertical-align:middle;"><table role="presentation" width="40" cellpadding="0" cellspacing="0" border="0" style="width:40px;"><tr><td width="40" height="40" align="center" valign="middle" style="width:40px;height:40px;text-align:center;vertical-align:middle;border:1px solid transparent;border-radius:2px;background-color:#F2F1EB;background-image:linear-gradient(#F2F1EB,#F2F1EB),linear-gradient(#E2E1DA,#E2E1DA);background-origin:border-box;background-clip:padding-box,border-box;"><img src="https://tickettoshow.ru/tg-post.png" alt="" width="18" height="13" style="display:inline-block;vertical-align:middle;width:18px;height:13px;border:0;"></td></tr></table></td><td valign="middle" style="vertical-align:middle;padding-left:16px;"><p style="margin:0 0 6px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:10px;font-weight:600;line-height:14px;letter-spacing:.22em;text-transform:uppercase;background-image:linear-gradient(#4A4A48,#4A4A48);-webkit-background-clip:text;background-clip:text;color:transparent;">Закрытый канал</p><p class="disp-sm" style="margin:0 0 0px 0;font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;font-size:26px;font-weight:500;line-height:30px;background-image:linear-gradient(#0D0D0D,#0D0D0D);-webkit-background-clip:text;background-clip:text;color:transparent;">Telegram для гостей TTS</p></td></tr></table><div style="height:16px;line-height:16px;font-size:0;">&nbsp;</div><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style=""><tr><td width="22" valign="top" style="width:22px;padding:5px 0;vertical-align:top;"><p style="margin:0 0 0px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:14px;font-weight:400;line-height:22px;background-image:linear-gradient(#A8A8A5,#A8A8A5);-webkit-background-clip:text;background-clip:text;color:transparent;">—</p></td><td valign="top" style="padding:5px 0;vertical-align:top;"><p style="margin:0 0 0px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:14px;font-weight:400;line-height:22px;background-image:linear-gradient(#2D2D2B,#2D2D2B);-webkit-background-clip:text;background-clip:text;color:transparent;">отобранные события без лишней афиши</p></td></tr><tr><td width="22" valign="top" style="width:22px;padding:5px 0;vertical-align:top;"><p style="margin:0 0 0px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:14px;font-weight:400;line-height:22px;background-image:linear-gradient(#A8A8A5,#A8A8A5);-webkit-background-clip:text;background-clip:text;color:transparent;">—</p></td><td valign="top" style="padding:5px 0;vertical-align:top;"><p style="margin:0 0 0px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:14px;font-weight:400;line-height:22px;background-image:linear-gradient(#2D2D2B,#2D2D2B);-webkit-background-clip:text;background-clip:text;color:transparent;">ранний доступ к&nbsp;лучшим местам</p></td></tr><tr><td width="22" valign="top" style="width:22px;padding:5px 0;vertical-align:top;"><p style="margin:0 0 0px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:14px;font-weight:400;line-height:22px;background-image:linear-gradient(#A8A8A5,#A8A8A5);-webkit-background-clip:text;background-clip:text;color:transparent;">—</p></td><td valign="top" style="padding:5px 0;vertical-align:top;"><p style="margin:0 0 0px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:14px;font-weight:400;line-height:22px;background-image:linear-gradient(#2D2D2B,#2D2D2B);-webkit-background-clip:text;background-clip:text;color:transparent;">приглашения и&nbsp;редкие форматы</p></td></tr><tr><td width="22" valign="top" style="width:22px;padding:5px 0;vertical-align:top;"><p style="margin:0 0 0px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:14px;font-weight:400;line-height:22px;background-image:linear-gradient(#A8A8A5,#A8A8A5);-webkit-background-clip:text;background-clip:text;color:transparent;">—</p></td><td valign="top" style="padding:5px 0;vertical-align:top;"><p style="margin:0 0 0px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:14px;font-weight:400;line-height:22px;background-image:linear-gradient(#2D2D2B,#2D2D2B);-webkit-background-clip:text;background-clip:text;color:transparent;">персональные условия на&nbsp;часть мероприятий в&nbsp;течение месяца</p></td></tr></table><div style="height:24px;line-height:24px;font-size:0;">&nbsp;</div><!-- ссылка на Telegram-канал --><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style=""><tr><td align="center" bgcolor="#0047FF" style="border-radius:2px;background-color:#0047FF;background-image:linear-gradient(#0047FF,#0047FF);"><a href="#" target="_blank" style="display:block;padding:17px 24px;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:12px;font-weight:700;line-height:14px;letter-spacing:.16em;text-transform:uppercase;text-align:center;text-decoration:none;white-space:nowrap;"><span style="background-image:linear-gradient(#FFFFFF,#FFFFFF);-webkit-background-clip:text;background-clip:text;color:transparent;">Присоединиться</span></a></td></tr></table></td></tr></table>
+    </td>
+  </tr>
+
+  <!-- ═══ ПОМОЩЬ ═══ -->
+  <tr>
+    <td class="pad sec end" style="padding:28px 32px 48px;">
+<p style="margin:0 0 0px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:14px;font-weight:400;line-height:22px;background-image:linear-gradient(#6A6A68,#6A6A68);-webkit-background-clip:text;background-clip:text;color:transparent;">Если понадобится помощь&nbsp;— просто ответьте на&nbsp;это письмо.</p>
+    </td>
+  </tr>
+
+</table>
+<!-- ══════════════ /WRAPPER ══════════════ -->
+
+  </td>
+</tr>
+
+  <!-- ═══ ФУТЕР (на всю ширину, фон --n900) ═══ -->
+<tr>
+  <td bgcolor="#F2F1EB" style="background-color:#F2F1EB;background-image:linear-gradient(#F2F1EB,#F2F1EB);">
+      <!-- линия кобальтом с растворением -->
+      <div style="height:1px;line-height:1px;font-size:0;background-color:#E2E1DA;background-image:linear-gradient(90deg,#0047FF 0%,rgba(0,71,255,0) 55%);">&nbsp;</div>
+      <table class="ew" role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" align="center" style="width:100%;max-width:600px;">
+  <tr>
+    <td class="pad foot" style="padding:32px 32px 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style=""><tr><td valign="middle" style="vertical-align:middle;"><img src="https://tickettoshow.ru/logo-post.png" alt="Ticket to Show" width="96" height="24" style="display:block;width:96px;height:24px;border:0;"></td><td align="right" valign="middle" style="vertical-align:middle;text-align:right;"><p style="margin:0 0 0px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:12px;font-weight:400;line-height:18px;background-image:linear-gradient(#4A4A48,#4A4A48);-webkit-background-clip:text;background-clip:text;color:transparent;"><a href="#" target="_blank" style="text-decoration:none;border-bottom:1px solid #B5B5B0;background-image:linear-gradient(#4A4A48,#4A4A48);-webkit-background-clip:text;background-clip:text;color:transparent;">Telegram</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#" target="_blank" style="text-decoration:none;border-bottom:1px solid #B5B5B0;background-image:linear-gradient(#4A4A48,#4A4A48);-webkit-background-clip:text;background-clip:text;color:transparent;">Instagram</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#" target="_blank" style="text-decoration:none;border-bottom:1px solid #B5B5B0;background-image:linear-gradient(#4A4A48,#4A4A48);-webkit-background-clip:text;background-clip:text;color:transparent;">VK</a></p></td></tr></table>
+    </td>
+  </tr>
+  <tr>
+    <td class="pad" style="padding:16px 32px 0;">
+<p style="margin:0 0 0px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:12px;font-weight:400;line-height:18px;background-image:linear-gradient(#888886,#888886);-webkit-background-clip:text;background-clip:text;color:transparent;">Ticket to&nbsp;Show&nbsp;·&nbsp;билеты без&nbsp;наценки<br>Вы получили это письмо, потому что оформили заказ на&nbsp;tickettoshow.ru</p>
+    </td>
+  </tr>
+  <tr>
+    <td class="pad" style="padding:20px 32px 0;">
+<div style="height:1px;line-height:1px;font-size:0;background-color:#E2E1DA;background-image:linear-gradient(#E2E1DA,#E2E1DA);">&nbsp;</div>
+    </td>
+  </tr>
+  <tr>
+    <td class="pad" style="padding:18px 32px 32px;">
+<p style="margin:0 0 8px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:11px;font-weight:400;line-height:16px;background-image:linear-gradient(#888886,#888886);-webkit-background-clip:text;background-clip:text;color:transparent;"><a href="#" target="_blank" style="text-decoration:none;border-bottom:1px solid #B5B5B0;background-image:linear-gradient(#888886,#888886);-webkit-background-clip:text;background-clip:text;color:transparent;">Отписаться</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#" target="_blank" style="text-decoration:none;border-bottom:1px solid #B5B5B0;background-image:linear-gradient(#888886,#888886);-webkit-background-clip:text;background-clip:text;color:transparent;">Условия</a></p><p style="margin:0 0 0px 0;font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:11px;font-weight:400;line-height:16px;background-image:linear-gradient(#888886,#888886);-webkit-background-clip:text;background-clip:text;color:transparent;">Instagram&nbsp;— продукт компании Meta, признанной экстремистской организацией и&nbsp;запрещённой в&nbsp;России.</p>
+    </td>
+  </tr></table>
+  </td>
+</tr>
 </table>
 
 </body>
