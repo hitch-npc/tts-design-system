@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Лаборатория календаря — поведение выбора дня</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link id="core" rel="stylesheet" href="../../../ds-core-r14.css">
+<style>
+body{margin:0;background:var(--ink);color:var(--n100);font-family:var(--font);-webkit-font-smoothing:antialiased}
+.bar{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;padding:10px 20px;background:var(--n950);border-bottom:1px solid var(--n800);font-size:12px}
+.bar b{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--n500);font-weight:500;margin-right:6px}
+.bar button{background:transparent;border:1px solid var(--n800);color:var(--n300);padding:6px 10px;border-radius:2px;font:500 11px var(--font);cursor:pointer}
+.bar button[aria-pressed=true]{background:var(--accent-ghost);border-color:var(--accent);color:var(--n100)}
+.wrap{padding:24px 20px 80px}
+.stage{margin:0 auto;max-width:100%;box-sizing:border-box;border:1px solid var(--n800);background:var(--ink);padding:28px var(--pad,32px) 36px}
+.vh{display:flex;gap:12px;align-items:baseline;margin:0 auto 6px;max-width:1440px}
+.vh .n{font:22px var(--f-num);color:var(--n500)}.vh h2{margin:0;font:500 22px var(--f-thin)}
+.vn{font-size:12px;color:var(--n400);line-height:1.6;max-width:780px;margin:0 auto 14px}
+
+/* ─ строка выбора даты ─ */
+.cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:12px}
+.cal-title{font-size:10px;font-weight:700;letter-spacing:.2em;color:var(--n400)}
+.cal-nav{display:flex;align-items:center;gap:6px}
+.mp-btn{background:transparent;border:1px solid var(--n800);color:var(--n100);font:500 11px var(--font);letter-spacing:.14em;padding:8px 12px;border-radius:2px;cursor:pointer}
+.mp-nav{background:transparent;border:1px solid var(--n800);color:var(--n300);width:32px;height:32px;border-radius:2px;cursor:pointer;font-size:16px}
+.strip{display:grid;border:1px solid var(--n800);border-radius:2px;overflow:hidden;background:var(--ink)}
+.day{position:relative;text-align:center;padding:12px 0 14px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;cursor:pointer;border:0;border-left:1px solid var(--n850);background:transparent;color:var(--n100);font-family:inherit}
+.day:first-child{border-left:0}
+.day:hover{background:var(--n950)}
+.day .w{display:block;font-size:10px;font-weight:500;letter-spacing:.14em;color:var(--n500)}
+.day .d{display:block;font:21px var(--f-num);margin-top:4px}
+.day .dens{display:block;height:3px;margin:8px auto 0;flex-shrink:0;border-radius:1px;background:var(--n800)}
+.day .dens{width:20px;background:var(--n500)}
+.day[data-c="0"] .d{color:var(--n600)}
+.day[data-c="0"] .dens{background:transparent}
+.day.today .w{color:var(--n100)}
+.day.today .dens{background:var(--accent)}
+.day.sel{background:var(--accent-ghost);box-shadow:inset 0 0 0 1px var(--accent)}
+.day.sel .d{color:var(--accent-soft)}
+.day.off{cursor:not-allowed}
+.day.off:hover{background:transparent}
+.day:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.tip-off{position:absolute;left:50%;bottom:calc(100% + 6px);transform:translateX(-50%);background:var(--n950);border:1px solid var(--n800);padding:6px 9px;font-size:11px;color:var(--n300);white-space:nowrap;border-radius:2px;pointer-events:none;opacity:0;transition:opacity .15s;z-index:5}
+.day.off:hover .tip-off{opacity:1}
+
+/* ─ содержимое под полосой ─ */
+.afisha-h{display:flex;justify-content:space-between;align-items:baseline;margin:32px 0 16px;gap:12px;flex-wrap:wrap}
+.afisha-h h3{margin:0;font:500 26px var(--f-thin)}
+.chip{display:inline-flex;align-items:center;gap:8px;background:var(--accent-ghost);border:1px solid var(--accent);color:var(--n100);font:500 11px var(--font);padding:7px 10px;border-radius:2px;cursor:pointer}
+.chip:hover{background:var(--n950)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.mini{border:1px solid var(--n800);background:var(--n950);border-radius:2px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.mini .t{font:1.15rem/1.2 var(--f-head)}
+.mini .m{font-size:11px;color:var(--n500)}
+.mini .p{font:1.2rem var(--f-num);margin-top:4px}
+.mini .g{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--n500);font-weight:500}
+.empty{border:1px dashed var(--n700);padding:28px 24px;display:flex;flex-direction:column;gap:12px;align-items:flex-start;border-radius:2px}
+.empty .h{font:500 22px var(--f-thin)}
+.empty .s{font-size:13px;color:var(--n400);line-height:1.6;max-width:520px}
+.empty .a{display:flex;gap:10px;flex-wrap:wrap}
+.panel-under{margin-top:14px;border:1px solid var(--n800);background:var(--n950);border-radius:2px;overflow:hidden;animation:down .32s cubic-bezier(.16,1,.3,1)}
+@keyframes down{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.pu-h{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--n800);font-size:12px;color:var(--n400)}
+.pu-h b{font:500 20px var(--f-thin);color:var(--n100)}
+.row{display:flex;gap:16px;align-items:center;padding:14px 18px;border-top:1px solid var(--n850)}
+.row:first-of-type{border-top:0}
+.row .tm{font:18px var(--f-num);width:56px;color:var(--n300)}
+.row .tt{flex:1;min-width:0}.row .tt div:first-child{font:1.05rem/1.2 var(--f-head)}
+.row .tt div+div{font-size:11px;color:var(--n500);margin-top:3px}
+.row .pr{font:1.1rem var(--f-num)}
+.sk{animation:skeleton-pulse 1.8s ease-in-out infinite;background:var(--n900);border-radius:2px}
+.hint{font-size:11px;color:var(--n500);margin-top:10px}
+.note{margin:18px auto 0;font-size:12px;color:var(--n400);max-width:1440px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="bar" id="bar">
+  <span><b>Тема</b><button data-theme="dark" aria-pressed="true">Тёмная</button> <button data-theme="light" aria-pressed="false">Светлая</button></span>
+  <span><b>Ширина</b><button data-w="375" aria-pressed="false">375</button> <button data-w="768" aria-pressed="false">768</button> <button data-w="1440" aria-pressed="true">1440</button></span>
+  <span><b>Вариант</b><button data-v="A" aria-pressed="true">A · фильтр афиши</button> <button data-v="B" aria-pressed="false">B · раскрытие под полосой</button> <button data-v="C" aria-pressed="false">C · переход на страницу дня</button></span>
+  <span><b>Загрузка месяца</b><button id="slow" aria-pressed="false">Имитировать медленный ответ</button></span>
+</div>
+<div class="wrap" id="wrap"></div>
+
+<script>
+const MON=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+const WD=['ВС','ПН','ВТ','СР','ЧТ','ПТ','СБ'];
+const EVT=[['Спектакль','Вишнёвый сад','Театр Вахтангова','19:00',2200],['Балет','Лебединое озеро','Большой театр','18:00',3500],['Мюзикл','Алые паруса','МДМ','19:00',1800],['Опера','Травиата','Михайловский','19:00',4200],['Детям','Приключения Простоквашино','Театр кукол','12:00',1200],['Концерт','Квартет И','Дом музыки','20:00',3100],['Спектакль','Одни во вселенной','Современник','19:00',2500],['Классика','Иван Васильевич меняет профессию','Театр сатиры','19:00',2900]];
+const START=new Date(2026,4,27);
+const COUNT={0:3,1:2,2:0,3:4,4:3,5:1,6:2,7:4,8:2,9:0,10:0,11:1,12:3,13:2};
+function day(i){const d=new Date(START);d.setDate(START.getDate()+i);return d}
+function events(i){const n=COUNT[i]||0;return Array.from({length:n},(_,k)=>EVT[(i*3+k*2)%EVT.length])}
+const st={theme:'dark',w:1440,v:'A',sel:null,loading:false,slow:false};
+const pl=(n,a,b,c)=>n%10===1&&n%100!==11?a:(n%10>=2&&n%10<=4&&(n%100<12||n%100>14)?b:c);
+const label=i=>{const d=day(i);return d.getDate()+' '+MON[d.getMonth()]};
+const fmt=n=>n.toLocaleString('ru-RU').replace(/,/g,' ')+' ₽';
+function nearest(i){for(let k=1;k<14;k++){for(const j of [i+k,i-k]) if(j>=0&&j<14&&COUNT[j]) return j} return null}
+
+function strip(n){
+  return `<div class="strip" style="grid-template-columns:repeat(${n},1fr)" role="group" aria-label="Выбор даты">`+Array.from({length:n},(_,i)=>{
+    const d=day(i),c=COUNT[i]||0,off=st.v==='C'&&c===0; const cls=['day',i===0?'today':'',st.sel===i?'sel':'',off?'off':''].join(' ');
+    return `<button class="${cls}" data-i="${i}" data-c="${Math.min(c,4)}" ${off?'aria-disabled="true"':''} aria-pressed="${st.sel===i}" aria-label="${label(i)}, ${c?c+' '+pl(c,'событие','события','событий'):'событий нет'}">
+      <span class="w">${i===0?'СЕГОДНЯ':(d.getDate()===1?'ИЮН · ':'')+WD[d.getDay()]}</span><span class="d">${d.getDate()}</span><span class="dens"></span>${off?'<span class="tip-off">Событий нет</span>':''}</button>`}).join('')+`</div>`}
+
+function emptyBlock(i){const nr=nearest(i);return `<div class="empty"><div class="h">${label(i)} — событий нет</div><div class="s">${nr!=null?`Ближайший показ — ${label(nr)}: ${events(nr)[0][1]}${COUNT[nr]>1?' и ещё '+(COUNT[nr]-1):''}.`:'В выбранный период ничего не запланировано.'}</div>
+  <div class="a">${nr!=null?`<button class="btn btn-primary btn-sm" data-go="${nr}"><span>Показать ${label(nr)}</span></button>`:''}<button class="btn btn-ghost btn-sm" data-clear="1"><span>Вся афиша месяца</span></button></div></div>`}
+function cardsFor(list){return `<div class="cards">`+list.map(e=>`<div class="mini"><div class="g">${e[0]}</div><div class="t">${e[1]}</div><div class="m">${e[2]} · ${e[3]}</div><div class="p">от ${fmt(e[4])}</div></div>`).join('')+`</div>`}
+function allEvents(){return [...Array(14).keys()].flatMap(i=>events(i))}
+
+function body(){
+  const i=st.sel;
+  if(st.loading) return `<div class="afisha-h"><div class="sk" style="width:240px;height:28px"></div></div><div class="cards">${'<div class="sk" style="height:130px"></div>'.repeat(3)}</div>`;
+  if(st.v==='A'){
+    if(i==null) return `<div class="afisha-h"><h3>Афиша · 27 мая — 9 июня</h3><span class="hint">${allEvents().length} событий</span></div>`+cardsFor(allEvents().slice(0,6));
+    const ev=events(i);
+    return `<div class="afisha-h"><h3>${label(i)}${ev.length?` · ${ev.length} ${pl(ev.length,'событие','события','событий')}`:''}</h3><button class="chip" data-clear="1">${label(i)} <span aria-hidden="true">✕</span><span class="sr" style="position:absolute;left:-9999px">Сбросить дату</span></button></div>`+(ev.length?cardsFor(ev):emptyBlock(i));
+  }
+  if(st.v==='B'){
+    let out=`<div class="afisha-h"><h3>Афиша · 27 мая — 9 июня</h3><span class="hint">${allEvents().length} событий</span></div>`+cardsFor(allEvents().slice(0,6));
+    return out;
+  }
+  // C
+  return `<div class="afisha-h"><h3>Афиша · 27 мая — 9 июня</h3><span class="hint">Нажатие на день открывает страницу «Афиша · ${st.sel!=null?label(st.sel):'выбранный день'}»</span></div>`+cardsFor(allEvents().slice(0,6));
+}
+function underStrip(){
+  if(st.v!=='B'||st.sel==null) return '';
+  const i=st.sel,ev=events(i);
+  if(st.loading) return `<div class="panel-under"><div class="pu-h"><b>${label(i)}</b></div>${'<div class="row"><div class="sk" style="width:56px;height:20px"></div><div class="sk" style="flex:1;height:34px"></div></div>'.repeat(2)}</div>`;
+  if(!ev.length) return `<div class="panel-under" style="padding:18px">${emptyBlock(i)}</div>`;
+  return `<div class="panel-under"><div class="pu-h"><b>${label(i)} · ${ev.length} ${pl(ev.length,'событие','события','событий')}</b><span>${WD[day(i).getDay()]}</span><button class="chip" data-clear="1">Свернуть <span aria-hidden="true">✕</span></button></div>`+
+    ev.map(e=>`<div class="row"><div class="tm">${e[3]}</div><div class="tt"><div>${e[1]}</div><div>${e[0]} · ${e[2]}</div></div><div class="pr">от ${fmt(e[4])}</div><button class="btn btn-primary btn-sm"><span>Билеты</span></button></div>`).join('')+
+    `<div class="row" style="justify-content:flex-end"><button class="btn btn-ghost btn-sm"><span>Вся афиша на ${label(i)} →</span></button></div></div>`;
+}
+const NOTES={
+ A:'<b>Поведение.</b> День подсвечивается рамкой кобальта, заголовок афиши ниже превращается в «21 июня · 3 события», появляется чип-сброс. Афиша остаётся на той же странице — ничего не открывается, не прыгает. <b>День без событий</b> не блокируется: он серый, но кликабелен — под ним объяснение и две кнопки: ближайший день с событиями и «Вся афиша месяца». Нажатие на уже выбранный день снимает выбор.',
+ B:'<b>Поведение.</b> Под полосой раскрывается панель с сеансами выбранного дня: время, название, площадка, цена, кнопка «Билеты» — купить можно, не уходя с главной. Афиша ниже не меняется. <b>День без событий</b> — та же панель с ближайшим днём. Плюс: путь до покупки короче; минус: дублирует афишу и на 375 пикселях раздувает первый экран.',
+ C:'<b>Поведение.</b> Полоса — навигация: нажатие ведёт на страницу раздела с фильтром по дню (<code>?date=2026-06-02</code>), на главной ничего не меняется. <b>День без событий</b> недоступен: серая цифра, пунктирная метка, подсказка «Событий нет» при наведении, <code>aria-disabled</code>. Самый дешёвый вариант для разработки; цена — переход и потеря контекста.'
+};
+function render(){
+  const n=st.w>=768?14:7;
+  const pad=Math.max(20,Math.min(56,st.w*0.032));
+  document.getElementById('wrap').innerHTML=`<div class="vh"><span class="n">${st.v}</span><h2>${{A:'Фильтр афиши на месте',B:'Раскрытие сеансов под полосой',C:'Переход на страницу дня'}[st.v]}</h2></div>
+  <div class="vn">${NOTES[st.v]}</div>
+  <div class="stage" style="width:${st.w}px;--pad:${pad}px">
+    <div class="cal-head"><span class="cal-title">ВЫБЕРИТЕ ДАТУ</span><span class="cal-nav"><button class="mp-nav" aria-label="Предыдущий месяц">‹</button><button class="mp-btn">МАЙ — ИЮНЬ<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-left:8px;vertical-align:-1px"><path d="M6 9l6 6 6-6"/></svg></button><button class="mp-nav" aria-label="Следующий месяц">›</button></span></div>
+    ${strip(n)}${underStrip()}${body()}
+    ${st.v==='C'&&st.sel!=null?`<div class="hint" style="margin-top:14px">→ переход: /afisha?date=2026-${String(day(st.sel).getMonth()+1).padStart(2,'0')}-${String(day(st.sel).getDate()).padStart(2,'0')}</div>`:''}
+  </div>`;
+}
+async function select(i){
+  if(st.v==='C'&&!(COUNT[i]>0)) return;
+  st.sel = st.sel===i && st.v!=='C' ? null : i;
+  if(st.slow){ st.loading=true; render(); await new Promise(r=>setTimeout(r,1100)); st.loading=false; }
+  render();
+}
+document.getElementById('wrap').addEventListener('click',e=>{
+  const d=e.target.closest('.day'); if(d) return select(+d.dataset.i);
+  if(e.target.closest('[data-clear]')){ st.sel=null; render(); }
+  const g=e.target.closest('[data-go]'); if(g) select(+g.dataset.go);
+});
+document.getElementById('bar').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.id==='slow'){st.slow=!st.slow;b.setAttribute('aria-pressed',String(st.slow));return}
+  b.parentElement.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');
+  if(b.dataset.theme) document.getElementById('core').href=b.dataset.theme==='dark'?'../../../ds-core-r14.css':'../../../ds-core-r14-light.css';
+  if(b.dataset.w) st.w=+b.dataset.w; if(b.dataset.v){st.v=b.dataset.v;st.sel=null}
+  render();});
+const q=new URLSearchParams(location.search);
+['theme','w','v'].forEach(k=>{if(q.get(k)){st[k]=k==='w'?+q.get(k):q.get(k);document.querySelectorAll(`[data-${k}]`).forEach(b=>b.setAttribute('aria-pressed',String(b.dataset[k]===String(st[k]))));if(k==='theme')document.getElementById('core').href=st.theme==='dark'?'../../../ds-core-r14.css':'../../../ds-core-r14-light.css'}});
+if(q.get('sel')) st.sel=+q.get('sel');
+render();
+</script>
+</body>
+</html>

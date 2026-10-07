@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Лаборатория лоадеров — схема зала</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link id="core" rel="stylesheet" href="../../../ds-core-r14.css">
+<style>
+/* ═════════ ПРЕДЛАГАЕМЫЕ ДОБАВКИ В ЯДРО (все цвета — токены) ═════════ */
+@keyframes tts-spin{to{transform:rotate(360deg)}}
+@keyframes tts-ring{0%{box-shadow:inset 0 0 0 2px var(--seat-sel),0 0 0 0 color-mix(in srgb,var(--seat-sel) 60%,transparent)}100%{box-shadow:inset 0 0 0 2px var(--seat-sel),0 0 0 6px color-mix(in srgb,var(--seat-sel) 0%,transparent)}}
+@keyframes tts-sweep{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+
+.spinner{display:inline-block;width:14px;height:14px;border:1.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:tts-spin .7s linear infinite;flex-shrink:0}
+
+/* Кнопка в ожидании: ширина не меняется, подпись скрыта, по центру вращается кольцо.
+   Не путать с :disabled — цвет кнопки остаётся прежним, чтобы она не выглядела выключенной. */
+.btn.is-loading{position:relative;pointer-events:none;cursor:progress}
+.btn.is-loading > *{visibility:hidden}
+.btn.is-loading::after{content:"";position:absolute;left:50%;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border:1.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:tts-spin .7s linear infinite}
+
+/* Место ждёт ответа от билетной системы */
+.smap-dot.smap-dot-pending{cursor:progress;pointer-events:none;animation:tts-ring .9s ease-out infinite}
+
+/* Строка выбранного места в панели */
+.tkt{position:relative}
+.tkt.is-pending .tkt-zone,.tkt.is-pending .tkt-grid,.tkt.is-pending .tkt-price{opacity:.55}
+.tkt.is-pending::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);animation:tts-sweep 1.1s ease-in-out infinite;z-index:2;overflow:hidden}
+.tkt.is-fail{border-color:var(--danger-border);background:var(--danger-bg)}
+.tkt .tkt-err{font-size:11px;color:var(--danger-text);margin:-2px 0 10px;line-height:1.5}
+.tkt-rm .spinner{width:14px;height:14px}
+
+/* Заглушки: схема и панель */
+.hall-skel{display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px}
+.hall-skel .stage{width:44%;height:10px}
+.hall-skel .sect{width:var(--w);height:var(--h)}
+@media (prefers-reduced-motion:reduce){
+  .spinner,.btn.is-loading::after{animation:none;border-right-color:currentColor;opacity:.6}
+  .smap-dot.smap-dot-pending{animation:none;box-shadow:inset 0 0 0 2px var(--seat-sel)}
+  .tkt.is-pending::before{animation:none;background:var(--accent)}
+  .skeleton{animation:none}
+}
+
+/* ═════════ ЛАБОРАТОРИЯ ═════════ */
+body{margin:0;background:var(--ink);color:var(--n100);font-family:var(--font);-webkit-font-smoothing:antialiased}
+.bar{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;padding:10px 20px;background:var(--n950);border-bottom:1px solid var(--n800);font-size:12px}
+.bar b{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--n500);font-weight:500;margin-right:6px}
+.bar button,.bar select{background:transparent;border:1px solid var(--n800);color:var(--n300);padding:6px 10px;border-radius:2px;font:500 11px var(--font);cursor:pointer}
+.bar button[aria-pressed=true]{background:var(--accent-ghost);border-color:var(--accent);color:var(--n100)}
+.page{max-width:1180px;margin:0 auto;padding:28px 20px 80px}
+h2{font:500 24px var(--f-thin);margin:36px 0 6px}
+h2 small{font:500 10px var(--font);letter-spacing:.14em;text-transform:uppercase;color:var(--n500);margin-left:10px}
+.note{font-size:12px;color:var(--n400);line-height:1.6;max-width:760px;margin:0 0 16px}
+.states{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+.cell{border:1px solid var(--n800);background:var(--n950);padding:16px;border-radius:2px;display:flex;flex-direction:column;gap:12px}
+.cell .cap{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--n500);font-weight:500}
+.hall{display:flex;border:1px solid var(--n800);background:var(--ink);min-height:430px}
+.map{flex:1;position:relative;padding:20px 24px;display:flex;flex-direction:column;align-items:center;gap:18px;min-width:0}
+.scene{width:46%;border-top:2px solid var(--n700);text-align:center;font-size:10px;letter-spacing:.2em;color:var(--n500);padding-top:6px;text-transform:uppercase}
+.zone{display:flex;flex-direction:column;gap:6px;align-items:center}
+.zone .zl{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--n500);margin-bottom:2px}
+.zrow{display:flex;gap:5px}
+.hall .smap-dot{width:16px;height:16px}
+.panel{width:330px;flex-shrink:0;display:flex;flex-direction:column;border-left:1px solid var(--n800)}
+.pnl-head{padding:16px 20px 12px;border-bottom:1px solid var(--n800);font:500 21px var(--f-thin)}
+.pnl-list{flex:1;overflow:auto;padding:14px 20px;display:flex;flex-direction:column;gap:10px;min-height:200px}
+.pnl-empty{margin:auto;text-align:center;color:var(--n600);font-size:13px;max-width:220px;line-height:1.5}
+.tkt{border:1px solid var(--n800);border-radius:2px;overflow:hidden;background:var(--n950);flex-shrink:0}
+.tkt-bar{height:6px}.tkt-body{padding:12px 14px}
+.tkt-zone{font-size:13px;color:var(--n100);font-weight:600;margin-bottom:8px}
+.tkt-grid{display:flex;gap:18px;margin-bottom:10px}
+.tkt-cell .k{font-size:8px;font-weight:700;letter-spacing:.12em;color:var(--n500);text-transform:uppercase;margin-bottom:2px}
+.tkt-cell .v{font-family:var(--f-num);font-size:18px;line-height:1}
+.tkt-foot{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--n800);padding-top:10px}
+.tkt-price{font-family:var(--f-num);font-size:16px}
+.tkt-rm{background:transparent;border:none;color:var(--n600);cursor:pointer;padding:4px;border-radius:2px;width:28px;height:28px;display:flex;align-items:center;justify-content:center}
+.tkt-rm:hover{color:var(--danger-text);background:var(--n900)}
+.tkt-rm[disabled]{cursor:progress;color:var(--n400)}
+.pnl-foot{border-top:1px solid var(--n800);padding:16px 20px 20px}
+.pnl-total{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;font-size:12px;color:var(--n500)}
+.pnl-total .r{font:1.5rem var(--f-num);color:var(--n100)}
+.live{font-size:11px;color:var(--n500);margin-top:8px;min-height:16px}
+.toast-host{position:fixed;right:20px;bottom:20px;display:flex;flex-direction:column;gap:8px;z-index:80;max-width:340px}
+.toast-host .toast{position:static;animation:toast-in .2s var(--ease-out)}
+@keyframes toast-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="bar" id="bar">
+  <span><b>Тема</b><button data-theme="dark" aria-pressed="true">Тёмная</button> <button data-theme="light" aria-pressed="false">Светлая</button></span>
+  <span><b>Ответ билетной системы</b>
+    <button data-lat="250" aria-pressed="false">Быстро 250 мс</button>
+    <button data-lat="1200" aria-pressed="true">Медленно 1,2 с</button>
+    <button data-lat="4000" aria-pressed="false">Очень медленно 4 с</button></span>
+  <span><b>Исход</b>
+    <button data-out="ok" aria-pressed="true">Успех</button>
+    <button data-out="error" aria-pressed="false">Сбой сети</button></span>
+</div>
+
+<div class="page">
+  <h2>1 · Кнопка <small>слой 2 · компонент</small></h2>
+  <p class="note">Ширина не меняется, подпись скрыта, по центру кольцо. Цвет кнопки остаётся «живым» — состояние ожидания не должно читаться как «выключено» (серая <code>:disabled</code> — другое состояние). Нажмите «Показать ожидание».</p>
+  <div class="states">
+    <div class="cell"><span class="cap">Primary · обычная</span><button class="btn btn-primary btn-md btn-full"><span>Купить билеты</span></button></div>
+    <div class="cell"><span class="cap">Primary · ожидание</span><button class="btn btn-primary btn-md btn-full is-loading" aria-busy="true"><span>Купить билеты</span></button></div>
+    <div class="cell"><span class="cap">Ghost · обычная</span><button class="btn btn-ghost btn-md btn-full"><span>Сбросить выбор</span></button></div>
+    <div class="cell"><span class="cap">Ghost · ожидание</span><button class="btn btn-ghost btn-md btn-full is-loading" aria-busy="true"><span>Сбросить выбор</span></button></div>
+    <div class="cell"><span class="cap">Primary · выключена</span><button class="btn btn-primary btn-md btn-full" disabled><span>Купить билеты</span></button></div>
+    <div class="cell"><span class="cap">Иконка · ожидание</span><span class="tkt-rm" style="color:var(--n400)"><span class="spinner"></span></span></div>
+  </div>
+
+  <h2>2 · Схема зала целиком <small>P0 · слой 2–4</small></h2>
+  <p class="note">Работающий стенд. Нажмите на место: оно сразу окрашивается и «пульсирует» (ждёт удержания), строка в панели появляется в состоянии ожидания. Исход и скорость ответа выбираются сверху. «Купить билеты» и «Сбросить выбор» — тоже с ожиданием. Кнопка ниже показывает первичную загрузку схемы.</p>
+  <p><button class="btn btn-ghost btn-sm" id="reload"><span>Показать загрузку схемы</span></button></p>
+  <div class="hall" id="hall"></div>
+  <div class="live" id="live" role="status" aria-live="polite"></div>
+</div>
+<div class="toast-host" id="toasts" aria-live="polite"></div>
+
+<script>
+const ZONES=[{id:'partet',name:'Партер',color:'var(--zone-2)',price:4000,rows:4,n:10},{id:'amphi',name:'Амфитеатр',color:'var(--zone-3)',price:2400,rows:3,n:12},{id:'balkon',name:'Балкон',color:'var(--zone-5)',price:1200,rows:2,n:12}];
+const st={lat:1200,out:'ok',sel:new Map(),pending:new Set(),busy:{buy:false,reset:false},loading:false,errs:new Map()};
+const fmt=n=>n.toLocaleString('ru-RU').replace(/,/g,' ')+' ₽';
+const nM=n=>n===1?'место':(n%10>=2&&n%10<=4&&(n<10||n>20)?'места':'мест');
+const sold=(z,r,s)=>((z.length*7+r*5+s*3)%9)<2;
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const live=m=>document.getElementById('live').textContent=m;
+function toast(kind,text){const h=document.getElementById('toasts');const t=document.createElement('div');t.className='toast toast-'+kind;t.innerHTML='<div class="toast-text">'+text+'</div>';h.appendChild(t);setTimeout(()=>t.remove(),4200)}
+// имитация билетной системы
+async function api(kind){ await sleep(st.lat); if(st.out==='error') throw {code:'net'}; return true }
+
+function seatPrice(z,r){return z.price-(r-1)*100}
+function render(){
+  const hall=document.getElementById('hall');
+  if(st.loading){
+    hall.innerHTML=`<div class="map"><div class="hall-skel"><div class="skeleton stage"></div>
+      <div class="skeleton sect" style="--w:260px;--h:96px"></div><div class="skeleton sect" style="--w:340px;--h:76px"></div><div class="skeleton sect" style="--w:340px;--h:52px"></div></div></div>
+      <div class="panel"><div class="pnl-head">Ваш выбор</div><div class="pnl-list"><div class="skeleton" style="height:112px"></div></div>
+      <div class="pnl-foot"><div class="skeleton" style="height:22px;margin-bottom:14px"></div><div class="skeleton" style="height:41px"></div></div></div>`;
+    return;
+  }
+  const map=ZONES.map(z=>`<div class="zone"><div class="zl">${z.name} · от ${fmt(z.price-(z.rows-1)*100)}</div>`+
+    Array.from({length:z.rows},(_,ri)=>{const r=ri+1;return `<div class="zrow">`+Array.from({length:z.n},(_,si)=>{const s=si+1,k=`${z.id}-${r}-${s}`;
+      const isSold=sold(z.id,r,s)&&!st.sel.has(k);const cls=['smap-dot',st.sel.has(k)?(st.pending.has(k)?'smap-dot-pending':'smap-dot-selected'):''];
+      if(isSold) cls.push('smap-dot-sold');
+      const bg=st.sel.has(k)&&!st.pending.has(k)?'var(--seat-sel)':(isSold?'':z.color);
+      return `<button class="${cls.join(' ')}" style="background:${bg}" data-k="${k}" ${isSold||st.pending.has(k)?'disabled':''} aria-label="${z.name}, ряд ${r}, место ${s}${isSold?', продано':''}"></button>`}).join('')+`</div>`}).join('')+`</div>`).join('');
+  const rows=[...st.sel].map(([k,v])=>{const [zid,r,s]=k.split('-');const z=ZONES.find(x=>x.id===zid);const p=st.pending.has(k),f=st.errs.has(k);
+    return `<div class="tkt ${p?'is-pending':''} ${f?'is-fail':''}" ${p?'aria-busy="true"':''}><div class="tkt-bar" style="background:${z.color}"></div><div class="tkt-body"><div class="tkt-zone">${z.name}</div>
+      <div class="tkt-grid"><div class="tkt-cell"><div class="k">Ряд</div><div class="v">${r}</div></div><div class="tkt-cell"><div class="k">Место</div><div class="v">${s}</div></div></div>
+      ${f?`<div class="tkt-err">${st.errs.get(k)}</div>`:''}${p?`<div class="tkt-err" style="color:var(--n400)">${v==='removing'?'Освобождаем место…':'Удерживаем место…'}</div>`:''}
+      <div class="tkt-foot"><span class="tkt-price">${fmt(seatPrice(z,+r))}</span>
+      <button class="tkt-rm" data-rm="${k}" ${p?'disabled':''} aria-label="Убрать">${p?'<span class="spinner"></span>':'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>'}</button></div></div></div>`}).join('');
+  const total=[...st.sel.keys()].reduce((a,k)=>{const [zid,r]=k.split('-');return a+seatPrice(ZONES.find(x=>x.id===zid),+r)},0);
+  const n=st.sel.size;
+  hall.innerHTML=`<div class="map"><div class="scene">Сцена</div>${map}</div>
+    <div class="panel"><div class="pnl-head">Ваш выбор</div><div class="pnl-list">${n?rows:'<div class="pnl-empty">Места не выбраны.<br>Нажмите на место на схеме.</div>'}</div>
+    <div class="pnl-foot"><div class="pnl-total"><span>${n} ${nM(n)} · итого</span><span class="r">${fmt(total)}</span></div>
+      ${n?`<button class="btn btn-ghost btn-md btn-full ${st.busy.reset?'is-loading':''}" id="reset" style="margin-bottom:10px" ${st.busy.reset?'aria-busy="true"':''}><span>Сбросить выбор</span></button>`:''}
+      <button class="btn btn-primary btn-md btn-full ${st.busy.buy?'is-loading':''}" id="buy" ${n&&!st.pending.size?'':'disabled'} ${st.busy.buy?'aria-busy="true"':''}><span>Купить билеты</span></button></div></div>`;
+}
+async function pick(k){
+  if(st.pending.has(k)) return;
+  st.sel.set(k,'holding'); st.pending.add(k); st.errs.delete(k); render(); live('Удерживаем место…');
+  try{ await api('hold'); st.pending.delete(k); st.sel.set(k,'held'); render(); live('Место добавлено в выбор'); }
+  catch(e){ st.pending.delete(k);
+    st.errs.set(k,'Не удалось связаться с сервером. Проверьте соединение или выключите VPN.'); render(); toast('error','Нет связи с кассой. Место не добавлено.');
+  }
+}
+async function remove(k){ st.sel.set(k,'removing'); st.pending.add(k); render(); live('Освобождаем место…');
+  try{ await api('release'); st.pending.delete(k); st.sel.delete(k); st.errs.delete(k); render(); live('Место убрано'); }
+  catch(e){ st.pending.delete(k); st.sel.set(k,'held'); render(); toast('error','Не удалось убрать место. Повторите.'); } }
+document.getElementById('hall').addEventListener('click',async e=>{
+  const dot=e.target.closest('.smap-dot'); if(dot&&!dot.disabled) return pick(dot.dataset.k);
+  const rm=e.target.closest('[data-rm]'); if(rm){ const k=rm.dataset.rm; if(st.errs.has(k)){ st.sel.delete(k); st.errs.delete(k); render(); return } return remove(rm.dataset.rm) }
+  if(e.target.closest('#reset')){ st.busy.reset=true; render(); try{ await api('release'); st.sel.clear(); st.errs.clear(); live('Выбор сброшен') }catch{ toast('error','Не удалось сбросить выбор.') } st.busy.reset=false; render(); }
+  if(e.target.closest('#buy')){ st.busy.buy=true; render(); live('Создаём заказ…'); try{ await api('order'); toast('success','Заказ создан — переходим к оформлению'); }catch{ toast('error','Не получилось создать заказ. Места остаются за вами.') } st.busy.buy=false; render(); }
+});
+document.getElementById('reload').onclick=async()=>{ st.loading=true; render(); await sleep(Math.max(st.lat,900)); st.loading=false; render(); };
+document.getElementById('bar').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;b.parentElement.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');
+  if(b.dataset.theme) document.getElementById('core').href=b.dataset.theme==='dark'?'../../../ds-core-r14.css':'../../../ds-core-r14-light.css';
+  if(b.dataset.lat) st.lat=+b.dataset.lat; if(b.dataset.out) st.out=b.dataset.out; });
+const q=new URLSearchParams(location.search); if(q.get('theme')==='light'){document.getElementById('core').href='../../../ds-core-r14-light.css';document.querySelectorAll('[data-theme]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.theme==='light')))}
+render();
+</script>
+</body>
+</html>

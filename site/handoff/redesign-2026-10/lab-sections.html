@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Лаборатория страниц разделов</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link id="core" rel="stylesheet" href="../../../ds-core-r14.css">
+<style>
+body{margin:0;background:var(--ink);color:var(--n100);font-family:var(--font);-webkit-font-smoothing:antialiased}
+.bar{position:sticky;top:0;z-index:60;display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;padding:10px 20px;background:var(--n950);border-bottom:1px solid var(--n800);font-size:12px}
+.bar b{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--n500);font-weight:500;margin-right:6px}
+.bar button{background:transparent;border:1px solid var(--n800);color:var(--n300);padding:6px 10px;border-radius:2px;font:500 11px var(--font);cursor:pointer}
+.bar button[aria-pressed=true]{background:var(--accent-ghost);border-color:var(--accent);color:var(--n100)}
+.canvas{margin:24px auto 80px;max-width:100%;border:1px solid var(--n800);background:var(--ink);position:relative;overflow:hidden}
+
+/* ───── ПРЕДЛАГАЕМЫЕ КОМПОНЕНТЫ ───── */
+/* Шапка раздела */
+.sec-head{position:relative;padding:56px var(--pad) 40px;border-bottom:1px solid var(--n800);overflow:hidden}
+.sec-head .glow{position:absolute;right:-6%;top:-40%;width:46%;aspect-ratio:1;border-radius:50%;filter:blur(70px);opacity:.9;background:radial-gradient(circle,var(--g1) 0%,var(--g2) 55%,transparent 75%);pointer-events:none}
+.sec-head > *{position:relative}
+.crumbs{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--n500);margin-bottom:18px}
+.crumbs a{color:var(--n400);text-decoration:none}
+.sec-title{font:500 clamp(2.4rem,6vw,4.4rem)/1.02 var(--f-thin);margin:0 0 14px}
+.sec-meta{font-size:12px;color:var(--n400);letter-spacing:.02em}
+.sec-meta b{color:var(--n100);font-weight:600}
+
+/* Разделитель месяца */
+.month{position:sticky;top:0;z-index:5;display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:14px 0 12px;margin:0;background:linear-gradient(to bottom,var(--ink) 78%,transparent);border-bottom:1px solid var(--n800)}
+.month h2{margin:0;font:500 clamp(1.5rem,3vw,2rem)/1 var(--f-thin);color:var(--n100)}
+.month h2 .y{color:var(--n500);margin-left:8px}
+.month .cnt{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--n500)}
+.month-gap{margin-top:var(--section-gap-md)}
+.month-empty{display:flex;justify-content:space-between;padding:14px 0;margin-top:var(--section-gap-md);border-bottom:1px dashed var(--n700);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--n600)}
+.feed{padding:0 var(--pad) 48px}
+.feed .grid{margin-top:20px}
+
+/* Карточка — V1, как в ядре (решение №23, подтверждено 07.10.2026) */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--card-min),1fr));gap:var(--gap-fluid)}
+.grid .event-card:hover{transform:none}
+.event-card-meta{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--n500)}
+.more{display:flex;flex-direction:column;align-items:center;gap:10px;padding:8px 0 24px}
+.more .s{font-size:11px;color:var(--n500)}
+@keyframes tts-spin{to{transform:rotate(360deg)}}
+.btn.is-loading{position:relative;pointer-events:none;cursor:progress}.btn.is-loading>*{visibility:hidden}
+.btn.is-loading::after{content:"";position:absolute;left:50%;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border:1.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:tts-spin .7s linear infinite}
+.sk-card{border:1px solid var(--n800);background:var(--n950);border-radius:2px;overflow:hidden}
+.sk-card .a{aspect-ratio:3/2}
+.sk-card .b{padding:16px;display:flex;flex-direction:column;gap:10px}
+.note{max-width:1100px;margin:0 auto 24px;font-size:12px;color:var(--n400);line-height:1.7;padding:0 20px}
+.note b{color:var(--n200)}
+</style>
+</head>
+<body>
+<div class="bar" id="bar">
+  <span><b>Тема</b><button data-theme="dark" aria-pressed="true">Тёмная</button> <button data-theme="light" aria-pressed="false">Светлая</button></span>
+  <span><b>Ширина</b><button data-w="375" aria-pressed="false">375</button> <button data-w="768" aria-pressed="false">768</button> <button data-w="1440" aria-pressed="true">1440</button></span>
+  <span><b>Раздел</b><button data-sec="show" aria-pressed="true">Спектакли</button> <button data-sec="classic" aria-pressed="false">Классика</button> <button data-sec="concert" aria-pressed="false">Концерты</button> <button data-sec="kids" aria-pressed="false">Детям</button></span>
+  <span><b>Состояние</b><button data-state="full" aria-pressed="true">Лента</button> <button data-state="loading" aria-pressed="false">Загрузка</button> <button data-state="empty" aria-pressed="false">Раздел пуст</button></span>
+</div>
+<div class="note"><b>Что смотреть.</b> Шапка раздела не полноэкранная: название, одна строка метаданных и приглушённое свечение жанра (правило «Blob = жанр»). Дальше одна непрерывная лента, отсортированная по ближайшей дате; месяцы разделены тонкой линией с названием и счётчиком, внутри месяца сетка не прерывается. Месяц без событий — тихая пунктирная строка, чтобы лента не казалась оборванной. Карточка — V1, как в ядре (решение №23).</div>
+<div id="root"></div>
+
+<script>
+const SECS={
+  show:{t:'Спектакли',g:['var(--blob-core-cool)','var(--blob-mid-cool)'],tags:['Спектакль','Комедия','Драма']},
+  classic:{t:'Классика',g:['var(--blob-purple)','var(--blob-mid)'],tags:['Опера','Балет','Классика']},
+  concert:{t:'Концерты',g:['var(--blob-core-warm)','var(--blob-mid-warm)'],tags:['Концерт','Джаз','Рок']},
+  kids:{t:'Детям',g:['var(--blob-core-green)','var(--blob-mid-green)'],tags:['Детям','Сказка','Мюзикл']},
+};
+const TITLES={
+ show:['Одни во вселенной','Вишнёвый сад','Квартет И + Моральный кодекс «Песни и письма мужчин среднего возраста»','Дядя Ваня','Чайка','Иван Васильевич меняет профессию','Шинель','Три сестры','Горе от ума','Ревизор','Мастер и Маргарита','Утиная охота'],
+ classic:['Лебединое озеро','Травиата','Щелкунчик','Евгений Онегин','Жизель','Кармен','Баядерка','Дон Кихот','Богема','Тоска','Спящая красавица','Ромео и Джульетта'],
+ concert:['Московский джазовый оркестр','Вечер органной музыки','Земфира. Большой концерт','Симфонический оркестр: Чайковский','Би-2 с оркестром','Вивальди. Времена года','Ночь в Венской опере','Камерный вечер при свечах','Гала-концерт звёзд оперы','Рок-опера «Юнона и Авось»','Хор Турецкого','Фортепианный вечер'],
+ kids:['Приключения Простоквашино','Алые паруса','Снежная королева','Конёк-Горбунок','Маленький принц','Буратино','Золушка','Щелкунчик для малышей','Волшебник Изумрудного города','Три поросёнка','Красная Шапочка','Каштанка'],
+};
+const GENRE={'Лебединое озеро':'Балет','Травиата':'Опера','Щелкунчик':'Балет','Евгений Онегин':'Опера','Жизель':'Балет','Кармен':'Опера','Баядерка':'Балет','Дон Кихот':'Балет','Богема':'Опера','Тоска':'Опера','Спящая красавица':'Балет','Ромео и Джульетта':'Балет',
+ 'Одни во вселенной':'Драма','Вишнёвый сад':'Драма','Дядя Ваня':'Драма','Чайка':'Драма','Иван Васильевич меняет профессию':'Комедия','Шинель':'Драма','Три сестры':'Драма','Горе от ума':'Комедия','Ревизор':'Комедия','Мастер и Маргарита':'Драма','Утиная охота':'Драма',
+ 'Алые паруса':'Мюзикл','Снежная королева':'Сказка','Конёк-Горбунок':'Сказка','Маленький принц':'Сказка','Буратино':'Сказка','Золушка':'Сказка','Волшебник Изумрудного города':'Сказка','Приключения Простоквашино':'Детям','Щелкунчик для малышей':'Балет · детям','Три поросёнка':'Детям','Красная Шапочка':'Детям','Каштанка':'Детям'};
+const VEN=['Театр Вахтангова','Большой театр','Театр «Современник»','Михайловский','МДМ','Дом музыки','Театр сатиры','Театр кукол'];
+const MON=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+const MONG=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+const BLOB=['card-cool','card-warm','card-green','card-cool'];
+function build(sec){
+  const t=TITLES[sec],s=SECS[sec],out=[]; // [monthIndex, items]
+  const plan=[[5,4],[6,5],[7,0],[8,3]]; // июнь 4, июль 5, август 0, сентябрь 3
+  let k=0;
+  plan.forEach(([m,n])=>{const items=[];for(let i=0;i<n;i++){const title=t[k%t.length];const day=2+i*6+(k%3);const multi=(k%4===1);
+    const date=multi?`${day} — ${day+14<=28?day+14:28} ${MONG[m]}`:(k%5===3?`5 дат`:`${day} ${MONG[m]}`);
+    items.push({genre:GENRE[title]||(sec==='concert'?'Концерт':s.tags[0]),title,venue:VEN[(k*3)%VEN.length]+(multi?' · '+(2+k%2)+' даты':''),date,price:[1200,1800,2200,2500,3100,3500,4200][k%7]*1,blob:BLOB[k%4],day});k++}
+    items.sort((a,b)=>a.day-b.day); out.push([m,items])});
+  return out;
+}
+const st={theme:'dark',w:1440,sec:'show',state:'full',more:false};
+const fmt=n=>n.toLocaleString('ru-RU').replace(/,/g,' ')+' ₽';
+const pl=(n,a,b,c)=>n%10===1&&n%100!==11?a:(n%10>=2&&n%10<=4&&(n%100<12||n%100>14)?b:c);
+function card(e){return `<article class="event-card ${e.blob}"><div class="event-card-cover"><div class="cover-blob cover-blob-1"></div><div class="cover-blob cover-blob-2"></div><div class="cover-date"><div class="t-caption">${e.date}</div></div></div>
+ <div class="event-card-body"><div class="event-card-meta">${e.genre}</div><div class="event-card-title" title="${e.title}">${e.title}</div><div class="event-card-sub">${e.venue}</div>
+ <div class="event-card-footer"><div><span class="event-card-price-label">от</span><span class="event-card-price">${fmt(e.price)}</span></div><button class="btn btn-primary btn-sm"><span>Билеты</span></button></div></div></article>`}
+function skel(n){return Array.from({length:n},()=>`<div class="sk-card"><div class="skeleton a"></div><div class="b"><div class="skeleton" style="height:12px;width:40%"></div><div class="skeleton" style="height:20px;width:80%"></div><div class="skeleton" style="height:12px;width:60%"></div><div class="skeleton" style="height:28px;margin-top:14px"></div></div></div>`).join('')}
+function render(){
+  const s=SECS[st.sec],pad=Math.max(20,Math.min(56,st.w*0.032)),data=build(st.sec),total=data.reduce((a,[,i])=>a+i.length,0);
+  let feed='';
+  if(st.state==='loading'){
+    feed=`<div class="month"><div class="skeleton" style="height:28px;width:180px"></div></div><div class="grid" style="margin-top:20px">${skel(4)}</div>`;
+  } else if(st.state==='empty'){
+    feed=`<div class="empty-state" style="padding:72px 0"><div class="empty-title" style="font:500 1.8rem var(--f-thin)">В разделе пока нет событий</div><p class="empty-text" style="color:var(--n400);font-size:13px;max-width:380px;margin:12px auto 24px;line-height:1.6">Загляните в соседние разделы или посмотрите всю афишу.</p><button class="btn btn-primary btn-md"><span>Вся афиша</span></button></div>`;
+  } else {
+    data.forEach(([m,items],idx)=>{
+      if(!items.length){feed+=`<div class="month-empty"><span>${MON[m]} 2026</span><span>событий нет</span></div>`;return}
+      feed+=`<div class="${idx?'month-gap':''}"><div class="month"><h2>${MON[m]}<span class="y">${m===5||m>4?'2026':''}</span></h2><span class="cnt">${items.length} ${pl(items.length,'событие','события','событий')}</span></div><div class="grid">${items.map(card).join('')}</div></div>`;
+    });
+    feed+=`<div class="more" style="margin-top:40px"><button class="btn btn-ghost btn-md ${st.more?'is-loading':''}" id="more" ${st.more?'aria-busy="true"':''}><span>Показать ещё</span></button><span class="s">Показано ${total} из 38</span></div>`;
+  }
+  document.getElementById('root').innerHTML=`<div class="canvas" style="width:${st.w}px;--pad:${pad}px">
+    <header class="sec-head"><div class="glow" style="--g1:${s.g[0]};--g2:${s.g[1]}"></div>
+      <div class="crumbs"><a>Афиша</a> &nbsp;/&nbsp; ${s.t}</div>
+      <h1 class="sec-title">${s.t}</h1>
+      <div class="sec-meta"><b>38</b> событий · ближайшее — 2 июня</div></header>
+    <section class="feed">${feed}</section></div>`;
+}
+document.getElementById('root').addEventListener('click',async e=>{ if(e.target.closest('#more')){st.more=true;render();await new Promise(r=>setTimeout(r,1500));st.more=false;render()}});
+document.getElementById('bar').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;b.parentElement.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');
+  if(b.dataset.theme)document.getElementById('core').href=b.dataset.theme==='dark'?'../../../ds-core-r14.css':'../../../ds-core-r14-light.css';
+  if(b.dataset.w)st.w=+b.dataset.w;if(b.dataset.sec)st.sec=b.dataset.sec;if(b.dataset.state)st.state=b.dataset.state;render()});
+const q=new URLSearchParams(location.search);
+[['theme','theme'],['w','w'],['sec','sec'],['state','state']].forEach(([k,a])=>{if(q.get(k)){st[k]=k==='w'?+q.get(k):q.get(k);document.querySelectorAll(`[data-${a}]`).forEach(b=>b.setAttribute('aria-pressed',String(b.dataset[a]===String(st[k]))));if(k==='theme')document.getElementById('core').href=st.theme==='dark'?'../../../ds-core-r14.css':'../../../ds-core-r14-light.css'}});
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Лаборатория карточки — пустота под названием</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link id="core" rel="stylesheet" href="../../../ds-core-r14.css">
+<style>
+  body{margin:0;background:var(--ink);color:var(--n100);font-family:var(--font);-webkit-font-smoothing:antialiased}
+  .bar{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;padding:10px 20px;background:var(--n950);border-bottom:1px solid var(--n800);font-size:12px}
+  .bar b{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--n500);font-weight:500;margin-right:6px}
+  .bar button{background:transparent;border:1px solid var(--n800);color:var(--n300);padding:6px 10px;border-radius:2px;font:500 11px var(--font);cursor:pointer}
+  .bar button[aria-pressed=true]{background:var(--accent-ghost);border-color:var(--accent);color:var(--n100)}
+  .wrap{padding:24px 20px 80px}
+  .variant{margin:0 auto 56px}
+  .v-head{display:flex;gap:12px;align-items:baseline;margin-bottom:6px}
+  .v-head .n{font-family:var(--f-num);font-size:22px;color:var(--n500)}
+  .v-head h2{margin:0;font:500 22px var(--f-thin)}
+  .v-note{font-size:12px;color:var(--n400);margin:0 0 14px;max-width:760px;line-height:1.6}
+  /* Сцена всегда свёрстана в настоящую выбранную ширину; если окно уже — уменьшается масштабом, а не перестраивается */
+  .fit{overflow:hidden;margin:0 auto}
+  .stage{box-sizing:border-box;transform-origin:0 0}
+  .scale-note{font-size:11px;color:var(--n500)}
+  .metrics{margin-top:10px;font:11px/1.6 var(--font);color:var(--n400);display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:2px 16px}
+  .metrics span b{color:var(--n100);font-weight:600}
+  .metrics .bad b{color:var(--tag-o-fg)}
+  .evgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(256px,1fr));gap:var(--gap-fluid)}
+  .event-card-meta{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--n500)}
+  .event-card-footer .btn{white-space:nowrap}
+  .evgrid .event-card:hover{transform:none}
+
+  /* ───── V1 текущая R14: резерв двух строк (решение №23) — ничего не переопределяем ───── */
+
+  /* ───── V2 без резерва, свободное место уходит к разделителю ───── */
+  .v2 .event-card-title{min-height:0}
+
+  /* ───── V3 subgrid: строки названия/площадки/цены выровнены по ряду, без фикс. резерва ───── */
+  .v3 .evgrid,.v4 .evgrid{row-gap:0;column-gap:var(--gap-fluid)}
+  .v3 .event-card,.v4 .event-card{grid-row:span 5;display:grid;grid-template-rows:subgrid;row-gap:0;margin-bottom:var(--gap-fluid);transition:none}
+  .v3 .event-card-body,.v4 .event-card-body{grid-row:span 4;display:grid;grid-template-rows:subgrid;row-gap:10px;padding:16px;align-content:stretch}
+  .v3 .event-card-title,.v4 .event-card-title{min-height:0}
+  .v3 .event-card-footer,.v4 .event-card-footer{margin-top:0;align-self:end}
+
+  /* ───── V4 = V3, но по центру ───── */
+  .v4 .event-card-body{text-align:center}
+  .v4 .event-card-sub{text-overflow:ellipsis}
+  .v4 .event-card-footer{flex-direction:column;gap:6px;align-items:center;justify-content:center}
+  .v4 .event-card-footer .btn{display:none}
+
+  /* ───── V5 название на обложке ───── */
+  .v5 .event-card-cover{aspect-ratio:3/2.15}
+  .v5 .event-card-cover::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,color-mix(in srgb,var(--n950) 94%,transparent) 0%,color-mix(in srgb,var(--n950) 78%,transparent) 38%,transparent 72%);z-index:1}
+  .v5 .cover-ttl{position:absolute;left:16px;right:16px;bottom:16px;z-index:2}
+  .v5 .cover-ttl .event-card-title{min-height:0;font-size:1.3rem;-webkit-line-clamp:3;line-clamp:3}
+  .v5 .cover-ttl .cover-date{position:static;display:inline-block;margin-bottom:10px;background:transparent;border:0;padding:0;-webkit-backdrop-filter:none;backdrop-filter:none}
+  .v5 .event-card-body{padding-top:14px}
+  .v5 .event-card-title.in-body{display:none}
+
+  /* ───── V6 = V1 без резерва, карточка по высоте своего текста, ряд выровнен по верху ───── */
+  .v6 .event-card-title{min-height:0}
+  .v6 .evgrid{align-items:start}
+</style>
+</head>
+<body>
+<div class="bar" id="bar">
+  <span><b>Тема</b><button data-theme="dark" aria-pressed="true">Тёмная</button> <button data-theme="light" aria-pressed="false">Светлая</button></span>
+  <span><b>Ширина</b><button data-w="375" aria-pressed="false">375</button> <button data-w="768" aria-pressed="false">768</button> <button data-w="1440" aria-pressed="true">1440</button></span>
+  <span><b>Названия</b><button data-s="short" aria-pressed="false">Все в 1 строку</button> <button data-s="mix" aria-pressed="true">1 · 2 · 3 · 1</button> <button data-s="long" aria-pressed="false">Все 3+ строк</button></span>
+  <span><b>Показать</b><button data-v="all" aria-pressed="true">Все</button> <button data-v="1" aria-pressed="false">V1</button> <button data-v="2" aria-pressed="false">V2</button> <button data-v="3" aria-pressed="false">V3</button> <button data-v="4" aria-pressed="false">V4</button> <button data-v="5" aria-pressed="false">V5</button> <button data-v="6" aria-pressed="false">V6</button></span>
+  <span class="scale-note" id="scale"></span>
+</div>
+<div class="wrap" id="wrap"></div>
+
+<script>
+const SCEN = {
+  short: [
+    ['Классика','Вишнёвый сад','Театр Вахтангова','21 июня','2 200'],
+    ['Балет','Лебединое озеро','Большой театр','28 июня','3 500'],
+    ['Мюзикл','Алые паруса','МДМ · 5–28 июля','5 дат','1 800'],
+    ['Опера · 2 площадки','Травиата','Михайловский','12–16 июля','4 200'],
+  ],
+  mix: [
+    ['Классика','Вишнёвый сад','Театр Вахтангова','21 июня','2 200'],
+    ['Спектакль','Одни во вселенной: спектакль в двух действиях','Театр «Современник»','14 июня','2 500'],
+    ['Концерт','Квартет И + Моральный кодекс «Песни и письма мужчин среднего возраста»','Московский международный Дом музыки · Светлановский зал','30 июня','3 100'],
+    ['Мюзикл','Алые паруса','МДМ · 5–28 июля','5 дат','1 800'],
+  ],
+  long: [
+    ['Спектакль','Одни во вселенной: спектакль в двух действиях','Театр «Современник»','14 июня','2 500'],
+    ['Концерт','Квартет И + Моральный кодекс «Песни и письма мужчин среднего возраста»','Московский международный Дом музыки · Светлановский зал','30 июня','3 100'],
+    ['Детям','Приключения Простоквашино: большое новогоднее представление для всей семьи','Театр кукол имени Образцова','27 декабря','1 200'],
+    ['Классика','Иван Васильевич меняет профессию: комедия в трёх действиях','Театр сатиры','2 июля','2 900'],
+  ],
+};
+const BLOB = ['card-cool','card-warm','card-green','card-cool'];
+const VARS = [
+  ['1','Сейчас (R14): резерв двух строк','Решение №23: min-height на две строки. Под коротким названием остаётся пустая строка, даже когда во всём ряду названия в одну строку.'],
+  ['2','Без резерва, свободное место над разделителем','min-height снят. Карточки в ряду растягиваются по самой высокой, цена и кнопка прижаты к низу (margin-top:auto уже есть в ядре). Пустота переезжает из середины текста к линии футера.'],
+  ['3','Subgrid: общая сетка строк в ряду','Название, площадка и футер лежат на общих линиях ряда. Пустоты внутри блоков нет, ряд из одних коротких названий сжимается; различие высот видно только между строкой метки и названием.'],
+  ['4','Subgrid + центровка текста','То же, что V3, но тело карточки по центру. Проверка гипотезы «по левому краю — скучно».'],
+  ['5','Название на обложке','Название лежит на нижней части обложки; тело карточки — площадка, цена, кнопка. Длина названия не меняет высоту тела. Нужны реальные обложки: на блобах контраст проверен, на фото — нет.'],
+  ['6','Карточка по высоте текста, ряд по верхнему краю','Вёрстка как в V1, но резерва нет и карточки не растягиваются: короткое название — карточка короче. Пустоты внутри нет, зато нижний край ряда рваный, цены и кнопки в соседних карточках стоят на разной высоте.'],
+];
+function card(v,d,i){
+  const [genre,title,venue,date,price]=d;
+  const cover = `<div class="event-card-cover"><div class="cover-blob cover-blob-1"></div><div class="cover-blob cover-blob-2"></div>`;
+  const dateEl = `<div class="cover-date"><div class="t-caption">${date}</div></div>`;
+  const footer = `<div class="event-card-footer"><div><span class="event-card-price-label">от</span><span class="event-card-price">${price} ₽</span></div><button class="btn btn-primary btn-sm">Билеты</button></div>`;
+  if(v==='5') return `<article class="event-card ${BLOB[i]}">${cover}<div class="cover-ttl">${dateEl}<div class="event-card-title">${title}</div></div></div>
+    <div class="event-card-body"><div class="event-card-meta">${genre}</div><div class="event-card-sub">${venue}</div>${footer}</div></article>`;
+  return `<article class="event-card ${BLOB[i]}">${cover}${dateEl}</div>
+    <div class="event-card-body"><div class="event-card-meta">${genre}</div><div class="event-card-title">${title}</div><div class="event-card-sub">${venue}</div>${footer}</div></article>`;
+}
+const st={theme:'dark',w:1440,s:'mix',v:'all'};
+function render(){
+  const wrap=document.getElementById('wrap');
+  // те же формулы, что --pad-fluid / --gap-fluid в ядре, но от выбранной ширины, а не от окна
+  const pad = Math.max(20, Math.min(56, st.w*0.032));
+  const gap = Math.max(16, Math.min(32, st.w*0.016));
+  wrap.innerHTML = VARS.filter(x=>st.v==='all'||x[0]===st.v).map(([n,t,note])=>`
+    <section class="variant v${n}">
+      <div class="v-head"><span class="n">V${n}</span><h2>${t}</h2></div>
+      <p class="v-note">${note}</p>
+      <div class="fit"><div class="stage" style="width:${st.w}px;padding:0 ${pad}px;--gap-fluid:${gap}px" data-v="${n}">
+        <div class="evgrid">${SCEN[st.s].map((d,i)=>card(n,d,i)).join('')}</div>
+      </div></div>
+      <div class="metrics" id="m${n}"></div>
+    </section>`).join('');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{fit();measure()}));
+}
+let K=1;
+function fit(){
+  const avail=document.getElementById('wrap').clientWidth-40;
+  K=Math.min(1, avail/st.w);
+  document.querySelectorAll('.fit').forEach(f=>{const s=f.firstElementChild;
+    s.style.transform=K<1?`scale(${K})`:''; f.style.width=st.w*K+'px'; f.style.height=s.offsetHeight*K+'px'});
+  document.getElementById('scale').textContent = K<1 ? `Окно уже ${st.w}px — макет показан в масштабе ${Math.round(K*100)}%, цифры ниже в настоящих px` : '';
+}
+function measure(){
+  document.querySelectorAll('.stage').forEach(stage=>{
+    const n=stage.dataset.v, cards=[...stage.querySelectorAll('.event-card')];
+    // группируем по строкам сетки
+    const rows={}; cards.forEach(c=>{const y=Math.round(c.getBoundingClientRect().top+scrollY); (rows[y]=rows[y]||[]).push(c)});
+    const rk=Object.keys(rows);
+    let deadMax=0, deadSum=0, cnt=0, hs=[], priceSpread=0;
+    rk.forEach(k=>{
+      const ys=[];
+      rows[k].forEach(c=>{
+        const body=c.querySelector('.event-card-body'), t=c.querySelector('.event-card-title'), sub=c.querySelector('.event-card-sub'), f=c.querySelector('.event-card-footer');
+        // высота текста названия в строках
+        const lh=parseFloat(getComputedStyle(t).lineHeight)||0;
+        // мёртвая зона = расстояние от низа последней строки текста до следующего блока (sub)
+        const range=document.createRange(); range.selectNodeContents(t);
+        const rects=[...range.getClientRects()]; const textBottom=Math.max(...rects.map(r=>r.bottom));
+        let next = n==='5' ? sub : sub;
+        const gapTitleSub = n==='5' ? 0 : (next.getBoundingClientRect().top - textBottom)/K;
+        const gapSubFoot = (f.getBoundingClientRect().top - sub.getBoundingClientRect().bottom)/K;
+        const dead = Math.max(0, gapTitleSub-10) + Math.max(0, gapSubFoot-10);
+        deadMax=Math.max(deadMax,dead); deadSum+=dead; cnt++;
+        hs.push(Math.round(c.getBoundingClientRect().height/K));
+        ys.push(Math.round(c.querySelector('.event-card-price').getBoundingClientRect().top - c.getBoundingClientRect().top));
+      });
+      priceSpread=Math.max(priceSpread, Math.max(...ys)-Math.min(...ys));
+    });
+    const el=document.getElementById('m'+n);
+    const unalignedPrice = (()=>{let m=0;rk.forEach(k=>{const bs=rows[k].map(c=>Math.round(c.querySelector('.event-card-price').getBoundingClientRect().top));m=Math.max(m,Math.max(...bs)-Math.min(...bs))});return Math.round(m/K)})();
+    el.innerHTML = `<span><b>${Math.min(...hs)}–${Math.max(...hs)} px</b> высота карточки</span>
+      <span class="${deadMax>14?'bad':''}"><b>${Math.round(deadMax)} px</b> пустота внутри, макс.</span>
+      <span class="${deadSum/cnt>14?'bad':''}"><b>${Math.round(deadSum/cnt)} px</b> пустота внутри, ср.</span>
+      <span class="${unalignedPrice>1?'bad':''}"><b>${unalignedPrice} px</b> расхождение цен по ряду</span>
+      <span><b>${rk.length}</b> ряд(а) × ${Math.round(cards.length/rk.length)} кол.</span>`;
+  });
+}
+document.getElementById('bar').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  const g=b.parentElement; g.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false')); b.setAttribute('aria-pressed','true');
+  if(b.dataset.theme){st.theme=b.dataset.theme; document.getElementById('core').href = b.dataset.theme==='dark'?'../../../ds-core-r14.css':'../../../ds-core-r14-light.css';}
+  if(b.dataset.w) st.w=+b.dataset.w;
+  if(b.dataset.s) st.s=b.dataset.s;
+  if(b.dataset.v) st.v=b.dataset.v;
+  render();
+});
+// параметры из адреса: ?theme=light&w=375&s=long&v=3
+const q=new URLSearchParams(location.search);
+['theme','w','s','v'].forEach(k=>{ if(q.get(k)){ st[k]= k==='w'?+q.get(k):q.get(k);
+  document.querySelectorAll(`[data-${k==='theme'?'theme':k}]`).forEach(b=>b.setAttribute('aria-pressed', String(b.dataset[k]===String(st[k]))));
+  if(k==='theme') document.getElementById('core').href = st.theme==='dark'?'../../../ds-core-r14.css':'../../../ds-core-r14-light.css';}});
+document.fonts.ready.then(render); render();
+let rz; addEventListener('resize',()=>{clearTimeout(rz); rz=setTimeout(()=>{fit();measure()},80)});
+</script>
+</body>
+</html>
