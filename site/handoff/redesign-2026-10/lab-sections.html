@@ -5,7 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Лаборатория страниц разделов</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link id="core" rel="stylesheet" href="../../../ds-core-r14.css">
+<script>/* Стенд открыт вне репозитория (например, из «Загрузок») — ядро берём с GitHub Pages */
+var CORE_BASE='../../../',CORE_PAGES='https://hitch-npc.github.io/tts-design-system/';
+function coreFallback(l){if(CORE_BASE===CORE_PAGES)return;CORE_BASE=CORE_PAGES;l.href=CORE_PAGES+l.getAttribute('href').split('/').pop()}</script>
+<link id="core" rel="stylesheet" href="../../../ds-core-r14.css" onerror="coreFallback(this)">
 <style>
 body{margin:0;background:var(--ink);color:var(--n100);font-family:var(--font);-webkit-font-smoothing:antialiased}
 .bar{position:sticky;top:0;z-index:60;display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;padding:10px 20px;background:var(--n950);border-bottom:1px solid var(--n800);font-size:12px}
@@ -121,10 +124,10 @@ function render(){
 }
 document.getElementById('root').addEventListener('click',async e=>{ if(e.target.closest('#more')){st.more=true;render();await new Promise(r=>setTimeout(r,1500));st.more=false;render()}});
 document.getElementById('bar').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;b.parentElement.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');
-  if(b.dataset.theme)document.getElementById('core').href=b.dataset.theme==='dark'?'../../../ds-core-r14.css':'../../../ds-core-r14-light.css';
+  if(b.dataset.theme)document.getElementById('core').href=b.dataset.theme==='dark'?CORE_BASE+'ds-core-r14.css':CORE_BASE+'ds-core-r14-light.css';
   if(b.dataset.w)st.w=+b.dataset.w;if(b.dataset.sec)st.sec=b.dataset.sec;if(b.dataset.state)st.state=b.dataset.state;render()});
 const q=new URLSearchParams(location.search);
-[['theme','theme'],['w','w'],['sec','sec'],['state','state']].forEach(([k,a])=>{if(q.get(k)){st[k]=k==='w'?+q.get(k):q.get(k);document.querySelectorAll(`[data-${a}]`).forEach(b=>b.setAttribute('aria-pressed',String(b.dataset[a]===String(st[k]))));if(k==='theme')document.getElementById('core').href=st.theme==='dark'?'../../../ds-core-r14.css':'../../../ds-core-r14-light.css'}});
+[['theme','theme'],['w','w'],['sec','sec'],['state','state']].forEach(([k,a])=>{if(q.get(k)){st[k]=k==='w'?+q.get(k):q.get(k);document.querySelectorAll(`[data-${a}]`).forEach(b=>b.setAttribute('aria-pressed',String(b.dataset[a]===String(st[k]))));if(k==='theme')document.getElementById('core').href=st.theme==='dark'?CORE_BASE+'ds-core-r14.css':CORE_BASE+'ds-core-r14-light.css'}});
 render();
 </script>
 </body>

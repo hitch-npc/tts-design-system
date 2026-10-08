@@ -5,7 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Лаборатория лоадеров — схема зала</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link id="core" rel="stylesheet" href="../../../ds-core-r14.css">
+<script>/* Стенд открыт вне репозитория (например, из «Загрузок») — ядро берём с GitHub Pages */
+var CORE_BASE='../../../',CORE_PAGES='https://hitch-npc.github.io/tts-design-system/';
+function coreFallback(l){if(CORE_BASE===CORE_PAGES)return;CORE_BASE=CORE_PAGES;l.href=CORE_PAGES+l.getAttribute('href').split('/').pop()}</script>
+<link id="core" rel="stylesheet" href="../../../ds-core-r14.css" onerror="coreFallback(this)">
 <style>
 /* ═════════ ПРЕДЛАГАЕМЫЕ ДОБАВКИ В ЯДРО (все цвета — токены) ═════════ */
 @keyframes tts-spin{to{transform:rotate(360deg)}}
@@ -179,9 +182,9 @@ document.getElementById('hall').addEventListener('click',async e=>{
 });
 document.getElementById('reload').onclick=async()=>{ st.loading=true; render(); await sleep(Math.max(st.lat,900)); st.loading=false; render(); };
 document.getElementById('bar').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;b.parentElement.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');
-  if(b.dataset.theme) document.getElementById('core').href=b.dataset.theme==='dark'?'../../../ds-core-r14.css':'../../../ds-core-r14-light.css';
+  if(b.dataset.theme) document.getElementById('core').href=b.dataset.theme==='dark'?CORE_BASE+'ds-core-r14.css':CORE_BASE+'ds-core-r14-light.css';
   if(b.dataset.lat) st.lat=+b.dataset.lat; if(b.dataset.out) st.out=b.dataset.out; });
-const q=new URLSearchParams(location.search); if(q.get('theme')==='light'){document.getElementById('core').href='../../../ds-core-r14-light.css';document.querySelectorAll('[data-theme]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.theme==='light')))}
+const q=new URLSearchParams(location.search); if(q.get('theme')==='light'){document.getElementById('core').href=CORE_BASE+'ds-core-r14-light.css';document.querySelectorAll('[data-theme]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.theme==='light')))}
 render();
 </script>
 </body>
