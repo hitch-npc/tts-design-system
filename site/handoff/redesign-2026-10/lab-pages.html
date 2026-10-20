@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Лаборатория служебных страниц</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script>/* Стенд открыт вне репозитория (например, из «Загрузок») — ядро берём с GitHub Pages */
+var CORE_BASE='../../../',CORE_PAGES='https://hitch-npc.github.io/tts-design-system/';
+function coreFallback(l){if(CORE_BASE===CORE_PAGES)return;CORE_BASE=CORE_PAGES;l.href=CORE_PAGES+l.getAttribute('href').split('/').pop()}</script>
+<link id="core" rel="stylesheet" href="../../../ds-core-r14.css" onerror="coreFallback(this)">
+<style>
+body{margin:0;background:var(--ink);color:var(--n100);font-family:var(--font);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+.bar{position:sticky;top:0;z-index:60;display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;padding:10px 20px;background:var(--n950);border-bottom:1px solid var(--n800);font-size:12px}
+.bar b{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--n500);font-weight:500;margin-right:6px}
+.bar button{background:transparent;border:1px solid var(--n800);color:var(--n300);padding:6px 10px;border-radius:2px;font:500 11px var(--font);cursor:pointer}
+.bar button[aria-pressed=true]{background:var(--accent-ghost);border-color:var(--accent);color:var(--n100)}
+.bar .sub[hidden]{display:none}
+.canvas{margin:24px auto 80px;max-width:100%;border:1px solid var(--n800);background:var(--ink);position:relative;overflow:clip}
+.note-lab{max-width:1100px;margin:0 auto 24px;font-size:12px;color:var(--n400);line-height:1.7;padding:0 20px}
+.note-lab b{color:var(--n200)}
+
+/* Шапка сайта — как в редизайне v2 */
+.site-nav{display:flex;align-items:center;gap:24px;height:64px;padding:0 var(--pad);background:var(--n950);border-bottom:1px solid var(--n800)}
+.site-nav img{height:28px;width:auto;display:block}
+.site-nav .links{display:flex;gap:4px;flex:1}
+.site-nav .search{width:300px;height:36px;border:1px solid var(--n800);border-radius:2px;display:flex;align-items:center;gap:8px;padding:0 12px;font-size:12px;color:var(--n600)}
+.site-nav .search.on{border-color:var(--accent-border);color:var(--n100)}
+.site-nav .city{height:36px;padding:0 12px;border:1px solid var(--n800);border-radius:2px;display:flex;align-items:center;font-size:12px;color:var(--n200)}
+.is-m .site-nav{height:56px;gap:12px}
+.is-m .site-nav .links,.is-m .site-nav .search,.is-m .site-nav .city{display:none}
+.burger{display:none;margin-left:auto;width:36px;height:36px;align-items:center;justify-content:center;color:var(--n200)}
+.is-m .burger{display:flex}
+.foot-strip{height:56px;border-top:1px solid var(--n800);background:var(--n950)}
+
+/* ───── ПРЕДЛАГАЕМЫЕ КОМПОНЕНТЫ ───── */
+.sec-head{padding:40px var(--pad) 24px}
+.is-m .sec-head{padding:24px var(--pad) 16px}
+.crumbs{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--n500);margin-bottom:16px}
+.crumbs a{color:var(--n400);text-decoration:none}
+.sec-title{font:500 clamp(2.2rem,5vw,3.6rem)/1.05 var(--f-thin);margin:0 0 10px}
+.sec-meta{font-size:12px;color:var(--n400)}
+.sec-meta b{color:var(--n100);font-weight:600}
+
+/* Поиск: тот же порядок, что в подсказках, — события, затем площадки */
+.m-search{display:none}
+.is-m .m-search{display:flex;align-items:center;gap:8px;margin:0 var(--pad) 8px;height:44px;padding:0 12px;border:1px solid var(--accent-border);border-radius:2px;background:var(--n950);font-size:14px;color:var(--n100)}
+.q{color:var(--n100)}
+.fix{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline;font-size:13px;color:var(--n400);margin-top:10px}
+.fix b{color:var(--n100);font-weight:600}
+.lnk{background:none;border:0;padding:0;font:500 13px var(--font);color:var(--n100);text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:3px;cursor:pointer}
+.res{padding:8px var(--pad) 48px;display:flex;flex-direction:column;gap:32px}
+.grp-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--n800);margin-bottom:20px}
+.grp-h h2{margin:0;font:500 1.6rem/1 var(--f-thin)}
+.grp-h .cnt{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--n500)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--card-min),1fr));gap:var(--gap-fluid,16px)}
+.grid .event-card:hover{transform:none}
+.event-card-meta{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--n500)}
+.event-card-title mark,.v-name mark{background:none;color:var(--n100)}
+.event-card-title,.v-name{color:var(--n400)}
+.is-m .grid{grid-template-columns:1fr;gap:10px}
+.v-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:var(--gap-fluid,16px)}
+.v-card{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px 16px;border:1px solid var(--n800);border-radius:2px;background:var(--n950)}
+.v-logo{width:48px;height:48px;border:1px solid var(--n800);border-radius:2px;display:flex;align-items:center;justify-content:center;font:400 1.1rem var(--f-head);color:var(--n200);background:var(--n900)}
+.v-name{font:400 1.05rem/1.3 var(--f-head)}
+.v-sub{font-size:12px;color:var(--n500)}
+.v-chev{color:var(--n500)}
+.empty{padding:72px var(--pad) 96px;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+.empty .t{font:500 clamp(1.8rem,4vw,2.4rem)/1.1 var(--f-thin);margin:0}
+.empty p{margin:0;color:var(--n400);font-size:14px;max-width:420px;line-height:1.6}
+.sk-card{border:1px solid var(--n800);background:var(--n950);border-radius:2px;overflow:hidden}
+.sk-card .a{aspect-ratio:3/2}.sk-card .b{padding:16px;display:flex;flex-direction:column;gap:10px}
+
+/* 404: один шаблон, четыре заголовка прода, одна кнопка */
+.nf{position:relative;min-height:560px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:64px var(--pad);text-align:center;overflow:hidden}
+.nf .glow{position:absolute;left:50%;top:50%;width:min(560px,90%);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;filter:blur(80px);opacity:.8;background:radial-gradient(circle,var(--blob-core) 0%,var(--blob-mid) 55%,transparent 75%);pointer-events:none}
+.nf > *:not(.glow){position:relative}
+.nf .code{font:400 clamp(5rem,16vw,9rem)/.9 var(--f-num);color:var(--n100);letter-spacing:.02em}
+.nf h1{margin:0;font:500 clamp(1.8rem,4vw,2.6rem)/1.1 var(--f-thin)}
+.nf .btn{margin-top:8px}
+
+/* Документ: в проде — PDF во фрейме; оставляем, даём странице шапку и название */
+.doc{padding:0 var(--pad) 48px}
+.doc-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.is-m .doc-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 calc(-1*var(--pad)) 16px;padding:0 var(--pad)}
+.pdf{border:1px solid var(--n800);border-radius:2px;background:var(--n900);height:720px;overflow:hidden;display:flex;flex-direction:column}
+.pdf-bar{height:40px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid var(--n800);background:var(--n950);font-size:11px;color:var(--n500)}
+.pdf-page{margin:24px auto;width:min(620px,calc(100% - 32px));flex:1;background:var(--premium-bg);border-radius:2px;padding:40px 44px;display:flex;flex-direction:column;gap:10px;box-sizing:border-box}
+.pdf-page span{display:block;height:7px;border-radius:1px;background:color-mix(in srgb,var(--premium-ink) 22%,transparent)}
+.pdf-page span.h{height:11px;width:55%;background:color-mix(in srgb,var(--premium-ink) 55%,transparent);margin:6px 0 8px}
+.is-m .pdf{height:560px}
+.is-m .pdf-page{padding:24px 20px}
+</style>
+</head>
+<body>
+<div class="bar" id="bar">
+  <span><b>Тема</b><button data-theme="dark" aria-pressed="true">Тёмная</button> <button data-theme="light" aria-pressed="false">Светлая</button></span>
+  <span><b>Ширина</b><button data-w="375" aria-pressed="false">375</button> <button data-w="768" aria-pressed="false">768</button> <button data-w="1440" aria-pressed="true">1440</button></span>
+  <span><b>Страница</b><button data-page="search" aria-pressed="true">Поиск</button> <button data-page="nf" aria-pressed="false">404</button> <button data-page="doc" aria-pressed="false">Документ</button></span>
+  <span class="sub" data-for="search"><b>Состояние</b><button data-s="full" aria-pressed="true">Результаты</button> <button data-s="fix" aria-pressed="false">Латиница</button> <button data-s="loading" aria-pressed="false">Загрузка</button> <button data-s="none" aria-pressed="false">Ничего</button></span>
+  <span class="sub" data-for="nf" hidden><b>Вариант</b><button data-n="page" aria-pressed="true">Страница</button> <button data-n="event" aria-pressed="false">Мероприятие</button> <button data-n="venue" aria-pressed="false">Театр</button> <button data-n="list" aria-pressed="false">Мероприятия</button></span>
+  <span class="sub" data-for="doc" hidden><b>Документ</b><button data-d="offer" aria-pressed="true">Оферта</button> <button data-d="pd" aria-pressed="false">Перс. данные</button> <button data-d="policy" aria-pressed="false">Политика</button> <button data-d="ads" aria-pressed="false">Рассылка</button></span>
+</div>
+<div class="note-lab"><b>Что смотреть.</b> Три служебных шаблона, которые есть в проде, но не были нарисованы в редизайне. <b>Поиск</b> (<code>/search?query=</code>): в проде — заголовок «Результаты по запросу:» и карточки; в редизайне — тот же состав на сетке афиши, группы «События» и «Площадки» и совпадение цветом, как в подсказках поиска (решение №19). Пустой результат и исправление латиницы — тексты из подсказок редизайна. <b>404</b>: в проде один шаблон с четырьмя заголовками («Страница», «Мероприятие», «Театр», «Мероприятия не найдены») и кнопкой «Перейти на главную» — так и оставлено, капс заменён обычным регистром (решение №6). <b>Документы</b>: в проде четыре PDF во фрейме — оставлено, странице добавлены шапка сайта, крошки и название. Открываются, как в проде, из футера.</div>
+<div id="root"></div>
+
+<script>
+const st={theme:'dark',w:1440,page:'search',s:'full',n:'page',d:'offer'};
+const ICON_S='<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5"/></svg>';
+const fmt=n=>n.toLocaleString('ru-RU').replace(/,/g,' ')+' ₽';
+const nav=(q)=>`<header class="site-nav"><img src="../../../tts-logo.svg" onerror="this.onerror=null;this.src=CORE_PAGES+'tts-logo.svg'" alt="Ticket to Show"><nav class="links">${['Афиша','Площадки','Партнёрам','Отзывы'].map(t=>`<a class="nav-desktop-link">${t}</a>`).join('')}</nav><div class="search${q?' on':''}">${ICON_S}${q||'Театр, спектакль, артист…'}</div><div class="city">Москва</div><div class="burger"><svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M1 1h18M1 7h18M1 13h18"/></svg></div></header>`;
+/* Совпадение — цветом (--n100 на --n400), не жирным */
+const hl=(t,q)=>{const i=t.toLowerCase().indexOf(q.toLowerCase());return i<0?t:t.slice(0,i)+'<mark>'+t.slice(i,i+q.length)+'</mark>'+t.slice(i+q.length)};
+const EV=[
+ {g:'Спектакль · 16+',t:'Психопаты',v:'Театр «Маска»',d:'3 даты · 2 площадки',p:2500,b:'card-cool'},
+ {g:'Спектакль · 16+',t:'Папа',v:'Театриум на Серпуховке',d:'2 даты · 2 площадки',p:3500,b:'card-cool'},
+ {g:'Концерт · 12+',t:'Дмитрий Маликов «PianomaniЯ»',v:'Дом музыки',d:'4 ноября · 2 сеанса',p:3000,b:'card-warm'},
+];
+const card=(e,q)=>`<article class="event-card ${e.b}"><div class="event-card-cover"><div class="cover-blob cover-blob-1"></div><div class="cover-blob cover-blob-2"></div><div class="cover-date"><div class="t-caption">${e.d}</div></div></div><div class="event-card-body"><div class="event-card-meta">${e.g}</div><div class="event-card-title">${hl(e.t,q)}</div><div class="event-card-sub">${e.v}</div><div class="event-card-footer"><div><span class="event-card-price-label">от</span><span class="event-card-price">${fmt(e.p)}</span></div><button class="btn btn-primary btn-sm"><span>Билеты</span></button></div></div></article>`;
+
+function search(){
+  const fix=st.s==='fix',q=fix?'пс':(st.s==='none'?'Пхъ':'п'),shown=fix?'Gc':q;
+  const list=st.s==='full'?EV:fix?EV.slice(0,1):[];
+  let body;
+  if(st.s==='loading') body=`<div class="grid">${Array.from({length:4},()=>`<div class="sk-card"><div class="skeleton a"></div><div class="b"><div class="skeleton" style="height:12px;width:40%"></div><div class="skeleton" style="height:20px;width:80%"></div><div class="skeleton" style="height:28px;margin-top:14px"></div></div></div>`).join('')}</div>`;
+  else if(!list.length) return `${nav(shown)}<div class="m-search">${ICON_S}${shown}</div><div class="empty"><h1 class="t">По запросу «${shown}» ничего не нашлось</h1><p>Проверьте написание или посмотрите всю афишу.</p><button class="btn btn-primary btn-md"><span>Вся афиша</span></button></div>`;
+  else body=`<section><div class="grp-h"><h2>События</h2><span class="cnt">${list.length} ${list.length===1?'событие':'события'}</span></div><div class="grid">${list.map(e=>card(e,q)).join('')}</div></section>
+    ${fix?'':`<section><div class="grp-h"><h2>Площадки</h2><span class="cnt">1 площадка</span></div><div class="v-row"><div class="v-card"><span class="v-logo" aria-hidden="true">П</span><span><span class="v-name" style="display:block">${hl('Пространство «Пульс»',q)}</span><span class="v-sub">4 события</span></span><span class="v-chev">›</span></div></div></section>`}`;
+  const total=list.length+(fix?0:1);
+  return `${nav(shown)}<div class="m-search">${ICON_S}${shown}</div><header class="sec-head"><div class="crumbs"><a>Афиша</a> &nbsp;/&nbsp; Поиск</div><h1 class="sec-title">Результаты по запросу «<span class="q">${shown}</span>»</h1>
+    ${st.s==='loading'?'<div class="sec-meta">Ищем…</div>':`<div class="sec-meta"><b>${total}</b> ${total===1?'результат':'результата'}</div>`}
+    ${fix?`<div class="fix">Показаны результаты для <b>«пс»</b> · <button class="lnk">искать «Gc»</button></div>`:''}</header><div class="res">${body}</div>`;
+}
+const NF={page:'Страница не найдена',event:'Мероприятие не найдено',venue:'Театр не найден',list:'Мероприятия не найдены'};
+const nf=()=>`${nav('')}<div class="nf"><div class="glow"></div><div class="code">404</div><h1>${NF[st.n]}</h1><button class="btn btn-primary btn-md"><span>Перейти на главную</span></button></div>`;
+const DOC={offer:'Публичная оферта',pd:'Обработка персональных данных',policy:'Политика конфиденциальности',ads:'Согласие на рекламную рассылку'};
+const FILE={offer:'publicOffer.pdf',pd:'processingPersData.pdf',policy:'privacyPolicy.pdf',ads:'ConsentToReceiveAdvertisingMailings.pdf'};
+function doc(){
+  const lines=[...Array(22)].map((_,i)=>i===0||i===9?'<span class="h"></span>':`<span style="width:${70+((i*37)%30)}%"></span>`).join('');
+  return `${nav('')}<header class="sec-head"><div class="crumbs"><a>Афиша</a> &nbsp;/&nbsp; Документы</div><h1 class="sec-title">${DOC[st.d]}</h1></header>
+   <div class="doc"><div class="pdf" role="img" aria-label="PDF: ${DOC[st.d]}"><div class="pdf-bar"><span>${FILE[st.d]}</span><span>1 / 12</span></div><div class="pdf-page">${lines}</div></div></div>`;
+}
+function render(){
+  const pad=Math.max(18,Math.min(56,st.w*0.032)),m=st.w<768;
+  const body=st.page==='search'?search():st.page==='nf'?nf():doc();
+  document.getElementById('root').innerHTML=`<div class="canvas${m?' is-m':''}" style="width:${st.w}px;--pad:${pad}px">${body}<div class="foot-strip" aria-hidden="true"></div></div>`;
+  document.querySelectorAll('#bar .sub').forEach(x=>x.hidden=x.dataset.for!==st.page);
+}
+function mark(k,v){document.querySelectorAll(`#bar [data-${k}]`).forEach(b=>b.setAttribute('aria-pressed',String(b.dataset[k]===String(v))))}
+document.getElementById('bar').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;b.parentElement.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');
+  if(b.dataset.theme)document.getElementById('core').href=b.dataset.theme==='dark'?CORE_BASE+'ds-core-r14.css':CORE_BASE+'ds-core-r14-light.css';
+  ['w','page','s','n','d'].forEach(k=>{if(b.dataset[k]!==undefined)st[k]=k==='w'?+b.dataset[k]:b.dataset[k]});render()});
+const q=new URLSearchParams(location.search);
+['theme','w','page','s','n','d'].forEach(k=>{if(q.get(k)!==null){st[k]=k==='w'?+q.get(k):q.get(k);mark(k,st[k]);if(k==='theme')document.getElementById('core').href=st.theme==='dark'?CORE_BASE+'ds-core-r14.css':CORE_BASE+'ds-core-r14-light.css'}});
+render();
+</script>
+</body>
+</html>

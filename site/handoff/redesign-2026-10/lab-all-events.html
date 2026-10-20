@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Лаборатория страницы «Все события»</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script>/* Стенд открыт вне репозитория (например, из «Загрузок») — ядро берём с GitHub Pages */
+var CORE_BASE='../../../',CORE_PAGES='https://hitch-npc.github.io/tts-design-system/';
+function coreFallback(l){if(CORE_BASE===CORE_PAGES)return;CORE_BASE=CORE_PAGES;l.href=CORE_PAGES+l.getAttribute('href').split('/').pop()}</script>
+<link id="core" rel="stylesheet" href="../../../ds-core-r14.css" onerror="coreFallback(this)">
+<style>
+body{margin:0;background:var(--ink);color:var(--n100);font-family:var(--font);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+.bar{position:sticky;top:0;z-index:60;display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;padding:10px 20px;background:var(--n950);border-bottom:1px solid var(--n800);font-size:12px}
+.bar b{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--n500);font-weight:500;margin-right:6px}
+.bar button{background:transparent;border:1px solid var(--n800);color:var(--n300);padding:6px 10px;border-radius:2px;font:500 11px var(--font);cursor:pointer}
+.bar button[aria-pressed=true]{background:var(--accent-ghost);border-color:var(--accent);color:var(--n100)}
+/* overflow: clip, а не hidden — иначе липкие панели внутри макета не прилипают */
+.canvas{margin:24px auto 80px;max-width:100%;border:1px solid var(--n800);background:var(--ink);position:relative;overflow:clip}
+.note-lab{max-width:1100px;margin:0 auto 24px;font-size:12px;color:var(--n400);line-height:1.7;padding:0 20px}
+.note-lab b{color:var(--n200)}
+
+/* Шапка сайта — липкая; в стенде её верх сдвинут на высоту панели стенда (--lab) */
+.site-nav{position:sticky;top:var(--lab);z-index:30;display:flex;align-items:center;gap:24px;height:64px;padding:0 var(--pad);background:var(--n950);border-bottom:1px solid var(--n800)}
+.site-nav img{height:28px;width:auto;display:block}
+.site-nav .links{display:flex;gap:4px;flex:1}
+.site-nav .search{width:280px;height:36px;border:1px solid var(--n800);border-radius:2px;display:flex;align-items:center;gap:8px;padding:0 12px;font-size:12px;color:var(--n600)}
+.site-nav .city{height:36px;padding:0 12px;border:1px solid var(--n800);border-radius:2px;display:flex;align-items:center;font-size:12px;color:var(--n200)}
+.is-m .site-nav{height:56px;gap:12px}
+.is-m .site-nav .links,.is-m .site-nav .search,.is-m .site-nav .city{display:none}
+.burger{display:none;margin-left:auto;width:36px;height:36px;align-items:center;justify-content:center;color:var(--n200)}
+.is-m .burger{display:flex}
+
+/* ───── ПРЕДЛАГАЕМЫЕ КОМПОНЕНТЫ ───── */
+.sec-head{padding:40px var(--pad) 28px}
+.is-m .sec-head{padding:24px var(--pad) 16px}
+.crumbs{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--n500);margin-bottom:16px}
+.crumbs a{color:var(--n400);text-decoration:none}
+.sec-title{font:500 clamp(2.4rem,6vw,4.4rem)/1.02 var(--f-thin);margin:0 0 12px}
+.sec-meta{font-size:12px;color:var(--n400)}
+.sec-meta b{color:var(--n100);font-weight:600}
+
+/* Панель фильтров — прилипает под шапкой сайта */
+.fbar{position:sticky;top:calc(var(--lab) + 64px);z-index:20;background:var(--ink);border-top:1px solid var(--n800);border-bottom:1px solid var(--n800)}
+.is-m .fbar{top:calc(var(--lab) + 56px)}
+.fbar-in{display:flex;align-items:center;gap:12px;padding:12px var(--pad);flex-wrap:wrap}
+.cats{display:flex;gap:8px;flex-wrap:wrap}
+.cat{display:inline-flex;align-items:center;gap:8px}
+.dot{width:7px;height:7px;border-radius:50%;flex:none;background:var(--c,var(--n500))}
+.sep{width:1px;align-self:stretch;background:var(--n800);margin:0 4px}
+.drops{display:flex;gap:8px;flex-wrap:wrap}
+.drop{position:relative}
+.fbtn{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;border:1px solid var(--n800);border-radius:2px;background:var(--n950);color:var(--n200);font:500 12px var(--font);cursor:pointer;white-space:nowrap}
+.fbtn:hover{border-color:var(--n600);color:var(--n100)}
+.fbtn[aria-expanded=true],.fbtn.on{border-color:var(--accent);background:var(--accent-ghost);color:var(--n100)}
+.fbtn svg{width:10px;height:10px;color:var(--n500)}
+.fbtn .v{color:var(--n100)}
+.fcount{margin-left:auto;display:flex;align-items:center;gap:14px;font-size:12px;color:var(--n400);white-space:nowrap}
+.fcount b{color:var(--n100);font-weight:600}
+.link{background:none;border:0;padding:0;font:500 12px var(--font);color:var(--n100);text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:3px;cursor:pointer}
+.applied{display:flex;gap:8px;flex-wrap:wrap;padding:0 var(--pad) 12px}
+.achip{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 6px 0 10px;border:1px solid var(--n800);border-radius:2px;font-size:11px;color:var(--n200);background:var(--n950)}
+.achip button{width:18px;height:18px;border:0;background:none;color:var(--n500);cursor:pointer;font-size:14px;line-height:1;padding:0}
+
+/* Выпадающее окно фильтра — под кнопкой, отступ 6px, как окно фильтров поиска (решение №18) */
+.pop{position:absolute;top:calc(100% + 6px);left:0;z-index:25;width:340px;max-width:calc(100vw - 32px);background:var(--n950);border:1px solid var(--n800);border-radius:2px;box-shadow:0 16px 40px var(--shadow-color);padding:16px;display:flex;flex-direction:column;gap:14px}
+.pop.wide{width:420px}
+.pop-h{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--n500)}
+.pop-f{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:12px;border-top:1px solid var(--n800)}
+.qchips{display:flex;gap:6px;flex-wrap:wrap}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;font-size:12px}
+.cal .w{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--n500);padding:4px 0}
+.cal .d{height:34px;display:flex;align-items:center;justify-content:center;border:1px solid transparent;border-radius:2px;color:var(--n200);font-family:var(--f-num);font-size:14px}
+.cal .d.past{color:var(--n700)}
+.cal .d.none{color:var(--n600)}
+.cal .d.in{background:var(--accent-ghost);color:var(--n100)}
+.cal .d.edge{border-color:var(--accent);background:var(--accent-ghost);color:var(--n100)}
+.cal-h{display:flex;justify-content:space-between;align-items:center;font:500 1.05rem var(--f-head);color:var(--n100)}
+.cal-h span{color:var(--n500);font:500 14px var(--font)}
+.vlist{display:flex;flex-direction:column;gap:2px;max-height:240px;overflow:auto}
+.vrow{display:flex;align-items:center;gap:10px;padding:8px 4px;font-size:13px;color:var(--n200)}
+.vrow .n{margin-left:auto;font-size:11px;color:var(--n500)}
+.range{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}
+.range span{color:var(--n500)}
+
+/* Лента: тот же шаблон, что у разделов (lab-sections) — месяцы и непрерывная сетка */
+.feed{padding:8px var(--pad) 48px}
+.month{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:22px 0 12px;border-bottom:1px solid var(--n800)}
+.month h2{margin:0;font:500 clamp(1.5rem,3vw,2rem)/1 var(--f-thin);color:var(--n100)}
+.month h2 .y{color:var(--n500);margin-left:8px}
+.month .cnt{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--n500)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--card-min),1fr));gap:var(--gap-fluid,16px);margin-top:20px}
+.grid .event-card:hover{transform:none}
+.event-card-meta{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--n500)}
+/* Бейдж категории на обложке — та же подложка, что у даты (решение №24), точка цвета жанра */
+.cat-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--n100);background:color-mix(in srgb,var(--n950) 72%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid color-mix(in srgb,var(--n800) 70%,transparent);border-radius:2px}
+.more{display:flex;flex-direction:column;align-items:center;gap:10px;padding:40px 0 8px}
+.more .s{font-size:11px;color:var(--n500)}
+.sk-card{border:1px solid var(--n800);background:var(--n950);border-radius:2px;overflow:hidden}
+.sk-card .a{aspect-ratio:3/2}.sk-card .b{padding:16px;display:flex;flex-direction:column;gap:10px}
+.nores{padding:64px 0;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+.nores .t{font:500 1.8rem var(--f-thin);color:var(--n100)}
+.nores p{margin:0;color:var(--n400);font-size:13px;max-width:420px;line-height:1.6}
+.nores .qchips{justify-content:center}
+
+/* Мобильная: категории прокручиваются, справа кнопка «Фильтры» со счётчиком; карточки горизонтальные */
+.is-m .fbar-in{flex-wrap:nowrap;gap:8px;padding:10px 0 10px var(--pad)}
+.is-m .cats{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0;padding-right:8px}
+.is-m .sep,.is-m .drops,.is-m .fcount{display:none}
+.mfbtn{display:none}
+.is-m .mfbtn{display:inline-flex;align-items:center;gap:6px;flex:none;height:32px;padding:0 12px;margin-right:var(--pad);border:1px solid var(--accent);background:var(--accent-ghost);color:var(--n100);border-radius:2px;font:500 12px var(--font);box-shadow:-12px 0 12px var(--ink)}
+.mfbtn .badge{min-width:18px;height:18px;padding:0 5px;border-radius:9999px;background:var(--accent);color:var(--on-accent);font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+.is-m .applied{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-top:10px}
+.is-m .month h2{font-size:1.5rem}
+.is-m .grid{grid-template-columns:1fr;gap:10px;margin-top:14px}
+.mcard{display:grid;grid-template-columns:76px minmax(0,1fr);gap:12px;padding:10px;border:1px solid var(--n800);border-radius:2px;background:var(--n950)}
+.mcard .th{position:relative;aspect-ratio:3/4;max-width:100%;border-radius:2px;overflow:hidden;background:var(--n900)}
+.mcard .th .cover-blob{position:absolute;border-radius:50%;filter:blur(18px)}
+.mcard .b{display:flex;flex-direction:column;gap:4px;min-width:0}
+.mcard .cat-badge{align-self:flex-start;padding:2px 7px;font-size:9px}
+.mcard .t{font:400 1rem/1.25 var(--f-head);color:var(--n100);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mcard .m{font-size:11px;color:var(--n400);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mcard .f{display:flex;justify-content:space-between;align-items:baseline;margin-top:auto}
+.mcard .p{font-family:var(--f-num);color:var(--n100);font-size:1rem}
+.mcard .p small{font-family:var(--font);font-size:10px;color:var(--n500);margin-right:4px}
+
+/* Нижняя шторка фильтров (мобильная) */
+.scrim{position:absolute;inset:0;z-index:40;background:var(--overlay)}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:41;max-height:88%;display:flex;flex-direction:column;background:var(--n950);border-top:1px solid var(--n800);border-radius:8px 8px 0 0}
+.sheet-grip{width:36px;height:4px;border-radius:9999px;background:var(--n700);margin:8px auto 0}
+.sheet-h{display:flex;justify-content:space-between;align-items:center;padding:12px var(--pad);border-bottom:1px solid var(--n800)}
+.sheet-h h3{margin:0;font:500 1.5rem var(--f-thin)}
+.sheet-b{overflow:auto;padding:16px var(--pad);display:flex;flex-direction:column;gap:22px}
+.sheet-s{display:flex;flex-direction:column;gap:10px}
+.sheet-f{display:flex;gap:10px;padding:12px var(--pad) 16px;border-top:1px solid var(--n800)}
+.sheet-f .btn-primary{flex:1}
+</style>
+</head>
+<body>
+<div class="bar" id="bar">
+  <span><b>Тема</b><button data-theme="dark" aria-pressed="true">Тёмная</button> <button data-theme="light" aria-pressed="false">Светлая</button></span>
+  <span><b>Ширина</b><button data-w="375" aria-pressed="false">375</button> <button data-w="768" aria-pressed="false">768</button> <button data-w="1440" aria-pressed="true">1440</button></span>
+  <span><b>Состояние</b><button data-state="full" aria-pressed="true">Лента</button> <button data-state="filtered" aria-pressed="false">С фильтрами</button> <button data-state="loading" aria-pressed="false">Загрузка</button> <button data-state="none" aria-pressed="false">Ничего не нашлось</button></span>
+  <span><b>Окно</b><button data-pop="" aria-pressed="true">Закрыто</button> <button data-pop="date" aria-pressed="false">Дата</button> <button data-pop="venue" aria-pressed="false">Площадка</button> <button data-pop="price" aria-pressed="false">Цена</button> <button data-pop="sheet" aria-pressed="false">Шторка (375)</button></span>
+</div>
+<div class="note-lab"><b>Что смотреть.</b> Сюда ведёт «Все события» с главной. Шапка раздела короткая, дальше панель фильтров: прилипает под шапкой сайта и остаётся на экране при прокрутке. Слева категории, дальше дата, площадка и цена; справа число событий и «Сбросить». Фильтры — категория, дата, площадка и цена: категория и цена есть в окне фильтров редизайна, дата — в календаре главной, площадка — на странице события. Каждый фильтр открывается окном под своей кнопкой, как окно фильтров в поиске (решение №18). Лента — тот же шаблон, что у разделов: по ближайшей дате, месяцы с линией и счётчиком. Одно событие — одна карточка: у событий с несколькими датами стоит «3 даты» и ближайшая из них определяет место в ленте. Категория — бейдж на обложке с точкой цвета жанра. На телефоне категории прокручиваются, справа кнопка «Фильтры» со счётчиком, остальное в нижней шторке. События и цены — из прода на 19 октября.</div>
+<div id="root"></div>
+
+<script>
+const CATS={'Спектакли':'var(--zone-2)','Концерты':'var(--tag-o-fg)','Классика':'var(--zone-4)','Детям':'var(--tag-g-fg)'};
+const ONE={'Спектакли':'Спектакль','Концерты':'Концерт','Классика':'Классика','Детям':'Детям'};
+const BLOB={'Спектакли':'card-cool','Концерты':'card-warm','Классика':'card-cool','Детям':'card-green'};
+/* m — месяц (9 = октябрь), d — день, dates — чип для событий с несколькими датами */
+const E=[
+ {c:'Спектакли',t:'Психопаты',v:'Театр «Маска»',m:9,d:19,h:'19:00',p:2500,a:'16+',dates:'3 даты · 2 площадки'},
+ {c:'Спектакли',t:'Лев зимой',v:'Театр им. Гоголя',m:9,d:20,h:'19:00',p:2500,a:'16+'},
+ {c:'Классика',t:'Гамлет',v:'Дом музыки',m:9,d:20,h:'19:00',p:4000,a:'12+'},
+ {c:'Спектакли',t:'Дон Кихот',v:'Мастерская «12» Никиты Михалкова',m:9,d:23,h:'19:00',p:5000,a:'18+',dates:'23–24 октября'},
+ {c:'Классика',t:'Бал Вивальди при свечах',v:'Колонный зал Дома союзов',m:9,d:24,h:'19:00',p:6000,a:'6+'},
+ {c:'Классика',t:'Кармина Бурана',v:'Дом музыки',m:9,d:24,h:'20:00',p:3000,a:'12+'},
+ {c:'Спектакли',t:'Опасные игры',v:'Театр «Русская песня»',m:9,d:25,h:'19:00',p:3500,a:'16+'},
+ {c:'Спектакли',t:'Папа',v:'Театриум на Серпуховке',m:9,d:26,h:'19:00',p:3500,a:'16+',dates:'2 даты · 2 площадки'},
+ {c:'Спектакли',t:'Эйнштейн и Маргарита',v:'Театр на Таганке',m:9,d:27,h:'19:00',p:3500,a:'16+',dates:'2 даты · 2 площадки'},
+ {c:'Спектакли',t:'Одни во вселенной',v:'Театр «Русская песня»',m:9,d:29,h:'19:00',p:2000,a:'16+'},
+ {c:'Концерты',t:'Игорь Цвирко «Алхимия танца»',v:'Дом музыки',m:9,d:31,h:'19:00',p:3500,a:'12+'},
+ {c:'Спектакли',t:'Фрида',v:'Театр на Таганке',m:10,d:2,h:'19:00',p:5000,a:'12+'},
+ {c:'Концерты',t:'Дмитрий Маликов «PianomaniЯ»',v:'Дом музыки',m:10,d:4,h:'14:00',p:3000,a:'12+',dates:'4 ноября · 2 сеанса'},
+ {c:'Концерты',t:'К 100-летию Галины Вишневской',v:'Дом музыки',m:10,d:10,h:'19:00',p:2500,a:'6+'},
+ {c:'Концерты',t:'Светлана Сурганова и оркестр',v:'Государственный Кремлёвский Дворец',m:10,d:12,h:'19:00',p:2500,a:'16+'},
+ {c:'Спектакли',t:'Константин Райкин «Живой Пушкин»',v:'Колонный зал Дома союзов',m:10,d:14,h:'19:00',p:5000,a:'16+'},
+ {c:'Детям',t:'Любимый Щелкунчик',v:'Колонный зал Дома союзов',m:11,d:19,h:'12:00',p:5000,a:'0+',dates:'6 дат'},
+];
+const MON=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+const MONG=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+const st={theme:'dark',w:1440,state:'full',pop:'',cat:'Все'};
+const fmt=n=>n.toLocaleString('ru-RU').replace(/,/g,' ')+' ₽';
+const pl=(n,a,b,c)=>n%10===1&&n%100!==11?a:(n%10>=2&&n%10<=4&&(n%100<12||n%100>14)?b:c);
+const CHEV='<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3.5l3 3 3-3"/></svg>';
+const SLID='<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M2 4h7M13 4h1M2 12h1M7 12h7"/><circle cx="11" cy="4" r="2"/><circle cx="5" cy="12" r="2"/></svg>';
+const ICON_S='<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5"/></svg>';
+const badge=c=>`<span class="cat-badge"><span class="dot" style="--c:${CATS[c]}"></span>${ONE[c]}</span>`;
+/* Применённые фильтры в состоянии «С фильтрами» */
+const FF={filtered:{date:'1–14 ноября',venue:'Дом музыки',price:'до 4 000 ₽'},none:{date:'1–14 ноября',venue:'Дом музыки',price:'до 2 000 ₽'}};
+let F=FF.filtered;
+const filtered=()=>st.state==='filtered'||st.state==='none';
+
+function items(){
+  let x=E.filter(e=>st.cat==='Все'||e.c===st.cat);
+  if(st.state==='filtered')x=E.filter(e=>e.v==='Дом музыки'&&e.p<=4000&&(st.cat==='Все'||e.c===st.cat)&&e.m===10&&e.d<=14);
+  if(st.state==='none')x=[];
+  return x;
+}
+function card(e){
+  const date=e.dates?e.dates:`${e.d} ${MONG[e.m]} · ${e.h}`;
+  return `<article class="event-card ${BLOB[e.c]}"><div class="event-card-cover"><div class="cover-blob cover-blob-1"></div><div class="cover-blob cover-blob-2"></div><div class="cover-tag">${badge(e.c)}</div><div class="cover-date"><div class="t-caption">${date}</div></div></div>
+   <div class="event-card-body"><div class="event-card-meta">${e.a}</div><div class="event-card-title" title="${e.t}">${e.t}</div><div class="event-card-sub">${e.v}</div>
+   <div class="event-card-footer"><div><span class="event-card-price-label">от</span><span class="event-card-price">${fmt(e.p)}</span></div><button class="btn btn-primary btn-sm"><span>Билеты</span></button></div></div></article>`}
+function mcard(e){
+  const date=e.dates?`${e.d} ${MONG[e.m]} · ${e.dates}`:`${e.d} ${MONG[e.m]} · ${e.h}`;
+  return `<article class="mcard"><div class="th ${BLOB[e.c]}"><div class="cover-blob cover-blob-1"></div><div class="cover-blob cover-blob-2"></div></div><div class="b">${badge(e.c)}<div class="t">${e.t}</div><div class="m">${date}</div><div class="m">${e.v} · ${e.a}</div><div class="f"><span class="p"><small>от</small>${fmt(e.p)}</span></div></div></article>`}
+
+function pop(k){
+  if(st.pop!==k)return '';
+  if(k==='date'){
+    const days=[];const first=6; // 1 ноября 2026 — воскресенье → 6 пустых ячеек при неделе с понедельника
+    for(let i=0;i<first;i++)days.push('<span></span>');
+    const has=[2,4,9,10,12,14,16,17,18,19,23,26,29];
+    for(let d=1;d<=30;d++){const inR=d>=1&&d<=14,edge=d===1||d===14;days.push(`<span class="d${edge?' edge':inR?' in':''}${!has.includes(d)&&!inR?' none':''}">${d}</span>`)}
+    return `<div class="pop wide" role="dialog" aria-label="Дата"><div class="qchips">${['Сегодня','Завтра','Выходные','Эта неделя','Этот месяц'].map(t=>`<button class="venue-chip">${t}</button>`).join('')}</div>
+     <div class="cal-h">Ноябрь <span>‹ ›</span></div><div class="cal">${['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(w=>`<span class="w">${w}</span>`).join('')}${days.join('')}</div>
+     <div class="pop-f"><button class="link">Сбросить</button><button class="btn btn-primary btn-sm"><span>Показать 11 событий</span></button></div></div>`}
+  if(k==='venue'){
+    const vs=[['Дом музыки',13],['Государственный Кремлёвский Дворец',6],['Театр «Русская песня»',6],['Театр на Таганке',5],['Колонный зал Дома союзов',5],['Театр им. Гоголя',4],['Театриум на Серпуховке',3]];
+    return `<div class="pop" role="dialog" aria-label="Площадка"><input class="form-input" placeholder="Найти площадку" aria-label="Найти площадку"><div class="vlist">${vs.map(([n,c],i)=>`<label class="vrow"><input type="checkbox" class="form-check-input"${i===0?' checked':''}>${n}<span class="n">${c}</span></label>`).join('')}</div>
+     <div class="pop-f"><button class="link">Сбросить</button><button class="btn btn-primary btn-sm"><span>Показать 13 событий</span></button></div></div>`}
+  if(k==='price') return `<div class="pop" role="dialog" aria-label="Цена"><div class="pop-h">Цена билета, ₽</div><div class="range"><input class="form-input" placeholder="от 500" aria-label="Цена от"><span>—</span><input class="form-input" value="4 000" aria-label="Цена до"></div>
+     <div class="qchips"><button class="venue-chip venue-chip-active">до 4 000</button><button class="venue-chip">4 000 — 8 000</button><button class="venue-chip">от 8 000</button></div>
+     <div class="pop-f"><button class="link">Сбросить</button><button class="btn btn-primary btn-sm"><span>Показать 31 событие</span></button></div></div>`;
+  return '';
+}
+function fbtn(k,label){const val=filtered()&&F[k];return `<div class="drop"><button class="fbtn${val?' on':''}" aria-expanded="${st.pop===k}" data-p="${k}">${label}${val?`: <span class="v">${val}</span>`:''}${CHEV}</button>${pop(k)}</div>`}
+
+function sheet(){
+  if(st.pop!=='sheet')return '';
+  return `<div class="scrim"></div><div class="sheet" role="dialog" aria-label="Фильтры"><div class="sheet-grip"></div><div class="sheet-h"><h3>Фильтры</h3><button class="link" data-close>Закрыть</button></div>
+   <div class="sheet-b">
+    <div class="sheet-s"><span class="pop-h">Категория</span><div class="qchips">${['Все',...Object.keys(CATS)].map(c=>`<button class="venue-chip cat${c===st.cat?' venue-chip-active':''}">${c!=='Все'?`<span class="dot" style="--c:${CATS[c]}"></span>`:''}${c}</button>`).join('')}</div></div>
+    <div class="sheet-s"><span class="pop-h">Дата</span><div class="qchips">${['Сегодня','Завтра','Выходные','Эта неделя'].map(t=>`<button class="venue-chip">${t}</button>`).join('')}<button class="venue-chip venue-chip-active">1–14 ноября</button></div></div>
+    <div class="sheet-s"><span class="pop-h">Площадка</span>${[['Дом музыки',13,1],['Государственный Кремлёвский Дворец',6],['Театр «Русская песня»',6]].map(([n,c,on])=>`<label class="vrow"><input type="checkbox" class="form-check-input"${on?' checked':''}>${n}<span class="n">${c}</span></label>`).join('')}<button class="link" style="align-self:flex-start">Все площадки · 19</button></div>
+    <div class="sheet-s"><span class="pop-h">Цена, ₽</span><div class="range"><input class="form-input" placeholder="от 500" aria-label="Цена от"><span>—</span><input class="form-input" value="4 000" aria-label="Цена до"></div></div>
+    
+   </div>
+   <div class="sheet-f"><button class="btn btn-ghost btn-md"><span>Сбросить</span></button><button class="btn btn-primary btn-md" data-close><span>Показать 2 события</span></button></div></div>`;
+}
+
+function render(){
+  const pad=Math.max(18,Math.min(56,st.w*0.032)),m=st.w<768,lab=document.getElementById('bar').offsetHeight;
+  F=FF[st.state]||FF.filtered;
+  const x=items(),n=x.length,nf=filtered()?3:0;
+  let feed='';
+  if(st.state==='loading'){
+    feed=`<div class="month"><div class="skeleton" style="height:28px;width:180px"></div></div><div class="grid">${Array.from({length:4},()=>`<div class="sk-card"><div class="skeleton a"></div><div class="b"><div class="skeleton" style="height:12px;width:40%"></div><div class="skeleton" style="height:20px;width:80%"></div><div class="skeleton" style="height:28px;margin-top:14px"></div></div></div>`).join('')}</div>`;
+  } else if(!n){
+    feed=`<div class="nores"><div class="t">Мероприятий не найдено</div><p>По выбранным фильтрам событий нет. Измените или сбросьте фильтры.</p><button class="btn btn-ghost btn-md"><span>Сбросить фильтры</span></button></div>`;
+  } else {
+    const groups={};x.forEach(e=>{(groups[e.m]=groups[e.m]||[]).push(e)});
+    Object.keys(groups).sort((a,b)=>a-b).forEach(k=>{const g=groups[k].sort((a,b)=>a.d-b.d||a.h.localeCompare(b.h));
+      feed+=`<div class="month"><h2>${MON[k]}<span class="y">2026</span></h2><span class="cnt">${g.length} ${pl(g.length,'событие','события','событий')}</span></div><div class="grid">${g.map(m?mcard:card).join('')}</div>`});
+    if(!filtered())feed+=`<div class="more"><button class="btn btn-ghost btn-md"><span>Показать ещё</span></button><span class="s">Показано ${n} из 64</span></div>`;
+  }
+  const total=filtered()?n:64;
+  document.getElementById('root').innerHTML=`<div class="canvas${m?' is-m':''}" style="width:${st.w}px;--pad:${pad}px;--lab:${lab}px">
+   <header class="site-nav"><img src="../../../tts-logo.svg" onerror="this.onerror=null;this.src=CORE_PAGES+'tts-logo.svg'" alt="Ticket to Show"><nav class="links">${['Афиша','Площадки','Партнёрам','Отзывы'].map(t=>`<a class="nav-desktop-link${t==='Афиша'?' nav-link-active':''}">${t}</a>`).join('')}</nav><div class="search">${ICON_S}Театр, спектакль, артист…</div><div class="city">Москва</div><div class="burger"><svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M1 1h18M1 7h18M1 13h18"/></svg></div></header>
+   <header class="sec-head"><div class="crumbs"><a>Афиша</a> &nbsp;/&nbsp; Все события</div><h1 class="sec-title">Все события</h1><div class="sec-meta"><b>64</b> события · с 19 октября по 17 марта</div></header>
+   <div class="fbar"><div class="fbar-in">
+     <div class="cats">${['Все',...Object.keys(CATS)].map(c=>`<button class="venue-chip cat${c===st.cat?' venue-chip-active':''}" data-cat="${c}">${c!=='Все'?`<span class="dot" style="--c:${CATS[c]}"></span>`:''}${c}</button>`).join('')}</div>
+     <span class="sep" aria-hidden="true"></span>
+     <div class="drops">${fbtn('date','Дата')}${fbtn('venue','Площадка')}${fbtn('price','Цена')}</div>
+     <div class="fcount"><span><b>${total}</b> ${pl(total,'событие','события','событий')} · по дате</span>${filtered()?'<button class="link">Сбросить</button>':''}</div>
+     <button class="mfbtn" data-p="sheet">${SLID}Фильтры${nf?`<span class="badge">${nf}</span>`:''}</button>
+   </div>${filtered()?`<div class="applied">${[F.date,F.venue,F.price].map(t=>`<span class="achip">${t}<button aria-label="Убрать фильтр ${t}">×</button></span>`).join('')}</div>`:''}</div>
+   <section class="feed">${feed}</section>${sheet()}</div>`;
+}
+const root=document.getElementById('root');
+root.addEventListener('click',e=>{
+  const c=e.target.closest('[data-cat]');if(c){st.cat=c.dataset.cat;render();return}
+  const p=e.target.closest('[data-p]');if(p){setPop(st.pop===p.dataset.p?'':p.dataset.p);return}
+  if(e.target.closest('[data-close]')||e.target.classList.contains('scrim')){setPop('');return}
+  if(st.pop&&st.pop!=='sheet'&&!e.target.closest('.pop'))setPop('');
+});
+function setPop(v){st.pop=v;if(v==='sheet'&&st.w>=768){st.w=375;mark('w','375')}mark('pop',v);render()}
+function mark(k,v){document.querySelectorAll(`#bar [data-${k}]`).forEach(b=>b.setAttribute('aria-pressed',String(b.dataset[k]===String(v))))}
+document.getElementById('bar').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;b.parentElement.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');
+  if(b.dataset.theme)document.getElementById('core').href=b.dataset.theme==='dark'?CORE_BASE+'ds-core-r14.css':CORE_BASE+'ds-core-r14-light.css';
+  if(b.dataset.w)st.w=+b.dataset.w;if(b.dataset.state)st.state=b.dataset.state;if(b.dataset.pop!==undefined){setPop(b.dataset.pop);return}render()});
+const q=new URLSearchParams(location.search);
+[['theme','theme'],['w','w'],['state','state'],['pop','pop']].forEach(([k,a])=>{if(q.get(k)!==null){st[k]=k==='w'?+q.get(k):q.get(k);mark(a,st[k]);if(k==='theme')document.getElementById('core').href=st.theme==='dark'?CORE_BASE+'ds-core-r14.css':CORE_BASE+'ds-core-r14-light.css'}});
+render();
+window.addEventListener('resize',render);
+</script>
+</body>
+</html>

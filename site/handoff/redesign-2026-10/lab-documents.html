@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Лаборатория шага «Документы»</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script>/* Стенд открыт вне репозитория (например, из «Загрузок») — ядро берём с GitHub Pages */
+var CORE_BASE='../../../',CORE_PAGES='https://hitch-npc.github.io/tts-design-system/';
+function coreFallback(l){if(CORE_BASE===CORE_PAGES)return;CORE_BASE=CORE_PAGES;l.href=CORE_PAGES+l.getAttribute('href').split('/').pop()}</script>
+<link id="core" rel="stylesheet" href="../../../ds-core-r14.css" onerror="coreFallback(this)">
+<style>
+body{margin:0;background:var(--ink);color:var(--n100);font-family:var(--font);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+.bar{position:sticky;top:0;z-index:60;display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;padding:10px 20px;background:var(--n950);border-bottom:1px solid var(--n800);font-size:12px}
+.bar b{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--n500);font-weight:500;margin-right:6px}
+.bar button{background:transparent;border:1px solid var(--n800);color:var(--n300);padding:6px 10px;border-radius:2px;font:500 11px var(--font);cursor:pointer}
+.bar button[aria-pressed=true]{background:var(--accent-ghost);border-color:var(--accent);color:var(--n100)}
+.canvas{margin:24px auto 80px;max-width:100%;border:1px solid var(--n800);background:var(--ink);position:relative;overflow:hidden}
+.note-lab{max-width:1100px;margin:0 auto 24px;font-size:12px;color:var(--n400);line-height:1.7;padding:0 20px}
+.note-lab b{color:var(--n200)}
+
+/* ───── ПРЕДЛАГАЕМЫЕ КОМПОНЕНТЫ ───── */
+/* Верх оформления — как в редизайне v2 */
+.co-top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px var(--pad);border-bottom:1px solid var(--n800)}
+.co-back{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--n100)}
+.co-back span{color:var(--n500)}
+.co-step{font-size:11px;color:var(--n500);letter-spacing:.04em}
+.co-steps{padding:20px var(--pad) 0}
+.co-steps .steps-bar{max-width:520px}
+.co-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}
+.co-main{padding:28px var(--pad) 40px;display:flex;flex-direction:column;gap:20px;border-right:1px solid var(--n800);min-width:0}
+.co-side{padding:28px var(--pad);display:flex;flex-direction:column;gap:12px;align-self:start}
+.co-h{font:500 1.6rem/1.15 var(--f-thin);margin:0;color:var(--n100)}
+.co-lead{font-size:13px;color:var(--n300);line-height:1.6;margin:-8px 0 0;max-width:560px}
+
+/* Плашка «Именные билеты» — одна на сеансе, в корзине и в сводке */
+.doc-tag{display:inline-flex;align-items:center;gap:6px}
+.doc-tag svg{width:12px;height:12px;flex:none}
+
+/* Пояснение и тревоги */
+.info{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--n800);background:var(--n950);border-radius:2px;font-size:13px;line-height:1.55;color:var(--n300)}
+.info svg{width:16px;height:16px;flex:none;margin-top:2px;color:var(--n400)}
+.info b{color:var(--n100);font-weight:600}
+.alert{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--danger-border);background:var(--danger-bg);border-radius:2px;font-size:13px;line-height:1.55;color:var(--danger-text)}
+.alert svg{width:16px;height:16px;flex:none;margin-top:2px}
+
+/* Билет-аккордеон */
+.vis{border:1px solid var(--n800);border-radius:2px;background:var(--n950)}
+.vis.has-error{border-color:var(--danger-border)}
+.vis-h{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:14px 16px;background:transparent;border:0;color:inherit;cursor:pointer;text-align:left;font:inherit}
+.vis-h:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.vis-t{display:flex;flex-direction:column;gap:2px;min-width:0}
+.vis-n{font:400 1.05rem/1.3 var(--f-head);color:var(--n100)}
+.vis-s{font-size:12px;color:var(--n500)}
+.vis-r{display:flex;align-items:center;gap:10px;flex:none}
+.is-m .vis-seat{display:block;font:500 12px/1.4 var(--font);color:var(--n400)}
+.is-m .vis-s:empty{display:none}
+.vis-chev{color:var(--n500);transition:transform var(--dur-base) var(--ease-out)}
+.vis.open .vis-chev{transform:rotate(180deg)}
+.vis-b{display:none;padding:4px 16px 18px;border-top:1px solid var(--n900)}
+.vis.open .vis-b{display:grid;gap:14px}
+.vis-who{padding-top:12px}
+.row3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.row-doc{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,.7fr) minmax(0,1fr);gap:12px}
+.row-doc.one{grid-template-columns:minmax(0,1.4fr) minmax(0,1.7fr)}
+.form-group{min-width:0}
+.form-input:disabled{color:var(--n300);background:var(--n900);border-color:var(--n800);cursor:not-allowed}
+.form-select.error{border-color:var(--error-bd)}
+.req{color:var(--n500)}
+.summary-line{font-size:13px;color:var(--n300)}
+
+/* Кнопки шага */
+.co-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:4px}
+.co-actions .btn-primary{min-width:220px}
+.co-legal{font-size:11px;color:var(--n500);line-height:1.6;max-width:520px}
+@keyframes tts-spin{to{transform:rotate(360deg)}}
+.btn.is-loading{position:relative;pointer-events:none;cursor:progress}.btn.is-loading>*{visibility:hidden}
+.btn.is-loading::after{content:"";position:absolute;left:50%;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border:1.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:tts-spin .7s linear infinite}
+
+/* Сводка заказа */
+.sum-cap{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--n500)}
+.sum-ev{font:500 1.5rem/1.15 var(--f-thin);color:var(--n100);margin:2px 0 0}
+.sum-meta{font-size:12px;color:var(--n400)}
+.sum-rows{display:flex;flex-direction:column;gap:8px;padding:12px 0;border-top:1px solid var(--n800);border-bottom:1px solid var(--n800)}
+.sum-row{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:var(--n300)}
+.sum-row .p{font-family:var(--f-num);color:var(--n100);white-space:nowrap}
+.sum-free{font-size:12px;color:var(--success)}
+.sum-total{display:flex;justify-content:space-between;align-items:baseline}
+.sum-total .p{font:400 1.8rem var(--f-num);color:var(--n100)}
+.timer{display:flex;justify-content:space-between;font-size:12px;color:var(--n400);padding:10px 12px;border:1px solid var(--n800);border-radius:2px}
+.timer b{font-family:var(--f-num);font-weight:400;color:var(--n100);font-size:14px}
+
+/* Мобильная раскладка: одна колонка, сводка свёрнута сверху, кнопка внизу */
+.is-m .co-grid{grid-template-columns:1fr}
+.is-m .co-main{border-right:0;padding-bottom:120px}
+.is-m .co-side{display:none}
+.is-m .row3,.is-m .row-doc,.is-m .row-doc.one{grid-template-columns:1fr}
+.is-m .row-doc .two{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:12px}
+.row-doc .two{display:contents}
+.is-m .co-step{display:none}
+.is-m .co-actions{display:none}
+.m-sum{display:none}
+.is-m .m-sum{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px var(--pad);border-bottom:1px solid var(--n800);font-size:13px;color:var(--n300)}
+.m-sum b{font:400 1.1rem var(--f-num);color:var(--n100)}
+.m-bar{display:none}
+.is-m .m-bar{display:flex;flex-direction:column;gap:8px;position:absolute;left:0;right:0;bottom:0;padding:12px var(--pad) 16px;background:var(--n950);border-top:1px solid var(--n800)}
+.m-bar .row{display:flex;justify-content:space-between;font-size:12px;color:var(--n400)}
+.m-bar .row b{font-family:var(--f-num);font-weight:400;color:var(--n100)}
+.is-m .co-steps .step-label{font-size:8px}
+
+/* Экран «Сеанс и корзина» — где предупреждаем заранее */
+.pre{padding:32px var(--pad) 48px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px}
+.is-m .pre{grid-template-columns:1fr}
+.pre h3{font:500 1.5rem/1.15 var(--f-thin);margin:0 0 6px;color:var(--n100)}
+.pre .cap{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--n500);margin-bottom:14px;display:block}
+.pre-col{display:flex;flex-direction:column;gap:10px;min-width:0}
+.session-row .doc-tag{margin-top:6px}
+.cart{border:1px solid var(--n800);background:var(--n950);border-radius:2px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.cart-h{display:flex;justify-content:space-between;align-items:baseline}
+.cart-h .t{font:400 1.05rem var(--f-head);color:var(--n100)}
+.pre-sum{border:1px solid var(--n800);background:var(--n950);border-radius:2px;padding:16px;display:flex;flex-direction:column;gap:10px}
+</style>
+</head>
+<body>
+<div class="bar" id="bar">
+  <span><b>Тема</b><button data-theme="dark" aria-pressed="true">Тёмная</button> <button data-theme="light" aria-pressed="false">Светлая</button></span>
+  <span><b>Ширина</b><button data-w="375" aria-pressed="false">375</button> <button data-w="768" aria-pressed="false">768</button> <button data-w="1440" aria-pressed="true">1440</button></span>
+  <span><b>Экран</b><button data-screen="docs" aria-pressed="true">Шаг «Документы»</button> <button data-screen="pre" aria-pressed="false">Сеанс и корзина</button></span>
+  <span><b>Состояние</b><button data-state="fill" aria-pressed="true">Заполнение</button> <button data-state="error" aria-pressed="false">Ошибки</button> <button data-state="sending" aria-pressed="false">Отправка</button> <button data-state="fail" aria-pressed="false">Сбой отправки</button> <button data-state="done" aria-pressed="false">Всё заполнено</button></span>
+</div>
+<div class="note-lab"><b>Что смотреть.</b> Шаг появляется только у сеансов с флагом <code>named_tickets</code> и встаёт между «Данными» и «Оплатой»: шагов становится четыре. Поля, порядок видов документов и тексты ошибок — как в проде: на каждое место фамилия, имя, отчество, вид документа (20 видов), серия и номер; отправка — «Отправить и продолжить». Новое только в подаче: все места на одном экране раскрывающимися блоками со статусом вместо листания по одному. Экран «Сеанс и корзина» показывает, где человек видит флаг прода заранее: плашка на строке сеанса (в проде — «Потребуются документы») и в корзине. В сводке сеанса — адрес и «Маршрут» вместо карты (решение №27).</div>
+<div id="root"></div>
+
+<script>
+const ICON_ID='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"><rect x="1.5" y="3" width="13" height="10" rx="1"/><circle cx="5.5" cy="7.2" r="1.6"/><path d="M3.3 11c.4-1.1 1.2-1.7 2.2-1.7s1.8.6 2.2 1.7M9.5 6.5h3M9.5 9h2"/></svg>';
+const ICON_INFO='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.2v4"/><path d="M8 4.8v0"/></svg>';
+const ICON_WARN='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 4.6v4.2"/><path d="M8 11.3v0"/></svg>';
+const CHEV='<svg class="vis-chev" width="12" height="8" viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 1.5l5 5 5-5"/></svg>';
+const docTag=(t='Именные билеты')=>`<span class="tag tag-default doc-tag">${ICON_ID}${t}</span>`;
+
+/* Виды документов прода (20), в порядке прода */
+const DOCS=['Паспорт','Загранпаспорт','Временное удостоверение личности','Военный билет','Удостоверение личности военнослужащего','Иностранный документ','Дипломатический паспорт','Служебный паспорт','Свидетельство о возвращении из стран СНГ','Справка о следовании в посольство','Вид на жительство','Удостоверение беженца','Свидетельство беженца','Свидетельство о рождении','Разрешение на временное проживание','Водительское удостоверение','Карта москвича','Свидетельство пенсионера','Банковская карта','Студенческий билет'];
+
+const SEATS=[
+ {z:'Партер',r:7,m:12,p:2500},{z:'Партер',r:7,m:13,p:2500},{z:'Амфитеатр',r:2,m:11,p:1500}];
+const st={theme:'dark',w:1440,screen:'docs',state:'fill',open:1,
+  v:[{f:'Петров',i:'Иван',o:'Васильевич',d:'Паспорт',s:'45 12',n:'000000'},
+     {f:'Петрова',i:'Мария',o:'',d:'Паспорт',s:'',n:''},
+     {f:'',i:'',o:'',d:'',s:'',n:''}]};
+const fmt=n=>n.toLocaleString('ru-RU').replace(/,/g,' ')+' ₽';
+const total=SEATS.reduce((a,s)=>a+s.p,0);
+
+function filled(v){return v.f&&v.i&&v.d&&(v.s||v.n)}
+function errorsOf(v){const e={};
+  if(!v.f)e.f='Фамилия обязательна';if(!v.i)e.i='Имя обязательно';if(!v.d)e.d='Вид документа обязателен';
+  if(!v.s&&!v.n)e.n='Серия или номер документа обязательны';
+  return e}
+
+function selectHtml(id,val,err){
+  const opt=t=>`<option${t===val?' selected':''}>${t}</option>`;
+  return `<select class="form-select${err?' error':''}" id="${id}" data-k="d"><option value=""${!val?' selected':''} disabled>Выбрать...</option>${DOCS.map(opt).join('')}</select>`}
+function field(id,k,label,val,ph,err,opt,dis){
+  return `<div class="form-group"><label class="form-label" for="${id}">${label}${opt?' <span class="req">· при наличии</span>':''}</label><input class="form-input${err?' error':''}" id="${id}" data-k="${k}" value="${val||''}" placeholder="${ph}"${dis?' disabled':''} autocomplete="off">${err?`<div class="form-error">${err}</div>`:''}</div>`}
+
+function visitor(v,idx,showErr){
+  const s=SEATS[idx],e=showErr?errorsOf(v):{},bad=showErr&&Object.keys(e).length,ok=filled(v),open=st.open===idx||bad;
+  const tag=bad?'<span class="tag tag-red">Не заполнено</span>':ok?'<span class="tag tag-green">Заполнено</span>':'<span class="tag tag-default">Заполнить</span>';
+  const sub=ok&&!open?`${v.f} ${v.i} · ${v.d}`:`${s.z}, ряд ${s.r}, место ${s.m}`;
+  const docRow=`<div class="row-doc"><div class="form-group"><label class="form-label" for="d${idx}">Вид документа</label>${selectHtml('d'+idx,v.d,e.d)}${e.d?`<div class="form-error">${e.d}</div>`:''}</div><div class="two">${field('s'+idx,'s','Серия',v.s,'Серия',null)}${field('n'+idx,'n','Номер',v.n,'Номер',e.n)}</div></div>`;
+  return `<section class="vis${open?' open':''}${bad?' has-error':''}" data-i="${idx}">
+    <button class="vis-h" type="button" aria-expanded="${open}" data-toggle="${idx}"><span class="vis-t"><span class="vis-n">Билет ${idx+1}<span class="vis-seat"> · ${s.z}, ряд ${s.r}, место ${s.m}</span></span><span class="vis-s">${ok&&!open?sub:(st.w<768?'':'Данные посетителя этого места')}</span></span><span class="vis-r">${tag}${CHEV}</span></button>
+    <div class="vis-b">
+      <div class="row3">${field('f'+idx,'f','Фамилия',v.f,'Иванов',e.f)}${field('i'+idx,'i','Имя',v.i,'Иван',e.i)}${field('o'+idx,'o','Отчество',v.o,'Иванович',null)}</div>
+      ${docRow}
+    </div></section>`;
+}
+
+function sumHtml(){
+  return `<span class="sum-cap">Ваш заказ</span><div class="sum-ev">Одни во вселенной</div><div class="sum-meta">14 июня · 19:00 · Театр «Современник»</div><div>${docTag()}</div>
+   <div class="sum-rows">${SEATS.map(s=>`<div class="sum-row"><span>${s.z} · ряд ${s.r}, место ${s.m}</span><span class="p">${fmt(s.p)}</span></div>`).join('')}<span class="sum-free">Без сервисного сбора</span></div>
+   <div class="sum-total"><span class="sum-cap">К оплате</span><span class="p">${fmt(total)}</span></div>`}
+
+function docsScreen(){
+  const s=st.state,showErr=s==='error';
+  const vs=s==='done'?st.v.map(v=>filled(v)?v:{...v,f:v.f||'Сидоров',i:v.i||'Пётр',d:v.d||'Паспорт',s:v.s||'45 00',n:v.n||'000000'}):st.v;
+  const bad=vs.map((v,i)=>showErr&&Object.keys(errorsOf(v)).length?i+1:0).filter(Boolean);
+  const top=showErr&&bad.length?`<div class="alert" role="alert">${ICON_WARN}<span>Пожалуйста, заполните все поля для всех мест.</span></div>`
+    :s==='fail'?`<div class="alert" role="alert">${ICON_WARN}<span>Не удалось связаться с сервером. Проверьте соединение или выключите VPN.</span></div>`:'';
+  const btn=`<button class="btn btn-primary btn-lg${s==='sending'?' is-loading':''}" id="go"${s==='sending'?' aria-busy="true"':''}><span>Отправить и продолжить</span></button>`;
+  const steps=['Билеты','Данные','Документы','Оплата'].map((t,i)=>(i?`<div class="step-line${i<3?' step-line-done':''}"></div>`:'')+`<div class="step-item ${i<2?'step-done':i===2?'step-active':''}"><div class="step-circle">${i<2?'✓':i+1}</div><div class="step-label">${t}</div></div>`).join('');
+  return `<div class="co-top"><div class="co-back"><span>‹</span>Оформление заказа</div><div class="co-step">Шаг 3 из 4 · Документы</div></div>
+   <div class="m-sum"><span>3 билета · Одни во вселенной</span><b>${fmt(total)}</b></div>
+   <div class="co-steps"><div class="steps-bar">${steps}</div></div>
+   <div class="co-grid"><div class="co-main">
+     <h2 class="co-h">Данные посетителей</h2>
+     <p class="co-lead">Билеты на этот сеанс именные. Укажите ФИО и документ для каждого места.</p>
+          ${top}
+     ${vs.map((v,i)=>visitor(v,i,showErr)).join('')}
+     <div class="co-actions"><button class="btn btn-ghost btn-lg"><span>Назад</span></button>${btn}</div>
+   </div><aside class="co-side">${sumHtml()}</aside></div>
+   <div class="m-bar"><div class="row"><span>3 билета</span><b>${fmt(total)}</b></div>${btn.replace('btn-lg','btn-md btn-full').replace('id="go"','id="go-m"')}</div>`;
+}
+
+function preScreen(){
+  const row=(d,dw,t,v,h,p,sel,doc)=>`<div class="session-row${sel?' session-row-selected':''}"><div class="session-time">${t}</div><div class="session-venue-info"><div class="session-venue-name">${d} · ${v}</div><div class="session-hall">${dw} · ${h}</div>${doc?docTag('Потребуются документы'):''}</div><div class="session-price">от ${fmt(p)}</div><div class="session-chev">›</div></div>`;
+  return `<div class="pre">
+   <div class="pre-col"><span class="cap">Страница события · список сеансов</span>
+     ${row('14 июня','суббота','19:00','Театр «Современник»','Основная сцена',1500,true,true)}
+     ${row('15 июня','воскресенье','19:00','Театр на Таганке','Основная сцена',1800,false,false)}
+     <div class="pre-sum"><div class="session-summary-head" style="font-size:14px;color:var(--n100)">14 июня · 19:00</div><div class="sum-meta">Театр «Современник» · Основная сцена</div><div class="sum-meta">Чистопрудный бульвар, 19А · <a href="#" style="color:var(--n100);text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:3px">Маршрут ↗</a></div><div class="info" style="margin-top:4px">${ICON_ID.replace('aria-hidden','style="width:16px;height:16px;flex:none;margin-top:2px;color:var(--n400)" aria-hidden')}<span>Потребуются документы: при оформлении — ФИО и документ на каждое место.</span></div><button class="btn btn-primary btn-md btn-full"><span>Выбрать места</span></button></div>
+   </div>
+   <div class="pre-col"><span class="cap">Схема зала · корзина справа</span>
+     <div class="cart"><div class="cart-h"><span class="t">Выбрано · 3 места</span>${docTag()}</div>
+       ${SEATS.map(s=>`<div class="sum-row"><span>${s.z} · ряд ${s.r}, место ${s.m}</span><span class="p">${fmt(s.p)}</span></div>`).join('')}
+       <div class="sum-total" style="border-top:1px solid var(--n800);padding-top:10px"><span class="sum-cap">Итого</span><span class="p" style="font-size:1.5rem">${fmt(total)}</span></div>
+              <button class="btn btn-primary btn-md btn-full"><span>Далее</span></button></div>
+   </div></div>`;
+}
+
+function render(){
+  const pad=Math.max(18,Math.min(56,st.w*0.032)),m=st.w<768;
+  document.getElementById('root').innerHTML=`<div class="canvas${m?' is-m':''}" style="width:${st.w}px;--pad:${pad}px">${st.screen==='docs'?docsScreen():preScreen()}</div>`;
+}
+const root=document.getElementById('root');
+root.addEventListener('click',async e=>{
+  const t=e.target.closest('[data-toggle]');if(t){const i=+t.dataset.toggle;st.open=st.open===i?-1:i;render();return}
+  if(e.target.closest('#go,#go-m')&&st.state!=='sending'){const prev=st.state;
+    const bad=st.v.some(v=>Object.keys(errorsOf(v)).length);
+    if(bad){setState('error');return}
+    setState('sending');await new Promise(r=>setTimeout(r,1500));setState(prev==='fail'?'done':'done')}
+});
+root.addEventListener('input',e=>{const el=e.target,box=el.closest('.vis');if(!box||!el.dataset.k)return;const v=st.v[+box.dataset.i];v[el.dataset.k]=el.value;
+});
+function setState(s){st.state=s;document.querySelectorAll('[data-state]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.state===s)));render()}
+document.getElementById('bar').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;b.parentElement.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');
+  if(b.dataset.theme)document.getElementById('core').href=b.dataset.theme==='dark'?CORE_BASE+'ds-core-r14.css':CORE_BASE+'ds-core-r14-light.css';
+  if(b.dataset.w)st.w=+b.dataset.w;if(b.dataset.screen)st.screen=b.dataset.screen;if(b.dataset.state){st.state=b.dataset.state;if(st.state==='error')st.open=-1}render()});
+const q=new URLSearchParams(location.search);
+[['theme','theme'],['w','w'],['screen','screen'],['state','state']].forEach(([k,a])=>{if(q.get(k)){st[k]=k==='w'?+q.get(k):q.get(k);document.querySelectorAll(`[data-${a}]`).forEach(b=>b.setAttribute('aria-pressed',String(b.dataset[a]===String(st[k]))));if(k==='theme')document.getElementById('core').href=st.theme==='dark'?CORE_BASE+'ds-core-r14.css':CORE_BASE+'ds-core-r14-light.css'}});
+render();
+</script>
+</body>
+</html>

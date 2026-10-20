@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Новые элементы — октябрь 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script>/* Стенд открыт вне репозитория (например, из «Загрузок») — ядро берём с GitHub Pages */
+var CORE_BASE='../../../',CORE_PAGES='https://hitch-npc.github.io/tts-design-system/';
+function coreFallback(l){if(CORE_BASE===CORE_PAGES)return;CORE_BASE=CORE_PAGES;l.href=CORE_PAGES+l.getAttribute('href').split('/').pop()}</script>
+<link id="core" rel="stylesheet" href="../../../ds-core-r14.css" onerror="coreFallback(this)">
+<style>
+body{margin:0;background:var(--ink);color:var(--n100);font-family:var(--font);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+.bar{position:sticky;top:0;z-index:60;display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;padding:10px 20px;background:var(--n950);border-bottom:1px solid var(--n800);font-size:12px}
+.bar b{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--n500);font-weight:500;margin-right:6px}
+.bar button{background:transparent;border:1px solid var(--n800);color:var(--n300);padding:6px 10px;border-radius:2px;font:500 11px var(--font);cursor:pointer}
+.bar button[aria-pressed=true]{background:var(--accent-ghost);border-color:var(--accent);color:var(--n100)}
+.page{max-width:1200px;margin:0 auto;padding:40px 24px 96px;display:flex;flex-direction:column;gap:48px}
+.page > header h1{font:500 clamp(2.2rem,5vw,3.4rem)/1.05 var(--f-thin);margin:0 0 12px}
+.page > header p{margin:0;max-width:760px;font-size:14px;line-height:1.7;color:var(--n300)}
+.page > header p b{color:var(--n100)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:16px;font-size:12px;color:var(--n400);align-items:center}
+
+/* Карточка элемента набора */
+.el{display:grid;grid-template-columns:260px minmax(0,1fr);gap:28px;padding-top:28px;border-top:1px solid var(--n800)}
+@media (max-width:860px){.el{grid-template-columns:1fr}}
+.el-meta{display:flex;flex-direction:column;gap:10px}
+.el-meta h2{margin:0;font:400 1.15rem/1.3 var(--f-head);color:var(--n100)}
+.el-meta p{margin:0;font-size:13px;line-height:1.6;color:var(--n400)}
+.el-meta code{font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--n200);background:var(--n950);border:1px solid var(--n800);border-radius:2px;padding:1px 5px}
+.el-meta .src{font-size:11px;color:var(--n500)}
+.new{display:inline-flex;align-self:flex-start;align-items:center;height:20px;padding:0 7px;border:1px solid var(--accent);background:var(--accent-ghost);color:var(--n100);font:600 9px/1 var(--font);letter-spacing:.16em;text-transform:uppercase;border-radius:2px}
+.var{display:inline-flex;align-self:flex-start;align-items:center;height:20px;padding:0 7px;border:1px solid var(--n700);color:var(--n300);font:600 9px/1 var(--font);letter-spacing:.16em;text-transform:uppercase;border-radius:2px}
+.states{display:flex;flex-wrap:wrap;gap:20px 24px;align-items:flex-start}
+.st{display:flex;flex-direction:column;gap:8px;min-width:0}
+.st > .cap{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--n500)}
+.w320{width:320px;max-width:100%}.w420{width:420px;max-width:100%}.w520{width:520px;max-width:100%}
+
+/* ── 1. Плашка документа ── */
+.doc-tag{display:inline-flex;align-items:center;gap:6px}.doc-tag svg{width:12px;height:12px;flex:none}
+/* ── 2. Блок посетителя ── */
+.vis{border:1px solid var(--n800);border-radius:2px;background:var(--n950)}
+.vis.has-error{border-color:var(--danger-border)}
+.vis-h{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:14px 16px;background:transparent;border:0;color:inherit;text-align:left;font:inherit}
+.vis-t{display:flex;flex-direction:column;gap:2px;min-width:0}
+.vis-n{font:400 1.05rem/1.3 var(--f-head);color:var(--n100)}
+.vis-s{font-size:12px;color:var(--n500)}
+.vis-r{display:flex;align-items:center;gap:10px;flex:none;color:var(--n500)}
+.vis-b{display:grid;gap:12px;padding:12px 16px 16px;border-top:1px solid var(--n900)}
+.row3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+/* ── 3. Бейдж категории ── */
+.cover{position:relative;width:200px;aspect-ratio:3/2;border-radius:2px;overflow:hidden;background:var(--n900)}
+.cover .bl{position:absolute;inset:-20%;background:radial-gradient(circle at 70% 40%,var(--g1) 0%,var(--g2) 45%,transparent 70%);filter:blur(10px)}
+.cat-badge{position:absolute;left:10px;top:10px;display:inline-flex;align-items:center;gap:6px;padding:4px 9px;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--n100);background:color-mix(in srgb,var(--n950) 72%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid color-mix(in srgb,var(--n800) 70%,transparent);border-radius:2px}
+.dot{width:7px;height:7px;border-radius:50%;flex:none;background:var(--c)}
+/* ── 4–6. Фильтры ── */
+.fbtn{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;border:1px solid var(--n800);border-radius:2px;background:var(--n950);color:var(--n200);font:500 12px var(--font);white-space:nowrap}
+.fbtn.open,.fbtn.on{border-color:var(--accent);background:var(--accent-ghost);color:var(--n100)}
+.fbtn svg{width:10px;height:10px;color:var(--n500)}
+.achip{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 6px 0 10px;border:1px solid var(--n800);border-radius:2px;font-size:11px;color:var(--n200);background:var(--n950)}
+.achip span{color:var(--n500);font-size:14px;line-height:1}
+.mfbtn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border:1px solid var(--accent);background:var(--accent-ghost);color:var(--n100);border-radius:2px;font:500 12px var(--font)}
+.mfbtn .badge{min-width:18px;height:18px;padding:0 5px;border-radius:9999px;background:var(--accent);color:var(--on-accent);font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+.pop{width:320px;max-width:100%;background:var(--n950);border:1px solid var(--n800);border-radius:2px;box-shadow:0 16px 40px var(--shadow-color);padding:16px;display:flex;flex-direction:column;gap:12px;box-sizing:border-box}
+.vrow{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--n200)}
+.vrow .n{margin-left:auto;font-size:11px;color:var(--n500)}
+.pop-f{display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--n800)}
+.lnk{background:none;border:0;padding:0;font:500 12px var(--font);color:var(--n100);text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:3px}
+/* ── 7. Плитка площадки ── */
+.v-card{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:14px;align-items:center;padding:16px;border:1px solid var(--n800);border-radius:2px;background:var(--n950);width:340px;max-width:100%;box-sizing:border-box}
+.v-logo{width:56px;height:56px;border:1px solid var(--n800);border-radius:2px;display:flex;align-items:center;justify-content:center;font:400 1.3rem var(--f-head);color:var(--n200);background:var(--n900)}
+.v-body{display:flex;flex-direction:column;gap:3px;min-width:0}
+.v-type{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--n500)}
+.v-name{font:400 1.05rem/1.3 var(--f-head);color:var(--n100)}
+.v-addr{font-size:12px;color:var(--n400)}
+.v-next{font-size:12px;color:var(--n300);margin-top:4px}.v-next b{font-weight:600;color:var(--n100)}.v-none{color:var(--n500)}
+.v-card{position:relative;overflow:hidden;isolation:isolate}
+.v-card::before{content:"";position:absolute;right:-12%;top:50%;width:62%;aspect-ratio:1;transform:translateY(-50%) scale(.85);border-radius:50%;background:radial-gradient(circle,var(--blob-core) 0%,var(--blob-mid) 50%,transparent 72%);filter:blur(28px);opacity:0;z-index:-1}
+.v-card.is-hover{border-color:var(--n600)}.v-card.is-hover::before{opacity:1;transform:translateY(-50%) scale(1)}
+.v-chev{color:var(--n500);display:inline-block}.v-card.is-hover .v-chev{color:var(--n100);transform:translateX(2px) scale(1.25)}
+/* ── 8. Вкладки ── */
+.tabs{display:flex;border:1px solid var(--n800);border-radius:2px;width:420px;max-width:100%}
+.tab{flex:1;height:38px;background:none;border:0;border-right:1px solid var(--n800);color:var(--n300);font:600 11px/1 var(--font);letter-spacing:.16em;text-transform:uppercase}
+.tab:last-child{border-right:0}
+.tab.on{background:var(--accent-ghost);color:var(--n100);box-shadow:inset 0 0 0 1px var(--accent)}
+/* ── 9. Строка почты ── */
+.mail{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;padding:12px 12px 12px 16px;border:1px solid var(--n800);border-radius:2px;background:var(--ink);width:420px;max-width:100%;box-sizing:border-box}
+.mail .addr{flex:1 1 180px;min-width:0;font-size:15px;font-weight:500;color:var(--n100);text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:4px}
+.copy{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:32px;padding:0 12px;border:1px solid var(--n700);border-radius:2px;background:transparent;color:var(--n100);font:600 9px/1 var(--font);letter-spacing:.16em;text-transform:uppercase;white-space:nowrap}
+.copy.done{border-color:var(--success-border);color:var(--success);background:var(--success-bg)}
+.copy svg{width:12px;height:12px}
+/* ── 10. Условия ── */
+.terms{border:1px solid var(--n800);border-radius:2px;background:var(--ink);width:520px;max-width:100%}
+.terms-h{display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:12px;align-items:start;padding:14px 16px}
+.terms-h svg.i{width:18px;height:18px;color:var(--n400);margin-top:1px}
+.terms-h .t{display:block;font:400 1rem/1.3 var(--f-head);color:var(--n100)}
+.terms-h .s{display:block;font-size:12px;line-height:1.5;color:var(--n400);margin-top:3px}
+.terms-h .more{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--n300);display:inline-flex;gap:6px;align-items:center}
+.case{border-top:1px solid var(--n900)}
+.case-h{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 16px;color:var(--n100);font:500 13px/1.4 var(--font)}
+.case ul{margin:0;padding:0 16px 14px 32px;display:flex;flex-direction:column;gap:6px;font-size:13px;line-height:1.55;color:var(--n300)}
+/* ── 11. Номера билетов ── */
+.tix-add{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.tix{display:flex;flex-wrap:wrap;gap:6px}
+.tix-chip{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 4px 0 10px;border:1px solid var(--n800);border-radius:2px;background:var(--n900);font:400 14px var(--f-num);color:var(--n100);letter-spacing:.04em}
+.tix-chip span{width:22px;text-align:center;color:var(--n500);font:400 13px var(--font)}
+/* ── 12. Заголовок шага ── */
+.step-h{display:flex;align-items:baseline;gap:12px}
+.step-h .n{font:400 1.4rem/1 var(--f-num);color:var(--n500);width:18px;flex:none}
+.step-h h3{margin:0;font:400 1.1rem/1.3 var(--f-head);color:var(--n100)}
+.step-h .opt{font-size:12px;color:var(--n500)}
+/* ── 13. Низ окна ── */
+.foot{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 24px 20px;border-top:1px solid var(--n800);background:var(--n950);width:520px;max-width:100%;box-sizing:border-box}
+.foot .btn-full{max-width:none;justify-content:center}
+.foot.m{flex-direction:column-reverse;align-items:stretch;gap:8px;width:340px;padding:12px 18px 16px}
+.foot.m .btn-ghost{border-color:transparent}
+/* ── 14. Отправлено ── */
+.done{display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.done-ic{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid var(--success-border);background:var(--success-bg);color:var(--success)}
+.done-ic svg{width:20px;height:20px}
+.done h3{margin:0;font:500 1.8rem/1.1 var(--f-thin);color:var(--n100)}
+.done p{margin:0;font-size:14px;color:var(--n300)}
+/* ── 15. 404 ── */
+.nf{position:relative;width:520px;max-width:100%;height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;border:1px solid var(--n800);border-radius:2px;overflow:hidden}
+.nf .glow{position:absolute;left:50%;top:50%;width:320px;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;filter:blur(60px);opacity:.8;background:radial-gradient(circle,var(--blob-core) 0%,var(--blob-mid) 55%,transparent 75%)}
+.nf > *:not(.glow){position:relative}
+.nf .code{font:400 5rem/.9 var(--f-num);color:var(--n100)}
+.nf h4{margin:0;font:500 1.6rem/1.1 var(--f-thin);color:var(--n100)}
+/* ── 16. Совпадение в поиске ── */
+.hl{font:400 1.1rem var(--f-head);color:var(--n400)}.hl mark{background:none;color:var(--n100)}
+</style>
+</head>
+<body>
+<div class="bar" id="bar">
+  <span><b>Тема</b><button data-theme="dark" aria-pressed="true">Тёмная</button> <button data-theme="light" aria-pressed="false">Светлая</button></span>
+</div>
+<main class="page">
+<header>
+  <h1>Новые элементы · октябрь 2026</h1>
+  <p>Мини-набор того, что появилось в стендах <code style="font-size:12px">redesign-2026-10</code> и чего нет в ядре <code style="font-size:12px">ds-core-r14.css</code>. У каждого элемента — состояния, классы из стенда и откуда он. <b>Новое</b> — элемента в системе не было. <b>Вариант</b> — существующий компонент ядра в новом виде. В ядро элементы переносятся после «решено» (README пакета, п. 0). В Figma набор собирает скрипт <code style="font-size:12px">figma/figma-new-2026-10.js</code>.</p>
+  <div class="legend"><span class="new">Новое</span><span class="var">Вариант</span><span>15 элементов · обе темы — переключатель сверху</span></div>
+</header>
+<div id="root"></div>
+</main>
+<script>
+const I={
+ id:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"><rect x="1.5" y="3" width="13" height="10" rx="1"/><circle cx="5.5" cy="7.2" r="1.6"/><path d="M3.3 11c.4-1.1 1.2-1.7 2.2-1.7s1.8.6 2.2 1.7M9.5 6.5h3M9.5 9h2"/></svg>',
+ chev:'<svg width="12" height="8" viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 1.5l5 5 5-5"/></svg>',
+ up:'<svg width="12" height="8" viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6.5l5-5 5 5"/></svg>',
+ dd:'<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3.5l3 3 3-3"/></svg>',
+ slid:'<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M2 4h7M13 4h1M2 12h1M7 12h7"/><circle cx="11" cy="4" r="2"/><circle cx="5" cy="12" r="2"/></svg>',
+ copy:'<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1"/><path d="M8 4V2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h2"/></svg>',
+ ok:'<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6.5l2.5 2.5L10 3"/></svg>',
+ doc:'<svg class="i" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 2.5h7l3.5 3.5v11.5H5z"/><path d="M12 2.5V6h3.5M7.5 10h5M7.5 13h5"/></svg>',
+};
+const st=(cap,html,cls='')=>`<div class="st ${cls}"><span class="cap">${cap}</span>${html}</div>`;
+const el=(n,kind,title,desc,cls,src,states)=>`<section class="el"><div class="el-meta"><span class="${kind==='new'?'new':'var'}">${kind==='new'?'Новое':'Вариант'}</span><h2>${n}. ${title}</h2><p>${desc}</p><p><code>${cls}</code></p><span class="src">${src}</span></div><div class="states">${states}</div></section>`;
+const field=(l,v,ph,e)=>`<div class="form-group"><label class="form-label">${l}</label><input class="form-input${e?' error':''}" value="${v}" placeholder="${ph}">${e?`<div class="form-error">${e}</div>`:''}</div>`;
+const CAT=[['Спектакли','var(--zone-2)','var(--blob-core-cool)','var(--blob-mid-cool)'],['Концерты','var(--tag-o-fg)','var(--blob-core-warm)','var(--blob-mid-warm)'],['Классика','var(--zone-4)','var(--blob-purple)','var(--blob-mid)'],['Детям','var(--tag-g-fg)','var(--blob-core-green)','var(--blob-mid-green)']];
+const ONE={'Спектакли':'Спектакль','Концерты':'Концерт','Классика':'Классика','Детям':'Детям'};
+const html=[
+ el(1,'var','Плашка «документы»','Тег ядра с иконкой удостоверения. Ставится на строку сеанса, в корзину и в сводку заказа у сеансов с <code>named_tickets</code>.','.tag.tag-default.doc-tag','стенд lab-documents',
+   st('На сеансе',`<span class="tag tag-default doc-tag">${I.id}Потребуются документы</span>`)+st('Корзина и сводка',`<span class="tag tag-default doc-tag">${I.id}Именные билеты</span>`)),
+ el(2,'new','Блок посетителя','Раскрывающийся блок одного места в шаге «Документы»: место в заголовке, статус справа, поля прода внутри.','.vis · .vis-h · .vis-b · .has-error','стенд lab-documents',
+   st('Свёрнут, заполнен',`<div class="vis w420"><div class="vis-h"><span class="vis-t"><span class="vis-n">Билет 1 · Партер, ряд 7, место 12</span><span class="vis-s">Петров Иван · Паспорт</span></span><span class="vis-r"><span class="tag tag-green">Заполнено</span>${I.chev}</span></div></div>`)+
+   st('Свёрнут, пусто',`<div class="vis w420"><div class="vis-h"><span class="vis-t"><span class="vis-n">Билет 3 · Амфитеатр, ряд 2, место 11</span><span class="vis-s">Данные посетителя этого места</span></span><span class="vis-r"><span class="tag tag-default">Заполнить</span>${I.chev}</span></div></div>`)+
+   st('Открыт, ошибка',`<div class="vis has-error w520"><div class="vis-h"><span class="vis-t"><span class="vis-n">Билет 2 · Партер, ряд 7, место 13</span></span><span class="vis-r"><span class="tag tag-red">Не заполнено</span>${I.up}</span></div><div class="vis-b"><div class="row3">${field('Фамилия','Петрова','Иванов')}${field('Имя','','Иван','Имя обязательно')}${field('Отчество','','Иванович')}</div></div></div>`)),
+ el(3,'new','Бейдж категории на обложке','Категория события с точкой цвета жанра. Подложка — как у даты на обложке (решение №24).','.cat-badge · .dot','стенд lab-all-events',
+   CAT.map(([c,dot,g1,g2])=>st(c,`<div class="cover" style="--g1:${g1};--g2:${g2}"><div class="bl"></div><span class="cat-badge"><span class="dot" style="--c:${dot}"></span>${ONE[c]}</span></div>`)).join('')),
+ el(4,'new','Кнопка фильтра','Фильтр в панели «Все события». Открытое и применённое состояние — как активный чип (решение №9); значение пишется в кнопку.','.fbtn · .open · .on','стенд lab-all-events',
+   st('Обычная',`<span class="fbtn">Площадка${I.dd}</span>`)+st('Окно открыто',`<span class="fbtn open">Площадка${I.dd}</span>`)+st('Применён',`<span class="fbtn on">Дата: 1–14 ноября${I.dd}</span>`)),
+ el(5,'new','Окно фильтра','Выпадает под своей кнопкой в 6px, как окно фильтров поиска (решение №18). Внизу — сброс и «Показать N событий».','.pop · .pop-f','стенд lab-all-events',
+   st('Площадка',`<div class="pop"><input class="form-input" placeholder="Найти площадку"><label class="vrow"><input type="checkbox" class="form-check-input" checked>Дом музыки<span class="n">13</span></label><label class="vrow"><input type="checkbox" class="form-check-input">Театр на Таганке<span class="n">5</span></label><div class="pop-f"><span class="lnk">Сбросить</span><span class="btn btn-primary btn-sm"><span>Показать 13 событий</span></span></div></div>`)),
+ el(6,'new','Чип применённого фильтра и мобильная кнопка','Чипы снимают по одному фильтру. На телефоне все фильтры — за кнопкой со счётчиком, окно — нижняя шторка.','.achip · .mfbtn','стенд lab-all-events',
+   st('Чипы',`<div style="display:flex;gap:8px;flex-wrap:wrap"><span class="achip">1–14 ноября<span>×</span></span><span class="achip">Дом музыки<span>×</span></span><span class="achip">до 4 000 ₽<span>×</span></span></div>`)+st('Телефон',`<span class="mfbtn">${I.slid}Фильтры<span class="badge">3</span></span>`)),
+ el(7,'new','Плитка площадки','Строка списка «Площадки»: логотип, тип из данных, название, адрес и ближайшее событие. Без событий — текст прода. Наведение: проявляется синий блоб, стрелка белеет и чуть увеличивается (320 мс).','.v-card · .v-logo · .is-hover','стенд lab-venues',
+   st('С событиями',`<div class="v-card"><span class="v-logo">Т</span><span class="v-body"><span class="v-type">Театр</span><span class="v-name">Театр на Таганке</span><span class="v-addr">ул. Земляной Вал, 76/21, стр. 1</span><span class="v-next"><b>5 событий</b> · ближайшее 27 октября</span></span><span class="v-chev">›</span></div>`)+st('Наведение',`<div class="v-card is-hover"><span class="v-logo">Т</span><span class="v-body"><span class="v-type">Театр</span><span class="v-name">Театр на Таганке</span><span class="v-addr">ул. Земляной Вал, 76/21, стр. 1</span><span class="v-next"><b>5 событий</b> · ближайшее 27 октября</span></span><span class="v-chev">›</span></div>`)+st('Без событий',`<div class="v-card"><span class="v-logo">З</span><span class="v-body"><span class="v-type">Концертный зал</span><span class="v-name">Концертный зал «Зарядье»</span><span class="v-addr">ул. Варварка, 6, стр. 4</span><span class="v-next v-none">Шоу ещё не анонсированы</span></span><span style="color:var(--n500)">›</span></div>`)),
+ el(8,'new','Вкладки-сегмент','Две вкладки окна «Помощь». Активная — как активный чип (решение №9).','.tabs · .tab','стенд lab-help',
+   st('Поддержка',`<div class="tabs"><span class="tab on" style="display:flex;align-items:center;justify-content:center">Поддержка</span><span class="tab" style="display:flex;align-items:center;justify-content:center">Возврат билетов</span></div>`)+st('Возврат',`<div class="tabs"><span class="tab" style="display:flex;align-items:center;justify-content:center">Поддержка</span><span class="tab on" style="display:flex;align-items:center;justify-content:center">Возврат билетов</span></div>`)),
+ el(9,'new','Строка почты','Адрес — ссылка на письмо, рядом «Скопировать». Адрес виден целиком и переносится, не обрезается.','.mail · .addr · .copy · .done','стенд lab-help',
+   st('Обычная',`<div class="mail"><a class="addr">support@tickettoshow.ru</a><span class="copy">${I.copy}Скопировать</span></div>`)+st('Скопировано',`<div class="mail"><a class="addr">support@tickettoshow.ru</a><span class="copy done">${I.ok}Скопировано</span></div>`)),
+ el(10,'new','Условия одной строкой','Длинные условия свёрнуты в строку с главным и раскрываются по случаям. Внутри — тексты прода.','.terms · .terms-h · .case','стенд lab-help',
+   st('Свёрнуты',`<div class="terms"><div class="terms-h">${I.doc}<span><span class="t">Условия возврата билетов</span><span class="s">За 10 дней и более до мероприятия — до 100% стоимости. Удерживается 10% за услуги дистрибьютора.</span></span><span class="more">Подробнее${I.chev}</span></div></div>`)+
+   st('Раскрыт случай',`<div class="terms"><div class="terms-h">${I.doc}<span><span class="t">Условия возврата билетов</span></span><span class="more">Свернуть${I.up}</span></div><div class="case"><div class="case-h">Если вы просто передумали${I.up}</div><ul><li>за 10 дней и более до мероприятия — до 100% стоимости;</li><li>менее 3 дней — возврат не делается;</li><li>удерживается 10% от стоимости билета за услуги дистрибьютора.</li></ul></div><div class="case"><div class="case-h" style="color:var(--n200)">Если мероприятие отменили, заменили или перенесли${I.chev}</div></div></div>`)),
+ el(11,'new','Поле с добавлением номеров','Ввод номера и «Добавить»; добавленные номера — чипами с крестиком. До 20 билетов, как в проде.','.tix-add · .tix-chip','стенд lab-help',
+   st('Номера добавлены',`<div class="w420" style="display:grid;gap:10px"><div class="tix-add"><input class="form-input" placeholder="Номер под штрих-кодом"><span class="btn btn-ghost btn-md"><span>Добавить</span></span></div><div class="tix"><span class="tix-chip">4612 0087 3391<span>×</span></span><span class="tix-chip">4612 0087 3392<span>×</span></span></div></div>`)+
+   st('Ошибка',`<div class="w420" style="display:grid;gap:6px"><div class="tix-add"><input class="form-input error" placeholder="Номер под штрих-кодом"><span class="btn btn-ghost btn-md"><span>Добавить</span></span></div><div class="form-error">Добавьте хотя бы один номер билета</div></div>`)),
+ el(12,'new','Заголовок шага формы','Номер шага цифрой Oranienbaum, заголовок Forum, пометка «по желанию».','.step-h · .n · .opt','стенд lab-help',
+   st('Обязательный',`<div class="step-h"><span class="n">1</span><h3>Номера билетов</h3></div>`)+st('По желанию',`<div class="step-h"><span class="n">2</span><h3>Информация о возврате</h3><span class="opt">по желанию</span></div>`)),
+ el(13,'new','Закреплённый низ окна','Действия окна вынесены за линию и не прокручиваются. Одно действие — на всю ширину; на телефоне главная кнопка сверху.','.hm-foot','стенд lab-help',
+   st('Два действия',`<div class="foot"><span class="btn btn-ghost btn-md"><span>Отмена</span></span><span class="btn btn-primary btn-md"><span>Отправить запрос на возврат</span></span></div>`)+
+   st('Одно действие',`<div class="foot"><span class="btn btn-primary btn-md btn-full"><span>Написать письмо</span></span></div>`)+
+   st('Телефон',`<div class="foot m"><span class="btn btn-ghost btn-md"><span>Отмена</span></span><span class="btn btn-primary btn-md btn-full"><span>Отправить запрос на возврат</span></span></div>`)),
+ el(14,'new','Состояние «Отправлено»','Замена формы после успешной отправки. Тексты — из прода.','.done · .done-ic','стенд lab-help',
+   st('Заявка отправлена',`<div class="done"><span class="done-ic">${I.ok}</span><h3>Заявка отправлена</h3><p>Заявка принята. Мы ответим на указанную почту.</p></div>`)),
+ el(15,'new','Служебные шаблоны','404 — один шаблон, четыре заголовка прода. Совпадение в результатах поиска — цветом, как в подсказках (решение №19).','.nf · mark','стенд lab-pages',
+   st('404',`<div class="nf"><div class="glow"></div><div class="code">404</div><h4>Страница не найдена</h4><span class="btn btn-primary btn-sm"><span>Перейти на главную</span></span></div>`)+st('Совпадение',`<span class="hl"><mark>Пс</mark>ихопаты</span>`)),
+].join('');
+document.getElementById('root').innerHTML=html;
+document.getElementById('bar').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;b.parentElement.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');
+  document.getElementById('core').href=b.dataset.theme==='dark'?CORE_BASE+'ds-core-r14.css':CORE_BASE+'ds-core-r14-light.css'});
+const q=new URLSearchParams(location.search);if(q.get('theme')==='light'){document.getElementById('core').href=CORE_BASE+'ds-core-r14-light.css';document.querySelectorAll('#bar button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.theme==='light')))}
+</script>
+</body>
+</html>

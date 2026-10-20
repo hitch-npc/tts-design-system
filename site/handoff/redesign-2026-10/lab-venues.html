@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Лаборатория страницы «Площадки»</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script>/* Стенд открыт вне репозитория (например, из «Загрузок») — ядро берём с GitHub Pages */
+var CORE_BASE='../../../',CORE_PAGES='https://hitch-npc.github.io/tts-design-system/';
+function coreFallback(l){if(CORE_BASE===CORE_PAGES)return;CORE_BASE=CORE_PAGES;l.href=CORE_PAGES+l.getAttribute('href').split('/').pop()}</script>
+<link id="core" rel="stylesheet" href="../../../ds-core-r14.css" onerror="coreFallback(this)">
+<style>
+body{margin:0;background:var(--ink);color:var(--n100);font-family:var(--font);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+.bar{position:sticky;top:0;z-index:60;display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;padding:10px 20px;background:var(--n950);border-bottom:1px solid var(--n800);font-size:12px}
+.bar b{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--n500);font-weight:500;margin-right:6px}
+.bar button{background:transparent;border:1px solid var(--n800);color:var(--n300);padding:6px 10px;border-radius:2px;font:500 11px var(--font);cursor:pointer}
+.bar button[aria-pressed=true]{background:var(--accent-ghost);border-color:var(--accent);color:var(--n100)}
+.canvas{margin:24px auto 80px;max-width:100%;border:1px solid var(--n800);background:var(--ink);position:relative;overflow:clip}
+.note-lab{max-width:1100px;margin:0 auto 24px;font-size:12px;color:var(--n400);line-height:1.7;padding:0 20px}
+.note-lab b{color:var(--n200)}
+
+/* Шапка сайта — как в редизайне v2: Афиша · Площадки · Партнёрам · Отзывы */
+.site-nav{display:flex;align-items:center;gap:24px;height:64px;padding:0 var(--pad);background:var(--n950);border-bottom:1px solid var(--n800)}
+.site-nav img{height:28px;width:auto;display:block}
+.site-nav .links{display:flex;gap:4px;flex:1}
+.site-nav .search{width:280px;height:36px;border:1px solid var(--n800);border-radius:2px;display:flex;align-items:center;padding:0 12px;font-size:12px;color:var(--n600)}
+.site-nav .city{height:36px;padding:0 12px;border:1px solid var(--n800);border-radius:2px;display:flex;align-items:center;font-size:12px;color:var(--n200)}
+.is-m .site-nav{height:56px;gap:12px}
+.is-m .site-nav .links,.is-m .site-nav .search,.is-m .site-nav .city{display:none}
+.burger{display:none;margin-left:auto;width:36px;height:36px;align-items:center;justify-content:center;color:var(--n200)}
+.is-m .burger{display:flex}
+
+/* ───── ПРЕДЛАГАЕМЫЕ КОМПОНЕНТЫ ───── */
+/* Шапка страницы — та же, что у разделов (lab-sections), без свечения жанра: площадка не жанр */
+.sec-head{padding:48px var(--pad) 32px;border-bottom:1px solid var(--n800)}
+.crumbs{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--n500);margin-bottom:18px}
+.crumbs a{color:var(--n400);text-decoration:none}
+.sec-title{font:500 clamp(2.4rem,6vw,4.4rem)/1.02 var(--f-thin);margin:0 0 14px}
+.sec-meta{font-size:12px;color:var(--n400)}
+.sec-meta b{color:var(--n100);font-weight:600}
+
+/* Панель над списком: поиск по названию + тип площадки */
+.v-tools{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px;padding:20px var(--pad);border-bottom:1px solid var(--n800)}
+.v-find{flex:0 1 320px;min-width:0;position:relative}
+.v-find .form-input{padding-left:38px}
+.v-find svg{position:absolute;left:14px;top:50%;margin-top:-7px;width:14px;height:14px;color:var(--n500)}
+.v-chips{display:flex;gap:8px;flex-wrap:wrap}
+.is-m .v-find{flex:1 1 100%}
+.is-m .v-chips{flex-wrap:nowrap;overflow-x:auto;margin:0 calc(-1*var(--pad));padding:0 var(--pad);scrollbar-width:none}
+
+/* Плитка площадки */
+.v-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:var(--gap-fluid,16px);padding:28px var(--pad) 56px}
+.is-m .v-grid{grid-template-columns:1fr;gap:10px}
+.v-card{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:14px;align-items:center;padding:16px;border:1px solid var(--n800);border-radius:2px;background:var(--n950);color:inherit;text-decoration:none;transition:border-color var(--dur-fast) var(--ease-out),background var(--dur-fast) var(--ease-out)}
+/* Наведение: из-под плитки проявляется синий блоб (правило «Blob»), стрелка становится белой и чуть увеличивается */
+.v-card{position:relative;overflow:hidden;isolation:isolate}
+.v-card::before{content:"";position:absolute;right:-12%;top:50%;width:62%;aspect-ratio:1;transform:translateY(-50%) scale(.85);border-radius:50%;
+  background:radial-gradient(circle,var(--blob-core) 0%,var(--blob-mid) 50%,transparent 72%);filter:blur(28px);opacity:0;z-index:-1;
+  transition:opacity var(--dur-slow) var(--ease-out),transform var(--dur-slow) var(--ease-out)}
+.v-card:hover,.v-card.is-hover{border-color:var(--n600)}
+.v-card:hover::before,.v-card.is-hover::before{opacity:1;transform:translateY(-50%) scale(1)}
+.v-chev{transition:color var(--dur-base) var(--ease-out),transform var(--dur-base) var(--ease-out);display:inline-block}
+.v-card:hover .v-chev,.v-card.is-hover .v-chev{color:var(--n100);transform:translateX(2px) scale(1.25)}
+@media (prefers-reduced-motion: reduce){.v-card::before,.v-chev{transition:none}.v-card:hover .v-chev,.v-card.is-hover .v-chev{transform:none}}
+.v-card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.v-logo{width:56px;height:56px;border:1px solid var(--n800);border-radius:2px;display:flex;align-items:center;justify-content:center;font:400 1.3rem var(--f-head);color:var(--n200);background:var(--n900)}
+.v-body{display:flex;flex-direction:column;gap:3px;min-width:0}
+.v-type{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--n500)}
+.v-name{font:400 1.05rem/1.3 var(--f-head);color:var(--n100)}
+.v-addr{font-size:12px;color:var(--n400);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v-next{font-size:12px;color:var(--n300);margin-top:4px}
+.v-next b{font-weight:600;color:var(--n100)}
+.v-none{color:var(--n500)}
+.v-chev{color:var(--n500);font-size:18px}
+.v-empty{grid-column:1/-1;padding:56px 0;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px}
+.v-empty .t{font:500 1.8rem var(--f-thin);color:var(--n100)}
+.v-empty p{margin:0;color:var(--n400);font-size:13px;max-width:380px;line-height:1.6}
+.sk{border:1px solid var(--n800);border-radius:2px;background:var(--n950);padding:16px;display:grid;grid-template-columns:56px 1fr;gap:14px}
+
+/* Страница площадки */
+.vp-head{display:grid;grid-template-columns:96px minmax(0,1fr);gap:24px;align-items:center}
+.is-m .vp-head{grid-template-columns:64px minmax(0,1fr);gap:16px}
+.vp-head .v-logo{width:96px;height:96px;font-size:2rem}
+.is-m .vp-head .v-logo{width:64px;height:64px;font-size:1.5rem}
+.vp-head .sec-title{margin:6px 0 10px}
+.vp-addr{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;font-size:13px;color:var(--n300)}
+.vp-addr a{color:var(--n100);text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:3px}
+.vp-body{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:32px;padding:32px var(--pad) 56px}
+.is-m .vp-body{grid-template-columns:1fr}
+.vp-sec-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding-bottom:12px;margin-bottom:20px;border-bottom:1px solid var(--n800)}
+.vp-sec-h h2{margin:0;font:500 clamp(1.5rem,3vw,2rem)/1 var(--f-thin)}
+.vp-sec-h .cnt{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--n500)}
+.vp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--card-min),1fr));gap:var(--gap-fluid,16px)}
+.vp-grid .event-card:hover{transform:none}
+.vp-aside{display:flex;flex-direction:column;gap:16px;align-self:start}
+.map{position:relative;aspect-ratio:4/3;max-width:100%;border:1px solid var(--n800);border-radius:2px;overflow:hidden;background:var(--n900);
+  background-image:linear-gradient(var(--n850) 1px,transparent 1px),linear-gradient(90deg,var(--n850) 1px,transparent 1px);background-size:28px 28px}
+.map .road{position:absolute;background:var(--n800)}
+.map .pin{position:absolute;left:50%;top:46%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 6px var(--accent-ghost)}
+.map .lbl{position:absolute;left:50%;top:46%;transform:translate(14px,-50%);font-size:11px;color:var(--n100);background:var(--n950);border:1px solid var(--n800);padding:4px 8px;border-radius:2px;white-space:nowrap}
+.map .cap{position:absolute;left:10px;bottom:10px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--n500)}
+.facts{display:grid;gap:10px;font-size:13px;color:var(--n300)}
+.facts div{display:flex;justify-content:space-between;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--n900)}
+.facts span:first-child{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--n500)}
+.facts span:last-child{text-align:right;color:var(--n100)}
+</style>
+</head>
+<body>
+<div class="bar" id="bar">
+  <span><b>Тема</b><button data-theme="dark" aria-pressed="true">Тёмная</button> <button data-theme="light" aria-pressed="false">Светлая</button></span>
+  <span><b>Ширина</b><button data-w="375" aria-pressed="false">375</button> <button data-w="768" aria-pressed="false">768</button> <button data-w="1440" aria-pressed="true">1440</button></span>
+  <span><b>Экран</b><button data-screen="list" aria-pressed="true">Все площадки</button> <button data-screen="venue" aria-pressed="false">Страница площадки</button></span>
+  <span><b>Состояние</b><button data-state="full" aria-pressed="true">Список</button> <button data-state="hover" aria-pressed="false">Наведение</button> <button data-state="loading" aria-pressed="false">Загрузка</button></span>
+</div>
+<div class="note-lab"><b>Что смотреть.</b> Сюда ведёт «Площадки» в шапке. Страница собирает в сетку те же площадки, что в проде листаются каруселью над афишей: логотип, название, адрес и число событий. Клик ведёт на страницу площадки — она есть в проде (<code>/theater</code>): метка, название, адрес, репертуар и карта. По решению №27 карта живёт здесь, а не на странице события; у неё свой заголовок «Как добраться», поэтому карта встаёт вровень с верхом карточек афиши. Наведение на плитку списка: проявляется синий блоб, стрелка становится белой и чуть увеличивается. Метка типа в проде зашита строкой «Концертный зал» у всех площадок — в стенде её место, а значение нужно из данных. Монограмма вместо логотипа — заглушка: в проде у площадок есть SVG-логотипы, они встают в тот же квадрат. Площадка без событий — текст прода «Шоу в заданном зале ещё не анонсированы».</div>
+<div id="root"></div>
+
+<script>
+const V=[
+ {n:'Московский международный Дом музыки',t:'Концертный зал',a:'Космодамианская наб., 52, стр. 8',c:13,next:'31 октября'},
+ {n:'Государственный Кремлёвский Дворец',t:'Дворец',a:'ул. Воздвиженка, 1/13',c:6,next:'12 ноября'},
+ {n:'Театр «Русская песня» п/р Н. Бабкиной',t:'Театр',a:'Олимпийский пр-т, 14',c:6,next:'25 октября'},
+ {n:'Театр на Таганке',t:'Театр',a:'ул. Земляной Вал, 76/21, стр. 1',c:5,next:'27 октября'},
+ {n:'Театр им. Гоголя',t:'Театр',a:'ул. Казакова, 8',c:4,next:'20 октября'},
+ {n:'Концертный зал «Москва»',t:'Концертный зал',a:'пр-т Андропова, 1',c:3,next:'26 ноября'},
+ {n:'Мастерская «12» Никиты Михалкова',t:'Театр',a:'ул. Поварская, 33',c:2,next:'23 октября'},
+ {n:'Театриум на Серпуховке',t:'Театр',a:'ул. Павловская, 6',c:3,next:'26 октября'},
+ {n:'Театр им. Вл. Маяковского',t:'Театр',a:'ул. Большая Никитская, 19/13',c:1,next:'23 ноября'},
+ {n:'Барвиха Luxury Village',t:'Концертный зал',a:'Рублёво-Успенское ш., 8-й км',c:2,next:'25 декабря'},
+ {n:'Концертный зал «Зарядье»',t:'Концертный зал',a:'ул. Варварка, 6, стр. 4',c:0},
+ {n:'Театр им. Евг. Вахтангова',t:'Театр',a:'ул. Арбат, 26',c:0},
+];
+const TYPES=['Все','Театры','Концертные залы','Дворцы'];
+const TMAP={'Театры':'Театр','Концертные залы':'Концертный зал','Дворцы':'Дворец'};
+const st={theme:'dark',w:1440,screen:'list',state:'full',type:'Все',q:''};
+const pl=(n,a,b,c)=>n%10===1&&n%100!==11?a:(n%10>=2&&n%10<=4&&(n%100<12||n%100>14)?b:c);
+const mono=n=>{const w=n.replace(/[«»"]/g,'').split(/\s+/).filter(x=>/^[А-ЯЁA-Z]/.test(x)&&!/^(Театр|Концертный|Московский|Государственный|Зал)$/.test(x));return (w[0]||n)[0]+(w[1]?w[1][0]:'')};
+const ICON_S='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5"/></svg>';
+const nav=(active)=>`<header class="site-nav"><img src="../../../tts-logo.svg" onerror="this.onerror=null;this.src=CORE_PAGES+'tts-logo.svg'" alt="Ticket to Show"><nav class="links">${['Афиша','Площадки','Партнёрам','Отзывы'].map(t=>`<a class="nav-desktop-link${t===active?' nav-link-active':''}">${t}</a>`).join('')}</nav><div class="search">${ICON_S.replace('<svg','<svg style="width:13px;height:13px;margin-right:8px"')}Театр, спектакль, артист…</div><div class="city">Москва</div><div class="burger"><svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M1 1h18M1 7h18M1 13h18"/></svg></div></header>`;
+
+function tile(v){return `<a class="v-card" href="#" data-open="${v.n}"><span class="v-logo" aria-hidden="true">${mono(v.n)}</span><span class="v-body"><span class="v-type">${v.t}</span><span class="v-name">${v.n}</span><span class="v-addr">${v.a}</span>${v.c?`<span class="v-next"><b>${v.c} ${pl(v.c,'событие','события','событий')}</b> · ближайшее ${v.next}</span>`:'<span class="v-next v-none">Шоу ещё не анонсированы</span>'}</span><span class="v-chev" aria-hidden="true">›</span></a>`}
+
+function list(){
+  const body=st.state==='loading'
+    ?Array.from({length:6},()=>`<div class="sk"><div class="skeleton" style="height:56px"></div><div style="display:flex;flex-direction:column;gap:8px"><div class="skeleton" style="height:10px;width:30%"></div><div class="skeleton" style="height:16px;width:80%"></div><div class="skeleton" style="height:10px;width:60%"></div></div></div>`).join('')
+    :V.map((v,i)=>i===0&&st.state==='hover'?tile(v).replace('class="v-card"','class="v-card is-hover"'):tile(v)).join('');
+  const total=V.reduce((a,v)=>a+v.c,0);
+  return `${nav('Площадки')}<header class="sec-head"><div class="crumbs"><a>Афиша</a> &nbsp;/&nbsp; Площадки</div><h1 class="sec-title">Площадки</h1><div class="sec-meta"><b>${V.length}</b> площадок · <b>${total}</b> событий в афише</div></header>
+  <div class="v-grid">${body}</div>`;
+}
+
+const EV=[
+ {g:'Спектакль',t:'Эйнштейн и Маргарита',d:'27 октября',p:12500,b:'card-cool'},
+ {g:'Спектакль',t:'Русский крест',d:'1 ноября',p:0,b:'card-warm',sold:true},
+ {g:'Спектакль',t:'Фрида',d:'2 ноября',p:5000,b:'card-cool'},
+ {g:'Спектакль',t:'«Когда пришла к тебе любовь»',d:'23 ноября',p:5000,b:'card-green'},
+ {g:'Спектакль',t:'Шанель № Стравинский',d:'26 ноября',p:3500,b:'card-cool'},
+];
+const fmt=n=>n.toLocaleString('ru-RU').replace(/,/g,' ')+' ₽';
+function card(e){return `<article class="event-card ${e.b}"><div class="event-card-cover"><div class="cover-blob cover-blob-1"></div><div class="cover-blob cover-blob-2"></div><div class="cover-date"><div class="t-caption">${e.d}</div></div></div><div class="event-card-body"><div class="event-card-meta">${e.g}</div><div class="event-card-title">${e.t}</div><div class="event-card-sub">Театр на Таганке</div><div class="event-card-footer">${e.sold?'<span class="tag tag-default">Продано</span>':`<div><span class="event-card-price-label">от</span><span class="event-card-price">${fmt(e.p)}</span></div><button class="btn btn-primary btn-sm"><span>Билеты</span></button>`}</div></div></article>`}
+function venue(){
+  const v=V[3];
+  return `${nav('Площадки')}<header class="sec-head"><div class="crumbs"><a>Афиша</a> &nbsp;/&nbsp; <a>Площадки</a> &nbsp;/&nbsp; ${v.n}</div>
+   <div class="vp-head"><span class="v-logo" aria-hidden="true">${mono(v.n)}</span><div><span class="tag tag-default">${v.t}</span><h1 class="sec-title">${v.n}</h1><div class="vp-addr"><span>${v.a}</span><a href="#">Маршрут ↗</a></div></div></div></header>
+   <div class="vp-body"><section><div class="vp-sec-h"><h2>Афиша площадки</h2><span class="cnt">${EV.length} событий</span></div><div class="vp-grid">${EV.map(card).join('')}</div></section>
+   <aside class="vp-aside"><div class="vp-sec-h" style="margin-bottom:4px"><h2>Как добраться</h2></div><div class="map" role="img" aria-label="Карта: ${v.n}"><span class="road" style="left:0;right:0;top:58%;height:10px"></span><span class="road" style="top:0;bottom:0;left:62%;width:12px"></span><span class="pin"></span><span class="lbl">${v.n}</span><span class="cap">Яндекс Карта · интерактивная</span></div>
+   <div class="facts"><div><span>Адрес</span><span>${v.a}</span></div></div>
+   <a class="btn btn-ghost btn-md btn-full" href="#"><span>Построить маршрут</span></a></aside></div>`;
+}
+function render(){
+  const pad=Math.max(18,Math.min(56,st.w*0.032)),m=st.w<768;
+  document.getElementById('root').innerHTML=`<div class="canvas${m?' is-m':''}" style="width:${st.w}px;--pad:${pad}px">${st.screen==='list'?list():venue()}</div>`;
+}
+const root=document.getElementById('root');
+root.addEventListener('click',e=>{const o=e.target.closest('[data-open]');if(o){e.preventDefault();setBar('screen','venue')}
+  if(e.target.closest('a[href="#"]'))e.preventDefault()});
+function setBar(k,v){st[k]=v;document.querySelectorAll(`[data-${k}]`).forEach(b=>{if(b.closest('#bar'))b.setAttribute('aria-pressed',String(b.dataset[k]===v))});render()}
+document.getElementById('bar').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;b.parentElement.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');
+  if(b.dataset.theme)document.getElementById('core').href=b.dataset.theme==='dark'?CORE_BASE+'ds-core-r14.css':CORE_BASE+'ds-core-r14-light.css';
+  if(b.dataset.w)st.w=+b.dataset.w;if(b.dataset.screen)st.screen=b.dataset.screen;if(b.dataset.state)st.state=b.dataset.state;render()});
+const q=new URLSearchParams(location.search);
+[['theme','theme'],['w','w'],['screen','screen'],['state','state']].forEach(([k,a])=>{if(q.get(k)){st[k]=k==='w'?+q.get(k):q.get(k);document.querySelectorAll(`#bar [data-${a}]`).forEach(b=>b.setAttribute('aria-pressed',String(b.dataset[a]===String(st[k]))));if(k==='theme')document.getElementById('core').href=st.theme==='dark'?CORE_BASE+'ds-core-r14.css':CORE_BASE+'ds-core-r14-light.css'}});
+render();
+</script>
+</body>
+</html>

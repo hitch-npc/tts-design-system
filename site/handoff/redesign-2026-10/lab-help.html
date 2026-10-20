@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Лаборатория окна «Помощь»</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script>/* Стенд открыт вне репозитория (например, из «Загрузок») — ядро берём с GitHub Pages */
+var CORE_BASE='../../../',CORE_PAGES='https://hitch-npc.github.io/tts-design-system/';
+function coreFallback(l){if(CORE_BASE===CORE_PAGES)return;CORE_BASE=CORE_PAGES;l.href=CORE_PAGES+l.getAttribute('href').split('/').pop()}</script>
+<link id="core" rel="stylesheet" href="../../../ds-core-r14.css" onerror="coreFallback(this)">
+<style>
+body{margin:0;background:var(--ink);color:var(--n100);font-family:var(--font);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+.bar{position:sticky;top:0;z-index:60;display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;padding:10px 20px;background:var(--n950);border-bottom:1px solid var(--n800);font-size:12px}
+.bar b{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--n500);font-weight:500;margin-right:6px}
+.bar button{background:transparent;border:1px solid var(--n800);color:var(--n300);padding:6px 10px;border-radius:2px;font:500 11px var(--font);cursor:pointer}
+.bar button[aria-pressed=true]{background:var(--accent-ghost);border-color:var(--accent);color:var(--n100)}
+.canvas{margin:24px auto 80px;max-width:100%;border:1px solid var(--n800);background:var(--ink);position:relative;overflow:clip;height:940px}
+.is-m.canvas{height:812px}
+.note-lab{max-width:1100px;margin:0 auto 24px;font-size:12px;color:var(--n400);line-height:1.7;padding:0 20px}
+.note-lab b{color:var(--n200)}
+
+/* Фон под окном: колонка «Помощь» футера — точки входа */
+.under{padding:48px var(--pad);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,320px);gap:32px;align-items:end;height:100%;box-sizing:border-box}
+.is-m .under{grid-template-columns:1fr;align-items:start}
+.under .ph{display:flex;flex-direction:column;gap:12px}
+.under .ph span{display:block;height:10px;background:var(--n900);border-radius:2px}
+.help{display:flex;flex-direction:column;gap:8px}
+.help-cap{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--n500);margin-bottom:2px}
+.help-btn{display:flex;align-items:center;gap:10px;width:100%;padding:13px 20px;font:600 11px/1 var(--font);letter-spacing:.16em;text-transform:uppercase;background:var(--n950);border:1px solid var(--n800);border-radius:2px;color:var(--n200);cursor:pointer;text-align:left;text-decoration:none}
+.help-btn:hover{border-color:var(--n600);color:var(--n100)}
+.help-btn svg{width:16px;height:16px;flex:none;opacity:.7}
+
+/* ───── ПРЕДЛАГАЕМЫЕ КОМПОНЕНТЫ ───── */
+/* Окно — .modal-overlay / .modal-box ядра; в стенде absolute вместо fixed.
+   Иерархия: шапка с вкладками → прокручиваемое тело → закреплённый низ с действиями. */
+.canvas .modal-overlay{position:absolute;z-index:40}
+.hm{max-width:600px;height:calc(100% - 48px);max-height:860px;display:flex;flex-direction:column}
+.hm.short{height:auto}
+.hm-head{flex:none;padding:20px 24px 0;display:flex;flex-direction:column;gap:16px}
+.hm-top{display:flex;align-items:center;gap:12px}
+.hm-top .modal-title{flex:1;min-width:0}
+.x{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:1px solid var(--n800);border-radius:2px;background:transparent;color:var(--n300);cursor:pointer;flex:none}
+.x:hover{color:var(--n100);border-color:var(--n600)}
+.tabs{display:flex;border:1px solid var(--n800);border-radius:2px}
+.tab{flex:1;height:38px;background:none;border:0;border-right:1px solid var(--n800);color:var(--n300);font:600 11px/1 var(--font);letter-spacing:.16em;text-transform:uppercase;cursor:pointer}
+.tab:last-child{border-right:0}
+.tab[aria-selected=true]{background:var(--accent-ghost);color:var(--n100);box-shadow:inset 0 0 0 1px var(--accent)}
+.hm-body{flex:1;min-height:0;overflow:auto;padding:20px 24px 28px;display:flex;flex-direction:column;gap:28px}
+.hm-foot{flex:none;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 24px 20px;border-top:1px solid var(--n800);background:var(--n950)}
+.hm-foot .btn-primary{min-width:260px}
+.hm-foot .btn-full{max-width:none;justify-content:center}
+:is(.x,.tab,.copy,.lnk,.terms-h,.case-h,.help-btn,.ext,.tix-rm):focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.lead{margin:0;font-size:14px;line-height:1.65;color:var(--n300)}
+.cap{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--n500)}
+.lnk{background:none;border:0;padding:0;font:500 12px var(--font);color:var(--n100);text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:3px;cursor:pointer;text-align:left}
+.ext{display:inline-flex;align-items:center;gap:8px;font:500 12px var(--font);color:var(--n300);text-decoration:none}
+.ext svg{width:16px;height:16px;color:var(--n400)}
+
+/* Почта + «Скопировать» */
+.mail{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;padding:12px 12px 12px 16px;border:1px solid var(--n800);border-radius:2px;background:var(--ink)}
+.mail .addr{flex:1 1 180px;min-width:0;font-size:15px;font-weight:500;color:var(--n100);overflow-wrap:anywhere;text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:4px}
+.mail .addr:hover{text-decoration-thickness:2px}
+.mail .addr:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.copy{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:32px;padding:0 12px;border:1px solid var(--n700);border-radius:2px;background:transparent;color:var(--n100);font:600 9px/1 var(--font);letter-spacing:.16em;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+.copy.done{border-color:var(--success-border);color:var(--success);background:var(--success-bg)}
+.copy svg{width:12px;height:12px}
+.is-m .mail .copy{flex:1 1 100%}
+
+/* Условия возврата: одна строка с главным, раскрытие по случаям */
+.terms{border:1px solid var(--n800);border-radius:2px;background:var(--ink)}
+.terms-h{display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:12px;align-items:start;width:100%;padding:14px 16px;background:none;border:0;color:inherit;text-align:left;cursor:pointer;font:inherit}
+.terms-h svg.i{width:18px;height:18px;color:var(--n400);margin-top:1px}
+.terms-h .t{display:block;font:400 1rem/1.3 var(--f-head);color:var(--n100)}
+.terms-h .s{display:block;font-size:12px;line-height:1.5;color:var(--n400);margin-top:3px}
+.terms-h .more{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--n300);white-space:nowrap;display:inline-flex;gap:6px;align-items:center}
+.terms-h .more svg{transition:transform var(--dur-base) var(--ease-out)}
+.terms.open .terms-h .more svg{transform:rotate(180deg)}
+.is-m .terms-h .more .w{display:none}
+.terms-b{display:none;border-top:1px solid var(--n900)}
+.terms.open .terms-b{display:block}
+.case{border-bottom:1px solid var(--n900)}
+.case-h{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;padding:12px 16px;background:none;border:0;color:var(--n200);font:500 13px/1.4 var(--font);text-align:left;cursor:pointer}
+.case-h svg{color:var(--n500);flex:none;transition:transform var(--dur-base) var(--ease-out)}
+.case.open .case-h{color:var(--n100)}
+.case.open .case-h svg{transform:rotate(180deg)}
+.case ul{display:none;margin:0;padding:0 16px 14px 32px;flex-direction:column;gap:6px;font-size:13px;line-height:1.55;color:var(--n300)}
+.case.open ul{display:flex}
+.case li::marker{color:var(--n600)}
+.terms-f{padding:12px 16px}
+
+/* Форма: три шага — настоящая последовательность, поэтому с номерами */
+.step{display:flex;flex-direction:column;gap:12px}
+.step-h{display:flex;align-items:baseline;gap:12px}
+.step-h .n{font:400 1.4rem/1 var(--f-num);color:var(--n500);width:18px;flex:none}
+.step-h h3{margin:0;font:400 1.1rem/1.3 var(--f-head);color:var(--n100)}
+.step-h .opt{font-size:12px;color:var(--n500)}
+.step-b{display:flex;flex-direction:column;gap:10px;padding-left:30px}
+.is-m .step-b{padding-left:0}
+.tix-add{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.tix{display:flex;flex-wrap:wrap;gap:6px}
+.tix-chip{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 4px 0 10px;border:1px solid var(--n800);border-radius:2px;background:var(--n900);font:400 14px var(--f-num);color:var(--n100);letter-spacing:.04em}
+.tix-rm{width:22px;height:22px;display:flex;align-items:center;justify-content:center;border:0;background:none;color:var(--n500);cursor:pointer;border-radius:2px}
+.tix-rm:hover{color:var(--n100)}
+textarea.form-input{min-height:88px;resize:vertical;line-height:1.55}
+.counter{align-self:flex-end;font-size:11px;color:var(--n500);margin-top:-4px}
+.row2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.is-m .row2{grid-template-columns:1fr}
+.alert{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--danger-border);background:var(--danger-bg);border-radius:2px;font-size:13px;line-height:1.55;color:var(--danger-text)}
+.alert svg{width:16px;height:16px;flex:none;margin-top:2px}
+@keyframes tts-spin{to{transform:rotate(360deg)}}
+
+/* Отправлено */
+.done{display:flex;flex-direction:column;align-items:flex-start;gap:14px;padding:8px 0}
+.done-ic{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid var(--success-border);background:var(--success-bg);color:var(--success)}
+.done-ic svg{width:20px;height:20px}
+.done h3{margin:0;font:500 1.8rem/1.1 var(--f-thin);color:var(--n100)}
+
+/* Телефон: окно — нижняя шторка; действия в низу шторки, главная кнопка на всю ширину */
+.is-m .modal-overlay{align-items:flex-end;padding:0}
+.is-m .hm{max-width:none;height:94%;max-height:none;border-radius:8px 8px 0 0;border-bottom:0}
+.is-m .hm.short{height:auto;max-height:94%}
+.is-m .hm::before{content:"";width:36px;height:4px;border-radius:9999px;background:var(--n700);margin:8px auto 0;flex:none}
+.is-m .hm-head{padding:10px var(--pad) 0}
+.is-m .hm-body{padding:16px var(--pad) 24px;gap:24px}
+.is-m .hm-foot{flex-direction:column-reverse;align-items:stretch;gap:8px;padding:12px var(--pad) 16px}
+.is-m .hm-foot .btn-primary{min-width:0;width:100%}
+.is-m .hm-foot .btn-ghost{border-color:transparent}
+</style>
+</head>
+<body>
+<div class="bar" id="bar">
+  <span><b>Тема</b><button data-theme="dark" aria-pressed="true">Тёмная</button> <button data-theme="light" aria-pressed="false">Светлая</button></span>
+  <span><b>Ширина</b><button data-w="375" aria-pressed="false">375</button> <button data-w="768" aria-pressed="false">768</button> <button data-w="1440" aria-pressed="true">1440</button></span>
+  <span><b>Вкладка</b><button data-tab="support" aria-pressed="false">Поддержка</button> <button data-tab="refund" aria-pressed="true">Возврат</button> <button data-tab="" aria-pressed="false">Закрыто</button></span>
+  <span><b>Форма</b><button data-f="fill" aria-pressed="true">Заполнение</button> <button data-f="error" aria-pressed="false">Ошибки</button> <button data-f="sending" aria-pressed="false">Отправка</button> <button data-f="fail" aria-pressed="false">Сбой</button> <button data-f="sent" aria-pressed="false">Отправлено</button></span>
+  <span><b>Условия</b><button data-t="0" aria-pressed="true">Свёрнуты</button> <button data-t="1" aria-pressed="false">Развёрнуты</button></span>
+</div>
+<div class="note-lab"><b>Что смотреть.</b> Окно «Помощь» с двумя вкладками. Вкладка «Возврат билетов» — форма заявки прода от 20.10.2026 (номера билетов, комментарий, почта, телефон, «Отправить запрос на возврат») и её условия возврата, но в другой иерархии: одна колонка вместо двух; условия свёрнуты в одну строку над формой с главным — сколько вернут и что удерживается 10 % — и раскрываются по четырём случаям; три шага формы разведены воздухом; действия вынесены в закреплённый низ окна, отделённый линией, — кнопка не слипается с полями и всегда на виду. Тексты, поля, ограничения (до 20 билетов, комментарий до 500 знаков), ошибки и ответы — из прода. Вкладка «Поддержка» — текст окна прода; почта — ссылка на письмо и «Скопировать»; одна главная кнопка «Написать письмо» на всю ширину. На телефоне окно — нижняя шторка, главная кнопка на всю ширину внизу.</div>
+<div id="root"></div>
+
+<script>
+const MAIL='support@tickettoshow.ru';
+const I={
+ back:'<svg viewBox="833 547 27 27" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M857.04 560.204C857.042 562.609 856.219 564.941 854.708 566.812C853.197 568.682 851.09 569.978 848.739 570.481C846.387 570.985 843.935 570.666 841.79 569.578C839.646 568.49 837.94 566.699 836.957 564.505C835.974 562.31 835.775 559.845 836.391 557.521C837.008 555.197 838.404 553.155 840.345 551.736C842.287 550.317 844.656 549.608 847.058 549.727C849.46 549.845 851.748 550.785 853.54 552.388"/><path d="M857.04 550.871V556.704H851.207"/></svg>',
+ mail:'<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="2" y="5" width="16" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M2 7l8 5.5L18 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
+ ticket:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a2 2 0 0 0 0 4v2a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-2a2 2 0 0 0 0-4z"/><path d="M7.5 10l2 2 3.5-4"/></svg>',
+ doc:'<svg class="i" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 2.5h7l3.5 3.5v11.5H5z"/><path d="M12 2.5V6h3.5M7.5 10h5M7.5 13h5"/></svg>',
+ x:'<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M1 1l10 10M11 1L1 11"/></svg>',
+ xs:'<svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M1 1l10 10M11 1L1 11"/></svg>',
+ copy:'<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1"/><path d="M8 4V2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h2"/></svg>',
+ ok:'<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6.5l2.5 2.5L10 3"/></svg>',
+ chev:'<svg width="12" height="8" viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 1.5l5 5 5-5"/></svg>',
+ warn:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 4.6v4.2"/><path d="M8 11.3v0"/></svg>',
+};
+/* Условия возврата — дословно из прода (20.10.2026) */
+const CASES=[
+ {t:'Если вы просто передумали',items:['за 10 дней и более до мероприятия — до 100% стоимости;','менее 10, но не позднее 5 дней — до 50%;','менее 5, но не позднее 3 дней — до 30%;','менее 3 дней — возврат не делается;','удерживается 10% от стоимости билета за услуги дистрибьютора.']},
+ {t:'Если мероприятие отменили, заменили или перенесли',items:['возвращается номинальная стоимость билета;','сервисные и комиссионные сборы не возвращаются;','сроки возврата зависят от ситуации: при замене — до даты показа, при отмене — до даты отменённого спектакля + 10 дней, при переносе — до изначальной даты.']},
+ {t:'Если причина — болезнь покупателя',items:['заявление нужно подать не позднее дня мероприятия;','понадобятся оригинал билета (или распечатка электронного + чек) и медицинские документы;','если документов нет сразу, их можно донести в течение 7 дней после мероприятия;','срок рассмотрения — до 30 дней, иногда до 60;','возврат денег — до 30 дней после решения.']},
+ {t:'Если причина — смерть члена семьи или близкого родственника',items:['заявление — не позднее дня мероприятия;','нужны документы, подтверждающие смерть и родство;','недостающие документы можно предоставить в течение 7 дней после мероприятия;','сроки рассмотрения и возврата такие же, как при болезни.']},
+];
+const st={theme:'dark',w:1440,tab:'refund',f:'fill',t:'0',c:'0',open:0,tix:['4612 0087 3391','4612 0087 3392']};
+
+const mailRow=()=>`<div class="mail"><a class="addr" href="mailto:${MAIL}">${MAIL}</a><button class="copy${st.c==='1'?' done':''}" data-copy>${st.c==='1'?I.ok+'Скопировано':I.copy+'Скопировать'}</button></div>`;
+const err=t=>t?`<div class="form-error">${t}</div>`:'';
+
+function terms(){
+  const open=st.t==='1';
+  return `<div class="terms${open?' open':''}">
+   <button class="terms-h" aria-expanded="${open}" data-terms>${I.doc}<span><span class="t">Условия возврата билетов</span><span class="s">За 10 дней и более до мероприятия — до 100% стоимости. Удерживается 10% за услуги дистрибьютора.</span></span><span class="more"><span class="w">${open?'Свернуть':'Подробнее'}</span>${I.chev}</span></button>
+   <div class="terms-b">${CASES.map((c,i)=>`<div class="case${st.open===i?' open':''}"><button class="case-h" aria-expanded="${st.open===i}" data-case="${i}">${c.t}${I.chev}</button><ul>${c.items.map(x=>`<li>${x}</li>`).join('')}</ul></div>`).join('')}
+    <div class="terms-f"><button class="lnk">Полные условия в публичной оферте →</button></div></div>
+  </div>`;
+}
+function refund(){
+  if(st.f==='sent') return `<div class="done"><span class="done-ic">${I.ok}</span><h3>Заявка отправлена</h3><p class="lead">Заявка принята. Мы ответим на указанную почту.</p></div>`;
+  const E=st.f==='error';
+  const tix=E?[]:st.tix;
+  return `<p class="lead">Заполните форму, и мы рассмотрим ваш запрос. Обычно это занимает до 3 рабочих дней.</p>
+   ${terms()}
+   ${st.f==='fail'?`<div class="alert" role="alert">${I.warn}<span>Не удалось отправить заявку. Проверьте соединение и попробуйте ещё раз.</span></div>`:''}
+   <section class="step"><div class="step-h"><span class="n">1</span><h3>Номера билетов</h3></div><div class="step-b">
+     <div class="tix-add"><input class="form-input${E?' error':''}" id="tn" placeholder="Номер под штрих-кодом" aria-label="Номер билета"><button class="btn btn-ghost btn-md"><span>Добавить</span></button></div>
+     ${E?err('Добавьте хотя бы один номер билета'):`<div class="form-helper">Можно указать несколько — до 20 билетов.</div>`}
+     ${tix.length?`<div class="tix">${tix.map(t=>`<span class="tix-chip">${t}<button class="tix-rm" aria-label="Убрать билет ${t}">${I.xs}</button></span>`).join('')}</div>`:''}
+   </div></section>
+   <section class="step"><div class="step-h"><span class="n">2</span><h3>Информация о возврате</h3><span class="opt">по желанию</span></div><div class="step-b">
+     <textarea class="form-input" id="cm" placeholder="Расскажите подробнее" aria-label="Комментарий">${E?'':'Не сможем прийти, возвращаем оба билета.'}</textarea>
+     <span class="counter">${E?0:41}/500</span>
+   </div></section>
+   <section class="step"><div class="step-h"><span class="n">3</span><h3>Контактные данные</h3></div><div class="step-b">
+     <div class="row2">
+      <div class="form-group"><label class="form-label" for="em">Почта, на которую пришли билеты</label><input class="form-input${E?' error':''}" id="em" value="${E?'ivan@example':'ivan@example.com'}" placeholder="ivan@example.com">${err(E&&'Проверьте формат почты')}</div>
+      <div class="form-group"><label class="form-label" for="ph">Телефон · по желанию</label><input class="form-input${E?' error':''}" id="ph" value="${E?'+7 999 00':''}" placeholder="+7 (999) 000-00-00">${err(E&&'Проверьте номер телефона')}</div>
+     </div>
+   </div></section>`;
+}
+function support(){return `
+  <p class="lead">По всем вопросам пишите на почту. Опишите в письме проблему или вопрос — ответит первый освободившийся сотрудник.</p>
+  ${mailRow()}`}
+
+function modal(){
+  if(!st.tab)return '';
+  const isRef=st.tab==='refund',sent=isRef&&st.f==='sent';
+  const foot=isRef
+    ?(sent?`<span></span><button class="btn btn-primary btn-md" data-close><span>Закрыть</span></button>`
+          :`<button class="btn btn-ghost btn-md" data-close><span>Отмена</span></button><button class="btn btn-primary btn-md${st.f==='sending'?' is-loading':''}" data-send${st.f==='sending'?' aria-busy="true" disabled':''}><span>${st.f==='sending'?'Отправляем…':'Отправить запрос на возврат'}</span></button>`)
+    :`<a class="btn btn-primary btn-md btn-full" href="mailto:${MAIL}"><span>Написать письмо</span></a>`;
+  return `<div class="modal-overlay open" data-scrim><div class="modal-box hm${isRef&&!sent?'':' short'}" role="dialog" aria-modal="true" aria-labelledby="mt">
+   <div class="hm-head"><div class="hm-top"><h2 class="modal-title" id="mt">Помощь</h2><button class="x" data-close aria-label="Закрыть">${I.x}</button></div>
+    <div class="tabs" role="tablist"><button class="tab" role="tab" aria-selected="${!isRef}" data-tabto="support">Поддержка</button><button class="tab" role="tab" aria-selected="${isRef}" data-tabto="refund">Возврат билетов</button></div></div>
+   <div class="hm-body" role="tabpanel">${isRef?refund():support()}</div>
+   <div class="hm-foot">${foot}</div>
+  </div></div>`;
+}
+function render(){
+  const pad=Math.max(18,Math.min(56,st.w*0.032)),m=st.w<768;
+  document.getElementById('root').innerHTML=`<div class="canvas${m?' is-m':''}" style="width:${st.w}px;--pad:${pad}px">
+   <div class="under"><div class="ph" aria-hidden="true"><span style="width:40%"></span><span style="width:70%"></span><span style="width:55%"></span></div>
+    <div class="help"><div class="help-cap">Помощь</div>
+     <button class="help-btn" data-tabto="refund">${I.back}Возврат билетов</button>
+     <button class="help-btn" data-tabto="support">${I.mail}Написать в поддержку</button>
+     <a class="help-btn" href="#">${I.ticket}Проверка билета</a>
+    </div></div>${modal()}</div>`;
+}
+const root=document.getElementById('root');
+root.addEventListener('click',async e=>{
+  if(e.target.closest('[data-close]')||e.target.hasAttribute('data-scrim')){set('tab','');return}
+  const t=e.target.closest('[data-tabto]');if(t){set('f','fill',false);set('tab',t.dataset.tabto);return}
+  if(e.target.closest('[data-terms]')){set('t',st.t==='1'?'0':'1');return}
+  const c=e.target.closest('[data-case]');if(c){st.open=st.open===+c.dataset.case?-1:+c.dataset.case;render();return}
+  const rm=e.target.closest('.tix-rm');if(rm){st.tix=st.tix.filter(x=>!rm.getAttribute('aria-label').endsWith(x));render();return}
+  if(e.target.closest('[data-copy]')){try{navigator.clipboard.writeText(MAIL)}catch(_){}set('c','1');setTimeout(()=>set('c','0'),2000);return}
+  if(e.target.closest('[data-send]')&&st.f!=='sending'){set('f','sending');await new Promise(r=>setTimeout(r,1400));set('f','sent');return}
+  if(e.target.closest('a[href="#"]'))e.preventDefault();
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&st.tab)set('tab','')});
+function mark(k,v){document.querySelectorAll(`#bar [data-${k}]`).forEach(b=>b.setAttribute('aria-pressed',String(b.dataset[k]===String(v))))}
+function set(k,v,r=true){st[k]=v;mark(k,v);if(r)render()}
+document.getElementById('bar').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;b.parentElement.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');
+  if(b.dataset.theme)document.getElementById('core').href=b.dataset.theme==='dark'?CORE_BASE+'ds-core-r14.css':CORE_BASE+'ds-core-r14-light.css';
+  if(b.dataset.w)st.w=+b.dataset.w;if(b.dataset.tab!==undefined)st.tab=b.dataset.tab;if(b.dataset.t)st.t=b.dataset.t;
+  if(b.dataset.f){st.f=b.dataset.f;if(st.tab!=='refund'){st.tab='refund';mark('tab','refund')}}render()});
+const q=new URLSearchParams(location.search);
+[['theme','theme'],['w','w'],['tab','tab'],['f','f'],['t','t'],['c','c']].forEach(([k,a])=>{if(q.get(k)!==null){st[k]=k==='w'?+q.get(k):q.get(k);mark(a,st[k]);if(k==='theme')document.getElementById('core').href=st.theme==='dark'?CORE_BASE+'ds-core-r14.css':CORE_BASE+'ds-core-r14-light.css'}});
+render();
+</script>
+</body>
+</html>
