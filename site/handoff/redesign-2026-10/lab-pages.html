@@ -72,12 +72,30 @@ body{margin:0;background:var(--ink);color:var(--n100);font-family:var(--font);-w
 .sk-card .a{aspect-ratio:3/2}.sk-card .b{padding:16px;display:flex;flex-direction:column;gap:10px}
 
 /* 404: один шаблон, четыре заголовка прода, одна кнопка */
-.nf{position:relative;min-height:560px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:64px var(--pad);text-align:center;overflow:hidden}
-.nf .glow{position:absolute;left:50%;top:50%;width:min(560px,90%);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;filter:blur(80px);opacity:.8;background:radial-gradient(circle,var(--blob-core) 0%,var(--blob-mid) 55%,transparent 75%);pointer-events:none}
-.nf > *:not(.glow){position:relative}
-.nf .code{font:400 clamp(5rem,16vw,9rem)/.9 var(--f-num);color:var(--n100);letter-spacing:.02em}
+/* 404 — сцена: зал гаснет, сверху бьёт софит, в луче медленно плывёт пыль. Луч покачивается вместе с пылью.
+   Цвет луча — светлый тон темы в тёмной, кобальт в светлой. При «меньше движения» луч стоит, пыль не движется. */
+.nf{position:relative;height:620px;overflow:hidden;--beam:color-mix(in srgb,var(--n100) 18%,transparent);--pool:color-mix(in srgb,var(--n100) 15%,transparent);--dust:var(--n100);
+  background:radial-gradient(ellipse 70% 45% at 50% 100%,var(--n950) 0%,var(--ink) 70%)}
+.nf.is-light{--beam:color-mix(in srgb,var(--accent) 12%,transparent);--pool:color-mix(in srgb,var(--accent) 14%,transparent);--dust:var(--accent)}
+.is-m .nf{height:560px}
+.nf-cur{position:absolute;top:0;bottom:0;width:15%;z-index:3;pointer-events:none;
+  background:repeating-linear-gradient(90deg,var(--ink) 0,var(--n900) 11px,var(--n950) 20px,var(--ink) 30px)}
+.nf-cur.l{left:0;-webkit-mask-image:linear-gradient(90deg,#000 55%,transparent);mask-image:linear-gradient(90deg,#000 55%,transparent)}
+.nf-cur.r{right:0;-webkit-mask-image:linear-gradient(270deg,#000 55%,transparent);mask-image:linear-gradient(270deg,#000 55%,transparent)}
+.nf-lamp{position:absolute;left:50%;top:28px;width:44px;height:20px;transform:translateX(-50%);z-index:5;background:var(--n800);clip-path:polygon(18% 0,82% 0,100% 100%,0 100%)}
+.nf-rig{position:absolute;left:50%;top:48px;width:min(780px,104%);height:calc(100% - 48px);transform:translateX(-50%);transform-origin:50% 0;z-index:1;animation:nf-sway 10s ease-in-out infinite alternate}
+.nf-beam,.nf-dust{position:absolute;inset:0;clip-path:polygon(47% 0,53% 0,100% 100%,0 100%)}
+.nf-beam{background:linear-gradient(to bottom,var(--beam) 0%,color-mix(in srgb,var(--beam) 60%,transparent) 55%,transparent 100%);filter:blur(5px)}
+.nf-dust{width:100%;height:100%}
+.nf-pool{position:absolute;left:50%;bottom:34px;width:min(620px,84%);height:120px;transform:translateX(-50%);border-radius:50%;z-index:1;
+  background:radial-gradient(ellipse at center,var(--pool) 0%,transparent 70%);filter:blur(8px);animation:nf-pool 10s ease-in-out infinite alternate}
+@keyframes nf-sway{from{transform:translateX(-50%) rotate(-3.5deg)}to{transform:translateX(-50%) rotate(3.5deg)}}
+@keyframes nf-pool{from{transform:translateX(calc(-50% - 22px))}to{transform:translateX(calc(-50% + 22px))}}
+.nf-in{position:absolute;left:0;right:0;bottom:64px;z-index:6;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;padding:0 var(--pad)}
+.nf .code{font:400 clamp(5.5rem,16vw,10rem)/.85 var(--f-num);color:var(--n100);letter-spacing:.02em}
 .nf h1{margin:0;font:500 clamp(1.8rem,4vw,2.6rem)/1.1 var(--f-thin)}
-.nf .btn{margin-top:8px}
+.nf .btn{margin-top:10px}
+@media (prefers-reduced-motion: reduce){.nf-rig,.nf-pool{animation:none}}
 
 /* Документ: в проде — PDF во фрейме; оставляем, даём странице шапку и название */
 .doc{padding:0 var(--pad) 48px}
@@ -101,7 +119,7 @@ body{margin:0;background:var(--ink);color:var(--n100);font-family:var(--font);-w
   <span class="sub" data-for="nf" hidden><b>Вариант</b><button data-n="page" aria-pressed="true">Страница</button> <button data-n="event" aria-pressed="false">Мероприятие</button> <button data-n="venue" aria-pressed="false">Театр</button> <button data-n="list" aria-pressed="false">Мероприятия</button></span>
   <span class="sub" data-for="doc" hidden><b>Документ</b><button data-d="offer" aria-pressed="true">Оферта</button> <button data-d="pd" aria-pressed="false">Перс. данные</button> <button data-d="policy" aria-pressed="false">Политика</button> <button data-d="ads" aria-pressed="false">Рассылка</button></span>
 </div>
-<div class="note-lab"><b>Что смотреть.</b> Три служебных шаблона, которые есть в проде, но не были нарисованы в редизайне. <b>Поиск</b> (<code>/search?query=</code>): в проде — заголовок «Результаты по запросу:» и карточки; в редизайне — тот же состав на сетке афиши, группы «События» и «Площадки» и совпадение цветом, как в подсказках поиска (решение №19). Пустой результат и исправление латиницы — тексты из подсказок редизайна. <b>404</b>: в проде один шаблон с четырьмя заголовками («Страница», «Мероприятие», «Театр», «Мероприятия не найдены») и кнопкой «Перейти на главную» — так и оставлено, капс заменён обычным регистром (решение №6). <b>Документы</b>: в проде четыре PDF во фрейме — оставлено, странице добавлены шапка сайта, крошки и название. Открываются, как в проде, из футера.</div>
+<div class="note-lab"><b>Что смотреть.</b> Три служебных шаблона, которые есть в проде, но не были нарисованы в редизайне. <b>Поиск</b> (<code>/search?query=</code>): в проде — заголовок «Результаты по запросу:» и карточки; в редизайне — тот же состав на сетке афиши, группы «События» и «Площадки» и совпадение цветом, как в подсказках поиска (решение №19). Пустой результат и исправление латиницы — тексты из подсказок редизайна. <b>404</b>: в проде один шаблон с четырьмя заголовками («Страница», «Мероприятие», «Театр», «Мероприятия не найдены») и кнопкой «Перейти на главную» — состав тот же, капс заменён обычным регистром (решение №6). Подача театральная: зал гаснет, по краям кулисы, сверху софит, луч медленно покачивается, в нём плывёт пыль, внизу световое пятно. При «меньше движения» луч и пыль стоят. <b>Документы</b>: в проде четыре PDF во фрейме — оставлено, странице добавлены шапка сайта, крошки и название. Открываются, как в проде, из футера.</div>
 <div id="root"></div>
 
 <script>
@@ -132,7 +150,7 @@ function search(){
     ${fix?`<div class="fix">Показаны результаты для <b>«пс»</b> · <button class="lnk">искать «Gc»</button></div>`:''}</header><div class="res">${body}</div>`;
 }
 const NF={page:'Страница не найдена',event:'Мероприятие не найдено',venue:'Театр не найден',list:'Мероприятия не найдены'};
-const nf=()=>`${nav('')}<div class="nf"><div class="glow"></div><div class="code">404</div><h1>${NF[st.n]}</h1><button class="btn btn-primary btn-md"><span>Перейти на главную</span></button></div>`;
+const nf=()=>`${nav('')}<div class="nf" role="img" aria-label="Сцена, луч софита"><div class="nf-cur l" aria-hidden="true"></div><div class="nf-cur r" aria-hidden="true"></div><div class="nf-lamp" aria-hidden="true"></div><div class="nf-rig" aria-hidden="true"><div class="nf-beam"></div><canvas class="nf-dust"></canvas></div><div class="nf-pool" aria-hidden="true"></div><div class="nf-in"><div class="code">404</div><h1>${NF[st.n]}</h1><button class="btn btn-primary btn-md"><span>Перейти на главную</span></button></div></div>`;
 const DOC={offer:'Публичная оферта',pd:'Обработка персональных данных',policy:'Политика конфиденциальности',ads:'Согласие на рекламную рассылку'};
 const FILE={offer:'publicOffer.pdf',pd:'processingPersData.pdf',policy:'privacyPolicy.pdf',ads:'ConsentToReceiveAdvertisingMailings.pdf'};
 function doc(){
@@ -140,11 +158,39 @@ function doc(){
   return `${nav('')}<header class="sec-head"><div class="crumbs"><a>Афиша</a> &nbsp;/&nbsp; Документы</div><h1 class="sec-title">${DOC[st.d]}</h1></header>
    <div class="doc"><div class="pdf" role="img" aria-label="PDF: ${DOC[st.d]}"><div class="pdf-bar"><span>${FILE[st.d]}</span><span>1 / 12</span></div><div class="pdf-page">${lines}</div></div></div>`;
 }
+
+/* Пыль в луче: ~90 частиц, медленно поднимаются и дрейфуют, мерцают. Цвет — из --dust */
+let dustRaf=0;
+function startDust(){
+  cancelAnimationFrame(dustRaf);
+  const nfEl=document.querySelector('.nf'); if(!nfEl) return;
+  const bg=getComputedStyle(document.body).backgroundColor.match(/\d+/g)||[0,0,0];
+  nfEl.classList.toggle('is-light',(+bg[0]+ +bg[1]+ +bg[2])/3>128);
+  const c=nfEl.querySelector('.nf-dust'),ctx=c.getContext('2d'),dpr=Math.min(2,window.devicePixelRatio||1);
+  const W=c.clientWidth,H=c.clientHeight; c.width=W*dpr;c.height=H*dpr;ctx.scale(dpr,dpr);
+  const col=getComputedStyle(nfEl).getPropertyValue('--dust').trim()||'#fff';
+  const rnd=(a,b)=>a+Math.random()*(b-a);
+  const P=Array.from({length:90},()=>({x:rnd(.1,.9)*W,y:rnd(0,1)*H,r:rnd(.5,1.9),vy:rnd(.04,.22),ph:rnd(0,6.28),sp:rnd(.004,.012),a:rnd(.25,.9)}));
+  const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  ctx.fillStyle=col;
+  function frame(t){
+    ctx.clearRect(0,0,W,H);
+    for(const p of P){
+      if(!still){p.y-=p.vy;p.ph+=p.sp;p.x+=Math.sin(p.ph)*.18;if(p.y<-4){p.y=H+4;p.x=rnd(.1,.9)*W}}
+      const depth=p.y/H; // ближе к полу — шире луч, слабее свет
+      ctx.globalAlpha=p.a*(.35+.65*Math.abs(Math.sin(p.ph*1.7)))*(1-depth*.55);
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,6.283);ctx.fill();
+    }
+    if(!still) dustRaf=requestAnimationFrame(frame);
+  }
+  frame(0);
+}
 function render(){
   const pad=Math.max(18,Math.min(56,st.w*0.032)),m=st.w<768;
   const body=st.page==='search'?search():st.page==='nf'?nf():doc();
   document.getElementById('root').innerHTML=`<div class="canvas${m?' is-m':''}" style="width:${st.w}px;--pad:${pad}px">${body}<div class="foot-strip" aria-hidden="true"></div></div>`;
   document.querySelectorAll('#bar .sub').forEach(x=>x.hidden=x.dataset.for!==st.page);
+  if(st.page==='nf') requestAnimationFrame(startDust); else cancelAnimationFrame(dustRaf);
 }
 function mark(k,v){document.querySelectorAll(`#bar [data-${k}]`).forEach(b=>b.setAttribute('aria-pressed',String(b.dataset[k]===String(v))))}
 document.getElementById('bar').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;b.parentElement.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');
@@ -152,6 +198,7 @@ document.getElementById('bar').addEventListener('click',e=>{const b=e.target.clo
   ['w','page','s','n','d'].forEach(k=>{if(b.dataset[k]!==undefined)st[k]=k==='w'?+b.dataset[k]:b.dataset[k]});render()});
 const q=new URLSearchParams(location.search);
 ['theme','w','page','s','n','d'].forEach(k=>{if(q.get(k)!==null){st[k]=k==='w'?+q.get(k):q.get(k);mark(k,st[k]);if(k==='theme')document.getElementById('core').href=st.theme==='dark'?CORE_BASE+'ds-core-r14.css':CORE_BASE+'ds-core-r14-light.css'}});
+document.getElementById('core').addEventListener('load',()=>{if(st.page==='nf')startDust()});
 render();
 </script>
 </body>

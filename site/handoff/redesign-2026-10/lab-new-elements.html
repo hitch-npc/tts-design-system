@@ -193,7 +193,7 @@ const html=[
    st('Телефон',`<div class="foot m"><span class="btn btn-ghost btn-md"><span>Отмена</span></span><span class="btn btn-primary btn-md btn-full"><span>Отправить запрос на возврат</span></span></div>`)),
  el(14,'new','Состояние «Отправлено»','Замена формы после успешной отправки. Тексты — из прода.','.done · .done-ic','стенд lab-help',
    st('Заявка отправлена',`<div class="done"><span class="done-ic">${I.ok}</span><h3>Заявка отправлена</h3><p>Заявка принята. Мы ответим на указанную почту.</p></div>`)),
- el(15,'new','Служебные шаблоны','404 — один шаблон, четыре заголовка прода. Совпадение в результатах поиска — цветом, как в подсказках (решение №19).','.nf · mark','стенд lab-pages',
+ el(15,'new','Служебные шаблоны','404 — один шаблон, четыре заголовка прода; в стенде lab-pages — сцена с кулисами, софитом и пылью в луче (здесь — статичный эскиз). Совпадение в результатах поиска — цветом, как в подсказках (решение №19).','.nf · mark','стенд lab-pages',
    st('404',`<div class="nf"><div class="glow"></div><div class="code">404</div><h4>Страница не найдена</h4><span class="btn btn-primary btn-sm"><span>Перейти на главную</span></span></div>`)+st('Совпадение',`<span class="hl"><mark>Пс</mark>ихопаты</span>`)),
 ].join('');
 document.getElementById('root').innerHTML=html;
