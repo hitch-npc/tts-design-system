@@ -98,8 +98,6 @@ body{margin:0;background:var(--ink);color:var(--n100);font-family:var(--font);-w
 .tk2-stub:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
 .tk2-perf{position:absolute;left:calc(var(--d) + 4px);top:12px;bottom:12px;width:0;border-left:2.5px dotted color-mix(in srgb,var(--tk-ink) 30%,transparent)}
 .tk2-404{font-family:'Oranienbaum',serif;font-size:76px;line-height:.9;padding-left:var(--d)}
-.tk2-hint{transition:opacity 320ms cubic-bezier(.4,0,.2,1)}
-.tk2-hint.is-off{opacity:0}
 .is-m .tk2{flex-direction:column}
 .is-m .tk2-main{width:300px;padding:22px 22px 34px}
 .is-m .tk2-title{font-size:26px}
@@ -167,7 +165,7 @@ function search(){
 }
 const NF={page:'Страница не найдена',event:'Мероприятие не найдено',venue:'Театр не найден',list:'Мероприятия не найдены'};
 const TK_D=()=>`<div class="tk2-scene"><div class="tk2-tilt" data-tk="tilt"><div class="tk2" style="--d:8px"><div class="tk2-main" style="clip-path:polygon(0 0,100% 0.00%,calc(100% - var(--d)) 5.56%,100% 11.11%,calc(100% - var(--d)) 16.67%,100% 22.22%,calc(100% - var(--d)) 27.78%,100% 33.33%,calc(100% - var(--d)) 38.89%,100% 44.44%,calc(100% - var(--d)) 50.00%,100% 55.56%,calc(100% - var(--d)) 61.11%,100% 66.67%,calc(100% - var(--d)) 72.22%,100% 77.78%,calc(100% - var(--d)) 83.33%,100% 88.89%,calc(100% - var(--d)) 94.44%,100% 100.00%,0 100%)"><div class="tk2-top"><img src="../../../tts-logo.svg" onerror="this.onerror=null;this.src=CORE_PAGES+'tts-logo.svg'" alt="Ticket to Show"><span class="tk2-tag">Не найдено</span></div><div class="tk2-date">Сеанс 404 · время не указано</div><h1 class="tk2-title">${NF[st.n]}</h1><div class="tk2-grid"><div><div class="tk2-l">Сектор</div><div class="tk2-v f">—</div></div><div><div class="tk2-l">Ряд / место</div><div class="tk2-v">4 / 04</div></div><div class="tk2-code"><div class="tk2-l">Код</div><div class="tk2-v">404</div></div></div></div><div class="tk2-stub" data-tk="stub" role="button" tabindex="0" aria-label="Оторвать корешок" style="clip-path:polygon(var(--d) 0.00%,0px 5.56%,var(--d) 11.11%,0px 16.67%,var(--d) 22.22%,0px 27.78%,var(--d) 33.33%,0px 38.89%,var(--d) 44.44%,0px 50.00%,var(--d) 55.56%,0px 61.11%,var(--d) 66.67%,0px 72.22%,var(--d) 77.78%,0px 83.33%,var(--d) 88.89%,0px 94.44%,var(--d) 100.00%,100% 100%,100% 0)"><span class="tk2-perf" aria-hidden="true"></span><span class="tk2-404">404</span></div></div></div></div>`,TK_M=()=>`<div class="tk2-scene"><div class="tk2-tilt" data-tk="tilt"><div class="tk2" style="--d:7px"><div class="tk2-main" style="clip-path:polygon(0 0,100% 0,100.00% 100%,95.83% calc(100% - var(--d)),91.67% 100%,87.50% calc(100% - var(--d)),83.33% 100%,79.17% calc(100% - var(--d)),75.00% 100%,70.83% calc(100% - var(--d)),66.67% 100%,62.50% calc(100% - var(--d)),58.33% 100%,54.17% calc(100% - var(--d)),50.00% 100%,45.83% calc(100% - var(--d)),41.67% 100%,37.50% calc(100% - var(--d)),33.33% 100%,29.17% calc(100% - var(--d)),25.00% 100%,20.83% calc(100% - var(--d)),16.67% 100%,12.50% calc(100% - var(--d)),8.33% 100%,4.17% calc(100% - var(--d)),0.00% 100%)"><div class="tk2-top"><img src="../../../tts-logo.svg" onerror="this.onerror=null;this.src=CORE_PAGES+'tts-logo.svg'" alt="Ticket to Show"><span class="tk2-tag">Не найдено</span></div><div class="tk2-date">Сеанс 404 · время не указано</div><h1 class="tk2-title">${NF[st.n]}</h1><div class="tk2-grid"><div><div class="tk2-l">Сектор</div><div class="tk2-v f">—</div></div><div><div class="tk2-l">Ряд / место</div><div class="tk2-v">4 / 04</div></div><div class="tk2-code"><div class="tk2-l">Код</div><div class="tk2-v">404</div></div></div></div><div class="tk2-stub" data-tk="stub" role="button" tabindex="0" aria-label="Оторвать корешок" style="clip-path:polygon(0.00% var(--d),4.17% 0px,8.33% var(--d),12.50% 0px,16.67% var(--d),20.83% 0px,25.00% var(--d),29.17% 0px,33.33% var(--d),37.50% 0px,41.67% var(--d),45.83% 0px,50.00% var(--d),54.17% 0px,58.33% var(--d),62.50% 0px,66.67% var(--d),70.83% 0px,75.00% var(--d),79.17% 0px,83.33% var(--d),87.50% 0px,91.67% var(--d),95.83% 0px,100.00% var(--d),100% 100%,0 100%)"><span class="tk2-perf" aria-hidden="true"></span><span class="tk2-404">404</span></div></div></div></div>`;
-const nf=()=>`${nav('')}<div class="nf">${st.w<768?TK_M():TK_D()}<div class="nf-txt"><div class="nf-cap tk2-hint" data-tk="hint">Оторвите корешок</div><button class="btn btn-primary btn-md"><span>Перейти на главную</span></button></div></div>`;
+const nf=()=>`${nav('')}<div class="nf">${st.w<768?TK_M():TK_D()}<div class="nf-txt"><button class="btn btn-primary btn-md"><span>Перейти на главную</span></button></div></div>`;
 const DOC={offer:'Публичная оферта',pd:'Обработка персональных данных',policy:'Политика конфиденциальности',ads:'Согласие на рекламную рассылку'};
 const FILE={offer:'publicOffer.pdf',pd:'processingPersData.pdf',policy:'privacyPolicy.pdf',ads:'ConsentToReceiveAdvertisingMailings.pdf'};
 function doc(){
@@ -177,7 +175,7 @@ function doc(){
 }
 
 /* 404 · Билет: корешок отрывается рукой. Разметка: [data-tk=tilt] — билет целиком (наклон за курсором),
-   [data-tk=stub] — корешок, [data-tk=hint] — подсказка. Тянуть вправо (телефон — вниз); отпустить после 80 % — отрыв. */
+   [data-tk=stub] — корешок. Тянуть вправо (телефон — вниз); отпустить после 80 % — отрыв. */
 function tk2Init(scene, mob) {
   const tilt = scene.querySelector('[data-tk="tilt"]'), stub = scene.querySelector('[data-tk="stub"]'), hint = scene.querySelector('[data-tk="hint"]');
   if (!tilt || !stub || scene.hasAttribute('data-tk-on')) return;
@@ -220,9 +218,8 @@ function tk2Init(scene, mob) {
       setS(fall.th, fall.tx, fall.ty, cl(1 - (fall.t - .35) / .5, 0, 1));
       if (fall.t > 1) { fall = null; stub.style.visibility = 'hidden'; }
     } else if (drag) setS(ang(pr), 0, 0, 1);
-    else if (!torn) {                             // покой: раз в 4 с корешок чуть надрывается; при наведении приоткрывается
-      const ph = (t % 4000) / 4000, nudge = t > 1200 && ph < .18 ? Math.sin(ph / .18 * Math.PI) * .12 : 0;
-      v += (-(pr - (hover ? .1 : nudge)) * 120 - v * 9) * dt; pr += v * dt; setS(ang(Math.max(0, pr)), 0, 0, 1);
+    else if (!torn) {                             // покой: при наведении корешок приоткрывается
+      v += (-(pr - (hover ? .1 : 0)) * 120 - v * 9) * dt; pr += v * dt; setS(ang(Math.max(0, pr)), 0, 0, 1);
     }
     requestAnimationFrame(step);
   };
