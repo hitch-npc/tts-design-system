@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Лаборатория 404</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script>/* Стенд открыт вне репозитория (например, из «Загрузок») — ядро берём с GitHub Pages */
+var CORE_BASE='../../../',CORE_PAGES='https://hitch-npc.github.io/tts-design-system/';
+function coreFallback(l){if(CORE_BASE===CORE_PAGES)return;CORE_BASE=CORE_PAGES;l.href=CORE_PAGES+l.getAttribute('href').split('/').pop()}</script>
+<link id="core" rel="stylesheet" href="../../../ds-core-r14.css" onerror="coreFallback(this)">
+<style>
+body{margin:0;background:var(--ink);color:var(--n100);font-family:var(--font);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+.bar{position:sticky;top:0;z-index:60;display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;padding:10px 20px;background:var(--n950);border-bottom:1px solid var(--n800);font-size:12px}
+.bar b{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--n500);font-weight:500;margin-right:6px}
+.bar button{background:transparent;border:1px solid var(--n800);color:var(--n300);padding:6px 10px;border-radius:2px;font:500 11px var(--font);cursor:pointer}
+.bar button[aria-pressed=true]{background:var(--accent-ghost);border-color:var(--accent);color:var(--n100)}
+.canvas{margin:24px auto 80px;max-width:100%;border:1px solid var(--n800);background:var(--ink);position:relative;overflow:clip}
+.note-lab{max-width:1100px;margin:16px auto 0;font-size:12px;color:var(--n400);line-height:1.7;padding:0 20px}
+.note-lab b{color:var(--n200)}
+
+/* Шапка сайта — как в редизайне v2 */
+.site-nav{display:flex;align-items:center;gap:24px;height:64px;padding:0 var(--pad);background:var(--n950);border-bottom:1px solid var(--n800);position:relative;z-index:5}
+.site-nav img{height:28px;width:auto;display:block}
+.site-nav .links{display:flex;gap:4px;flex:1}
+.site-nav .search{width:300px;height:36px;border:1px solid var(--n800);border-radius:2px;display:flex;align-items:center;gap:8px;padding:0 12px;font-size:12px;color:var(--n600)}
+.site-nav .city{height:36px;padding:0 12px;border:1px solid var(--n800);border-radius:2px;display:flex;align-items:center;font-size:12px;color:var(--n200)}
+.is-m .site-nav{height:56px;gap:12px}
+.is-m .site-nav .links,.is-m .site-nav .search,.is-m .site-nav .city{display:none}
+.burger{display:none;margin-left:auto;width:36px;height:36px;align-items:center;justify-content:center;color:var(--n200)}
+.is-m .burger{display:flex}
+.foot-strip{height:56px;border-top:1px solid var(--n800);background:var(--n950);position:relative;z-index:5}
+
+/* ───── Общее для всех вариантов: сцена, заголовок прода, одна кнопка ───── */
+.nf{position:relative;height:680px;overflow:hidden;display:flex;flex-direction:column;background:var(--ink)}
+.is-m .nf{height:640px}
+.nf-txt{position:relative;z-index:4;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;padding:0 var(--pad) 64px}
+.is-m .nf-txt{padding-bottom:40px;gap:12px}
+.nf-txt h1{margin:0;font:500 clamp(1.75rem,3.2vw,2.6rem)/1.1 var(--f-thin);color:var(--n100)}
+.nf-txt .btn{margin-top:8px}
+.is-m .nf-txt .btn{align-self:stretch}
+.nf-cap{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--n500)}
+
+/* A · Зал: цифры выложены креслами схемы зала */
+.hall{position:relative;flex:1;min-height:0;margin:28px var(--pad) 8px}
+.hall-stage{position:absolute;left:14%;width:72%;top:0;height:26px;overflow:visible}
+.hall-stage path{fill:none;stroke:var(--n700);stroke-width:1.5}
+.hall-lbl{position:absolute;left:0;right:0;top:20px;text-align:center}
+.hall-c{position:absolute;left:0;top:56px;width:100%;height:calc(100% - 56px);display:block;touch-action:none}
+.is-m .hall{margin-top:20px}
+
+/* B · Билет: корешок оторван и висит, билет наклоняется за курсором */
+.tk-scene{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;perspective:1400px;padding:24px var(--pad) 0}
+.tk-tilt{transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));filter:drop-shadow(0 28px 36px color-mix(in srgb,var(--shadow-color) 70%,transparent))}
+.tk{position:relative;display:flex}
+.tk-main{width:520px;box-sizing:border-box;background:var(--premium-bg);color:var(--premium-ink);padding:30px 40px 30px 32px}
+.tk-top{display:flex;justify-content:space-between;align-items:center;padding-bottom:18px;border-bottom:1px solid color-mix(in srgb,var(--premium-ink) 12%,transparent)}
+.tk-top img{height:22px;display:block}
+.tk-tag{border:1px solid currentColor;color:var(--danger);border-radius:2px;padding:4px 10px;font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+.tk-date{font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:color-mix(in srgb,var(--premium-ink) 45%,transparent);margin:20px 0 10px}
+.tk-title{margin:0;font:500 34px/1.08 var(--f-thin);padding-bottom:20px;border-bottom:1px solid color-mix(in srgb,var(--premium-ink) 12%,transparent)}
+.tk-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:18px}
+.tk-l{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:color-mix(in srgb,var(--premium-ink) 50%,transparent);margin-bottom:6px}
+.tk-v{font:400 22px/1 var(--f-num)}
+.tk-v.f{font:400 18px/1.2 var(--f-head)}
+.tk-stub{position:absolute;left:100%;top:0;width:190px;height:100%;box-sizing:border-box;background:var(--premium-bg);color:var(--premium-ink);transform-origin:0 0;transform:rotate(var(--sw,10deg));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding-left:10px}
+.tk-404{font:400 72px/.9 var(--f-num)}
+.tk-hole{width:14px;height:14px;background:var(--ink);clip-path:circle(50%)}
+.is-m .tk{flex-direction:column}
+.is-m .tk-main{width:300px;padding:22px 22px 30px}
+.is-m .tk-title{font-size:26px}
+.is-m .tk-grid{grid-template-columns:1fr 1fr}
+.is-m .tk-grid>div:last-child{display:none}
+.is-m .tk-stub{left:0;top:100%;width:100%;height:130px;padding:10px 0 0;flex-direction:row;gap:16px}
+.is-m .tk-404{font-size:56px}
+.is-m .tk-scene{align-items:flex-start;padding-top:28px}
+
+/* C · Глифы: огромные цифры, внутри плывут жанровые блобы и тянутся за курсором */
+.gl{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+.gl-num{font-family:var(--f-thin);font-weight:500;line-height:.8;letter-spacing:-.02em;user-select:none;font-variant-numeric:lining-nums;font-feature-settings:'lnum' 1;
+  color:transparent;-webkit-text-fill-color:transparent;-webkit-background-clip:text;background-clip:text;
+  background:
+    radial-gradient(circle at var(--x0,50%) var(--y0,50%),var(--gl-hi) 0,transparent var(--r0,180px)),
+    radial-gradient(circle at var(--x1,20%) var(--y1,30%),var(--blob-core) 0,transparent var(--r1,260px)),
+    radial-gradient(circle at var(--x2,75%) var(--y2,70%),var(--blob-purple) 0,transparent var(--r2,260px)),
+    radial-gradient(circle at var(--x3,40%) var(--y3,80%),var(--blob-core-warm) 0,transparent var(--r3,240px)),
+    radial-gradient(circle at var(--x4,85%) var(--y4,20%),var(--blob-core-green) 0,transparent var(--r4,220px)),
+    var(--n900);
+  -webkit-background-clip:text;background-clip:text;
+  --gl-hi:color-mix(in srgb,var(--blob-core) 55%,var(--n100))}
+.grain{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:.07;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* D · Тумба: афишная тумба вращается, одна из афиш — 404 */
+.tb-scene{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;perspective:1600px;cursor:grab;touch-action:pan-y;padding:56px 0 44px}
+.tb-scene.is-drag{cursor:grabbing}
+.tb{position:relative;width:var(--pw);height:var(--ph);transform-style:preserve-3d}
+.tb-rot{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateY(var(--a,0deg))}
+.tb-p{position:absolute;inset:0;box-sizing:border-box;padding:0 2px;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--n900);
+  transform:rotateY(calc(var(--i) * 360deg / var(--n))) translateZ(var(--r))}
+.tb-p::after{content:'';position:absolute;inset:0;background:var(--scrim);opacity:var(--sh,0);pointer-events:none}
+.ps{position:relative;height:100%;box-sizing:border-box;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:14px 12px;background:var(--bg)}
+.ps.cool{--bg:radial-gradient(circle at 70% 25%,var(--blob-core) 0%,transparent 60%),radial-gradient(circle at 25% 80%,var(--blob-purple) 0%,transparent 55%),var(--n900)}
+.ps.warm{--bg:radial-gradient(circle at 30% 30%,var(--blob-core-warm) 0%,transparent 60%),radial-gradient(circle at 75% 85%,var(--blob-mid-warm) 0%,transparent 55%),var(--n900)}
+.ps.green{--bg:radial-gradient(circle at 65% 30%,var(--blob-core-green) 0%,transparent 60%),radial-gradient(circle at 20% 85%,var(--blob-mid-green) 0%,transparent 55%),var(--n900)}
+.ps .d{font-size:9px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--n300)}
+.ps .t{font:400 14px/1.2 var(--f-head);color:var(--n100)}
+.is-m .ps{padding:10px 8px}.is-m .ps .t{font-size:12px}.is-m .ps.nf404 .n{font-size:44px}
+.ps.nf404{--bg:var(--n100);align-items:flex-start}
+.ps.nf404 .n{font:400 58px/.85 var(--f-num);color:var(--ink)}
+.ps.nf404 .d{color:var(--n600)}
+.ps.nf404 .t{color:var(--ink)}
+.tb{transform:rotateX(var(--tilt,-12deg))}
+.tb-disc{position:absolute;left:50%;top:var(--y);width:var(--d);height:var(--d);margin:calc(var(--d) / -2) 0 0 calc(var(--d) / -2);background:var(--c);clip-path:circle(50%);transform:rotateX(90deg);pointer-events:none}
+.tb-floor{position:absolute;left:50%;top:calc(100% + 26px);width:calc(var(--r) * 3);height:40px;transform:translateX(-50%);background:radial-gradient(ellipse at 50% 0,color-mix(in srgb,var(--scrim) 45%,transparent) 0,transparent 70%)}
+
+
+/* ═════ Вторые версии ═════ */
+/* B2 · Билет: целый билет с перфорацией, корешок отрывается рукой */
+.tk2{position:relative;display:flex;touch-action:none}
+.tk2-main{position:relative;z-index:1;width:520px;box-sizing:border-box;background:var(--premium-bg);color:var(--premium-ink);padding:30px 44px 30px 32px}
+.tk2-stub{position:relative;z-index:2;width:184px;margin-left:calc(-1 * var(--d));box-sizing:border-box;background:var(--premium-bg);color:var(--premium-ink);
+  display:flex;align-items:center;justify-content:center;cursor:grab;user-select:none;
+  transform-origin:calc(var(--d) / 2) 100%;transform:translate(var(--tx,0px),var(--ty,0px)) rotate(var(--th,0deg));opacity:var(--op,1)}
+.tk2-stub.is-drag{cursor:grabbing}
+.tk2-perf{position:absolute;left:calc(var(--d) + 4px);top:12px;bottom:12px;width:0;border-left:2.5px dotted color-mix(in srgb,var(--premium-ink) 30%,transparent)}
+.tk2-404{font:400 76px/.9 var(--f-num);padding-left:var(--d)}
+.tk2-hint{transition:opacity 320ms cubic-bezier(.4,0,.2,1)}
+.tk2-hint.is-off{opacity:0}
+.is-m .tk2{flex-direction:column}
+.is-m .tk2-main{width:300px;padding:22px 22px 34px}
+.is-m .tk2-stub{width:300px;height:120px;margin:calc(-1 * var(--d)) 0 0;transform-origin:100% calc(var(--d) / 2)}
+.is-m .tk2-perf{left:12px;right:12px;top:calc(var(--d) + 4px);bottom:auto;width:auto;height:0;border-left:0;border-top:2.5px dotted color-mix(in srgb,var(--premium-ink) 30%,transparent)}
+.is-m .tk2-404{font-size:58px;padding:var(--d) 0 0}
+
+/* C2 · Глифы: тонкий контур + жанровая заливка, которая ярче под курсором; цифры собираются при загрузке */
+.gl2{position:relative;line-height:.8;font-family:var(--f-thin);font-weight:500;font-variant-numeric:lining-nums;font-feature-settings:'lnum' 1;user-select:none;
+  letter-spacing:var(--ls,-.02em);opacity:var(--o,1)}
+.gl2>span{display:block;white-space:nowrap}
+.gl2-o{color:transparent;-webkit-text-fill-color:transparent;-webkit-text-stroke:1px var(--n700)}
+.gl2 .gl-num{position:absolute;inset:0;
+  -webkit-mask-image:radial-gradient(circle at var(--mx,50%) var(--my,50%),#000 0,#000 var(--mr,140px),rgba(0,0,0,.42) calc(var(--mr,140px) * 2.4));
+  mask-image:radial-gradient(circle at var(--mx,50%) var(--my,50%),#000 0,#000 var(--mr,140px),rgba(0,0,0,.42) calc(var(--mr,140px) * 2.4))}
+
+/* D2 · Тумба: 12 граней встык, купол и цоколь с напуском закрывают рёбра */
+.tb2 .tb-p{padding:0;outline:1px solid transparent;box-shadow:inset 1px 0 0 color-mix(in srgb,var(--scrim) 40%,transparent)}
+.tb2 .ps{padding:12px 9px}
+.tb2 .ps .t{font-size:13px}
+.tb2 .ps.nf404 .n{font-size:46px}
+.is-m .tb2 .ps{padding:9px 6px}.is-m .tb2 .ps .t{font-size:11px}.is-m .tb2 .ps .d{font-size:8px}.is-m .tb2 .ps.nf404 .n{font-size:34px}
+</style>
+</head>
+<body>
+<div class="bar" id="bar">
+  <span><b>Тема</b><button data-theme="dark" aria-pressed="true">Тёмная</button> <button data-theme="light" aria-pressed="false">Светлая</button></span>
+  <span><b>Ширина</b><button data-w="375" aria-pressed="false">375</button> <button data-w="1440" aria-pressed="true">1440</button></span>
+  <span><b>Вариант</b><button data-v="hall" aria-pressed="false">A</button> <button data-v="hall2" aria-pressed="false">A2 · Зал</button> <button data-v="ticket" aria-pressed="false">B</button> <button data-v="ticket2" aria-pressed="true">B2 · Билет</button> <button data-v="glyph" aria-pressed="false">C</button> <button data-v="glyph2" aria-pressed="false">C2 · Глифы</button> <button data-v="tumba" aria-pressed="false">D</button> <button data-v="tumba2" aria-pressed="false">D2 · Тумба</button></span>
+  <span><b>Заголовок</b><button data-n="page" aria-pressed="true">Страница</button> <button data-n="event" aria-pressed="false">Мероприятие</button> <button data-n="venue" aria-pressed="false">Театр</button> <button data-n="list" aria-pressed="false">Мероприятия</button></span>
+</div>
+<div class="note-lab" id="note"></div>
+<div id="root"></div>
+<script>
+const st={theme:'dark',w:1440,v:'ticket2',n:'page'};
+const NF={page:'Страница не найдена',event:'Мероприятие не найдено',venue:'Театр не найден',list:'Мероприятия не найдены'};
+const NOTE={
+  hall:'<b>A · Зал.</b> Цифры 404 выложены креслами схемы зала, цвета зон — как на схеме (партер, амфитеатр, бельэтаж, балкон), остальные места проданы. Кресла появляются рядами от сцены, по цифрам идёт волна, курсор раздвигает места, как линза. Без курсора линза сама бродит по залу.',
+  ticket:'<b>B · Билет.</b> Билет TTS, как в письме: светлая плашка, поля «Сектор», «Ряд / место». Корешок оторван и висит на уголке — качается от движения курсора, сам билет наклоняется за курсором. Заголовок прода — в поле названия.',
+  glyph:'<b>C · Глифы.</b> Типографика — герой: огромные 404 Cormorant, внутри цифр плывут жанровые блобы обложек (синий, фиолетовый, тёплый, зелёный). Светлое пятно тянется за курсором и подсвечивает цифры. Поверх — лёгкое зерно.',
+  tumba:'<b>D · Тумба.</b> Афишная тумба с обложками событий медленно вращается, одна афиша — 404. Курсор слева/справа меняет скорость и направление, тумбу можно крутить мышью или пальцем. Кнопка ведёт в афишу — на главную.',
+  hall2:'<b>A2 · Зал, легче.</b> Свободные места — мелкие точки, цифры 404 — кресла одного цвета (партер), без пёстрых зон и волны. Места в цифрах «бронируются» вразброс при загрузке, затем загорается одно выбранное место с галочкой — ряд 4, место 4. Курсор только слегка увеличивает кресла.',
+  ticket2:'<b>B2 · Билет.</b> Билет целый, между ним и корешком — ровная перфорация точками. Корешок можно оторвать: потянуть вправо (на телефоне — вниз), край рвётся зубцами, при отрыве корешок падает. Раз в 4 секунды корешок чуть надрывается сам — подсказка. Без «Контроля» и точки. Заново — нажать B2 ещё раз.',
+  glyph2:'<b>C2 · Глифы.</b> То же, что C, плюс тонкий контур цифр: заливка жанрами приглушена, под курсором — в полную силу. При загрузке цифры сходятся из разрядки и проявляются.',
+  tumba2:'<b>D2 · Тумба.</b> 12 граней точно встык, без зазоров; купол ступенями и цоколь с напуском закрывают рёбра. Проходя 404, тумба замедляется. Можно бросить мышью или пальцем — крутится по инерции и возвращается к своему ходу.'
+};
+const reduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
+const nav=()=>`<header class="site-nav"><img src="../../../tts-logo.svg" onerror="this.onerror=null;this.src=CORE_PAGES+'tts-logo.svg'" alt="Ticket to Show"><nav class="links">${['Афиша','Площадки','Партнёрам','Отзывы'].map(t=>`<a class="nav-desktop-link">${t}</a>`).join('')}</nav><div class="search"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5"/></svg>Театр, спектакль, артист…</div><div class="city">Москва</div><div class="burger"><svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M1 1h18M1 7h18M1 13h18"/></svg></div></header>`;
+const BTN='<button class="btn btn-primary btn-md"><span>Перейти на главную</span></button>';
+const txt=(cap)=>`<div class="nf-txt">${cap?`<div class="nf-cap">${cap}</div>`:''}<h1>${NF[st.n]}</h1>${BTN}</div>`;
+
+/* ───── утилиты ───── */
+const _cx=document.createElement('canvas').getContext('2d');
+function rgb(s){_cx.fillStyle='#000';_cx.fillStyle=(s||'').trim()||'#000';const v=_cx.fillStyle;
+  if(v[0]==='#')return[parseInt(v.slice(1,3),16),parseInt(v.slice(3,5),16),parseInt(v.slice(5,7),16)];
+  const m=v.match(/[\d.]+/g);return[+m[0],+m[1],+m[2]]}
+const cssv=(el,n)=>getComputedStyle(el).getPropertyValue(n).trim();
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+const lum=c=>(.2126*c[0]+.7152*c[1]+.0722*c[2])/255;
+function fit(c){const d=Math.min(2,devicePixelRatio||1),W=c.clientWidth,H=c.clientHeight;c.width=W*d;c.height=H*d;const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);return{x,W,H}}
+function pointer(el){const p={x:.5,y:.5,in:false,last:-1e9,vx:0,vy:0};
+  el.addEventListener('pointermove',e=>{const r=el.getBoundingClientRect(),nx=(e.clientX-r.left)/r.width,ny=(e.clientY-r.top)/r.height;p.vx=nx-p.x;p.vy=ny-p.y;p.x=nx;p.y=ny;p.in=true;p.last=performance.now()});
+  el.addEventListener('pointerleave',()=>{p.in=false});return p}
+let raf=0;
+const loop=f=>{let t0=performance.now(),prev=t0;const step=now=>{f(now-t0,Math.min(50,now-prev)/1000);prev=now;raf=requestAnimationFrame(step)};raf=requestAnimationFrame(step)};
+
+/* ───── A · Зал ───── */
+const hall={
+  html:m=>`<div class="hall" aria-hidden="true"><svg class="hall-stage" viewBox="0 0 100 12" preserveAspectRatio="none"><path d="M0 11 Q50 -1 100 11" vector-effect="non-scaling-stroke"/></svg><div class="hall-lbl nf-cap">Сцена</div><canvas class="hall-c"></canvas></div>${txt('Ряд 4 · место 04')}`,
+  start(root,m){
+    const c=root.querySelector('.hall-c'),{x,W,H}=fit(c),p=pointer(root.querySelector('.hall'));
+    const s=m?10:14,r=s*.34,gap=s*1.06,curve=m?10:22,rows=Math.floor((H-curve-6)/gap);
+    const zones=['--zone-2','--zone-3','--zone-4','--zone-5'].map(n=>cssv(root,n)),sold=cssv(root,'--seat-sold');
+    // маска цифр: 404 Oranienbaum на скрытом холсте, место «в цифре», если под ним есть заливка
+    const mk=document.createElement('canvas');mk.width=W;mk.height=H;const mx=mk.getContext('2d');
+    let fs=200;mx.font=`400 ${fs}px Oranienbaum`;let mt=mx.measureText('404');
+    const hh=(mt.actualBoundingBoxAscent+mt.actualBoundingBoxDescent)||fs*.7;
+    fs=Math.min(fs*(H*.74)/hh,fs*(W*(m?.86:.62))/mt.width);mx.font=`400 ${fs}px Oranienbaum`;mt=mx.measureText('404');
+    mx.textAlign='center';mx.fillStyle=mx.strokeStyle='#000';mx.lineWidth=s*.95;mx.lineJoin='round';
+    const ty0=H*.5+(mt.actualBoundingBoxAscent-mt.actualBoundingBoxDescent)/2;mx.fillText('404',W/2,ty0);mx.strokeText('404',W/2,ty0);
+    const md=mx.getImageData(0,0,W,H).data;
+    const seats=[];
+    for(let i=0;i<rows;i++){
+      const hw=W*.5*(.66+.34*i/Math.max(1,rows-1))-s,n=Math.floor(2*hw/s);
+      for(let j=0;j<=n;j++){const pp=n?(j/n)*2-1:0,sx=W/2+pp*hw,sy=6+i*gap+curve*pp*pp;
+        if(sy>H-4)continue;
+        const on=md[((Math.round(sy)*W+Math.round(sx))<<2)+3]>100,f=i/rows;
+        seats.push({x:sx,y:sy,i,pp,on,col:on?zones[f<.4?0:f<.65?1:f<.85?2:3]:sold});}
+    }
+    const still=reduced(),L={x:W/2,y:H/2},R=m?46:78;
+    loop(t=>{
+      x.clearRect(0,0,W,H);
+      const idle=!p.in||performance.now()-p.last>2500;
+      const tx=idle?W/2+Math.cos(t*.00035)*W*.32:p.x*W,ty=idle?H*.5+Math.sin(t*.0006)*H*.3:p.y*H;
+      L.x+=(tx-L.x)*.08;L.y+=(ty-L.y)*.08;
+      for(const q of seats){
+        let a=still?1:clamp((t-q.i*38-Math.abs(q.pp)*220)/480,0,1);if(!a)continue;a=ease(a);
+        let px=q.x,py=q.y,k=1;
+        if(!still){const dx=q.x-L.x,dy=q.y-L.y,d2=(dx*dx+dy*dy)/(R*R),f=Math.exp(-d2);
+          if(f>.01){const d=Math.sqrt(dx*dx+dy*dy)||1;px+=dx/d*f*s*.55;py+=dy/d*f*s*.55;k+=f*.85}
+          if(q.on)k*=1+.2*Math.max(0,Math.sin(t*.0022-q.x/W*7-q.i*.12));}
+        x.fillStyle=q.col;x.beginPath();x.arc(px,py,r*k*a,0,6.2832);x.fill();
+      }
+      if(still)cancelAnimationFrame(raf);
+    });
+  }
+};
+
+/* ───── B · Билет ───── */
+function jag(side,n,depth,vertical){ // рваный край: зубцы вдоль стороны
+  const pts=[];
+  for(let k=0;k<=n;k++){const t=(k/n*100).toFixed(2)+'%',o=k%2?depth+'px':'0px';
+    if(!vertical)pts.push(side==='r'?`calc(100% - ${o}) ${t}`:`${o} ${t}`);
+    else pts.push(side==='b'?`${t} calc(100% - ${o})`:`${t} ${o}`);}
+  return pts}
+const ticket={
+  html:m=>{
+    const main=m?['0 0','100% 0',...jag('b',22,6,true).reverse(),]:['0 0',...jag('r',18,7,false),'0 100%'];
+    const stub=m?[...jag('t',22,6,true),'100% 100%','0 100%']:[...jag('l',18,7,false),'100% 100%','100% 0'];
+    return `<div class="tk-scene"><div class="tk-tilt"><div class="tk">
+      <div class="tk-main" style="clip-path:polygon(${main.join(',')})">
+        <div class="tk-top"><img src="../../../tts-logo.svg" onerror="this.onerror=null;this.src=CORE_PAGES+'tts-logo.svg'" alt="Ticket to Show"><span class="tk-tag">Не найдено</span></div>
+        <div class="tk-date">Сеанс 404 · время не указано</div>
+        <h1 class="tk-title">${NF[st.n]}</h1>
+        <div class="tk-grid"><div><div class="tk-l">Сектор</div><div class="tk-v f">—</div></div><div><div class="tk-l">Ряд / место</div><div class="tk-v">4 / 04</div></div><div><div class="tk-l">Код</div><div class="tk-v">404</div></div></div>
+      </div>
+      <div class="tk-stub" style="clip-path:polygon(${stub.join(',')})"><span class="tk-hole" aria-hidden="true"></span><span class="tk-404">404</span><span class="tk-l" style="margin:0">Контроль</span></div>
+    </div></div></div><div class="nf-txt">${BTN}</div>`},
+  start(root,m){
+    const tilt=root.querySelector('.tk-tilt'),stub=root.querySelector('.tk-stub'),p=pointer(root.querySelector('.nf'));
+    const still=reduced(),base=m?6:10;let th=base,w=0,rx=0,ry=0,pvx=0;
+    stub.style.setProperty('--sw',base+'deg');if(still)return;
+    loop((t,dt)=>{
+      const tx=p.in?(.5-p.y)*12:Math.sin(t*.0007)*3,ty=p.in?(p.x-.5)*18:Math.cos(t*.0005)*4;
+      rx+=(tx-rx)*.07;ry+=(ty-ry)*.07;
+      tilt.style.setProperty('--rx',rx.toFixed(2)+'deg');tilt.style.setProperty('--ry',ry.toFixed(2)+'deg');
+      pvx+=((p.in?p.vx:0)-pvx)*.2;p.vx*=.6;
+      const target=base+clamp(pvx*900,-14,14)+Math.sin(t*.0011)*1.4-ry*.35;
+      w+=(-(th-target)*55-w*4.2)*dt;th+=w*dt; // пружина корешка
+      stub.style.setProperty('--sw',th.toFixed(2)+'deg');
+    });
+  }
+};
+
+/* ───── C · Глифы ───── */
+const glyph={
+  html:m=>`<div class="gl"><div class="gl-num" aria-hidden="true" style="font-size:${m?200:Math.min(560,st.w*.4)}px">404</div><div class="grain"></div></div>${txt('')}`,
+  start(root,m){
+    const el=root.querySelector('.gl-num'),p=pointer(root.querySelector('.nf'));
+    const W=el.clientWidth,H=el.clientHeight,k=m?.6:1.35;
+    const B=[{r:170},{r:300,ax:.22,ay:.35,fx:.00021,fy:.00017},{r:300,ax:.78,ay:.62,fx:.00016,fy:.00023},{r:260,ax:.45,ay:.8,fx:.00025,fy:.00013},{r:240,ax:.85,ay:.25,fx:.00014,fy:.00027}]
+      .map((b,i)=>Object.assign(b,{x:W*(b.ax||.5),y:H*(b.ay||.5),lag:[.12,.02,.025,.018,.03][i]}));
+    const set=()=>B.forEach((b,i)=>{el.style.setProperty('--x'+i,b.x.toFixed(1)+'px');el.style.setProperty('--y'+i,b.y.toFixed(1)+'px');el.style.setProperty('--r'+i,(b.r*k).toFixed(0)+'px')});
+    set();if(reduced())return;
+    const r=root.querySelector('.nf').getBoundingClientRect(),er=el.getBoundingClientRect();
+    loop(t=>{
+      const cx=p.in?p.x*r.width-(er.left-r.left):W/2+Math.cos(t*.0004)*W*.35,cy=p.in?p.y*r.height-(er.top-r.top):H/2+Math.sin(t*.0007)*H*.3;
+      B.forEach((b,i)=>{
+        const dx=i?W*(b.ax+.12*Math.sin(t*b.fx*6.28+i)):cx,dy=i?H*(b.ay+.18*Math.cos(t*b.fy*6.28+i)):cy;
+        const tx=i?dx+(cx-dx)*.35:dx,ty=i?dy+(cy-dy)*.35:dy; // фоновые блобы слегка тянутся к курсору
+        b.x+=(tx-b.x)*b.lag;b.y+=(ty-b.y)*b.lag;});
+      set();
+    });
+  }
+};
+
+/* ───── D · Тумба ───── */
+const POST=[
+  {c:'nf404'},
+  {c:'cool',d:'14 июня',t:'Одни во вселенной'},
+  {c:'warm',d:'4 ноября',t:'Дмитрий Маликов «PianomaniЯ»'},
+  {c:'green',d:'С 14 мая',t:'Папа'},
+  {c:'cool',d:'3 даты',t:'Психопаты'},
+  {c:'warm',d:'5 дат',t:'Пиковая дама'},
+  {c:'green',d:'14–20 июня',t:'Щелкунчик'},
+  {c:'cool',d:'2 площадки',t:'Вишнёвый сад'},
+  {c:'warm',d:'21 июня',t:'Кармен'},
+  {c:'green',d:'С 1 июня',t:'Маленький принц'}];
+const tumba={
+  html:m=>{
+    const N=POST.length,pw=m?84:110,ph=m?250:310,R=pw/(2*Math.tan(Math.PI/N))-1;
+    const disc=(d,y,c)=>`<div class="tb-disc" aria-hidden="true" style="--d:${d.toFixed(1)}px;--y:${y};--c:var(${c})"></div>`;
+    const ps=POST.map((q,i)=>`<div class="tb-p" style="--i:${i}"><div class="ps ${q.c}">${q.c==='nf404'?`<span class="d">Не найдено</span><span class="n">404</span><span class="d">Ticket to Show</span>`:`<span class="d">${q.d}</span><span class="t">${q.t}</span>`}</div></div>`).join('');
+    return `<div class="tb-scene"><div class="tb" style="--pw:${pw}px;--ph:${ph}px;--n:${N};--r:${R.toFixed(1)}px">${disc(2*R+22,'0px','--n700')}${disc(2*R+6,'-10px','--n800')}${disc(2*R*.78,'-22px','--n800')}${disc(2*R*.5,'-31px','--n700')}${disc(12,'-38px','--n600')}<div class="tb-rot">${ps}</div>${disc(2*R+22,ph+'px','--n700')}${disc(2*R+44,(ph+14)+'px','--n800')}<div class="tb-floor" aria-hidden="true"></div></div></div>${txt('')}`},
+  start(root,m){
+    const sc=root.querySelector('.tb-scene'),rot=root.querySelector('.tb-rot'),P=[...root.querySelectorAll('.tb-p')],p=pointer(root.querySelector('.nf')),N=P.length;
+    let a=0,om=0,drag=null;
+    const paint=()=>{rot.style.setProperty('--a',a.toFixed(2)+'deg');P.forEach((el,i)=>{let d=((i*360/N+a)%360+540)%360-180;el.style.setProperty('--sh',(.78*(1-Math.cos(d*Math.PI/180))/2).toFixed(3))})};
+    paint();
+    sc.addEventListener('pointerdown',e=>{drag={x:e.clientX,a};sc.classList.add('is-drag');sc.setPointerCapture(e.pointerId)});
+    sc.addEventListener('pointermove',e=>{if(!drag)return;const na=drag.a+(e.clientX-drag.x)*.4;om=(na-a)*60;a=na;paint()});
+    const up=()=>{drag=null;sc.classList.remove('is-drag')};sc.addEventListener('pointerup',up);sc.addEventListener('pointercancel',up);
+    if(reduced())return;
+    loop((t,dt)=>{
+      if(drag)return;
+      const target=-12+(p.in?(.5-p.x)*90:0);           // курсор слева/справа — скорость и направление
+      const start=clamp((t-900)/1800,0,1);            // сначала 404 стоит лицом, потом тумба трогается
+      om+=(target*start-om)*Math.min(1,dt*1.6);a+=om*dt;paint();
+    });
+  }
+};
+
+
+
+/* ═════ Вторые версии ═════ */
+
+/* ───── A2 · Зал: легче — фон мелкими точками, цифры одним цветом, одно выбранное место ───── */
+const hall2={
+  html:m=>`<div class="hall" aria-hidden="true"><svg class="hall-stage" viewBox="0 0 100 12" preserveAspectRatio="none"><path d="M0 11 Q50 -1 100 11" vector-effect="non-scaling-stroke"/></svg><div class="hall-lbl nf-cap">Сцена</div><canvas class="hall-c"></canvas></div>${txt('Ряд 4 · место 04')}`,
+  start(root,m){
+    const c=root.querySelector('.hall-c'),{x,W,H}=fit(c),p=pointer(root.querySelector('.hall'));
+    const s=m?13:19,gap=s,curve=m?8:18,rows=Math.min(Math.floor((H-curve-6)/gap),m?26:20);
+    const on=cssv(root,'--zone-2'),sold=cssv(root,'--seat-sold'),sel=cssv(root,'--seat-sel'),chk=cssv(root,'--seat-check');
+    const top=Math.max(4,(H-(rows-1)*gap-curve)/2-8);
+    const mk=document.createElement('canvas');mk.width=W;mk.height=H;const mx=mk.getContext('2d');
+    let fs=200;mx.font=`400 ${fs}px Oranienbaum`;let mt=mx.measureText('404');
+    const hh=(mt.actualBoundingBoxAscent+mt.actualBoundingBoxDescent)||fs*.7,hallH=(rows-1)*gap+curve;
+    fs=Math.min(fs*(hallH*.78)/hh,fs*(W*(m?.84:.56))/mt.width);mx.font=`400 ${fs}px Oranienbaum`;mt=mx.measureText('404');
+    mx.textAlign='center';mx.fillStyle=mx.strokeStyle='#000';mx.lineWidth=s*.7;mx.lineJoin='round';
+    const ty0=top+hallH*.5+(mt.actualBoundingBoxAscent-mt.actualBoundingBoxDescent)/2;mx.fillText('404',W/2,ty0);mx.strokeText('404',W/2,ty0);
+    const md=mx.getImageData(0,0,W,H).data,seats=[];
+    for(let i=0;i<rows;i++){
+      const hw=W*.5*(.6+.3*i/Math.max(1,rows-1))-s,n=Math.floor(2*hw/s);
+      for(let j=0;j<=n;j++){const pp=n?(j/n)*2-1:0,sx=W/2+pp*hw,sy=top+i*gap+curve*pp*pp;
+        const isOn=md[((Math.round(sy)*W+Math.round(sx))<<2)+3]>100;
+        seats.push({x:sx,y:sy,on:isOn,sel:i===3&&j===3,dl:isOn?300+Math.random()*1100:0});}
+    }
+    const still=reduced(),L={x:-999,y:-999},R=m?44:70,r0=s*.12,r1=s*.33;
+    loop(t=>{
+      x.clearRect(0,0,W,H);
+      const live=p.in&&!still;L.x+=((live?p.x*W:-999)-L.x)*(live&&L.x>-500?.12:1);L.y+=((live?p.y*H:-999)-L.y)*(live&&L.y>-500?.12:1);
+      const bgA=still?1:clamp(t/500,0,1);
+      for(const q of seats){
+        let k=1;if(L.x>-500){const dx=q.x-L.x,dy=q.y-L.y;k+=Math.exp(-(dx*dx+dy*dy)/(R*R))*.6}
+        if(q.sel){const a=still?1:ease(clamp((t-1500)/500,0,1));if(!a)continue;const rr=r1*1.15*k*a;
+          x.fillStyle=sel;x.beginPath();x.arc(q.x,q.y,rr,0,6.2832);x.fill();
+          x.strokeStyle=chk;x.lineWidth=1.4;x.lineCap='round';x.beginPath();x.moveTo(q.x-rr*.45,q.y);x.lineTo(q.x-rr*.1,q.y+rr*.35);x.lineTo(q.x+rr*.5,q.y-rr*.35);x.stroke();continue}
+        if(q.on){const a=still?1:ease(clamp((t-q.dl)/260,0,1));
+          x.globalAlpha=1;x.fillStyle=sold;if(a<1){x.beginPath();x.arc(q.x,q.y,r0,0,6.2832);x.fill()}
+          if(a){x.fillStyle=on;x.beginPath();x.arc(q.x,q.y,(r0+(r1-r0)*a)*k,0,6.2832);x.fill()}}
+        else{x.globalAlpha=bgA;x.fillStyle=sold;x.beginPath();x.arc(q.x,q.y,r0*k*(k>1.02?1.6:1),0,6.2832);x.fill();x.globalAlpha=1}
+      }
+      if(still)cancelAnimationFrame(raf);
+    });
+  }
+};
+
+/* ───── B2 · Билет: перфорация, корешок отрывается рукой ───── */
+const ticket2={
+  html:m=>{
+    const n=m?24:18,zz=[];for(let k=0;k<=n;k++)zz.push(k);
+    const main=m?['0 0','100% 0',...zz.map(k=>`${(100-k/n*100).toFixed(2)}% ${k%2?'calc(100% - var(--d))':'100%'}`)]
+                :['0 0',...zz.map(k=>`${k%2?'calc(100% - var(--d))':'100%'} ${(k/n*100).toFixed(2)}%`),'0 100%'];
+    const stub=m?[...zz.map(k=>`${(k/n*100).toFixed(2)}% ${(n-k)%2?'0px':'var(--d)'}`),'100% 100%','0 100%']
+                :[...zz.map(k=>`${k%2?'0px':'var(--d)'} ${(k/n*100).toFixed(2)}%`),'100% 100%','100% 0'];
+    return `<div class="tk-scene"><div class="tk-tilt"><div class="tk2" style="--d:${m?7:8}px">
+      <div class="tk2-main" style="clip-path:polygon(${main.join(',')})">
+        <div class="tk-top"><img src="../../../tts-logo.svg" onerror="this.onerror=null;this.src=CORE_PAGES+'tts-logo.svg'" alt="Ticket to Show"><span class="tk-tag">Не найдено</span></div>
+        <div class="tk-date">Сеанс 404 · время не указано</div>
+        <h1 class="tk-title">${NF[st.n]}</h1>
+        <div class="tk-grid"><div><div class="tk-l">Сектор</div><div class="tk-v f">—</div></div><div><div class="tk-l">Ряд / место</div><div class="tk-v">4 / 04</div></div><div><div class="tk-l">Код</div><div class="tk-v">404</div></div></div>
+      </div>
+      <div class="tk2-stub" role="button" tabindex="0" aria-label="Оторвать корешок" style="clip-path:polygon(${stub.join(',')})"><span class="tk2-perf" aria-hidden="true"></span><span class="tk2-404">404</span></div>
+    </div></div></div><div class="nf-txt"><div class="nf-cap tk2-hint">Оторвите корешок</div>${BTN}</div>`},
+  start(root,m){
+    const tilt=root.querySelector('.tk-tilt'),stub=root.querySelector('.tk2-stub'),hint=root.querySelector('.tk2-hint'),p=pointer(root.querySelector('.nf'));
+    const still=reduced(),MAX=m?16:20;
+    let pr=0,v=0,drag=null,torn=false,fall=null,rx=0,ry=0,hover=false;
+    const setS=(th,tx,ty,op)=>{stub.style.setProperty('--th',th.toFixed(2)+'deg');stub.style.setProperty('--tx',tx.toFixed(1)+'px');stub.style.setProperty('--ty',ty.toFixed(1)+'px');stub.style.setProperty('--op',op.toFixed(3))};
+    const ang=q=>(m?-1:1)*q*MAX;
+    const tear=()=>{torn=true;drag=null;stub.classList.remove('is-drag');hint.classList.add('is-off');
+      fall={th:ang(pr),tx:m?0:pr*10,ty:m?pr*10:0,w:(m?-1:1)*90,vx:m?-40:120,vy:-60,t:0}};
+    stub.addEventListener('pointerenter',()=>hover=true);stub.addEventListener('pointerleave',()=>hover=false);
+    stub.addEventListener('pointerdown',e=>{if(torn)return;drag={x:e.clientX,y:e.clientY};stub.classList.add('is-drag');try{stub.setPointerCapture(e.pointerId)}catch(_){}});
+    stub.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;
+      pr=clamp(m?(dy+Math.abs(dx)*.3)/120:(dx+Math.abs(dy)*.3)/150,0,1.05);if(pr>=1)tear()});
+    const up=()=>{if(!drag)return;drag=null;stub.classList.remove('is-drag');if(pr>.8)tear()};
+    stub.addEventListener('pointerup',up);stub.addEventListener('pointercancel',up);
+    stub.addEventListener('keydown',e=>{if(!torn&&(e.key==='Enter'||e.key===' ')){e.preventDefault();pr=.9;tear()}});
+    if(still){stub.addEventListener('pointerup',()=>{if(torn)stub.style.visibility='hidden'});return}
+    loop((t,dt)=>{
+      const tx0=p.in&&!drag?(.5-p.y)*8:Math.sin(t*.0007)*2,ty0=p.in&&!drag?(p.x-.5)*12:Math.cos(t*.0005)*3;
+      rx+=(tx0-rx)*.07;ry+=(ty0-ry)*.07;tilt.style.setProperty('--rx',rx.toFixed(2)+'deg');tilt.style.setProperty('--ry',ry.toFixed(2)+'deg');
+      if(fall){ // корешок оторван: падает и гаснет
+        fall.t+=dt;fall.vy+=1400*dt;fall.tx+=fall.vx*dt;fall.ty+=fall.vy*dt;fall.th+=fall.w*dt;
+        setS(fall.th,fall.tx,fall.ty,clamp(1-(fall.t-.35)/.5,0,1));if(fall.t>1)fall=null;return}
+      if(torn||drag){if(drag)setS(ang(pr),0,0,1);return}
+      // покой: подсказка — корешок чуть надрывается раз в 4 с; при наведении приоткрывается
+      const ph=(t%4000)/4000,nudge=t>1200&&ph<.18?Math.sin(ph/.18*Math.PI)*.12:0,target=hover?.1:nudge;
+      v+=(-(pr-target)*120-v*9)*dt;pr+=v*dt;setS(ang(Math.max(0,pr)),0,0,1);
+    });
+  }
+};
+
+/* ───── C2 · Глифы: контур + заливка жанрами, ярче под курсором; при загрузке цифры сходятся ───── */
+const glyph2={
+  html:m=>`<div class="gl"><div class="gl2" style="font-size:${m?200:Math.min(560,st.w*.4)}px"><span class="gl2-o" aria-hidden="true">404</span><span class="gl-num" aria-hidden="true">404</span></div><div class="grain"></div></div>${txt('')}`,
+  start(root,m){
+    const box=root.querySelector('.gl2'),el=box.querySelector('.gl-num'),p=pointer(root.querySelector('.nf'));
+    const W=el.clientWidth,H=el.clientHeight,k=m?.6:1.35,still=reduced();
+    const B=[{r:170},{r:300,ax:.22,ay:.35,fx:.00021,fy:.00017},{r:300,ax:.78,ay:.62,fx:.00016,fy:.00023},{r:260,ax:.45,ay:.8,fx:.00025,fy:.00013},{r:240,ax:.85,ay:.25,fx:.00014,fy:.00027}]
+      .map((b,i)=>Object.assign(b,{x:W*(b.ax||.5),y:H*(b.ay||.5),lag:[.12,.02,.025,.018,.03][i]}));
+    const set=(mr)=>{B.forEach((b,i)=>{el.style.setProperty('--x'+i,b.x.toFixed(1)+'px');el.style.setProperty('--y'+i,b.y.toFixed(1)+'px');el.style.setProperty('--r'+i,(b.r*k).toFixed(0)+'px')});
+      el.style.setProperty('--mx',B[0].x.toFixed(1)+'px');el.style.setProperty('--my',B[0].y.toFixed(1)+'px');el.style.setProperty('--mr',mr.toFixed(0)+'px')};
+    if(still){set(9999);return}
+    const r=root.querySelector('.nf').getBoundingClientRect(),er=el.getBoundingClientRect();
+    loop(t=>{
+      const a=ease(clamp(t/1400,0,1));box.style.setProperty('--ls',(.22-.24*a).toFixed(3)+'em');box.style.setProperty('--o',a.toFixed(3));
+      const cx=p.in?p.x*r.width-(er.left-r.left):W/2+Math.cos(t*.0004)*W*.35,cy=p.in?p.y*r.height-(er.top-r.top):H/2+Math.sin(t*.0007)*H*.3;
+      B.forEach((b,i)=>{const dx=i?W*(b.ax+.12*Math.sin(t*b.fx*6.28+i)):cx,dy=i?H*(b.ay+.18*Math.cos(t*b.fy*6.28+i)):cy;
+        b.x+=((i?dx+(cx-dx)*.35:dx)-b.x)*b.lag;b.y+=((i?dy+(cy-dy)*.35:dy)-b.y)*b.lag});
+      set((m?90:150)*(.3+.7*a));
+    });
+  }
+};
+
+/* ───── D2 · Тумба: 12 граней встык, купол, задерживается на 404, бросок с инерцией ───── */
+const POST2=[...POST,{c:'cool',d:'8 июля',t:'Чайка'},{c:'warm',d:'3 даты',t:'Ревизор'}];
+const tumba2={
+  html:m=>{
+    const N=POST2.length,pw=m?72:96,ph=m?240:320,R=pw/(2*Math.tan(Math.PI/N)),Rc=R/Math.cos(Math.PI/N);
+    const disc=(d,y,c)=>`<div class="tb-disc" aria-hidden="true" style="--d:${d.toFixed(1)}px;--y:${y}px;--c:var(${c})"></div>`;
+    const ps=POST2.map((q,i)=>`<div class="tb-p" style="--i:${i}"><div class="ps ${q.c}">${q.c==='nf404'?`<span class="d">Не найдено</span><span class="n">404</span><span class="d">Ticket to Show</span>`:`<span class="d">${q.d}</span><span class="t">${q.t}</span>`}</div></div>`).join('');
+    const dome=[[2*Rc+16,0,'--n700'],[2*Rc+2,-6,'--n800'],[2*Rc*.9,-13,'--n800'],[2*Rc*.76,-20,'--n800'],[2*Rc*.58,-26,'--n700'],[2*Rc*.38,-30,'--n700'],[2*Rc*.16,-33,'--n600'],[10,-40,'--n600']];
+    return `<div class="tb-scene"><div class="tb tb2" style="--pw:${pw}px;--ph:${ph}px;--n:${N};--r:${R.toFixed(2)}px">${dome.map(d=>disc(...d)).join('')}<div class="tb-rot">${ps}</div>${disc(2*Rc+16,ph,'--n700')}${disc(2*Rc+38,ph+12,'--n800')}<div class="tb-floor" aria-hidden="true"></div></div></div>${txt('')}`},
+  start(root,m){
+    const sc=root.querySelector('.tb-scene'),rot=root.querySelector('.tb-rot'),P=[...root.querySelectorAll('.tb-p')],p=pointer(root.querySelector('.nf')),N=P.length;
+    let a=0,om=0,drag=null,lastMove=0;
+    const paint=()=>{rot.style.setProperty('--a',a.toFixed(2)+'deg');P.forEach((el,i)=>{const d=((i*360/N+a)%360+540)%360-180;el.style.setProperty('--sh',(.8*(1-Math.cos(d*Math.PI/180))/2).toFixed(3))})};
+    paint();
+    sc.addEventListener('pointerdown',e=>{drag={x:e.clientX,a,t:performance.now()};om=0;sc.classList.add('is-drag');try{sc.setPointerCapture(e.pointerId)}catch(_){}});
+    sc.addEventListener('pointermove',e=>{if(!drag)return;const now=performance.now(),na=drag.a+(e.clientX-drag.x)*.35,dt=Math.max(8,now-lastMove)/1000;om=om*.6+((na-a)/dt)*.4;a=na;lastMove=now;paint()});
+    const up=()=>{drag=null;sc.classList.remove('is-drag')};sc.addEventListener('pointerup',up);sc.addEventListener('pointercancel',up);
+    if(reduced())return;
+    loop((t,dt)=>{
+      if(drag)return;
+      const front=Math.abs(((a%360)+540)%360-180),slow=.1+.9*clamp(front/32,0,1);   // у 404 тумба замедляется
+      const target=p.in?-12+(.5-p.x)*90:-14*slow,start=clamp((t-1400)/1600,0,1);
+      om+=(target*start-om)*Math.min(1,dt*(Math.abs(om)>Math.abs(target)+5?.9:1.8));a+=om*dt;paint();
+    });
+  }
+};
+
+const V={hall,hall2,ticket,ticket2,glyph,glyph2,tumba,tumba2};
+function render(){
+  cancelAnimationFrame(raf);
+  const m=st.w<768,pad=Math.max(18,Math.min(56,st.w*.032));
+  document.getElementById('note').innerHTML=NOTE[st.v]+' При «меньше движения» всё стоит.';
+  document.getElementById('root').innerHTML=`<div class="canvas${m?' is-m':''}" style="width:${st.w}px;--pad:${pad}px">${nav()}<section class="nf">${V[st.v].html(m)}</section><div class="foot-strip" aria-hidden="true"></div></div>`;
+  const root=document.querySelector('#root .canvas');
+  const go=()=>{if(!root.isConnected)return;if(!root.clientWidth){requestAnimationFrame(go);return}V[st.v].start(root,m)};
+  document.fonts.load('400 100px Oranienbaum').then(()=>document.fonts.ready).then(()=>requestAnimationFrame(go));
+}
+function mark(k,v){document.querySelectorAll(`#bar [data-${k}]`).forEach(b=>b.setAttribute('aria-pressed',String(b.dataset[k]===String(v))))}
+const core=document.getElementById('core');
+const setTheme=t=>{core.href=CORE_BASE+(t==='dark'?'ds-core-r14.css':'ds-core-r14-light.css')};
+document.getElementById('bar').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  b.parentElement.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');
+  if(b.dataset.theme){st.theme=b.dataset.theme;setTheme(st.theme);return}
+  ['w','v','n'].forEach(k=>{if(b.dataset[k]!==undefined)st[k]=k==='w'?+b.dataset[k]:b.dataset[k]});render()});
+core.addEventListener('load',render);
+const q=new URLSearchParams(location.search);
+['theme','w','v','n'].forEach(k=>{if(q.get(k)!==null){st[k]=k==='w'?+q.get(k):q.get(k);mark(k,st[k])}});
+if(st.theme!=='dark')setTheme(st.theme);else render();
+</script>
+</body>
+</html>

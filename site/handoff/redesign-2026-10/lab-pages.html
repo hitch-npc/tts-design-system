@@ -71,31 +71,47 @@ body{margin:0;background:var(--ink);color:var(--n100);font-family:var(--font);-w
 .sk-card{border:1px solid var(--n800);background:var(--n950);border-radius:2px;overflow:hidden}
 .sk-card .a{aspect-ratio:3/2}.sk-card .b{padding:16px;display:flex;flex-direction:column;gap:10px}
 
-/* 404: один шаблон, четыре заголовка прода, одна кнопка */
-/* 404 — сцена: зал гаснет, сверху бьёт софит, в луче медленно плывёт пыль. Луч покачивается вместе с пылью.
-   Цвет луча — светлый тон темы в тёмной, кобальт в светлой. При «меньше движения» луч стоит, пыль не движется. */
-.nf{position:relative;height:620px;overflow:hidden;--beam:color-mix(in srgb,var(--n100) 18%,transparent);--pool:color-mix(in srgb,var(--n100) 15%,transparent);--dust:var(--n100);
-  background:radial-gradient(ellipse 70% 45% at 50% 100%,var(--n950) 0%,var(--ink) 70%)}
-.nf.is-light{--beam:color-mix(in srgb,var(--accent) 12%,transparent);--pool:color-mix(in srgb,var(--accent) 14%,transparent);--dust:var(--accent)}
-.is-m .nf{height:560px}
-.nf-cur{position:absolute;top:0;bottom:0;width:15%;z-index:3;pointer-events:none;
-  background:repeating-linear-gradient(90deg,var(--ink) 0,var(--n900) 11px,var(--n950) 20px,var(--ink) 30px)}
-.nf-cur.l{left:0;-webkit-mask-image:linear-gradient(90deg,#000 55%,transparent);mask-image:linear-gradient(90deg,#000 55%,transparent)}
-.nf-cur.r{right:0;-webkit-mask-image:linear-gradient(270deg,#000 55%,transparent);mask-image:linear-gradient(270deg,#000 55%,transparent)}
-.nf-lamp{position:absolute;left:50%;top:28px;width:44px;height:20px;transform:translateX(-50%);z-index:5;background:var(--n800);clip-path:polygon(18% 0,82% 0,100% 100%,0 100%)}
-.nf-rig{position:absolute;left:50%;top:48px;width:min(780px,104%);height:calc(100% - 48px);transform:translateX(-50%);transform-origin:50% 0;z-index:1;animation:nf-sway 10s ease-in-out infinite alternate}
-.nf-beam,.nf-dust{position:absolute;inset:0;clip-path:polygon(47% 0,53% 0,100% 100%,0 100%)}
-.nf-beam{background:linear-gradient(to bottom,var(--beam) 0%,color-mix(in srgb,var(--beam) 60%,transparent) 55%,transparent 100%);filter:blur(5px)}
-.nf-dust{width:100%;height:100%}
-.nf-pool{position:absolute;left:50%;bottom:34px;width:min(620px,84%);height:120px;transform:translateX(-50%);border-radius:50%;z-index:1;
-  background:radial-gradient(ellipse at center,var(--pool) 0%,transparent 70%);filter:blur(8px);animation:nf-pool 10s ease-in-out infinite alternate}
-@keyframes nf-sway{from{transform:translateX(-50%) rotate(-3.5deg)}to{transform:translateX(-50%) rotate(3.5deg)}}
-@keyframes nf-pool{from{transform:translateX(calc(-50% - 22px))}to{transform:translateX(calc(-50% + 22px))}}
-.nf-in{position:absolute;left:0;right:0;bottom:64px;z-index:6;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;padding:0 var(--pad)}
-.nf .code{font:400 clamp(5.5rem,16vw,10rem)/.85 var(--f-num);color:var(--n100);letter-spacing:.02em}
-.nf h1{margin:0;font:500 clamp(1.8rem,4vw,2.6rem)/1.1 var(--f-thin)}
-.nf .btn{margin-top:10px}
-@media (prefers-reduced-motion: reduce){.nf-rig,.nf-pool{animation:none}}
+/* 404: один шаблон, четыре заголовка прода, одна кнопка. Подача — билет TTS: корешок с 404 отрывается рукой */
+.nf{min-height:620px;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+.is-m .nf{min-height:600px}
+.nf-txt{display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;padding:0 var(--pad) 64px}
+.is-m .nf-txt{padding-bottom:40px}.is-m .nf-txt .btn{align-self:stretch}
+.nf-cap{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--n500)}
+.tk2-scene{position:relative;display:flex;align-items:center;justify-content:center;perspective:1400px;padding:56px 24px 28px;
+  --tk-bg:var(--premium-bg);--tk-ink:var(--premium-ink);--tk-bd:transparent}
+.tk2-tilt{transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));filter:drop-shadow(0 28px 34px rgba(0,0,0,.42))}
+.tk2{position:relative;display:flex;touch-action:none}
+.tk2-main{position:relative;z-index:1;width:520px;box-sizing:border-box;background:var(--tk-bg);color:var(--tk-ink);padding:30px 44px 30px 32px}
+.tk2-top{display:flex;justify-content:space-between;align-items:center;padding-bottom:18px;border-bottom:1px solid color-mix(in srgb,var(--tk-ink) 12%,transparent)}
+.tk2-top img,.tk2-top svg{height:22px;width:auto;display:block}
+.tk2-tag{border:1px solid currentColor;color:var(--danger);border-radius:2px;padding:4px 10px;font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+.tk2-date{font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:color-mix(in srgb,var(--tk-ink) 45%,transparent);margin:20px 0 10px}
+.tk2-title{margin:0;font-family:'Cormorant Garamond',serif;font-weight:500;font-size:34px;line-height:1.08;padding-bottom:20px;border-bottom:1px solid color-mix(in srgb,var(--tk-ink) 12%,transparent)}
+.tk2-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:18px}
+.tk2-l{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:color-mix(in srgb,var(--tk-ink) 50%,transparent);margin-bottom:6px}
+.tk2-v{font-family:'Oranienbaum',serif;font-size:22px;line-height:1}
+.tk2-v.f{font-family:'Forum',serif;font-size:18px;line-height:1.2}
+.tk2-stub{position:relative;z-index:2;width:184px;margin-left:calc(-1 * var(--d));box-sizing:border-box;background:var(--tk-bg);color:var(--tk-ink);
+  display:flex;align-items:center;justify-content:center;cursor:grab;user-select:none;-webkit-user-select:none;
+  transform-origin:calc(var(--d) / 2) 100%;transform:translate(var(--tx,0px),var(--ty,0px)) rotate(var(--th,0deg));opacity:var(--op,1)}
+.tk2-stub.is-drag{cursor:grabbing}
+.tk2-stub:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+.tk2-perf{position:absolute;left:calc(var(--d) + 4px);top:12px;bottom:12px;width:0;border-left:2.5px dotted color-mix(in srgb,var(--tk-ink) 30%,transparent)}
+.tk2-404{font-family:'Oranienbaum',serif;font-size:76px;line-height:.9;padding-left:var(--d)}
+.tk2-hint{transition:opacity 320ms cubic-bezier(.4,0,.2,1)}
+.tk2-hint.is-off{opacity:0}
+.is-m .tk2{flex-direction:column}
+.is-m .tk2-main{width:300px;padding:22px 22px 34px}
+.is-m .tk2-title{font-size:26px}
+.is-m .tk2-grid{grid-template-columns:1fr 1fr}
+.is-m .tk2-code{display:none}
+.is-m .tk2-stub{width:300px;height:120px;margin:calc(-1 * var(--d)) 0 0;transform-origin:100% calc(var(--d) / 2)}
+.is-m .tk2-perf{left:12px;right:12px;top:calc(var(--d) + 4px);bottom:auto;width:auto;height:0;border-left:0;border-top:2.5px dotted color-mix(in srgb,var(--tk-ink) 30%,transparent)}
+.is-m .tk2-404{font-size:58px;padding:var(--d) 0 0}
+.is-m .tk2-scene{padding:32px 16px 72px}
+/* Светлая тема: плашка светлая, как билет в редизайне, а не инверсия Premium */
+.tk2-scene.is-light{--tk-bg:var(--n950);--tk-ink:var(--n100)}
+.tk2-scene.is-light .tk2-tilt{filter:drop-shadow(0 0 1px color-mix(in srgb,var(--n100) 18%,transparent)) drop-shadow(0 22px 30px color-mix(in srgb,var(--n100) 14%,transparent))}
 
 /* Документ: в проде — PDF во фрейме; оставляем, даём странице шапку и название */
 .doc{padding:0 var(--pad) 48px}
@@ -119,7 +135,7 @@ body{margin:0;background:var(--ink);color:var(--n100);font-family:var(--font);-w
   <span class="sub" data-for="nf" hidden><b>Вариант</b><button data-n="page" aria-pressed="true">Страница</button> <button data-n="event" aria-pressed="false">Мероприятие</button> <button data-n="venue" aria-pressed="false">Театр</button> <button data-n="list" aria-pressed="false">Мероприятия</button></span>
   <span class="sub" data-for="doc" hidden><b>Документ</b><button data-d="offer" aria-pressed="true">Оферта</button> <button data-d="pd" aria-pressed="false">Перс. данные</button> <button data-d="policy" aria-pressed="false">Политика</button> <button data-d="ads" aria-pressed="false">Рассылка</button></span>
 </div>
-<div class="note-lab"><b>Что смотреть.</b> Три служебных шаблона, которые есть в проде, но не были нарисованы в редизайне. <b>Поиск</b> (<code>/search?query=</code>): в проде — заголовок «Результаты по запросу:» и карточки; в редизайне — тот же состав на сетке афиши, группы «События» и «Площадки» и совпадение цветом, как в подсказках поиска (решение №19). Пустой результат и исправление латиницы — тексты из подсказок редизайна. <b>404</b>: в проде один шаблон с четырьмя заголовками («Страница», «Мероприятие», «Театр», «Мероприятия не найдены») и кнопкой «Перейти на главную» — состав тот же, капс заменён обычным регистром (решение №6). Подача театральная: зал гаснет, по краям кулисы, сверху софит, луч медленно покачивается, в нём плывёт пыль, внизу световое пятно. При «меньше движения» луч и пыль стоят. <b>Документы</b>: в проде четыре PDF во фрейме — оставлено, странице добавлены шапка сайта, крошки и название. Открываются, как в проде, из футера.</div>
+<div class="note-lab"><b>Что смотреть.</b> Три служебных шаблона, которые есть в проде, но не были нарисованы в редизайне. <b>Поиск</b> (<code>/search?query=</code>): в проде — заголовок «Результаты по запросу:» и карточки; в редизайне — тот же состав на сетке афиши, группы «События» и «Площадки» и совпадение цветом, как в подсказках поиска (решение №19). Пустой результат и исправление латиницы — тексты из подсказок редизайна. <b>404</b>: в проде один шаблон с четырьмя заголовками («Страница», «Мероприятие», «Театр», «Мероприятия не найдены») и кнопкой «Перейти на главную» — состав тот же, капс заменён обычным регистром (решение №6). Подача — билет TTS: заголовок в поле названия, «Ряд / место 4 / 04», корешок с 404 за перфорацией. Корешок можно оторвать — потянуть вправо (на телефоне вниз), край рвётся зубцами, корешок падает; раз в 4 с он сам чуть надрывается — подсказка. Билет слегка наклоняется за курсором. При «меньше движения» всё стоит, отрыв — без падения. <b>Документы</b>: в проде четыре PDF во фрейме — оставлено, странице добавлены шапка сайта, крошки и название. Открываются, как в проде, из футера.</div>
 <div id="root"></div>
 
 <script>
@@ -150,7 +166,8 @@ function search(){
     ${fix?`<div class="fix">Показаны результаты для <b>«пс»</b> · <button class="lnk">искать «Gc»</button></div>`:''}</header><div class="res">${body}</div>`;
 }
 const NF={page:'Страница не найдена',event:'Мероприятие не найдено',venue:'Театр не найден',list:'Мероприятия не найдены'};
-const nf=()=>`${nav('')}<div class="nf" role="img" aria-label="Сцена, луч софита"><div class="nf-cur l" aria-hidden="true"></div><div class="nf-cur r" aria-hidden="true"></div><div class="nf-lamp" aria-hidden="true"></div><div class="nf-rig" aria-hidden="true"><div class="nf-beam"></div><canvas class="nf-dust"></canvas></div><div class="nf-pool" aria-hidden="true"></div><div class="nf-in"><div class="code">404</div><h1>${NF[st.n]}</h1><button class="btn btn-primary btn-md"><span>Перейти на главную</span></button></div></div>`;
+const TK_D=()=>`<div class="tk2-scene"><div class="tk2-tilt" data-tk="tilt"><div class="tk2" style="--d:8px"><div class="tk2-main" style="clip-path:polygon(0 0,100% 0.00%,calc(100% - var(--d)) 5.56%,100% 11.11%,calc(100% - var(--d)) 16.67%,100% 22.22%,calc(100% - var(--d)) 27.78%,100% 33.33%,calc(100% - var(--d)) 38.89%,100% 44.44%,calc(100% - var(--d)) 50.00%,100% 55.56%,calc(100% - var(--d)) 61.11%,100% 66.67%,calc(100% - var(--d)) 72.22%,100% 77.78%,calc(100% - var(--d)) 83.33%,100% 88.89%,calc(100% - var(--d)) 94.44%,100% 100.00%,0 100%)"><div class="tk2-top"><img src="../../../tts-logo.svg" onerror="this.onerror=null;this.src=CORE_PAGES+'tts-logo.svg'" alt="Ticket to Show"><span class="tk2-tag">Не найдено</span></div><div class="tk2-date">Сеанс 404 · время не указано</div><h1 class="tk2-title">${NF[st.n]}</h1><div class="tk2-grid"><div><div class="tk2-l">Сектор</div><div class="tk2-v f">—</div></div><div><div class="tk2-l">Ряд / место</div><div class="tk2-v">4 / 04</div></div><div class="tk2-code"><div class="tk2-l">Код</div><div class="tk2-v">404</div></div></div></div><div class="tk2-stub" data-tk="stub" role="button" tabindex="0" aria-label="Оторвать корешок" style="clip-path:polygon(var(--d) 0.00%,0px 5.56%,var(--d) 11.11%,0px 16.67%,var(--d) 22.22%,0px 27.78%,var(--d) 33.33%,0px 38.89%,var(--d) 44.44%,0px 50.00%,var(--d) 55.56%,0px 61.11%,var(--d) 66.67%,0px 72.22%,var(--d) 77.78%,0px 83.33%,var(--d) 88.89%,0px 94.44%,var(--d) 100.00%,100% 100%,100% 0)"><span class="tk2-perf" aria-hidden="true"></span><span class="tk2-404">404</span></div></div></div></div>`,TK_M=()=>`<div class="tk2-scene"><div class="tk2-tilt" data-tk="tilt"><div class="tk2" style="--d:7px"><div class="tk2-main" style="clip-path:polygon(0 0,100% 0,100.00% 100%,95.83% calc(100% - var(--d)),91.67% 100%,87.50% calc(100% - var(--d)),83.33% 100%,79.17% calc(100% - var(--d)),75.00% 100%,70.83% calc(100% - var(--d)),66.67% 100%,62.50% calc(100% - var(--d)),58.33% 100%,54.17% calc(100% - var(--d)),50.00% 100%,45.83% calc(100% - var(--d)),41.67% 100%,37.50% calc(100% - var(--d)),33.33% 100%,29.17% calc(100% - var(--d)),25.00% 100%,20.83% calc(100% - var(--d)),16.67% 100%,12.50% calc(100% - var(--d)),8.33% 100%,4.17% calc(100% - var(--d)),0.00% 100%)"><div class="tk2-top"><img src="../../../tts-logo.svg" onerror="this.onerror=null;this.src=CORE_PAGES+'tts-logo.svg'" alt="Ticket to Show"><span class="tk2-tag">Не найдено</span></div><div class="tk2-date">Сеанс 404 · время не указано</div><h1 class="tk2-title">${NF[st.n]}</h1><div class="tk2-grid"><div><div class="tk2-l">Сектор</div><div class="tk2-v f">—</div></div><div><div class="tk2-l">Ряд / место</div><div class="tk2-v">4 / 04</div></div><div class="tk2-code"><div class="tk2-l">Код</div><div class="tk2-v">404</div></div></div></div><div class="tk2-stub" data-tk="stub" role="button" tabindex="0" aria-label="Оторвать корешок" style="clip-path:polygon(0.00% var(--d),4.17% 0px,8.33% var(--d),12.50% 0px,16.67% var(--d),20.83% 0px,25.00% var(--d),29.17% 0px,33.33% var(--d),37.50% 0px,41.67% var(--d),45.83% 0px,50.00% var(--d),54.17% 0px,58.33% var(--d),62.50% 0px,66.67% var(--d),70.83% 0px,75.00% var(--d),79.17% 0px,83.33% var(--d),87.50% 0px,91.67% var(--d),95.83% 0px,100.00% var(--d),100% 100%,0 100%)"><span class="tk2-perf" aria-hidden="true"></span><span class="tk2-404">404</span></div></div></div></div>`;
+const nf=()=>`${nav('')}<div class="nf">${st.w<768?TK_M():TK_D()}<div class="nf-txt"><div class="nf-cap tk2-hint" data-tk="hint">Оторвите корешок</div><button class="btn btn-primary btn-md"><span>Перейти на главную</span></button></div></div>`;
 const DOC={offer:'Публичная оферта',pd:'Обработка персональных данных',policy:'Политика конфиденциальности',ads:'Согласие на рекламную рассылку'};
 const FILE={offer:'publicOffer.pdf',pd:'processingPersData.pdf',policy:'privacyPolicy.pdf',ads:'ConsentToReceiveAdvertisingMailings.pdf'};
 function doc(){
@@ -159,38 +176,65 @@ function doc(){
    <div class="doc"><div class="pdf" role="img" aria-label="PDF: ${DOC[st.d]}"><div class="pdf-bar"><span>${FILE[st.d]}</span><span>1 / 12</span></div><div class="pdf-page">${lines}</div></div></div>`;
 }
 
-/* Пыль в луче: ~90 частиц, медленно поднимаются и дрейфуют, мерцают. Цвет — из --dust */
-let dustRaf=0;
-function startDust(){
-  cancelAnimationFrame(dustRaf);
-  const nfEl=document.querySelector('.nf'); if(!nfEl) return;
-  const bg=getComputedStyle(document.body).backgroundColor.match(/\d+/g)||[0,0,0];
-  nfEl.classList.toggle('is-light',(+bg[0]+ +bg[1]+ +bg[2])/3>128);
-  const c=nfEl.querySelector('.nf-dust'),ctx=c.getContext('2d'),dpr=Math.min(2,window.devicePixelRatio||1);
-  const W=c.clientWidth,H=c.clientHeight; c.width=W*dpr;c.height=H*dpr;ctx.scale(dpr,dpr);
-  const col=getComputedStyle(nfEl).getPropertyValue('--dust').trim()||'#fff';
-  const rnd=(a,b)=>a+Math.random()*(b-a);
-  const P=Array.from({length:90},()=>({x:rnd(.1,.9)*W,y:rnd(0,1)*H,r:rnd(.5,1.9),vy:rnd(.04,.22),ph:rnd(0,6.28),sp:rnd(.004,.012),a:rnd(.25,.9)}));
-  const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  ctx.fillStyle=col;
-  function frame(t){
-    ctx.clearRect(0,0,W,H);
-    for(const p of P){
-      if(!still){p.y-=p.vy;p.ph+=p.sp;p.x+=Math.sin(p.ph)*.18;if(p.y<-4){p.y=H+4;p.x=rnd(.1,.9)*W}}
-      const depth=p.y/H; // ближе к полу — шире луч, слабее свет
-      ctx.globalAlpha=p.a*(.35+.65*Math.abs(Math.sin(p.ph*1.7)))*(1-depth*.55);
-      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,6.283);ctx.fill();
+/* 404 · Билет: корешок отрывается рукой. Разметка: [data-tk=tilt] — билет целиком (наклон за курсором),
+   [data-tk=stub] — корешок, [data-tk=hint] — подсказка. Тянуть вправо (телефон — вниз); отпустить после 80 % — отрыв. */
+function tk2Init(scene, mob) {
+  const tilt = scene.querySelector('[data-tk="tilt"]'), stub = scene.querySelector('[data-tk="stub"]'), hint = scene.querySelector('[data-tk="hint"]');
+  if (!tilt || !stub || scene.hasAttribute('data-tk-on')) return;
+  scene.setAttribute('data-tk-on', '');
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches, MAX = mob ? 16 : 20;
+  const cl = (v, a, b) => Math.max(a, Math.min(b, v));
+  const P = { x: .5, y: .5, in: false };
+  scene.addEventListener('pointermove', e => { const r = scene.getBoundingClientRect(); P.x = (e.clientX - r.left) / r.width; P.y = (e.clientY - r.top) / r.height; P.in = true; });
+  scene.addEventListener('pointerleave', () => { P.in = false; });
+  let pr = 0, v = 0, drag = null, torn = false, fall = null, rx = 0, ry = 0, hover = false;
+  const setS = (th, tx, ty, op) => { const s = stub.style; s.setProperty('--th', th.toFixed(2) + 'deg'); s.setProperty('--tx', tx.toFixed(1) + 'px'); s.setProperty('--ty', ty.toFixed(1) + 'px'); s.setProperty('--op', op.toFixed(3)); };
+  const ang = q => (mob ? -1 : 1) * q * MAX;
+  const tear = () => {
+    torn = true; drag = null; stub.classList.remove('is-drag'); if (hint) hint.classList.add('is-off');
+    stub.setAttribute('aria-hidden', 'true'); stub.removeAttribute('tabindex');
+    if (still) { stub.style.visibility = 'hidden'; return; }
+    fall = { th: ang(pr), tx: mob ? 0 : pr * 10, ty: mob ? pr * 10 : 0, w: (mob ? -1 : 1) * 90, vx: mob ? -40 : 120, vy: -60, t: 0 };
+  };
+  stub.addEventListener('pointerenter', () => { hover = true; });
+  stub.addEventListener('pointerleave', () => { hover = false; });
+  stub.addEventListener('pointerdown', e => { if (torn) return; drag = { x: e.clientX, y: e.clientY }; stub.classList.add('is-drag'); try { stub.setPointerCapture(e.pointerId); } catch (_) {} });
+  stub.addEventListener('pointermove', e => {
+    if (!drag) return; const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    pr = cl(mob ? (dy + Math.abs(dx) * .3) / 120 : (dx + Math.abs(dy) * .3) / 150, 0, 1.05);
+    if (still) return; if (pr >= 1) tear();
+  });
+  const up = () => { if (!drag) return; drag = null; stub.classList.remove('is-drag'); if (pr > .8) tear(); else if (still) pr = 0; };
+  stub.addEventListener('pointerup', up); stub.addEventListener('pointercancel', up);
+  stub.addEventListener('keydown', e => { if (!torn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); pr = .9; tear(); } });
+  if (still) return;
+  const t0 = performance.now(); let prev = t0;
+  const step = now => {
+    if (!scene.isConnected) return;
+    const t = now - t0, dt = Math.min(50, now - prev) / 1000; prev = now;
+    const tx0 = P.in && !drag ? (.5 - P.y) * 8 : Math.sin(t * .0007) * 2, ty0 = P.in && !drag ? (P.x - .5) * 12 : Math.cos(t * .0005) * 3;
+    rx += (tx0 - rx) * .07; ry += (ty0 - ry) * .07;
+    tilt.style.setProperty('--rx', rx.toFixed(2) + 'deg'); tilt.style.setProperty('--ry', ry.toFixed(2) + 'deg');
+    if (fall) {                                   // оторван: корешок падает и гаснет
+      fall.t += dt; fall.vy += 1400 * dt; fall.tx += fall.vx * dt; fall.ty += fall.vy * dt; fall.th += fall.w * dt;
+      setS(fall.th, fall.tx, fall.ty, cl(1 - (fall.t - .35) / .5, 0, 1));
+      if (fall.t > 1) { fall = null; stub.style.visibility = 'hidden'; }
+    } else if (drag) setS(ang(pr), 0, 0, 1);
+    else if (!torn) {                             // покой: раз в 4 с корешок чуть надрывается; при наведении приоткрывается
+      const ph = (t % 4000) / 4000, nudge = t > 1200 && ph < .18 ? Math.sin(ph / .18 * Math.PI) * .12 : 0;
+      v += (-(pr - (hover ? .1 : nudge)) * 120 - v * 9) * dt; pr += v * dt; setS(ang(Math.max(0, pr)), 0, 0, 1);
     }
-    if(!still) dustRaf=requestAnimationFrame(frame);
-  }
-  frame(0);
+    requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
 }
+function tkTheme(sc){const bg=getComputedStyle(document.body).backgroundColor.match(/\d+/g)||[0,0,0];sc.classList.toggle('is-light',(+bg[0]+ +bg[1]+ +bg[2])/3>128)}
 function render(){
   const pad=Math.max(18,Math.min(56,st.w*0.032)),m=st.w<768;
   const body=st.page==='search'?search():st.page==='nf'?nf():doc();
   document.getElementById('root').innerHTML=`<div class="canvas${m?' is-m':''}" style="width:${st.w}px;--pad:${pad}px">${body}<div class="foot-strip" aria-hidden="true"></div></div>`;
   document.querySelectorAll('#bar .sub').forEach(x=>x.hidden=x.dataset.for!==st.page);
-  if(st.page==='nf') requestAnimationFrame(startDust); else cancelAnimationFrame(dustRaf);
+  if(st.page==='nf') requestAnimationFrame(()=>{const sc=document.querySelector('.nf');if(sc){tkTheme(sc.querySelector('.tk2-scene'));tk2Init(sc,st.w<768)}});
 }
 function mark(k,v){document.querySelectorAll(`#bar [data-${k}]`).forEach(b=>b.setAttribute('aria-pressed',String(b.dataset[k]===String(v))))}
 document.getElementById('bar').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;b.parentElement.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');
@@ -198,7 +242,7 @@ document.getElementById('bar').addEventListener('click',e=>{const b=e.target.clo
   ['w','page','s','n','d'].forEach(k=>{if(b.dataset[k]!==undefined)st[k]=k==='w'?+b.dataset[k]:b.dataset[k]});render()});
 const q=new URLSearchParams(location.search);
 ['theme','w','page','s','n','d'].forEach(k=>{if(q.get(k)!==null){st[k]=k==='w'?+q.get(k):q.get(k);mark(k,st[k]);if(k==='theme')document.getElementById('core').href=st.theme==='dark'?CORE_BASE+'ds-core-r14.css':CORE_BASE+'ds-core-r14-light.css'}});
-document.getElementById('core').addEventListener('load',()=>{if(st.page==='nf')startDust()});
+document.getElementById('core').addEventListener('load',()=>{const sc=document.querySelector('.tk2-scene');if(sc)tkTheme(sc)});
 render();
 </script>
 </body>
