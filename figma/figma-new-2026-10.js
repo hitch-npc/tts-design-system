@@ -133,7 +133,7 @@ variants('Блок посетителя', [
   c.appendChild(left); c.appendChild(right); return c;
 }));
 
-// 3. Бейдж категории — точка цвета жанра
+// 3. Бейдж категории — точка цвета жанра. Только на «Всех событиях» (решение №33)
 variants('Бейдж категории', [['Спектакль','zone-2'],['Концерт','tag-o-fg'],['Классика','zone-4'],['Детям','tag-g-fg']].map(([s, dot]) => {
   const c = comp('Категория=' + s, { pad:[4,9], fill:'n950', stroke:'n800', gap:6 });
   const d = figma.createEllipse(); d.name = 'dot'; d.resize(7,7); d.fills = [paint(dot)];
@@ -284,11 +284,14 @@ function sheet(w, h, pts){
 }
 const op = (node, o, key = 'fills') => { node[key] = node[key].map(f => Object.assign({}, f, { opacity:o })); return node; };
 function rule(w){ const r = figma.createRectangle(); r.name = 'rule'; r.resize(w, 1); r.fills = [paint('premium-ink')]; return op(r, .12); }
-function perf(len, vertical){ // перфорация: пунктир нулевой длины с круглым концом = ровные точки
-  const l = figma.createLine(); l.name = 'perforation'; l.resize(len, 0);
-  l.strokes = [paint('premium-ink')]; op(l, .3, 'strokes'); l.strokeWeight = 2.5; l.strokeCap = 'ROUND'; l.dashPattern = [0, 7];
-  if (vertical) l.rotation = -90;
-  return l;
+function perf(len, vertical){ // перфорация: ряд точек 2,5 px с шагом 9 px (пунктир Figma рисует штрихами, не точками)
+  const n = Math.floor(len / 9) + 1, g = figma.createFrame(); g.name = 'perforation'; g.fills = []; g.clipsContent = false;
+  g.resize(vertical ? 2.5 : (n - 1) * 9 + 2.5, vertical ? (n - 1) * 9 + 2.5 : 2.5);
+  for (let i = 0; i < n; i++) {
+    const e = figma.createEllipse(); e.name = 'dot'; e.resize(2.5, 2.5); e.fills = [paint('premium-ink')]; op(e, .3);
+    g.appendChild(e); e.x = vertical ? 0 : i * 9; e.y = vertical ? i * 9 : 0;
+  }
+  return g;
 }
 function rotAround(node, deg, px, py){ // поворот по часовой вокруг точки родителя (px, py)
   const a = deg * Math.PI / 180, c = Math.cos(a), s = Math.sin(a);
@@ -332,7 +335,7 @@ function tkStub(mob, d, H){
   const W = mob ? 300 : 184, h = mob ? 120 : H, f = frame('stub', W, h);
   f.appendChild(sheet(W, h, zig(W, h, d, mob ? 24 : 18, mob ? 't' : 'l')));
   const p = perf(mob ? W - 24 : h - 24, !mob); f.appendChild(p);
-  if (mob) { p.x = 12; p.y = d + 4; } else { p.x = d + 4; p.y = 12; }
+  if (mob) { p.x = 12; p.y = d + 4 - 1.25; } else { p.x = d + 4 - 1.25; p.y = 12; }
   const t = txt('404', { f:'num', size: mob ? 58 : 76, color:'premium-ink' }); f.appendChild(t);
   t.x = mob ? (W - t.width) / 2 : d + (W - d - t.width) / 2; t.y = mob ? d + (h - d - t.height) / 2 : (h - t.height) / 2;
   return f;
