@@ -266,8 +266,12 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 /* Blob — пастельные */
 --blob-core:      #BFD0EE
 --blob-mid:       #E5DAEF
+--blob-faint:     #EAF0FF
 --blob-core-warm: #F2D5B0
 --blob-core-green:#C7E8C8
+--blob-mid-green: #E4F3E4
+/* Светлая тема: все фоновые токены (блобы, подложки) обязаны быть светлыми.
+   build-tokens --check падает, если значение осталось тёмным (21.10.2026). */
 /* Добавлены в 14.3–14.4 */
 --n850:               #EAE9E2
 --zone-2:             #3F73E3

@@ -154,6 +154,34 @@ const FILES = [
 let problems = 0;
 mkdirSync(join(TOOLING, 'build'), { recursive: true });
 
+/* Проверка адаптации тем: фоновые токены (блобы, подложки, нейтрали фона)
+   в светлой теме обязаны быть светлыми, в тёмной — тёмными. Ловит значение,
+   скопированное из тёмной темы и забытое в светлой (так было с
+   --blob-mid-green и --blob-faint до 21.10.2026). */
+function luminance(hex) {
+  const m = /^#([0-9a-f]{6})$/i.exec(hex || '');
+  if (!m) return null;
+  const c = [0, 2, 4].map((i) => parseInt(m[1].slice(i, i + 2), 16) / 255)
+    .map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+}
+const SURFACE_TOKENS = ['n800', 'n850', 'n900', 'n950', 'accent-ghost', 'input-focus-bg',
+  'blob-core', 'blob-mid', 'blob-purple', 'blob-faint',
+  'blob-core-warm', 'blob-mid-warm', 'blob-core-cool', 'blob-mid-cool', 'blob-core-green', 'blob-mid-green',
+  'success-bg', 'danger-bg', 'danger-hover-bg', 'tag-o-bg', 'tag-g-bg', 'tag-r-bg'];
+const LIGHT_MIN = 0.4, DARK_MAX = 0.1;
+for (const theme of ['dark', 'light']) {
+  for (const k of SURFACE_TOKENS) {
+    const v = col(theme, k), L = luminance(v);
+    if (L === null) continue;
+    const bad = theme === 'light' ? L < LIGHT_MIN : L > DARK_MAX;
+    if (bad) {
+      problems++;
+      console.log(`  ✗ [${theme}] --${k}: ${v} — ${theme === 'light' ? 'слишком тёмный для светлой темы' : 'слишком светлый для тёмной темы'} (яркость ${L.toFixed(3)})`);
+    }
+  }
+}
+
 for (const { theme, file } of FILES) {
   const css = readFileSync(file, 'utf8');
   const { start, end } = findRoot(css);

@@ -26,7 +26,7 @@
   --blob-core:       #BFD0EE;
   --blob-mid:        #E5DAEF;
   --blob-purple:     #DBC4F0;
-  --blob-faint:      #08133D;
+  --blob-faint:      #EAF0FF;
 
   /* Blob presets для событий */
   --blob-core-warm:  #F2D5B0;
@@ -34,7 +34,7 @@
   --blob-core-cool:  #BFD0EE;
   --blob-mid-cool:   #E5DAEF;
   --blob-core-green: #C7E8C8;
-  --blob-mid-green:  #051205;
+  --blob-mid-green:  #E4F3E4;
 
   /* Инверсия и premium */
   --on-accent:       #FFFFFF;
