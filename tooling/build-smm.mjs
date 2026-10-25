@@ -193,6 +193,8 @@ const TEMPLATES = String.raw`
 
 /* лист без картинки: детали альбома, перенос, отмена, подборка, «Типографика» */
 .smm-sheet { padding: var(--smm-pt) var(--smm-x) var(--smm-pb); justify-content: space-between; }
+/* воздух под шапкой: содержимое не подходит к логотипу ближе 96 px */
+.smm-sheet > .smm-head { margin-bottom: 96px; }
 .smm-sheet .smm-span { grid-column: 1 / -1; }
 .smm-sheet .smm-grid > .smm-lead { grid-column: 1 / 6; }
 .smm-gap { grid-column: 1 / -1; height: 56px; }
