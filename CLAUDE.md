@@ -17,8 +17,8 @@
 | `ds-doc-light.css` | То же для светлой темы |
 | `tts-logo.svg` | Текущий SVG логотипа TTS |
 | `tokens.json` | **Единый источник истины** токенов сайта (global + dark + light). Блоки `:root` в CSS генерируются отсюда. |
-| `smm.tokens.json` | Токены SMM-слоя (соц-форматы, типошкала), ссылаются на те же примитивы. |
-| `ds-smm.css` | **Генерируется** из `smm.tokens.json` — соц-шаблоны (story/post/square). Руками не править. |
+| `smm.tokens.json` | Токены SMM-слоя (форматы, поля, типошкала, цвета тем и жанров), ссылаются на те же примитивы. |
+| `ds-smm.css` | **Генерируется** из `smm.tokens.json` — посты и сторис (решение №34, пример — `tooling/examples/smm-example.html`). Руками не править. |
 | `package.json` | Скрипты: `npm run build` / `check` / `lint` / `security`. Версия — здесь, в `package-lock.json` и `VERSION`. |
 | `README.md`, `CHANGELOG.md` | Лицо публичного репозитория и история версий. |
 | `DECISIONS.md` | **Решения системы**: причина, дата, условие пересмотра. Меняешь решение — меняешь запись. |
@@ -51,7 +51,10 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 ### Сборка из токенов (важно для агента)
 - **`:root` в `ds-core-r14.css` / `-light.css` генерируется** из `tokens.json` скриптом `tooling/build-tokens.mjs`. **Никогда не редактируй `:root` вручную** — меняй значения в `tokens.json`, затем `npm run build`.
 - Компоненты (всё ниже `:root`) правятся руками, цвета — только через `var(--…)`.
-- SMM: меняешь `smm.tokens.json` → `npm run build` пересобирает `ds-smm.css`.
+- SMM: меняешь `smm.tokens.json` → `npm run build` пересобирает `ds-smm.css`. Шаблоны слоя — строка `TEMPLATES` в `tooling/build-smm.mjs`.
+- **Правила постов (решение №34):** на картинке — надзаголовок, название и одна строка «дата, время · площадка», остальное — в тексте поста.
+  Поле 112, название не больше двух строк, кобальт — только активная палочка, метка статуса — инверсия `.smm-mark`,
+  свечение — один цвет жанра (`.smm-fx--footlight` с картинкой; `--beam`, `--depth`, `--halo` без картинки). Город на картинке не пишется.
 - Перед фиксацией: `npm run check` (сборка `--check` + страж). Страж (`tooling/guardrail.mjs`) превращает запреты ниже в автопроверку: `font-weight:300` вне `.smap-zoom-btn`, `border-radius>8px`, сырой `#hex` вне `:root`.
 - Полная инструкция — `tooling/README.md`.
 

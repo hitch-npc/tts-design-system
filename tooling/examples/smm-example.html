@@ -3,68 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SMM-слой — формат «обложка» (story / post / square)</title>
+<title>SMM-слой — посты TTS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- стили постов — только из ds-smm.css (источник — smm.tokens.json; сборка: npm run build) -->
+<link rel="stylesheet" href="../../ds-smm.css">
 <style>
-  /* ===== стили SMM встроены из ds-smm.css (источник — smm.tokens.json; сборка: node tooling/build-smm.mjs) ===== */
-  :root {
-    --smm-story-w: 1080px; --smm-story-h: 1920px;
-    --smm-post-w: 1080px;  --smm-post-h: 1350px; --smm-square: 1080px;
-    --smm-margin: 112px; --smm-gutter: 44px; --smm-safe-top: 150px;
-    --smm-fs-display: 118px; --smm-fs-title: 54px; --smm-fs-subtitle: 40px;
-    --smm-fs-meta: 34px; --smm-fs-caption: 28px;
-    --smm-bg: #0D0D0D; --smm-fg: #D6D6D2; --smm-muted: #A6A6A2;
-    --smm-accent: #0047FF; --smm-premium: #F5F4EE;
-    --smm-blob-cool: #06277F; --smm-blob-warm: #4A1F00; --smm-blob-green: #0A2A0A;
-    --smm-f-display: 'Cormorant Garamond', serif; --smm-f-head: 'Forum', serif;
-    --smm-f-ui: 'Manrope', system-ui, sans-serif; --smm-f-num: 'Oranienbaum', serif;
-  }
-  .smm-canvas { position: relative; overflow: hidden; box-sizing: border-box;
-    background: var(--smm-bg); color: var(--smm-fg); font-family: var(--smm-f-ui);
-    display: flex; flex-direction: column; justify-content: space-between; padding: var(--smm-margin);
-    --smm-grain: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='140'%20height='140'%3E%3Cfilter%20id='n'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.85'%20numOctaves='2'%20stitchTiles='stitch'/%3E%3CfeColorMatrix%20type='saturate'%20values='0'/%3E%3C/filter%3E%3Crect%20width='140'%20height='140'%20filter='url(%23n)'/%3E%3C/svg%3E");
-    --smm-glow: var(--smm-blob-cool); }
-  .smm-canvas--story  { width: var(--smm-story-w); height: var(--smm-story-h); padding-top: calc(var(--smm-margin) + var(--smm-safe-top)); }
-  .smm-canvas--post   { width: var(--smm-post-w);  height: var(--smm-post-h); }
-  .smm-canvas--square { width: var(--smm-square);   height: var(--smm-square); }
-  .smm-canvas--cool  { --smm-glow: var(--smm-blob-cool); }
-  .smm-canvas--warm  { --smm-glow: var(--smm-blob-warm); }
-  .smm-canvas--green { --smm-glow: var(--smm-blob-green); }
-  .smm-canvas::before { content: ""; position: absolute; right: -12%; bottom: -16%; z-index: 0; width: 86%; aspect-ratio: 1;
-    border-radius: 9999px; pointer-events: none; background: radial-gradient(circle at 50% 50%, var(--smm-glow) 0%, transparent 62%); opacity: .8; filter: blur(8px); }
-  .smm-canvas::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background-image: var(--smm-grain); opacity: .06; mix-blend-mode: overlay; }
-  .smm-photo { position: absolute; top: 0; right: 0; z-index: 1; width: 82%; height: 62%; overflow: hidden;
-    -webkit-mask-image: linear-gradient(180deg, black 50%, transparent 100%); mask-image: linear-gradient(180deg, black 50%, transparent 100%); }
-  .smm-photo > img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; filter: grayscale(.12) contrast(1.02); }
-  .smm-photo::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, var(--smm-bg) 0%, transparent 42%); }
-  .smm-photo::after  { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: var(--smm-grain); opacity: .15; mix-blend-mode: overlay; }
-  .smm-photo--empty  { background: radial-gradient(120% 90% at 72% 8%, color-mix(in srgb, var(--smm-glow) 55%, transparent) 0%, transparent 60%), var(--smm-bg); box-shadow: inset 0 0 0 1px rgba(214,214,210,.07); }
-  .smm-photo__hint   { position: absolute; left: 50%; top: 40%; transform: translate(-50%,-50%); font-weight: 600; font-size: var(--smm-fs-caption); text-transform: uppercase; letter-spacing: .2em; color: var(--smm-fg); opacity: .3; }
-  .smm-head { position: relative; z-index: 3; display: flex; align-items: flex-start; }
-  .smm-logo { width: 232px; flex: none; color: var(--smm-fg); }
-  .smm-logo svg, .smm-logo img { display: block; width: 100%; height: auto; }
-  .smm-foot { position: relative; z-index: 3; }
-  .smm-kicker { font-family: var(--smm-f-ui); font-weight: 600; font-size: var(--smm-fs-caption); text-transform: uppercase; letter-spacing: .26em; color: var(--smm-accent); }
-  .smm-title { font-family: var(--smm-f-display); font-weight: 500; font-size: var(--smm-fs-display); line-height: .92; letter-spacing: .01em; text-transform: uppercase; margin-top: 30px; }
-  .smm-rule  { width: 64px; height: 2px; background: var(--smm-accent); margin-top: 38px; }
-  .smm-desc  { font-family: var(--smm-f-ui); font-size: var(--smm-fs-meta); line-height: 1.5; color: var(--smm-muted); margin-top: 34px; max-width: 78%; }
-  .smm-city  { display: inline-block; margin-top: 40px; font-family: var(--smm-f-ui); font-weight: 600; font-size: var(--smm-fs-caption); text-transform: uppercase; letter-spacing: .16em; color: var(--smm-accent); border: 2px solid var(--smm-accent); border-radius: 2px; padding: 15px 26px; }
-  .smm-dots  { display: flex; gap: 14px; margin-top: 46px; }
-  .smm-dot   { width: 58px; height: 4px; border-radius: 2px; background: var(--smm-fg); opacity: .22; }
-  .smm-dot--active { opacity: 1; }
-
   /* ===== только для превью: масштаб реальных 1080px холстов ===== */
-  body { margin: 0; background: #161616; color: #cfcfca; font-family: -apple-system, system-ui, sans-serif;
-    display: flex; gap: 48px; flex-wrap: wrap; justify-content: center; align-items: flex-start; padding: 56px 24px; }
+  body { margin: 0; background: #161616; color: #cfcfca; font-family: -apple-system, system-ui, sans-serif; padding: 48px 24px 72px; }
+  .intro { max-width: 760px; margin: 0 auto 40px; font-size: 15px; line-height: 1.6; color: #a6a6a2; }
+  .intro h1 { margin: 0 0 12px; font-size: 22px; font-weight: 600; color: #e6e6e2; }
+  .row { max-width: 1440px; margin: 0 auto 56px; }
+  .row h2 { font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: #8f8f8b; margin: 0 0 20px; }
+  .grid { display: flex; flex-wrap: wrap; gap: 32px; }
   figure { margin: 0; }
-  .cap { font-size: 13px; text-align: center; margin-top: 14px; color: #8f8f8b; }
-  .preview { position: relative; overflow: hidden; border-radius: 8px; box-shadow: 0 18px 50px rgba(0,0,0,.55); }
+  figcaption { font-size: 13px; margin-top: 12px; color: #8f8f8b; max-width: 324px; }
+  code { font-size: 12px; color: #c0c0bc; }
+  .preview { position: relative; overflow: hidden; box-shadow: 0 18px 50px rgba(0,0,0,.55); }
   .preview > .smm-canvas { transform-origin: top left; }
-  .preview.story  { width: 281px; height: 499px; }   .preview.story  > .smm-canvas { transform: scale(.26); }
-  .preview.post   { width: 324px; height: 405px; }   .preview.post   > .smm-canvas { transform: scale(.30); }
-  .preview.square { width: 324px; height: 324px; }   .preview.square > .smm-canvas { transform: scale(.30); }
+  .preview.post  { width: 324px; height: 405px; }  .preview.post  > .smm-canvas { transform: scale(.30); }
+  .preview.story { width: 281px; height: 499px; }  .preview.story > .smm-canvas { transform: scale(.26); }
 </style>
 </head>
 <body>
@@ -94,58 +53,210 @@
     </symbol>
   </svg>
 
-  <figure>
-    <div class="preview story">
-      <div class="smm-canvas smm-canvas--story smm-canvas--cool">
-        <div class="smm-photo smm-photo--empty"><div class="smm-photo__hint">фото</div></div>
-        <div class="smm-head"><span class="smm-logo"><svg viewBox="0 0 676 194"><use href="#tts-logo"/></svg></span></div>
-        <div class="smm-foot">
-          <div class="smm-kicker">Новая постановка</div>
-          <div class="smm-title">Чайка</div>
-          <div class="smm-rule"></div>
-          <div class="smm-desc">Спектакль о том, как невыносимо быть человеком.</div>
-          <div class="smm-city">Москва</div>
-          <div class="smm-dots"><span class="smm-dot smm-dot--active"></span><span class="smm-dot"></span><span class="smm-dot"></span><span class="smm-dot"></span><span class="smm-dot"></span></div>
-        </div>
-      </div>
-    </div>
-    <div class="cap">Story 1080×1920 · «Чайка»</div>
-  </figure>
+  <div class="intro">
+    <h1>SMM-слой: посты TTS</h1>
+    На картинке — надзаголовок, название и одна строка «дата, время · площадка». Подробности, цены и условия — в тексте поста.
+    Поле 112 px, название Cormorant 500 обычным регистром и не больше двух строк. Кобальт — только у активной палочки слайдов,
+    метка статуса — инверсия, свечение — один цвет жанра. Решение №34 в <code>DECISIONS.md</code>.
+  </div>
 
-  <figure>
-    <div class="preview post">
-      <div class="smm-canvas smm-canvas--post smm-canvas--cool">
-        <div class="smm-photo smm-photo--empty"><div class="smm-photo__hint">фото</div></div>
-        <div class="smm-head"><span class="smm-logo"><svg viewBox="0 0 676 194"><use href="#tts-logo"/></svg></span></div>
-        <div class="smm-foot">
-          <div class="smm-kicker">Анонс</div>
-          <div class="smm-title">Острые<br>предметы</div>
-          <div class="smm-rule"></div>
-          <div class="smm-desc">Важные вопросы о любви и браке.</div>
-          <div class="smm-city">Москва</div>
-          <div class="smm-dots"><span class="smm-dot smm-dot--active"></span><span class="smm-dot"></span><span class="smm-dot"></span><span class="smm-dot"></span></div>
-        </div>
-      </div>
-    </div>
-    <div class="cap">Post 1080×1350 · «Острые предметы»</div>
-  </figure>
+  <section class="row">
+    <h2>Посты 4:5</h2>
+    <div class="grid">
 
-  <figure>
-    <div class="preview square">
-      <div class="smm-canvas smm-canvas--square smm-canvas--cool">
-        <div class="smm-photo smm-photo--empty"><div class="smm-photo__hint">фото</div></div>
-        <div class="smm-head"><span class="smm-logo"><svg viewBox="0 0 676 194"><use href="#tts-logo"/></svg></span></div>
-        <div class="smm-foot">
-          <div class="smm-kicker">Апрель</div>
-          <div class="smm-title">Новости<br>индустрии</div>
-          <div class="smm-rule"></div>
-          <div class="smm-desc">То, что вы могли пропустить.</div>
-          <div class="smm-city">Москва · Санкт-Петербург</div>
-        </div>
-      </div>
+      <figure>
+        <div class="preview post"><div class="smm-canvas smm-canvas--post smm-canvas--light smm-frame">
+          <div class="smm-fx smm-fx--footlight"></div>
+          <div class="smm-head"><span class="smm-logo"><svg viewBox="0 0 676 194" aria-hidden="true"><use href="#tts-logo"/></svg></span><div class="smm-meta"><span class="smm-age">12+</span></div></div>
+          <div class="smm-img"><img src="smm-example.jpg" alt=""></div>
+          <div class="smm-text">
+            <span class="smm-eyebrow">Спектакль-концерт</span>
+            <h3 class="smm-title">Мёртвые души</h3>
+            <p class="smm-line">29&nbsp;апреля, 19:00 · Дом музыки</p>
+          </div>
+        </div></div>
+        <figcaption>Анонс · картинка в поле · <code>.smm-frame</code>, «Рампа»</figcaption>
+      </figure>
+
+      <figure>
+        <div class="preview post"><div class="smm-canvas smm-canvas--post smm-band smm-band--on-light">
+          <div class="smm-img"><img src="smm-example.jpg" alt=""></div>
+          <div class="smm-scrim"></div>
+          <div class="smm-head"><span class="smm-logo"><svg viewBox="0 0 676 194" aria-hidden="true"><use href="#tts-logo"/></svg></span><div class="smm-meta"><span class="smm-age">12+</span></div></div>
+          <div class="smm-panel">
+            <div class="smm-fx smm-fx--footlight"></div>
+            <div class="smm-text">
+              <span class="smm-eyebrow">Спектакль-концерт</span>
+              <h3 class="smm-title">Мёртвые души</h3>
+              <p class="smm-line">29&nbsp;апреля, 19:00 · Дом музыки</p>
+            </div>
+          </div>
+        </div></div>
+        <figcaption>Анонс · картинка полосой · <code>.smm-band</code></figcaption>
+      </figure>
+
+      <figure>
+        <div class="preview post"><div class="smm-canvas smm-canvas--post smm-canvas--light smm-cover">
+          <div class="smm-img"><img src="smm-example.jpg" alt=""></div>
+          <div class="smm-panel">
+            <div class="smm-fx smm-fx--footlight"></div>
+            <div class="smm-head"><span class="smm-logo"><svg viewBox="0 0 676 194" aria-hidden="true"><use href="#tts-logo"/></svg></span><div class="smm-meta"><span class="smm-age">12+</span><span class="smm-dots"><span class="smm-dot smm-dot--active"></span><span class="smm-dot"></span></span></div></div>
+            <div class="smm-text">
+              <h3 class="smm-title">Мёртвые души</h3>
+              <p class="smm-line">29&nbsp;апреля, 19:00 · Дом музыки</p>
+            </div>
+          </div>
+        </div></div>
+        <figcaption>Альбом · слайд 1 · <code>.smm-cover</code></figcaption>
+      </figure>
+
+      <figure>
+        <div class="preview post"><div class="smm-canvas smm-canvas--post smm-canvas--light smm-sheet">
+          <div class="smm-fx smm-fx--depth"></div>
+          <div class="smm-head"><span class="smm-logo"><svg viewBox="0 0 676 194" aria-hidden="true"><use href="#tts-logo"/></svg></span><div class="smm-meta"><span class="smm-age">12+</span><span class="smm-dots"><span class="smm-dot"></span><span class="smm-dot smm-dot--active"></span></span></div></div>
+          <div class="smm-grid">
+            <h3 class="smm-title smm-title--md smm-span">Мёртвые души</h3>
+            <p class="smm-lead">Поэма Гоголя и&nbsp;«Гоголь-сюита» Шнитке в&nbsp;одном вечере.</p>
+            <div class="smm-gap"></div>
+            <div class="smm-rule"></div><div class="smm-row-label">Когда</div><div class="smm-row-val">29&nbsp;апреля, чт · 19:00</div>
+            <div class="smm-rule"></div><div class="smm-row-label">Где</div><div class="smm-row-val">Дом музыки</div>
+            <div class="smm-rule"></div><div class="smm-row-label">Билеты</div><div class="smm-row-val">от 3&nbsp;000&nbsp;₽, без комиссии</div>
+          </div>
+        </div></div>
+        <figcaption>Альбом · слайд 2 · <code>.smm-sheet</code>, «Глубина»</figcaption>
+      </figure>
+
+      <figure>
+        <div class="preview post"><div class="smm-canvas smm-canvas--post smm-canvas--light smm-frame">
+          <div class="smm-fx smm-fx--footlight"></div>
+          <div class="smm-head"><span class="smm-logo"><svg viewBox="0 0 676 194" aria-hidden="true"><use href="#tts-logo"/></svg></span><div class="smm-meta"><span class="smm-age">12+</span></div></div>
+          <div class="smm-img"><img src="smm-example.jpg" alt=""></div>
+          <div class="smm-text">
+            <span class="smm-mark">Мало мест</span>
+            <h3 class="smm-title">Мёртвые души</h3>
+            <p class="smm-line">29&nbsp;апреля, 19:00 · Дом музыки</p>
+          </div>
+        </div></div>
+        <figcaption>Статус продаж · метка <code>.smm-mark</code></figcaption>
+      </figure>
+
+      <figure>
+        <div class="preview post"><div class="smm-canvas smm-canvas--post smm-canvas--light smm-sheet">
+          <div class="smm-head"><span class="smm-logo"><svg viewBox="0 0 676 194" aria-hidden="true"><use href="#tts-logo"/></svg></span><div class="smm-meta"><span class="smm-age">12+</span></div></div>
+          <div class="smm-text">
+            <span class="smm-mark">Перенос</span>
+            <h3 class="smm-title smm-title--sm">Мёртвые души</h3>
+            <div class="smm-big">12&nbsp;мая</div>
+            <p class="smm-sub">19:00 · Дом музыки · вместо 29&nbsp;апреля</p>
+            <p class="smm-note">[Что с&nbsp;билетами — по&nbsp;правилам возврата]</p>
+          </div>
+        </div></div>
+        <figcaption>Перенос · без свечения</figcaption>
+      </figure>
+
+      <figure>
+        <div class="preview post"><div class="smm-canvas smm-canvas--post smm-sheet">
+          <div class="smm-head"><span class="smm-logo"><svg viewBox="0 0 676 194" aria-hidden="true"><use href="#tts-logo"/></svg></span><div class="smm-meta"><span class="smm-age">12+</span></div></div>
+          <div class="smm-text">
+            <span class="smm-mark">Отмена</span>
+            <h3 class="smm-title smm-title--sm">Мёртвые души</h3>
+            <p class="smm-line"><span class="smm-was">29&nbsp;апреля, 19:00</span> · Дом музыки</p>
+            <p class="smm-note">[Как вернуть билеты — по&nbsp;правилам возврата]</p>
+          </div>
+        </div></div>
+        <figcaption>Отмена · без свечения</figcaption>
+      </figure>
+
+      <figure>
+        <div class="preview post"><div class="smm-canvas smm-canvas--post smm-canvas--light smm-sheet">
+          <div class="smm-head"><span class="smm-logo"><svg viewBox="0 0 676 194" aria-hidden="true"><use href="#tts-logo"/></svg></span></div>
+          <div class="smm-grid smm-dg-thumbs">
+            <h3 class="smm-title smm-title--sm smm-span">Куда пойти в&nbsp;конце апреля</h3>
+            <div class="smm-gap"></div>
+            <div class="smm-rule"></div>
+            <div class="smm-dg-thumb"><img src="smm-example.jpg" alt="" style="object-position: 55% 30%"></div>
+            <div class="smm-dg-when"><span class="smm-num">29&nbsp;апреля</span><span class="smm-label">19:00</span></div>
+            <div class="smm-dg-what"><div class="smm-dg-title">Мёртвые души</div><div class="smm-dg-meta">Дом музыки</div></div>
+            <div class="smm-rule"></div>
+            <div class="smm-dg-thumb"></div>
+            <div class="smm-dg-when"><span class="smm-num">30&nbsp;апреля</span><span class="smm-label">19:00</span></div>
+            <div class="smm-dg-what"><div class="smm-dg-title">[Название события]</div><div class="smm-dg-meta">[Площадка]</div></div>
+            <div class="smm-rule"></div>
+            <div class="smm-dg-thumb"></div>
+            <div class="smm-dg-when"><span class="smm-num">2&nbsp;мая</span><span class="smm-label">18:00</span></div>
+            <div class="smm-dg-what"><div class="smm-dg-title">[Название события]</div><div class="smm-dg-meta">[Площадка]</div></div>
+          </div>
+        </div></div>
+        <figcaption>Подборка с превью · <code>.smm-dg-thumbs</code></figcaption>
+      </figure>
+
     </div>
-    <div class="cap">Square 1080×1080 · «Новости индустрии»</div>
-  </figure>
+  </section>
+
+  <section class="row">
+    <h2>Без картинки: свечение одним цветом жанра</h2>
+    <div class="grid">
+
+      <figure>
+        <div class="preview post"><div class="smm-canvas smm-canvas--post smm-sheet smm-type">
+          <div class="smm-fx smm-fx--beam"></div>
+          <div class="smm-head"><span class="smm-logo"><svg viewBox="0 0 676 194" aria-hidden="true"><use href="#tts-logo"/></svg></span><div class="smm-meta"><span class="smm-age">12+</span></div></div>
+          <div class="smm-text">
+            <span class="smm-eyebrow">Спектакль-концерт</span>
+            <h3 class="smm-title">Мёртвые души</h3>
+            <p class="smm-line">29&nbsp;апреля, 19:00 · Дом музыки</p>
+          </div>
+        </div></div>
+        <figcaption>«Луч» · <code>.smm-fx--beam</code></figcaption>
+      </figure>
+
+      <figure>
+        <div class="preview post"><div class="smm-canvas smm-canvas--post smm-canvas--light smm-sheet smm-type">
+          <div class="smm-fx smm-fx--depth"></div>
+          <div class="smm-head"><span class="smm-logo"><svg viewBox="0 0 676 194" aria-hidden="true"><use href="#tts-logo"/></svg></span><div class="smm-meta"><span class="smm-age">12+</span></div></div>
+          <div class="smm-text">
+            <span class="smm-eyebrow">Спектакль-концерт</span>
+            <h3 class="smm-title">Мёртвые души</h3>
+            <p class="smm-line">29&nbsp;апреля, 19:00 · Дом музыки</p>
+          </div>
+        </div></div>
+        <figcaption>«Глубина» · <code>.smm-fx--depth</code></figcaption>
+      </figure>
+
+      <figure>
+        <div class="preview post"><div class="smm-canvas smm-canvas--post smm-canvas--warm smm-sheet smm-type">
+          <div class="smm-fx smm-fx--halo"></div>
+          <div class="smm-head"><span class="smm-logo"><svg viewBox="0 0 676 194" aria-hidden="true"><use href="#tts-logo"/></svg></span><div class="smm-meta"><span class="smm-age">12+</span></div></div>
+          <div class="smm-text">
+            <span class="smm-eyebrow">Опера</span>
+            <h3 class="smm-title">Мёртвые души</h3>
+            <p class="smm-line">29&nbsp;апреля, 19:00 · Дом музыки</p>
+          </div>
+        </div></div>
+        <figcaption>«Ореол», опера · <code>.smm-fx--halo</code> + <code>.smm-canvas--warm</code></figcaption>
+      </figure>
+
+    </div>
+  </section>
+
+  <section class="row">
+    <h2>Сторис 9:16</h2>
+    <div class="grid">
+      <figure>
+        <div class="preview story"><div class="smm-canvas smm-canvas--story smm-canvas--light smm-frame">
+          <div class="smm-fx smm-fx--footlight"></div>
+          <div class="smm-head"><span class="smm-logo"><svg viewBox="0 0 676 194" aria-hidden="true"><use href="#tts-logo"/></svg></span><div class="smm-meta"><span class="smm-age">12+</span></div></div>
+          <div class="smm-img"><img src="smm-example.jpg" alt=""></div>
+          <div class="smm-text">
+            <span class="smm-eyebrow">Спектакль-концерт</span>
+            <h3 class="smm-title">Мёртвые души</h3>
+            <p class="smm-line">29&nbsp;апреля, 19:00 · Дом музыки</p>
+          </div>
+        </div></div>
+        <figcaption>Сторис · поля 262 сверху и 250 снизу</figcaption>
+      </figure>
+    </div>
+  </section>
 
 </body>
 </html>

@@ -1,31 +1,53 @@
 {
   "smm": {
     "canvas": {
-      "story-w":  { "value": "1080", "type": "sizing", "description": "--smm-story-w  (9:16 Stories/Reels)" },
-      "story-h":  { "value": "1920", "type": "sizing", "description": "--smm-story-h" },
-      "post-w":   { "value": "1080", "type": "sizing", "description": "--smm-post-w   (4:5 лента)" },
-      "post-h":   { "value": "1350", "type": "sizing", "description": "--smm-post-h" },
-      "square":   { "value": "1080", "type": "sizing", "description": "--smm-square   (1:1)" },
-      "margin":   { "value": "112",  "type": "sizing", "description": "--smm-margin   безопасное поле" },
-      "gutter":   { "value": "44",   "type": "sizing", "description": "--smm-gutter" },
-      "safe-top": { "value": "150",  "type": "sizing", "description": "--smm-safe-top доп. верхнее поле Stories" }
+      "w":            { "value": "1080", "type": "sizing", "description": "--smm-w        ширина всех форматов" },
+      "post-h":       { "value": "1350", "type": "sizing", "description": "--smm-post-h   4:5, лента Telegram и Instagram" },
+      "story-h":      { "value": "1920", "type": "sizing", "description": "--smm-story-h  9:16, сторис" },
+      "square-h":     { "value": "1080", "type": "sizing", "description": "--smm-square-h 1:1 — только по необходимости: в сетке Instagram 3:4 теряет по 135 px с боков" },
+      "margin":       { "value": "112",  "type": "sizing", "description": "--smm-margin   поле поста со всех сторон" },
+      "margin-tight": { "value": "72",   "type": "sizing", "description": "--smm-margin-tight узкое поле — модификатор .smm-canvas--tight" },
+      "gutter":       { "value": "24",   "type": "sizing", "description": "--smm-gutter   промежуток 6-колоночной сетки" },
+      "story-top":    { "value": "262",  "type": "sizing", "description": "--smm-story-top    сторис: поле под полоску прогресса и имя" },
+      "story-bottom": { "value": "250",  "type": "sizing", "description": "--smm-story-bottom сторис: поле под строку ответа" },
+      "logo-w":       { "value": "232",  "type": "sizing", "description": "--smm-logo-w   ширина логотипа" },
+      "image-min":    { "value": "30",   "type": "sizing", "description": "--smm-image-min картинка не меньше 30 % высоты холста" }
     },
     "type": {
-      "display":  { "value": "118", "type": "fontSizes", "description": "--smm-fs-display (Cormorant, название)" },
-      "title":    { "value": "54",  "type": "fontSizes", "description": "--smm-fs-title   (Forum, площадка)" },
-      "subtitle": { "value": "40",  "type": "fontSizes", "description": "--smm-fs-subtitle (Manrope)" },
-      "meta":     { "value": "34",  "type": "fontSizes", "description": "--smm-fs-meta (дата/площадка)" },
-      "caption":  { "value": "28",  "type": "fontSizes", "description": "--smm-fs-caption uppercase" }
+      "hero":       { "value": "150", "type": "fontSizes", "description": "--smm-fs-hero       Cormorant, пост без картинки" },
+      "display":    { "value": "118", "type": "fontSizes", "description": "--smm-fs-display    Cormorant, название; не больше двух строк" },
+      "display-md": { "value": "102", "type": "fontSizes", "description": "--smm-fs-display-md Cormorant, название на слайде деталей" },
+      "display-sm": { "value": "94",  "type": "fontSizes", "description": "--smm-fs-display-sm Cormorant, перенос, отмена, заголовок подборки" },
+      "item":       { "value": "52",  "type": "fontSizes", "description": "--smm-fs-item       Cormorant, событие в подборке" },
+      "meta":       { "value": "34",  "type": "fontSizes", "description": "--smm-fs-meta       Manrope, строка «дата · время · площадка», подводка" },
+      "caption":    { "value": "28",  "type": "fontSizes", "description": "--smm-fs-caption    Manrope капсом, надзаголовок и подписи" },
+      "mark":       { "value": "26",  "type": "fontSizes", "description": "--smm-fs-mark       Manrope капсом, метка статуса" },
+      "num-xl":     { "value": "120", "type": "fontSizes", "description": "--smm-fs-num-xl     Oranienbaum, новая дата при переносе" },
+      "num":        { "value": "48",  "type": "fontSizes", "description": "--smm-fs-num        Oranienbaum, даты в подборке" }
     },
     "color": {
-      "bg":       { "value": "{dark.color.ink}",                 "type": "color", "description": "--smm-bg (тёмный театральный)" },
-      "fg":       { "value": "{dark.color.n100}",                "type": "color", "description": "--smm-fg основной текст" },
-      "muted":    { "value": "{dark.color.n300}",               "type": "color", "description": "--smm-muted" },
-      "accent":   { "value": "{global.primitives.blue.cobalt}", "type": "color", "description": "--smm-accent" },
-      "premium":  { "value": "#F5F4EE",                          "type": "color", "description": "--smm-premium (ivory, только premium)" },
-      "blob-cool":  { "value": "{dark.color.blob-core-cool}",  "type": "color", "description": "--smm-blob-cool классика/театр" },
-      "blob-warm":  { "value": "{dark.color.blob-core-warm}",  "type": "color", "description": "--smm-blob-warm опера" },
-      "blob-green": { "value": "{dark.color.blob-core-green}", "type": "color", "description": "--smm-blob-green мюзикл" }
+      "accent":  { "value": "{global.primitives.blue.cobalt}", "type": "color", "description": "--smm-accent  только активная палочка слайдов" },
+      "premium": { "value": "#F5F4EE",                          "type": "color", "description": "--smm-premium ivory, только premium" },
+      "dark": {
+        "bg":        { "value": "{dark.color.ink}",             "type": "color", "description": "--smm-dark-bg" },
+        "fg":        { "value": "{dark.color.n100}",            "type": "color", "description": "--smm-dark-fg" },
+        "muted":     { "value": "{dark.color.n300}",            "type": "color", "description": "--smm-dark-muted" },
+        "label":     { "value": "{dark.color.n500}",            "type": "color", "description": "--smm-dark-label" },
+        "line":      { "value": "{dark.color.n800}",            "type": "color", "description": "--smm-dark-line" },
+        "hue-cool":  { "value": "{dark.color.blob-core-cool}",  "type": "color", "description": "--smm-dark-hue-cool  театр и классика" },
+        "hue-warm":  { "value": "{dark.color.blob-core-warm}",  "type": "color", "description": "--smm-dark-hue-warm  опера" },
+        "hue-green": { "value": "{dark.color.blob-core-green}", "type": "color", "description": "--smm-dark-hue-green мюзикл" }
+      },
+      "light": {
+        "bg":        { "value": "{light.color.n900}",            "type": "color", "description": "--smm-light-bg" },
+        "fg":        { "value": "{light.color.n100}",            "type": "color", "description": "--smm-light-fg" },
+        "muted":     { "value": "{light.color.n300}",            "type": "color", "description": "--smm-light-muted" },
+        "label":     { "value": "{light.color.n400}",            "type": "color", "description": "--smm-light-label" },
+        "line":      { "value": "{light.color.n600}",            "type": "color", "description": "--smm-light-line" },
+        "hue-cool":  { "value": "{light.color.blob-core-cool}",  "type": "color", "description": "--smm-light-hue-cool" },
+        "hue-warm":  { "value": "{light.color.blob-core-warm}",  "type": "color", "description": "--smm-light-hue-warm" },
+        "hue-green": { "value": "{light.color.blob-core-green}", "type": "color", "description": "--smm-light-hue-green" }
+      }
     },
     "font": {
       "display": { "value": "{global.font.stack.display}", "type": "fontFamilies", "description": "--smm-f-display" },

@@ -34,9 +34,10 @@
 - Затем `npm run lint`, чтобы не просочились сырой hex / запрещённые ходы.
 
 **Добавить/поменять соц-формат или соц-типошкалу**
-1. Правишь `smm.tokens.json` (`smm.canvas.*`, `smm.type.*`, `smm.color.*`).
-2. `npm run build` → пересобирается `ds-smm.css`.
-3. Пример вёрстки постера — `tooling/examples/smm-example.html`.
+1. Правишь `smm.tokens.json` (`smm.canvas.*`, `smm.type.*`, `smm.color.dark.*`, `smm.color.light.*`).
+2. Макеты и свечение — строка `TEMPLATES` в `tooling/build-smm.mjs`; цвета только через `var(--smm-…)`.
+3. `npm run build` → пересобирается `ds-smm.css`.
+4. Пример вёрстки всех постов — `tooling/examples/smm-example.html`. Правила слоя — решение №34 в `DECISIONS.md`.
 
 **Поменять письмо** — рассылку (после спектакля, перенос, напоминание, промокод, подборка) или транзакционное
 (после оплаты, накануне, после события)

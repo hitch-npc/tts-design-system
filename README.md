@@ -12,7 +12,7 @@
 |---|---|---|
 | Ядро | `ds-core-r14.css`, `ds-core-r14-light.css` | Токены и компоненты. Классы в темах одинаковые, отличаются только переменные |
 | Токены | `tokens.json`, `smm.tokens.json` | Единый источник истины: блоки `:root` в CSS собираются отсюда |
-| SMM-слой | `ds-smm.css`, `tooling/examples/smm-example.html` | Соцформаты story / post / square на тех же токенах |
+| SMM-слой | `ds-smm.css`, `tooling/examples/smm-example.html` | Посты и сторис для Telegram и Instagram на тех же токенах: анонс, статус продаж, перенос, отмена, подборка, пост без картинки |
 | Стили гайдов | `ds-doc.css`, `ds-doc-light.css` | Для страниц документации |
 | Сборка | `tooling/` | `build-tokens`, `build-smm`, `guardrail`, `security-check` |
 | Кейс системы | `site/case-r14.html` | Как собиралась система: аналитика, работа над ошибками, решения и автопроверки. Живые демонстрации на ядре R14, анимации проигрываются сами |
