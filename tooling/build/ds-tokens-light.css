@@ -64,6 +64,13 @@
   --overlay:         #00000088;
   --shadow-color:    #000000AA;
 
+  /* Футер и «Рампа» */
+  --foot-bg:         #F2F1EB;
+  --foot-surface:    #FAFAF7;
+  --foot-line:       #E2E1DA;
+  --foot-hover:      #E2E1DA;
+  --rampa-violet:    #8B5CF6;
+
   /* Семантические цвета */
   --success:         #22C55E;
   --success-bg:      #DCFCE7;

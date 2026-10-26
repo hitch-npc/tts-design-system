@@ -36,7 +36,7 @@ const DARK = 'Color/Dark';
 
 // ─── Styles ───────────────────────────────────
 const STYLES = [
-  { name: 'Primary',      bg: gv(DARK,'accent'),        bd: gv(DARK,'accent'),         tx: gv(DARK,'n100'),        w: 'Bold' },
+  { name: 'Primary',      bg: gv(DARK,'accent'),        bd: gv(DARK,'accent'),         tx: gv(DARK,'on-accent'),   w: 'Bold' },
   { name: 'Ghost',        bg: null,                      bd: gv(DARK,'n700'),            tx: gv(DARK,'n100'),        w: 'SemiBold' },
   { name: 'Ghost Accent', bg: null,                      bd: gv(DARK,'accent'),          tx: gv(DARK,'n100'),        w: 'SemiBold' },
   { name: 'Danger',       bg: gv(DARK,'danger-bg'),      bd: gv(DARK,'danger-border'),   tx: gv(DARK,'danger-text'), w: 'Bold' },

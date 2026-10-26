@@ -33,25 +33,31 @@ html, body { background: #161616; -webkit-font-smoothing: antialiased; -moz-osx-
   --premium: #F5F4EE;
   --success: #22C55E; --danger: #E53E3E; --danger-text: #FF8080;
   --danger-bg: #2D1010; --danger-border: #7A2020; --danger-hover-bg: #3D1212;
+  --accent-soft: #7A9FFF; --error-fg: #FF6B6B; --error-bd: #FF4444; --input-focus-bg: #0D0D1A;
   --logo: var(--n100);
   /* футер темнее страницы */
   --foot-bg: #080808; --foot-surface: #111318; --foot-line: #1F222A; --foot-hover: #191C22;
+  /* разделитель «Рампа» над футером — как в ядре */
+  --rampa-violet: #7A4DFF; --rampa-core: #FFFFFF; --rampa-glow: 1;
   --grain-o: .045;
 }
 .th-l {
   --ink: #FFFFFF; --black: #111111;
   --accent: #0047FF; --accent-hover: #0038CC;
   --accent-ghost: #EAF0FF; --accent-border: #B8C9F0;
-  --n950: #FAFAF7; --n900: #F2F1EB; --n800: #E2E1DA; --n700: #5A5A58;
+  --n950: #FAFAF7; --n900: #F2F1EB; --n800: #E2E1DA; --n700: #B5B5B0;
   --n600: #A8A8A5; --n500: #888886; --n400: #6A6A68; --n300: #4A4A48;
   --n200: #2D2D2B; --n100: #0D0D0D;
-  --blob-core: #BFD0EE; --blob-mid: #E5DAEF; --blob-purple: #E5DAEF; --blob-faint: #E8EEF8;
+  --blob-core: #BFD0EE; --blob-mid: #E5DAEF; --blob-purple: #DBC4F0; --blob-faint: #EAF0FF;
   --premium: #F5F4EE;
-  --success: #16A34A; --danger: #DC2626; --danger-text: #C62828;
+  --success: #22C55E; --danger: #E53E3E; --danger-text: #DC2626;
   --danger-bg: #FEE2E2; --danger-border: #FCA5A5; --danger-hover-bg: #FEE2E2;
+  --accent-soft: #0436B6; --error-fg: #DC2626; --error-bd: #DC2626; --input-focus-bg: #F5F8FF;
   --logo: var(--n100);
   /* футер темнее страницы */
   --foot-bg: #F2F1EB; --foot-surface: #FAFAF7; --foot-line: #E2E1DA; --foot-hover: #E2E1DA;
+  /* разделитель «Рампа» над футером — как в ядре */
+  --rampa-violet: #8B5CF6; --rampa-core: var(--n100); --rampa-glow: .55;
   --grain-o: .03;
 }
 
@@ -107,7 +113,7 @@ html, body { background: #161616; -webkit-font-smoothing: antialiased; -moz-osx-
 .btn-primary { background: var(--accent); color: #FFFFFF; font-weight: 700; }
 .btn-primary:hover { background: var(--accent-hover); }
 .btn-ghost { background: transparent; border-color: var(--n700); color: var(--n100); }
-.btn-ghost:hover { border-color: var(--n500); color: var(--n100); }
+.btn-ghost:hover { border-color: var(--n400); color: var(--n100); }
 /* как в ядре: кобальт только в рамке, текст светлый */
 .btn-ghost-accent { background: transparent; border-color: var(--accent); color: var(--n100); }
 .btn-ghost-accent:hover { background: var(--accent-ghost); }
@@ -121,10 +127,10 @@ html, body { background: #161616; -webkit-font-smoothing: antialiased; -moz-osx-
 /* ── Теги ── */
 .tag {
   display: inline-flex; align-items: center;
-  font-size: 9px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+  font-size: 10px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase;
   padding: 5px 10px; border-radius: 2px; border: 1px solid var(--n800); color: var(--n300);
 }
-.tag-accent { background: var(--accent-ghost); border-color: var(--accent-border); color: var(--accent); }
+.tag-accent { background: var(--accent-ghost); border-color: var(--accent-border); color: var(--accent-soft); }
 
 .blob { position: absolute; border-radius: 50%; filter: blur(100px); pointer-events: none; }
 .rub { font-family: 'Source Serif 4', 'Source Serif Pro', Georgia, serif; font-style: normal; }
@@ -492,7 +498,7 @@ textarea.input { resize: none; }
   color: var(--n100);
   transition: border-color .2s cubic-bezier(.4,0,.2,1);
 }
-.theme-toggle:hover { border-color: var(--n600); }
+.theme-toggle:hover { border-color: var(--n700); }
 .theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .theme-toggle svg {
   display: block; width: 16px; height: 16px; overflow: visible;
@@ -537,8 +543,21 @@ textarea.input { resize: none; }
 .frame-m .cta-bar .btn { white-space: nowrap; flex-shrink: 0; }
 
 /* ── FOOTER (site-footer из DS) ── */
-.site-footer { background: var(--foot-bg); }
-.footer-top-line { height: 1px; background: linear-gradient(90deg, var(--accent) 0%, transparent 55%); }
+.site-footer { position: relative; background: var(--foot-bg); }
+/* разделитель «Рампа»: светлая сердцевина по центру, кобальт к краям, лёгкое свечение */
+.footer-top-line { position: relative; height: 1px; opacity: .8; background: linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--accent) 22%, transparent) 20%, color-mix(in srgb, var(--rampa-violet) 45%, transparent) 37%, color-mix(in srgb, var(--rampa-core) 45%, var(--accent)) 50%, color-mix(in srgb, var(--rampa-violet) 40%, transparent) 64%, color-mix(in srgb, var(--accent) 18%, transparent) 82%, transparent 100%); }
+/* свечение только вверх: несколько смещённых овалов дают неровный край */
+.footer-top-line::before,
+.footer-top-line::after { content: ''; position: absolute; bottom: 0; pointer-events: none; }
+.footer-top-line::before { left: 0; right: 0; height: 110px; filter: blur(12px); opacity: var(--rampa-glow);
+  background:
+    radial-gradient(ellipse 30% 70% at 43% 100%, color-mix(in srgb, var(--accent) 20%, transparent) 0%, transparent 70%),
+    radial-gradient(ellipse 24% 55% at 60% 100%, color-mix(in srgb, var(--rampa-violet) 20%, transparent) 0%, transparent 70%),
+    radial-gradient(ellipse 18% 85% at 34% 100%, color-mix(in srgb, var(--rampa-violet) 11%, transparent) 0%, transparent 70%),
+    radial-gradient(ellipse 44% 38% at 52% 100%, color-mix(in srgb, var(--accent) 13%, transparent) 0%, transparent 75%); }
+.footer-top-line::after { left: 50%; width: min(380px, 40%); height: 34px; transform: translateX(-50%); filter: blur(6px);
+  background: radial-gradient(ellipse 50% 100% at 50% 100%, color-mix(in srgb, var(--rampa-core) 16%, transparent) 0%, transparent 70%); }
+
 .footer-inner { max-width: 1200px; margin: 0 auto; padding: 0 56px; }
 .frame-m .footer-inner { padding: 0 20px; }
 .footer-main {
@@ -620,8 +639,8 @@ textarea.input { resize: none; }
 }
 .form-input::placeholder { color: var(--n600); }
 .form-input:hover { border-color: var(--n600); }
-.form-input:focus { border-color: var(--accent); background: #0D0D1A; }
-.form-input.error { border-color: var(--danger); }
+.form-input:focus { border-color: var(--accent-border); background: var(--input-focus-bg); }
+.form-input.error { border-color: var(--error-bd); }
 .form-input.error:focus { border-color: var(--danger); }
 
 /* ════════════ SANDBOX-POLISH (R14-safe) ════════════ */
@@ -648,7 +667,7 @@ textarea.input { resize: none; }
 /* 3 · Уточнённые микровзаимодействия кнопок */
 .btn { transition: background .2s, border-color .2s, color .2s, transform .2s, box-shadow .2s; letter-spacing: .16em; }
 .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 10px 26px -10px var(--accent); }
-.btn-ghost:hover { background: var(--accent-ghost); }
+.btn-ghost:hover { background: var(--n900); }
 
 /* 4 · Тоньше hover карточек-секций */
 .step { transition: background .25s, box-shadow .25s; }
@@ -669,14 +688,14 @@ textarea.input { resize: none; }
 }
 .form-input:disabled::placeholder { color: var(--n600); }
 .form-helper { font-size: 11px; color: var(--n600); font-family: var(--font); }
-.form-error  { font-size: 11px; color: var(--danger-text); font-family: var(--font); }
+.form-error  { font-size: 11px; color: var(--error-fg); font-family: var(--font); }
 .form-success { font-size: 11px; color: var(--success); font-family: var(--font); }
 .form-msg { font-size: 11px; font-family: var(--font); color: var(--n600); transition: color .15s; }
 .form-msg.is-error   { color: var(--danger-text); }
 .form-msg.is-success { color: var(--success); }
 .form-select {
   font-family: var(--font); font-size: 14px; color: var(--n100);
-  background: var(--n950); border: 1px solid var(--n700);
+  background: var(--n950); border: 1px solid var(--n800);
   border-radius: var(--r-sm); padding: 12px 40px 12px 16px; outline: none;
   width: 100%; -webkit-appearance: none; cursor: pointer;
   transition: border-color .15s;
@@ -684,7 +703,7 @@ textarea.input { resize: none; }
   background-repeat: no-repeat; background-position: right 16px center;
 }
 .form-select:hover { border-color: var(--n600); }
-.form-select:focus { border-color: var(--accent); }
+.form-select:focus { border-color: var(--accent-border); }
 .form-select:disabled {
   background-color: var(--n900); border-color: var(--n800);
   color: var(--n600); cursor: not-allowed; opacity: .7;

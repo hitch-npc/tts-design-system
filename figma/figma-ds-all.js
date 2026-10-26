@@ -67,7 +67,7 @@ function place(node){ node.x=startX; node.y=Y; Y+=node.height+GAP; }
 //   Размер: Large / Medium / Small
 // ════════════════════════════════════════════════
 const BTN_ST=[
-  {n:'Primary',     bg:gv(D,'accent'),       bd:gv(D,'accent'),        tx:gv(D,'n100'),        w:'Bold'},
+  {n:'Primary',     bg:gv(D,'accent'),       bd:gv(D,'accent'),        tx:gv(D,'on-accent'),        w:'Bold'},
   {n:'Ghost',       bg:null,                  bd:gv(D,'n700'),           tx:gv(D,'n100'),        w:'SemiBold'},
   {n:'Ghost Accent',bg:null,                  bd:gv(D,'accent'),         tx:gv(D,'n100'),        w:'SemiBold'},
   {n:'Danger',      bg:gv(D,'danger-bg'),     bd:gv(D,'danger-border'),  tx:gv(D,'danger-text'), w:'Bold'},

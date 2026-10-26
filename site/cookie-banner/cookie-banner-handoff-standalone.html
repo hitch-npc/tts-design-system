@@ -190,13 +190,14 @@ a { color: inherit; }
   animation: cookie-rise .45s var(--ease-out) .15s both;
 }
 .cookie-bar-link {
-  color: var(--accent);
+  color: var(--n100);
   text-decoration: underline;
+  text-decoration-color: var(--accent);
   text-underline-offset: 3px;
   text-decoration-thickness: 1px;
-  transition: color var(--dur-fast) var(--ease-out);
+  transition: text-decoration-color var(--dur-fast) var(--ease-out);
 }
-.cookie-bar-link:hover { color: var(--accent-hover); }
+.cookie-bar-link:hover { text-decoration-color: var(--n100); }
 .cookie-bar-actions {
   position: relative;
   z-index: 1;

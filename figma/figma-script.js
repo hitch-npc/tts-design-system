@@ -111,6 +111,12 @@ const COLORS = [
   ['scrim',            '#000000',                 '#000000'],
   ['overlay',          '#00000088',               '#00000088'],
   ['shadow-color',     '#000000AA',               '#000000AA'],
+  // футер и «Рампа» (26.10.2026)
+  ['foot-bg',          '#080808',                 '#F2F1EB'],
+  ['foot-surface',     '#111318',                 '#FAFAF7'],
+  ['foot-line',        '#1F222A',                 '#E2E1DA'],
+  ['foot-hover',       '#191C22',                 '#E2E1DA'],
+  ['rampa-violet',     '#7A4DFF',                 '#8B5CF6'],
 ];
 
 function createColorCollection(collName, colIndex) {

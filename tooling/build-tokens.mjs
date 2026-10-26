@@ -57,7 +57,7 @@ function valueMap(theme) {
   m['--font']   = resolve(g.font.stack.ui.value);
   m['--f-head'] = resolve(g.font.stack.heading.value);
   m['--f-thin'] = resolve(g.font.stack.display.value);
-  for (const k of ['n850','seat-sel','seat-sold','seat-check','zone-1','zone-2','zone-3','zone-4','zone-5','accent-soft','on-accent','premium-bg','premium-ink','tag-o-bg','tag-o-fg','tag-o-bd','tag-g-bg','tag-g-fg','tag-g-bd','tag-r-bg','tag-r-fg','tag-r-bd','info','error-fg','error-bd','input-focus-bg','danger-hover-bg','scrim','overlay','shadow-color']) m[`--${k}`] = c(k);
+  for (const k of ['n850','seat-sel','seat-sold','seat-check','zone-1','zone-2','zone-3','zone-4','zone-5','accent-soft','on-accent','premium-bg','premium-ink','tag-o-bg','tag-o-fg','tag-o-bd','tag-g-bg','tag-g-fg','tag-g-bd','tag-r-bg','tag-r-fg','tag-r-bd','info','error-fg','error-bd','input-focus-bg','danger-hover-bg','scrim','overlay','shadow-color','foot-bg','foot-surface','foot-line','foot-hover','rampa-violet']) m[`--${k}`] = c(k);
   m['--f-num']  = resolve(g.font.stack.number.value);
   for (const k of ['sp-1','sp-2','sp-3','sp-4','sp-5','sp-6','sp-8','sp-10','sp-12','sp-16','sp-20']) m[`--${k}`] = px(g.spacing[k].value);
   m['--section-gap-sm'] = px(g.spacing['section-sm'].value);
@@ -98,6 +98,7 @@ const GROUPS = [
   ['Теги', ['--tag-o-bg','--tag-o-fg','--tag-o-bd','--tag-g-bg','--tag-g-fg','--tag-g-bd','--tag-r-bg','--tag-r-fg','--tag-r-bd']],
   ['Состояния форм и тостов', ['--info','--error-fg','--error-bd','--input-focus-bg','--danger-hover-bg']],
   ['Затемнение и тень', ['--scrim','--overlay','--shadow-color']],
+  ['Футер и «Рампа»', ['--foot-bg','--foot-surface','--foot-line','--foot-hover','--rampa-violet']],
   ['Семантические цвета', ['--success','--success-bg','--success-border','--danger','--danger-bg','--danger-border','--danger-text']],
   ['Схема зала', ['--seat-sel','--seat-sold','--seat-check','--zone-1','--zone-2','--zone-3','--zone-4','--zone-5']],
   ['Шрифты', ['--font','--f-head','--f-thin','--f-num']],
@@ -168,7 +169,8 @@ function luminance(hex) {
 const SURFACE_TOKENS = ['n800', 'n850', 'n900', 'n950', 'accent-ghost', 'input-focus-bg',
   'blob-core', 'blob-mid', 'blob-purple', 'blob-faint',
   'blob-core-warm', 'blob-mid-warm', 'blob-core-cool', 'blob-mid-cool', 'blob-core-green', 'blob-mid-green',
-  'success-bg', 'danger-bg', 'danger-hover-bg', 'tag-o-bg', 'tag-g-bg', 'tag-r-bg'];
+  'success-bg', 'danger-bg', 'danger-hover-bg', 'tag-o-bg', 'tag-g-bg', 'tag-r-bg',
+  'foot-bg', 'foot-surface', 'foot-line', 'foot-hover'];
 const LIGHT_MIN = 0.4, DARK_MAX = 0.1;
 for (const theme of ['dark', 'light']) {
   for (const k of SURFACE_TOKENS) {

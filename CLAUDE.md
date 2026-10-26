@@ -33,7 +33,7 @@
 
 | Папка | Что внутри |
 |-------|-----------|
-| `site/` | Продуктовые сборки: `case-r14.html` (кейс системы для портфолио, публичный), `redesign-v2-dark.html` / `-light.html` (оффлайн, всё внутри одного файла; новая схема зала — внутри них), `behance-hero-blocks.html` (только локально), `cookie-banner/`, `partner-program/` (актуальный html + `handoff/` — пакет для передачи), `handoff/` — передача фронтенду: `frontend-changes.html` и `redesign-changes.html` («было / стало» с 8 сентября) |
+| `site/` | Продуктовые сборки: `case-r14.html` (кейс системы для портфолио, публичный), `redesign-v2-dark.html` / `-light.html` (оффлайн, всё внутри одного файла; новая схема зала — внутри них), `behance-hero-blocks.html` (только локально), `cookie-banner/`, `partner-program/` (актуальный html + `handoff/` — пакет для передачи), `account.html` — личный кабинет (профиль, обе темы), `handoff/` — передача фронтенду: `account/` — пакет профиля, `frontend-changes.html` и `redesign-changes.html` («было / стало» с 8 сентября) |
 | `concepts/` | Ранние концепты DS (март 2026): Cobalt, CobaltFog, AcidLime, Stone v3, Horizon, Light in Darkness, мобильные v1/v2. Историческая витрина, не эталон — эталон R14. В публичный репо не входит |
 | `emails/` | Транзакционные письма на R14 (светлая тема): `email-1-payment-confirmation.html`, `email-2-reminder.html`, `emails-all.html` (витрина: оба письма + письмо после события). `mailings/` — рассылки на R14 (светлая тема; тёмная версия — `MAILINGS_THEME = 'dark'` в генераторе): после спектакля, перенос, напоминание, промокод, подборка. Все письма **генерируются** `tooling/build-emails.py` (`npm run build:emails`), руками не править. Кампании v3 — в `_archive/emails/` |
 | `docs/` | `audits/` (SEO, UX, redesign v1/v2, рынок), `council/` (репорты и транскрипты советов), `refs/` (референсы, скриншоты интерфейса), `metrika-goals.pdf`, `skills-review.html` |
@@ -56,6 +56,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
   Поле 112, название не больше двух строк, кобальт — только активная палочка, метка статуса — инверсия `.smm-mark`,
   свечение — один цвет жанра (`.smm-fx--footlight` с картинкой; `--beam`, `--depth`, `--halo` без картинки). Город на картинке не пишется.
 - Перед фиксацией: `npm run check` (сборка `--check` + страж). Страж (`tooling/guardrail.mjs`) превращает запреты ниже в автопроверку: `font-weight:300` вне `.smap-zoom-btn`, `border-radius>8px`, сырой `#hex` вне `:root`.
+- **Сторож расхождений:** `npm run drift` (`tooling/drift-check.mjs`) сверяет ядро и `tokens.json` со страницами со своим CSS, копией страницы партнёров, сборками редизайна, справочником токенов здесь, Figma-скриптами, витриной и копиями в `~/Downloads`; только читает. Агент `ds-drift-watcher` (`.claude/agents/`) запускает его, проверяет остальное вручную и отдаёт отчёт с правками.
 - Полная инструкция — `tooling/README.md`.
 
 ### Git и публикация (репозиторий ПУБЛИЧНЫЙ)
@@ -88,7 +89,9 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 - **Главные кнопки — всегда кобальт** `.btn-primary`, включая «Перейти к оформлению» и «Купить». Зелёную кнопку
   пробовали в 14.3.0 и отменили в 14.3.1: белый текст на зелёном давал контраст 2,3 : 1 при норме 4,5 : 1.
   Зелёный остаётся только у выбранного места на схеме зала.
-- **Кобальт в тексте** — только крупно (от 17px) и в ссылках. Мелкие подписи и капс до 11px — серые. Светлого кобальта нет.
+- **Кобальт в тексте** — только крупно (от 17px); у ссылок кобальт только в подчёркивании (`.t-link`). Мелкие подписи и капс до 11px — серые. Светлого кобальта нет.
+- **Ссылка в тексте** — `.t-link`: текст `--n100`, подчёркивание кобальтом (1px, отступ 3px); при наведении подчёркивание светлеет.
+  Кобальтовым текстом ссылки не делаются — как «Маршрут ↗» в редизайне.
 - **Надзаголовок** — строка `.t-eyebrow` (10px, 600, .22em, `--n300`), без плашки и рамки.
 - **Серые подписи капсом** — один стиль: 10px, 500, .14em, `--n500` (`.t-caption`, `.form-label`, подписи к цифрам и полям).
 - **Меню** — капс, Manrope 500, 11px, .16em; неактивные пункты `--n300`, активный `--n100`.
@@ -101,9 +104,10 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
   дата умным форматом и место, цена Oranienbaum; совпадение — цветом (`--n100` на `--n400`), не жирным; латиница
   исправляется раскладкой. Все состояния — раздел «Поиск по афише — подсказки» в редизайне (макет, в экраны не встроен).
 - **Футер** — один на весь сайт, `site-footer` со страницы партнёров: бренд и 4 документа / 5 соцсетей и отдел продаж /
-  помощь (возврат, поддержка, проверка билета) и техподдержка; сверху линия кобальтом с растворением, снизу копирайт и дисклеймер.
+  помощь (возврат, поддержка, проверка билета) и техподдержка; сверху разделитель «Рампа» — светлая сердцевина по центру, кобальт и
+  `--rampa-violet` к краям, свечение только вверх; снизу копирайт и дисклеймер. Компонент `.site-footer` — в ядре (26.10.2026).
   Фон темнее страницы: тёмная `#080808` (кнопки и соцсети `#111318`, рамки `#1F222A`), светлая `--n900` (кнопки `#FAFAF7`).
-  На странице партнёров это переменные темы `--foot-bg`, `--foot-surface`, `--foot-line`, `--foot-hover`.
+  Цвета — токены `--foot-bg`, `--foot-surface`, `--foot-line`, `--foot-hover` (в `tokens.json`; на странице партнёров — переменные темы).
   В публичных файлах почта сотрудника — только заглушка `partners@example.com`.
 - **Вход в фильтры (десктоп)** — кнопка внутри строки поиска справа, `aria-label`; слово «Фильтры» выезжает при наведении
   и остаётся, пока окно открыто. Окно — не модальное по центру: разворачивается из-под строки поиска в 6px, той же ширины;
@@ -208,7 +212,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 --blob-mid-green:  #051205
 
 /* Premium */
---premium: #F5F4EE   /* Ivory — только для Premium-блоков */
+--premium-bg: #F5F4EE   /* Ivory — только для Premium-блоков; текст на нём --premium-ink */
 
 /* Семантика */
 --success:        #22C55E
@@ -246,12 +250,25 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 --scrim:              #000000
 --overlay:            #00000088
 --shadow-color:       #000000AA
+/* Схема зала: выбранное, проданное, ложа */
+--seat-sel:           #22C55E
+--seat-sold:          #2C2F36
+--zone-1:             #C9975A
+/* Футер и «Рампа» (26.10.2026) */
+--foot-bg:            #080808
+--foot-surface:       #111318
+--foot-line:          #1F222A
+--foot-hover:         #191C22
+--rampa-violet:       #7A4DFF
 ```
 
 ### Светлая тема (ds-core-light.css)
 ```
 --ink:          #FFFFFF   /* Фон страницы */
 --accent:       #0047FF   /* Тот же Cobalt */
+--black:        #111111
+--accent-hover: #0038CC
+--accent-dim:   #0436B6
 --accent-ghost: #EAF0FF
 --accent-border:#B8C9F0
 
@@ -262,6 +279,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 --n400: #6A6A68
 --n500: #888886
 --n600: #A8A8A5
+--n700: #B5B5B0
 --n800: #E2E1DA
 --n900: #F2F1EB
 --n950: #FAFAF7   /* Карточки */
@@ -269,10 +287,23 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 /* Blob — пастельные */
 --blob-core:      #BFD0EE
 --blob-mid:       #E5DAEF
+--blob-purple:    #DBC4F0
 --blob-faint:     #EAF0FF
 --blob-core-warm: #F2D5B0
+--blob-mid-warm:  #F2DCC0
+--blob-core-cool: #BFD0EE
+--blob-mid-cool:  #E5DAEF
 --blob-core-green:#C7E8C8
 --blob-mid-green: #E4F3E4
+
+/* Семантика */
+--success:        #22C55E
+--success-bg:     #DCFCE7
+--success-border: #86EFAC
+--danger:         #E53E3E
+--danger-bg:      #FEE2E2
+--danger-border:  #FCA5A5
+--danger-text:    #DC2626
 /* Светлая тема: все фоновые токены (блобы, подложки) обязаны быть светлыми.
    build-tokens --check падает, если значение осталось тёмным (21.10.2026). */
 /* Добавлены в 14.3–14.4 */
@@ -303,6 +334,16 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 --scrim:              #000000
 --overlay:            #00000088
 --shadow-color:       #000000AA
+/* Схема зала: выбранное, проданное, ложа */
+--seat-sel:           #22C55E
+--seat-sold:          #C0C3C9
+--zone-1:             #C9975A
+/* Футер и «Рампа» (26.10.2026) */
+--foot-bg:            #F2F1EB
+--foot-surface:       #FAFAF7
+--foot-line:          #E2E1DA
+--foot-hover:         #E2E1DA
+--rampa-violet:       #8B5CF6
 ```
 
 ---
@@ -482,6 +523,35 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 </button>
 <!-- По нажатию: переключить тему, затем data-mode, aria-label и title — на противоположные -->
 ```
+
+### Меню профиля в шапке (26.10.2026, решение №38)
+```html
+<!-- Десктоп: после выбора города. Телефон: иконкой между кнопкой темы и бургером, подпись .pm-l скрыта.
+     Гость: подпись «Войти», меню не открывается — сразу экран входа. -->
+<div class="pm">            <!-- открыто: .pm.open + aria-expanded="true" -->
+  <button class="hdr-profile" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="Меню профиля">
+    <span class="pm-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/></svg></span>
+    <span class="pm-l">Профиль</span>
+  </button>
+  <div class="pm-menu" role="menu">  <!-- строкам style="--i:N" — проявляются по очереди -->
+    <div class="pm-head"><span class="t-caption">Профиль</span><b class="pm-name">Иван Иванов</b></div>
+    <button class="pm-item" role="menuitem">Предстоящие<span class="pm-n">7</span></button>
+    <button class="pm-item" role="menuitem">Избранное<span class="pm-n">12</span></button>
+    <button class="pm-item" role="menuitem">История покупок</button>
+    <button class="pm-item" role="menuitem">Мои возвраты<span class="pm-n">3</span></button>
+    <button class="pm-item" role="menuitem">Изменить данные</button>
+    <div class="pm-sep" role="separator"></div>
+    <button class="pm-item pm-out" role="menuitem"><svg/>Выйти</button>
+  </div>
+</div>
+```
+- Имя без почты и телефона. «Выйти» — только здесь, на странице профиля его нет.
+- Иконка — «Туман» при наведении и открытом меню: жанровые `--blob-core` и `--blob-purple` с серебром (`color-mix` с `--n100`;
+  в светлой теме пастель чуть насыщается), размытие 8px, прозрачность .5, оборот 3,2 с, «дыхание» .92–1.06. В покое без эффекта.
+- Меню — как окно фильтров: 420 мс `cubic-bezier(.16,1,.3,1)`, уход 252 мс, строки по очереди с шагом 30 мс.
+  Закрывается кликом мимо, `Esc` (фокус на кнопку), выбором пункта; ↑↓ — по пунктам. `prefers-reduced-motion` — без движения.
+- Профиль целиком (вкладки, карточка показа с заказами, возврат, избранное) — макет `site/account.html`, пакет `site/handoff/account/`.
+  Возврат — решения №36–37.
 
 ### Session list — выбор сеанса (multi-venue / multi-date) ⭐ основной паттерн
 Заменяет старый date-chip в большинстве случаев. Используется на странице события когда есть >1 площадка ИЛИ >1 сеанс в день ИЛИ >2 дат — то есть почти всегда.
