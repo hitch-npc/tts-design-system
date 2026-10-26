@@ -81,8 +81,56 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .hdr-city { height: 36px; padding: 0 14px; border: 1px solid var(--n800); border-radius: var(--r-sm); font-size: 12px; font-weight: 500; color: var(--n100); transition: border-color var(--dur-fast); }
 .hdr-city:hover { border-color: var(--n700); }
 .hdr-profile { display: inline-flex; align-items: center; gap: 8px; height: 36px; font-size: 11px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--n100); position: relative; }
-.hdr-profile[aria-current="page"]::after { content: ''; position: absolute; left: 22px; right: 0; bottom: 6px; height: 1px; background: var(--accent); }
-.hdr-profile svg { width: 14px; height: 14px; flex: none; }
+.hdr-profile[aria-current="page"] .pm-l { box-shadow: inset 0 -1px var(--accent); padding: 4px 0; }
+.hdr-profile svg { width: 14px; height: 14px; flex: none; position: relative; }
+
+/* ── меню профиля ──
+   иконка, «Туман»: при наведении и при открытом меню за ней мягкое пятно — жанровые синий и фиолетовый
+   с серебром переливаются по кругу и «дышат»; цвета разбавлены бело-серым, чтобы не кричали;
+   меню: разворачивается из-под кнопки, как окно фильтров — 420 мс появление, 252 мс уход, строки по очереди */
+@property --pm-a { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+.pm { position: relative; }
+.hdr-profile { background: none; border: 0; padding: 0; cursor: pointer; font-family: var(--font); }
+.pm-ico { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; margin: 0 -4px 0 -7px; }
+.hdr-profile { --pm-blue: color-mix(in srgb, var(--blob-core) 70%, var(--n100));
+  --pm-violet: color-mix(in srgb, var(--blob-purple) 55%, var(--n100)); --pm-silver: var(--n300); }
+/* светлая тема: пастельные жанровые цвета чуть насыщаются, серебро — светло-серое */
+:root[data-theme="light"] .hdr-profile { --pm-blue: color-mix(in srgb, var(--blob-core) 80%, var(--accent));
+  --pm-violet: color-mix(in srgb, var(--blob-purple) 85%, var(--n400)); --pm-silver: var(--n800); }
+.pm-ico::before { content: ''; position: absolute; inset: -2px; border-radius: 50%;
+  background: conic-gradient(from var(--pm-a), var(--pm-blue), var(--pm-silver), var(--pm-violet), var(--pm-silver), var(--pm-blue));
+  filter: blur(8px); opacity: 0; transform: scale(.6);
+  transition: opacity 600ms var(--ease-out), transform 600ms cubic-bezier(.16,1,.3,1);
+  animation: pm-spin 3.2s linear infinite, pm-breathe 2.4s ease-in-out infinite alternate; animation-play-state: paused; }
+.hdr-profile:hover .pm-ico::before, .hdr-profile:focus-visible .pm-ico::before,
+.hdr-profile[aria-expanded="true"] .pm-ico::before { opacity: .5; transform: scale(1); animation-play-state: running; }
+@keyframes pm-breathe { from { scale: .92; } to { scale: 1.06; } }
+.hdr-profile .pm-ico svg { transition: color 600ms var(--ease-out); }
+.hdr-profile:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: var(--r-sm); }
+@keyframes pm-spin { to { --pm-a: 360deg; } }
+
+.pm-menu { position: absolute; z-index: 60; top: calc(100% + 10px); right: 0; width: 248px; padding: 6px;
+  background: var(--n950); border: 1px solid var(--n800); border-radius: var(--r-sm); box-shadow: 0 18px 40px -12px var(--shadow-color);
+  opacity: 0; visibility: hidden; transform: translateY(-6px) scale(.98); transform-origin: top right;
+  clip-path: inset(0 0 100% 0 round var(--r-sm));
+  transition: opacity 252ms var(--ease-out), transform 252ms var(--ease-out), clip-path 252ms var(--ease-out), visibility 0s 252ms; }
+.pm.open .pm-menu { opacity: 1; visibility: visible; transform: none; clip-path: inset(0 0 0 0 round var(--r-sm));
+  transition: opacity 420ms cubic-bezier(.16,1,.3,1), transform 420ms cubic-bezier(.16,1,.3,1), clip-path 420ms cubic-bezier(.16,1,.3,1), visibility 0s; }
+.pm-menu > * { opacity: 0; transform: translateY(-4px); transition: opacity 160ms var(--ease-out), transform 160ms var(--ease-out); }
+.pm.open .pm-menu > * { opacity: 1; transform: none; transition: opacity 320ms cubic-bezier(.16,1,.3,1), transform 320ms cubic-bezier(.16,1,.3,1); transition-delay: calc(var(--i, 0) * 30ms + 60ms); }
+.pm-head { display: flex; flex-direction: column; gap: 6px; padding: 12px 12px 14px; margin-bottom: 4px; border-bottom: 1px solid var(--n850); }
+.pm-name { font-family: var(--f-head); font-weight: 400; font-size: 18px; line-height: 1.2; color: var(--n100); }
+.pm-item { display: flex; align-items: center; gap: 10px; width: 100%; height: 38px; padding: 0 12px; background: none; border: 0; border-radius: var(--r-sm);
+  font: 500 13px/1 var(--font); color: var(--n200); text-align: left; cursor: pointer; transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out); }
+.pm-item:hover, .pm-item:focus-visible { background: var(--n900); color: var(--n100); outline: none; }
+.pm-n { margin-left: auto; font-family: var(--f-num); font-size: 14px; color: var(--n500); }
+.pm-sep { height: 1px; margin: 4px 6px; background: var(--n850); }
+.pm-out { color: var(--n400); }
+.pm-out svg { width: 14px; height: 14px; flex: none; }
+@media (prefers-reduced-motion: reduce) {
+  .pm-menu, .pm.open .pm-menu, .pm-menu > *, .pm.open .pm-menu > * { transition: none; transform: none; clip-path: none; }
+  .pm-ico::before { animation: none; transition: none; }
+}
 .hdr-burger { display: none; }
 
 .wrap { max-width: var(--content-max); min-height: 70vh; margin: 0 auto; padding: var(--sp-10) var(--page-pad) var(--sp-16); }
@@ -399,8 +447,10 @@ textarea.form-input { min-height: 112px; resize: vertical; line-height: 1.5; }
   .hdr-search, .hdr-city { display: none; }
   .theme-toggle { margin-left: auto; border-color: transparent; }
   .hdr-profile { width: 40px; justify-content: center; }
-  .hdr-profile span, .hdr-profile::after { display: none; }
+  .hdr-profile .pm-l { display: none; }
+  .pm-ico { width: 34px; height: 34px; margin: 0; }
   .hdr-profile svg { width: 20px; height: 20px; }
+  .pm-menu { right: -48px; width: min(280px, calc(100vw - 2 * var(--page-pad))); }
   .hdr-burger { display: inline-flex; }
   .ev-head { grid-template-columns: 180px 1fr; }
   .ev-side { grid-column: 1 / -1; justify-content: space-between; }
@@ -500,10 +550,22 @@ textarea.form-input { min-height: 112px; resize: vertical; line-height: 1.5; }
     </svg>
   </button>
   <button class="hdr-city" type="button">Москва</button>
-  <a class="hdr-profile" href="#" data-act="home" aria-current="page" aria-label="Профиль">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/></svg>
-    <span>Профиль</span>
-  </a>
+  <div class="pm" id="pm">
+    <button class="hdr-profile" type="button" id="pmBtn" aria-current="page" aria-haspopup="menu" aria-expanded="false" aria-controls="pmMenu" aria-label="Меню профиля">
+      <span class="pm-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/></svg></span>
+      <span class="pm-l">Профиль</span>
+    </button>
+    <div class="pm-menu" id="pmMenu" role="menu" aria-labelledby="pmBtn">
+      <div class="pm-head"><span class="t-caption">Профиль</span><b class="pm-name" id="pmName"></b></div>
+      <button class="pm-item" role="menuitem" data-act="pm-go" data-to="up">Предстоящие<span class="pm-n" id="pmUp"></span></button>
+      <button class="pm-item" role="menuitem" data-act="pm-go" data-to="fav">Избранное<span class="pm-n" id="pmFav"></span></button>
+      <button class="pm-item" role="menuitem" data-act="pm-go" data-to="hist">История покупок</button>
+      <button class="pm-item" role="menuitem" data-act="pm-go" data-to="returns">Мои возвраты<span class="pm-n" id="pmReq"></span></button>
+      <button class="pm-item" role="menuitem" data-act="pm-go" data-to="data">Изменить данные</button>
+      <div class="pm-sep" role="separator"></div>
+      <button class="pm-item pm-out" role="menuitem" data-act="logout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h10"/></svg>Выйти</button>
+    </div>
+  </div>
   <button class="nav-icon-btn hdr-burger" type="button" aria-label="Меню">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
   </button>
@@ -1124,6 +1186,35 @@ function renderRet(freshNo) {
     </section>`;
 }
 
+/* ════════ меню профиля ════════ */
+function pmOpen() {
+  $('#pmName').textContent = $('#me-name').textContent;
+  $('#pmUp').textContent = $('#n-up').textContent; $('#pmFav').textContent = $('#n-fav').textContent; $('#pmReq').textContent = $('#n-req').textContent;
+  $$('.pm-menu > *').forEach((x, i) => x.style.setProperty('--i', i));
+  $('#pm').classList.add('open'); $('#pmBtn').setAttribute('aria-expanded', 'true');
+}
+function pmClose(focus) {
+  if (!$('#pm').classList.contains('open')) return;
+  $('#pm').classList.remove('open'); $('#pmBtn').setAttribute('aria-expanded', 'false');
+  if (focus) $('#pmBtn').focus();
+}
+$('#pmBtn').addEventListener('click', e => {
+  e.stopPropagation();
+  if (state === 'guest') { go('main'); return; }          // гость — сразу экран входа
+  $('#pm').classList.contains('open') ? pmClose(false) : pmOpen();
+});
+document.addEventListener('pointerdown', e => { if (!e.target.closest('#pm')) pmClose(false); });
+$('#pm').addEventListener('keydown', e => {
+  const items = $$('.pm-item'), i = items.indexOf(document.activeElement);
+  if (e.key === 'Escape') { pmClose(true); }
+  else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (!$('#pm').classList.contains('open')) pmOpen();
+    const n = e.key === 'ArrowDown' ? (i + 1) % items.length : (i <= 0 ? items.length - 1 : i - 1);
+    items[n].focus();
+  }
+});
+
 /* ════════ навигация ════════ */
 function renderAll() { renderUp(); renderFav(); renderHist(); $('#n-req').textContent = reqs.length || ''; }
 function go(view, freshNo) {
@@ -1131,7 +1222,9 @@ function go(view, freshNo) {
   $('#v-login').hidden = !guest;
   $('#v-main').hidden = ret || guest;
   $('#v-ret').hidden = !ret || guest;
-  $('.hdr-profile span').textContent = guest ? 'Войти' : 'Профиль';
+  $('.pm-l').textContent = guest ? 'Войти' : 'Профиль';
+  $('#pmBtn').setAttribute('aria-label', guest ? 'Войти' : 'Меню профиля');
+  pmClose(false);
   if (guest) { renderLogin(); window.scrollTo({ top: 0, behavior: 'instant' }); return; }
   if (ret) renderRet(freshNo); else renderAll();
   window.scrollTo({ top: 0, behavior: 'instant' });
@@ -1172,6 +1265,15 @@ document.addEventListener('click', e => {
     case 'home': draft = null; go('main'); break;
     case 'returns': draft = null; go('returns'); break;
     case 'hint-close': hint = false; $('.hint')?.remove(); break;
+    case 'logout': pmClose(false); $('.states [data-state="guest"]').click(); note('Вы вышли из профиля'); break;
+    case 'pm-go': {
+      const to = b.dataset.to; pmClose(false); draft = null;
+      if (to === 'returns') { go('returns'); break; }
+      go('main');
+      if (to === 'data') $('[data-act=me][data-p=data]').click(); else tab(to);
+      if (to !== 'data' && to !== 'up') $('.tabs')?.scrollIntoView({ behavior: 'instant', block: 'start' });
+      break;
+    }
     case 'me': {
       const p = $('#me-' + b.dataset.p), was = !p.hidden;
       $$('.me-panel').forEach(x => x.hidden = true);
