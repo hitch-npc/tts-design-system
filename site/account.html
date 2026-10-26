@@ -256,6 +256,24 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .rt-sum { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
 .rt-sum b { font-family: var(--f-num); font-weight: 400; font-size: 1.8rem; color: var(--n100); }
 .rt-sum .form-helper { flex-basis: 100%; }
+/* последние 72 часа до начала — предупреждение, кнопка возврата остаётся */
+.rt-late { display: flex; gap: 12px; align-items: flex-start; padding: var(--sp-4); background: var(--tag-o-bg); border: 1px solid var(--tag-o-bd); border-radius: var(--r-sm); font-size: 13px; line-height: 1.6; color: var(--n200); }
+.rt-late > svg { flex: none; width: 18px; height: 18px; color: var(--tag-o-fg); margin-top: 1px; }
+.rt-late b { font-weight: 600; color: var(--n100); }
+.rt-reasons { border: 0; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.rt-reasons legend { margin-bottom: 8px; padding: 0; }
+.rt-reason { position: relative; cursor: pointer; }
+.rt-reason input { position: absolute; opacity: 0; pointer-events: none; }
+.rt-reason span { display: inline-flex; align-items: center; height: 36px; padding: 0 14px; border: 1px solid var(--n800); border-radius: var(--r-full); font-size: 13px; font-weight: 500; color: var(--n300); transition: border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out); }
+.rt-reason:hover span { color: var(--n100); }
+.rt-reason input:checked + span { background: var(--accent-ghost); border-color: var(--accent); color: var(--n100); }
+.rt-reason input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+.rt-est { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.rt-est b { font-family: var(--f-num); font-weight: 400; font-size: 1.5rem; color: var(--n100); }
+.rt-est-v { font-size: 14px; font-weight: 600; color: var(--n100); }
+.rt-est .form-helper { flex-basis: 100%; }
+.rt-docs { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.ord-late { font-size: 11px; color: var(--n500); }
 textarea.form-input { min-height: 112px; resize: vertical; line-height: 1.5; }
 .field-count { align-self: flex-end; font-size: 11px; color: var(--n600); font-variant-numeric: tabular-nums; }
 /* условия возврата — свёрнуты по умолчанию */
@@ -697,6 +715,7 @@ const NOW = '2026-10-25';
 const IMG = p => 'https://moscowshow.com/upload/iblock/' + p;
 const LOGO = f => 'https://tickettoshow.ru/assets/' + f + '.svg';
 const SHOWS = {
+  s0: { title: 'Квартетник', venue: 'Театр эстрады', hall: 'Большой зал', date: '2026-10-27T19:00', img: IMG('3d9/rh8c4v29ptak6t0fiq5l991898661fla/kvartetnik_.jpg') },
   s1: { title: 'Опасные игры', venue: 'Театр Ленком', hall: 'Основная сцена', date: '2026-11-07T19:00', img: IMG('06d/ptrweq48do15fc7pka9h0r25h8mhev98/opasnye_igry1.jpg') },
   s2: { title: 'Эйнштейн и Маргарита', venue: 'Театр эстрады', hall: 'Большой зал', date: '2026-11-14T19:00', img: IMG('40f/xk8jj9k4o0ozlw47j22ys3tdaf4g13et/einstein_i_margarita_.jpg') },
   s3: { title: 'Фрида', venue: 'МХАТ им. Горького', hall: 'Основная сцена', date: '2026-11-21T19:00', img: IMG('356/kqkkzqpzk8rh4oaifiy0lrqlesvz3f8f/frida_.jpg') },
@@ -708,6 +727,7 @@ const SHOWS = {
 };
 // заказ — всегда одно мероприятие, один и более билетов; статус возврата — у заказа целиком
 const ORDERS_BASE = [
+  { no: '48262', bought: '2026-10-24', show: 's0', tickets: [{ id: 'k1', zone: 'Партер', place: 'Ряд 9, место 14', name: 'Иванов Иван Иванович', price: 2500 }, { id: 'k2', zone: 'Партер', place: 'Ряд 9, место 15', name: 'Иванова Ольга Петровна', price: 2500 }] },
   { no: '48231', bought: '2026-10-22', show: 's1', tickets: [{ id: 'a1', zone: 'Партер', place: 'Ряд 7, место 3', name: 'Смирнова Мария Олеговна', price: 3900 }] },
   { no: '48200', bought: '2026-10-20', show: 's1', tickets: [
     { id: 'b1', zone: 'Партер', place: 'Ряд 5, место 12', name: 'Иванов Иван Иванович', price: 4200 },
@@ -784,7 +804,16 @@ const full = d => new Date(d).toLocaleDateString('ru-RU', { day: 'numeric', mont
 const dow = d => new Date(d).toLocaleDateString('ru-RU', { weekday: 'short' });
 const time = d => new Date(d).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const isPast = sid => SHOWS[sid].date.slice(0, 10) < NOW;
+// время «сейчас» в макете; на проде — серверное время, Москва
+const NOW_T = new Date(NOW + 'T12:00');
+// часы до начала показа — считаются точно, не по календарным дням
+const hoursLeft = sid => (new Date(SHOWS[sid].date) - NOW_T) / 36e5;
+const isPast = sid => hoursLeft(sid) <= 0;
+// условия возврата при «передумал»: от 240 ч — 100 %, от 120 ч — 50 %, от 72 ч — 30 %, меньше 72 ч — 0; сбор распространителя 10 % не возвращается
+const LATE_H = 72;
+const refundPct = h => h >= 240 ? 100 : h >= 120 ? 50 : h >= 72 ? 30 : 0;
+const refundSum = (o, h) => Math.max(0, Math.round(sumOf(o) * (refundPct(h) - 10) / 100));
+const leftText = h => h >= 48 ? `${Math.floor(h / 24)} ${plural(Math.floor(h / 24), 'сутки', 'суток', 'суток')} ${Math.floor(h % 24)} ч` : `${Math.floor(h)} ч`;
 const mask = n => '•••• ' + n.replace(/\s/g, '').slice(-4);
 const sumOf = o => o.tickets.reduce((a, t) => a + t.price, 0);
 const orderBy = no => orders.find(o => o.no === no);
@@ -894,7 +923,7 @@ function showCard(sid, list, o = {}) {
       <div class="ord-head">
         <span class="ord-no">Заказ № ${g.no}</span>
         <span class="ord-info">от ${full(g.bought)} · ${tix(g.tickets.length)} · ${rub(sumOf(g))}</span>
-        <span class="ord-end">${statusTag(g)}${g.status === 'pending' ? '' : `<button class="btn btn-dark btn-sm" data-act="ret-order" data-o="${g.no}">Вернуть заказ</button>`}</span>
+        <span class="ord-end">${statusTag(g)}${g.status === 'pending' ? '' : `${hoursLeft(g.show) < LATE_H ? '<span class="ord-late">Меньше 3 суток до начала</span>' : ''}<button class="btn btn-dark btn-sm" data-act="ret-order" data-o="${g.no}">Вернуть заказ</button>`}</span>
       </div>`;
     return `<div class="ord">${head}${g.tickets.map(t => ticketHTML(t, editable)).join('')}</div>`;
   }).join('');
@@ -1005,11 +1034,18 @@ function renderHist() {
 }
 
 /* ════════ возврат ════════ */
+const RET_REASONS = [['mind', 'Передумал(а)'], ['ill', 'Болезнь'], ['death', 'Смерть близкого']];
+function estHTML(o, h, reason) {
+  if (reason !== 'mind') return `<span class="t-caption">К возврату</span><span class="rt-est-v">по документам</span><div class="form-helper">Сумму определит поддержка после проверки документов.</div>`;
+  const p = refundPct(h);
+  return `<span class="t-caption">К возврату</span><b>${rub(refundSum(o, h))}</b><div class="form-helper">${p ? `${p} % стоимости по общим условиям, за вычетом сбора распространителя 10 %. До начала — ${leftText(h)}.` : `Меньше 3 суток до начала: по общим условиям возврат не делается. Запрос можно отправить — поддержка рассмотрит его.`}</div>`;
+}
+/* ════════ возврат: форма ════════ */
 function renderRet(freshNo) {
   const el = $('#v-ret');
   let form = '';
   if (draft) {
-    const o = orderBy(draft), s = SHOWS[o.show];
+    const o = orderBy(draft), s = SHOWS[o.show], h = hoursLeft(o.show), late = h < LATE_H;
     form = `
     <section class="rt-sec">
       <div class="rt-card">
@@ -1029,8 +1065,18 @@ function renderRet(freshNo) {
             <div class="tk-price">${rub(t.price)}</div>
           </div>`).join('')}</div>
         <div class="rt-form">
+          ${late ? `<div class="rt-late" role="note">${ICON.info}<div><b>До начала меньше 3 суток — осталось ${leftText(h)}.</b> По общим условиям возврат не делается. Если причина — болезнь или смерть близкого, выберите её ниже: понадобятся документы, их можно прислать до 7 дней после мероприятия.</div></div>` : ''}
           <div class="rt-sum"><span class="t-caption">Стоимость заказа</span><b>${rub(sumOf(o))}</b><span class="bar-count">${tix(o.tickets.length)}</span>
-            <div class="form-helper">Возвращается заказ целиком. Итоговая сумма зависит от условий возврата.</div></div>
+            <div class="form-helper">Возвращается заказ целиком.</div></div>
+          <fieldset class="rt-reasons">
+            <legend class="form-label">Причина возврата</legend>
+            ${RET_REASONS.map(([k, l], i) => `<label class="rt-reason"><input type="radio" name="rt-reason" value="${k}"${i === 0 ? ' checked' : ''}><span>${l}</span></label>`).join('')}
+          </fieldset>
+          <div class="rt-est" id="rt-est">${estHTML(o, h, 'mind')}</div>
+          <div class="rt-docs" id="rt-docs" hidden>
+            <label class="btn btn-ghost btn-sm rt-file">Прикрепить документы<input type="file" multiple hidden></label>
+            <div class="form-helper">Справка, выписка или свидетельство. Можно прислать позже — до 7 дней после мероприятия.</div>
+          </div>
           <div class="form-group">
             <label class="form-label" for="rt-msg">Комментарий (по желанию)</label>
             <textarea class="form-input" id="rt-msg" maxlength="500" placeholder="Расскажите подробнее (по желанию)"></textarea>
@@ -1058,6 +1104,7 @@ function renderRet(freshNo) {
       <div class="req-body">
         <span class="t-caption">Билеты</span>
         ${o.tickets.map(t => `<div>${esc(t.zone)}, ${esc(t.place)} — ${esc(t.name)}</div>`).join('')}
+        ${r.reason ? `<span class="t-caption">Причина</span><div>${esc(r.reason)}</div>` : ''}
         ${r.comment ? `<span class="t-caption">Комментарий</span><div>${esc(r.comment)}</div>` : ''}
         ${r.answer ? `<span class="t-caption">Ответ</span><div>${esc(r.answer)}</div>` : ''}
         ${r.status === 'pending' ? '<div class="form-helper">Рассмотрение обычно занимает до 3 рабочих дней. Решение придёт на почту.</div>' : ''}
@@ -1167,7 +1214,8 @@ document.addEventListener('click', e => {
       const o = orderBy(draft);
       o.status = 'pending';
       const no = 'В-' + (1100 + reqs.length);
-      reqs.unshift({ no, order: o.no, sent: NOW, status: 'pending', comment: $('#rt-msg').value.trim() });
+      const rs = $('input[name=rt-reason]:checked')?.value || 'mind';
+      reqs.unshift({ no, order: o.no, sent: NOW, status: 'pending', reason: RET_REASONS.find(r => r[0] === rs)[1], comment: $('#rt-msg').value.trim() });
       // повторная заявка по отклонённому заказу заменяет старую в списке
       reqs = reqs.filter((r, i) => i === 0 || r.order !== o.no);
       draft = null;
@@ -1193,6 +1241,14 @@ document.addEventListener('click', e => {
       break;
     }
   }
+});
+
+// причина возврата меняет оценку суммы и поле документов
+document.addEventListener('change', e => {
+  if (e.target.name !== 'rt-reason') return;
+  const o = orderBy(draft);
+  $('#rt-est').innerHTML = estHTML(o, hoursLeft(o.show), e.target.value);
+  $('#rt-docs').hidden = e.target.value === 'mind';
 });
 
 // счётчик комментария

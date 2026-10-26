@@ -539,7 +539,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 
 <!-- 5. CTA — disabled до выбора, активный после -->
 <button class="btn btn-primary btn-md btn-full" disabled>Выбрать места</button>
-<!-- «В избранное» убрано 21.10.2026: логики нет ни во фронте, ни в API; вернётся вместе со страницей избранного -->
+<button class="btn btn-ghost btn-md btn-full">В избранное</button>   <!-- вернулась 26.10.2026 вместе с профилем (решение №30) -->
 ```
 
 **Правила:**

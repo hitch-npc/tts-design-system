@@ -78,8 +78,13 @@ body{margin:0;background:var(--ink);color:var(--n100);font-family:var(--font);-w
 .sk{border:1px solid var(--n800);border-radius:2px;background:var(--n950);padding:16px;display:grid;grid-template-columns:56px 1fr;gap:14px}
 
 /* Страница площадки */
-.vp-head{display:grid;grid-template-columns:96px minmax(0,1fr);gap:24px;align-items:center}
-.is-m .vp-head{grid-template-columns:64px minmax(0,1fr);gap:16px}
+.vp-head{display:grid;grid-template-columns:96px minmax(0,1fr) auto;gap:24px;align-items:center}
+.is-m .vp-head{grid-template-columns:64px minmax(0,1fr) auto;gap:16px}
+/* «В избранное» у площадки (решение №30, пересмотрено 26.10.2026) */
+.vp-fav{display:inline-flex;align-items:center;gap:8px;align-self:start}
+.vp-fav[aria-pressed="true"] svg{fill:currentColor}
+.is-m .vp-fav{width:40px;padding:0;justify-content:center}
+.is-m .vp-fav .vp-fav-l{display:none}
 .vp-head .v-logo{width:96px;height:96px;font-size:2rem}
 .is-m .vp-head .v-logo{width:64px;height:64px;font-size:1.5rem}
 .vp-head .sec-title{margin:6px 0 10px}
@@ -161,7 +166,7 @@ function card(e){return `<article class="event-card ${e.b}"><div class="event-ca
 function venue(){
   const v=V[3];
   return `${nav('Площадки')}<header class="sec-head"><div class="crumbs"><a>Афиша</a> &nbsp;/&nbsp; <a>Площадки</a> &nbsp;/&nbsp; ${v.n}</div>
-   <div class="vp-head"><span class="v-logo" aria-hidden="true">${mono(v.n)}</span><div><span class="tag tag-default">${v.t}</span><h1 class="sec-title">${v.n}</h1><div class="vp-addr"><span>${v.a}</span><a href="#">Маршрут ↗</a></div></div></div></header>
+   <div class="vp-head"><span class="v-logo" aria-hidden="true">${mono(v.n)}</span><div><span class="tag tag-default">${v.t}</span><h1 class="sec-title">${v.n}</h1><div class="vp-addr"><span>${v.a}</span><a href="#">Маршрут ↗</a></div></div><button class="btn btn-ghost btn-sm vp-fav" type="button" aria-pressed="false" aria-label="Добавить площадку в избранное" onclick="this.setAttribute('aria-pressed', this.getAttribute('aria-pressed') !== 'true'); this.querySelector('.vp-fav-l').textContent = this.getAttribute('aria-pressed') === 'true' ? 'В избранном' : 'В избранное'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-9.2-8.6C1.3 8.4 3 5 6.4 5c2.1 0 3.5 1.2 4.4 2.5h2.4C14.1 6.2 15.5 5 17.6 5 21 5 22.7 8.4 21.2 11.4 19 15.6 12 20 12 20z"/></svg><span class="vp-fav-l">В избранное</span></button></div></header>
    <div class="vp-body"><section><div class="vp-sec-h"><h2>Афиша площадки</h2><span class="cnt">${EV.length} событий</span></div><div class="vp-grid">${EV.map(card).join('')}</div></section>
    <aside class="vp-aside"><div class="vp-sec-h" style="margin-bottom:4px"><h2>Как добраться</h2></div><div class="map" role="img" aria-label="Карта: ${v.n}"><span class="road" style="left:0;right:0;top:58%;height:10px"></span><span class="road" style="top:0;bottom:0;left:62%;width:12px"></span><span class="pin"></span><span class="lbl">${v.n}</span><span class="cap">Яндекс Карта · интерактивная</span></div>
    <div class="facts"><div><span>Адрес</span><span>${v.a}</span></div></div>
