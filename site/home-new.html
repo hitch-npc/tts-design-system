@@ -34,7 +34,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 
 /* свет: четыре варианта, атрибут data-light у .intro. Разгорается плавно, без мерцания */
 .intro-light { --cold: color-mix(in srgb, var(--accent-soft) 55%, var(--n100)); position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity 1800ms var(--ease-out); }
-.intro.is-run .intro-light { opacity: 1; }
+.intro.is-run .intro-light { opacity: .7; }
 .intro.is-out .intro-light { opacity: 0; transition-duration: 800ms; }
 .il-move { position: absolute; inset: 0; transform: translate3d(calc(var(--px, 0) * 6px), calc(var(--py, 0) * 4px), 0); }
 .il-move > * { display: none; }
@@ -92,7 +92,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .ic.is-hero { transition: transform 1300ms cubic-bezier(.65,0,.35,1), filter 700ms var(--ease-out), box-shadow 700ms var(--ease-out); }
 
 /* надпись: строки выдвигаются из-под маски */
-.intro-head { position: absolute; z-index: 2; left: 50%; top: 50%; width: min(1320px, calc(100vw - 2 * var(--page-pad))); margin: 0; color: var(--n100); text-transform: uppercase; pointer-events: none;
+.intro-head { position: absolute; z-index: 2; left: 50%; top: 50%; width: min(1320px, calc(100vw - 2 * var(--page-pad))); margin: 0; font-size: clamp(34px, 7.6vw, 104px); color: var(--n100); text-transform: uppercase; pointer-events: none;
   transform: translate(-50%, -50%) translate3d(calc(var(--px, 0) * 8px), calc(var(--py, 0) * 5px), 0); }
 .ih-line { display: block; width: max-content; white-space: nowrap; line-height: .98; overflow: hidden; padding: .08em .06em .18em 0; margin: -.08em -.06em -.18em 0; }
 .ih-in { display: inline-block; transform: translateY(112%); will-change: transform; }
@@ -101,6 +101,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .ih-s { font-family: var(--f-thin); font-weight: 400; font-style: italic; font-size: 1.12em; letter-spacing: 0; }
 /* буква, которая «расшифровывается»: ширина закреплена по итоговой, чтобы строка не дрожала */
 .dc { display: inline-block; text-align: center; white-space: pre; }
+/* пока буква перебирается, знак обрезан по ширине её места — не наезжает на соседей */
+.dc.on { clip-path: inset(-.5em 0 -.5em 0); }
 .ih-n { font-family: var(--font); font-weight: 200; letter-spacing: -.02em; }
 
 /* кинорамка */
@@ -127,6 +129,9 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 
 /* зерно и виньетка поверх всего кадра */
 .intro-grain { position: absolute; inset: 0; z-index: 5; pointer-events: none; opacity: .06; }
+.intro-dim { position: absolute; inset: 0; z-index: 1; pointer-events: none; transition: opacity 700ms var(--ease-out);
+  background: radial-gradient(ellipse 75% 65% at 50% 50%, color-mix(in srgb, var(--ink) 58%, transparent) 0%, color-mix(in srgb, var(--ink) 46%, transparent) 60%, color-mix(in srgb, var(--ink) 30%, transparent) 100%); }
+.intro.is-out .intro-dim { opacity: 0; }
 .intro-vig { position: absolute; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(ellipse 85% 75% at 50% 50%, transparent 55%, color-mix(in srgb, var(--ink) 85%, transparent) 100%); }
 .intro.is-out .intro-grain, .intro.is-out .intro-vig { opacity: 0; transition: opacity 500ms var(--ease-out); }
 
@@ -134,6 +139,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 @keyframes il-grow { to { transform: scaleY(1); } }
 @keyframes il-up   { to { opacity: 1; transform: none; } }
 @media (max-width: 767px) {
+  .intro-head { font-size: clamp(28px, 10.5vw, 64px); }
   .ib-meta { display: none; }
   .ib-count { min-width: 0; }
   .ib-line { width: 40px; }
@@ -400,6 +406,7 @@ html.page-in .hw > span, .no-js .hw > span { transform: none; transition: transf
   <canvas class="intro-dust" id="introDust" aria-hidden="true"></canvas>
   <div class="intro-deck" aria-hidden="true"><div class="deck-in" id="introDeck"></div></div>
   <p class="intro-head" id="introHead" aria-hidden="true"></p>
+  <div class="intro-dim" aria-hidden="true"></div>
   <div class="intro-vig" aria-hidden="true"></div>
   <div class="intro-bar intro-bar-t">
     <svg class="intro-logo" viewBox="0 0 676 194" fill="none" role="img" aria-label="Ticket to Show">
@@ -716,6 +723,16 @@ const intro = (function () {
   $('#introSkip').addEventListener('click', e => { e.stopPropagation(); S && S.finish(true); });
   addEventListener('keydown', e => { if (S && !S.done && ['Escape', 'Enter', ' '].includes(e.key)) { e.preventDefault(); S.finish(); } });
   addEventListener('resize', () => { if (S && !S.done) S.resize(); });
+  /* окно просмотрщика может поменять размер без события resize — следим за самой заставкой */
+  if ('ResizeObserver' in window) {
+    let lastW = 0, lastH = 0;
+    new ResizeObserver(([e]) => {
+      const { width, height } = e.contentRect;
+      if (Math.abs(width - lastW) < 1 && Math.abs(height - lastH) < 1) return;
+      lastW = width; lastH = height;
+      if (S && !S.done) S.resize();
+    }).observe(box);
+  }
 
   /* Первый показ — длинная версия: если всё загрузилось быстрее, колода всё равно идёт не меньше 2,2 с.
      Повторные — по реальной загрузке: каждая загруженная часть кладёт следующую афишу. */
@@ -748,27 +765,36 @@ const intro = (function () {
       ? [['TICKET TO', ''], ['SHOW', '&nbsp;—'], ['', 'БИЛЕТЫ БЕЗ'], ['', 'КАССОВЫХ'], ['', 'СБОРОВ']]
       : [['TICKET TO SHOW', '&nbsp;—'], ['', 'БИЛЕТЫ БЕЗ'], ['', 'КАССОВЫХ СБОРОВ']];
     /* примерно каждая третья буква — случайная — коротко перебирает знаки разных алфавитов и встаёт на место */
-    const wrap = t => t.split(/(&nbsp;)/).map(part => part === '&nbsp;' ? part : [...part].map(ch => ch !== ' ' && ch !== '—' && Math.random() < .34 ? `<span class="dc" data-c="${ch}">${ch}</span>` : ch).join('')).join('');
+    const wrap = t => t.split(/(&nbsp;)/).map(part => part === '&nbsp;' ? part : [...part].map(ch => ch !== ' ' && ch !== '—' && Math.random() < .22 ? `<span class="dc" data-c="${ch}">${ch}</span>` : ch).join('')).join('');
     head.innerHTML = LINES.map(([a, b]) => `<span class="ih-line"><span class="ih-in">${a ? `<span class="ih-s">${wrap(a)}</span>` : ''}${b ? `<span class="ih-n">${wrap(b)}</span>` : ''}</span></span>`).join('');
     const dcs = [...head.querySelectorAll('.dc')];
     const lines = [...head.querySelectorAll('.ih-line')], inners = [...head.querySelectorAll('.ih-in')];
+    /* Размер — чтобы самая длинная строка заняла всю ширину и всё влезло по высоте.
+       Пока окно не показано целиком (просмотрщик может дать нулевую высоту или скрыть страницу),
+       подгонка пропускается: остаётся размер по умолчанию из CSS, а пересчёт случится при первом изменении окна. */
     function fit() {
+      const W = head.clientWidth, H = box.clientHeight || innerHeight;
+      if (W < 60 || H < 200) return false;
       dcs.forEach(d => { d.style.width = ''; d.textContent = d.dataset.c; });
       head.style.fontSize = '100px';
-      const w = Math.max(...inners.map(x => x.getBoundingClientRect().width));
-      const byW = head.clientWidth / w * 100;
-      const byH = (innerHeight - 2 * box.querySelector('.intro-bar-t').offsetHeight - 48) / (lines.length * 1.12 * .98);
-      head.style.fontSize = Math.floor(Math.min(byW, byH)) + 'px';
+      const w = Math.max(0, ...inners.map(x => x.getBoundingClientRect().width));
+      if (!(w > 0)) { head.style.fontSize = ''; return false; }
+      const avail = H - 2 * box.querySelector('.intro-bar-t').offsetHeight - 48;
+      const byW = W / w * 100;
+      const byH = avail > 160 ? avail / (lines.length * 1.12 * .98) : Infinity;
+      head.style.fontSize = Math.max(16, Math.floor(Math.min(byW, byH))) + 'px';
       dcs.forEach(d => { d.style.width = d.getBoundingClientRect().width + 'px'; });
+      return true;
     }
     /* расшифровка: только латиница (с латинскими лигатурами Æ, Œ) и кириллица */
     const GLYPHS = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZÆŒØАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ'];
     function decrypt(d, startMs) {
-      const end = startMs + 380 + Math.random() * 420;
+      const end = startMs + 260 + Math.random() * 300;
       at(startMs, () => {
+        const settle = () => { d.textContent = d.dataset.c; d.classList.remove('on'); };
         const tick = () => {
-          if (run.done) { d.textContent = d.dataset.c; return; }
-          if (performance.now() >= tEnd) { d.textContent = d.dataset.c; return; }
+          if (run.done || performance.now() >= tEnd) { settle(); return; }
+          d.classList.add('on');
           d.textContent = GLYPHS[Math.random() * GLYPHS.length | 0];
           run.timers.push(setTimeout(tick, 55));
         };
