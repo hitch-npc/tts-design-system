@@ -7,7 +7,7 @@
 <script>document.documentElement.classList.remove('no-js');</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Oranienbaum&family=Forum&family=Manrope:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
 <link id="ds-theme" rel="stylesheet" href="../ds-core-r14.css">
 <style>
 /* ════════ основа страницы ════════ */
@@ -74,18 +74,19 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .intro[data-light="beam"].is-run .intro-dust { opacity: .8; }
 .intro.is-out .intro-dust { opacity: 0; transition-delay: 0ms; transition-duration: 500ms; }
 
-/* колода: три афиши поднимаются на место и ложатся друг на друга, без вращений и перелётов */
+/* колода: новая афиша поднимается снизу на верхнее место, предыдущие мягко переезжают на места глубже */
 .intro-deck { position: absolute; inset: 0; pointer-events: none; }
 .deck-in { position: absolute; inset: 0; transform: translate3d(calc(var(--px, 0) * -5px), calc(var(--py, 0) * -4px), 0); }
 .ic { position: absolute; left: 50%; top: 50%; height: min(60vh, 580px, 116vw); aspect-ratio: 3 / 4; margin: 0; overflow: hidden; background: var(--n950); border: 1px solid var(--accent); border-radius: var(--r-sm);
   box-shadow: 0 50px 90px -30px var(--shadow-color); opacity: 0; will-change: transform, opacity;
-  transform: translate(-50%, -50%) translate3d(var(--x), 56px, 0) rotate(var(--r)) scale(.97);
-  transition: transform 1600ms var(--expo), opacity 1000ms var(--ease-out), filter 1400ms var(--ease-out), box-shadow 1400ms var(--ease-out); }
+  transform: translate(-50%, -50%) translate3d(0, 64px, 0) rotate(-1.5deg) scale(.97);
+  transition: transform 1700ms var(--expo), opacity 1000ms var(--ease-out), filter 1500ms var(--ease-out), box-shadow 1400ms var(--ease-out); }
 .ic img { display: block; width: 100%; height: 100%; object-fit: cover; transform: scale(1.08); transition: transform 4500ms var(--expo); }
 .ic[data-d] img { transform: none; }
-.ic[data-d="0"] { opacity: 1; transform: translate(-50%, -50%) translate3d(var(--x), 0, 0) rotate(var(--r)); filter: none; }
-.ic[data-d="1"] { opacity: 1; transform: translate(-50%, -50%) translate3d(var(--x), -1%, 0) rotate(var(--r)) scale(.97); filter: brightness(.45); }
-.ic[data-d="2"] { opacity: 1; transform: translate(-50%, -50%) translate3d(var(--x), -2%, 0) rotate(var(--r)) scale(.94); filter: brightness(.25); }
+.ic[data-d="0"] { opacity: 1; transform: translate(-50%, -50%) rotate(-1.5deg); filter: none; }
+.ic[data-d="1"] { opacity: 1; transform: translate(-50%, -50%) translate3d(3.4vw, -1%, 0) rotate(3deg) scale(.97); filter: brightness(.5); }
+.ic[data-d="2"] { opacity: 1; transform: translate(-50%, -50%) translate3d(-3.6vw, -2%, 0) rotate(-4deg) scale(.94); filter: brightness(.28); }
+.ic[data-d="3"] { opacity: 0; transform: translate(-50%, -50%) translate3d(0, -3%, 0) rotate(0deg) scale(.9); filter: brightness(.2); }
 /* уход: нижние гаснут, верхняя плавно переезжает в постер */
 .intro.is-out .ic:not(.is-hero) { opacity: 0; transition: opacity 700ms var(--ease-out); }
 .ic.is-hero { transition: transform 1300ms cubic-bezier(.65,0,.35,1), filter 700ms var(--ease-out), box-shadow 700ms var(--ease-out); }
@@ -97,7 +98,9 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .ih-in { display: inline-block; transform: translateY(112%); will-change: transform; }
 .ih-in.in  { transform: none; transition: transform 1400ms var(--expo); }
 .ih-in.out { transform: translateY(-24%); opacity: 0; transition: transform 800ms var(--ease-out), opacity 600ms var(--ease-out); }
-.ih-s { font-family: var(--f-thin); font-weight: 400; font-size: 1.12em; letter-spacing: 0; }
+.ih-s { font-family: var(--f-thin); font-weight: 400; font-style: italic; font-size: 1.12em; letter-spacing: 0; }
+/* буква, которая «расшифровывается»: ширина закреплена по итоговой, чтобы строка не дрожала */
+.dc { display: inline-block; text-align: center; white-space: pre; }
 .ih-n { font-family: var(--font); font-weight: 200; letter-spacing: -.02em; }
 
 /* кинорамка */
@@ -693,10 +696,11 @@ const label = k => { const d = parse(k); return `${d.getDate()} ${MON_G[d.getMon
 const MS = 'https://moscowshow.com/upload/iblock/';
 const INTRO_IMAGES = [
   MS + '85a/fndnxz2eojab1nki8b3ikufmvaywsadl/lavr2_.jpg',
+  MS + '356/kqkkzqpzk8rh4oaifiy0lrqlesvz3f8f/frida_.jpg',
   MS + '511/8dx8lcsr659f8oh338abwf80tfulp5y9/drakula_.jpg',
   MS + '40f/xk8jj9k4o0ozlw47j22ys3tdaf4g13et/einstein_i_margarita_.jpg',
 ];
-const INTRO_FALLBACK = ['home-new/stage-bokeh.webp', 'home-new/stage-spotlight.webp', 'home-new/stage-curtain.webp'];
+const INTRO_FALLBACK = ['home-new/stage-bokeh.webp', 'home-new/stage-rays.webp', 'home-new/stage-spotlight.webp', 'home-new/stage-curtain.webp'];
 const LIGHTS = { halo: 'Ореол', ramp: 'Рампа', beam: 'Луч', rim: 'Контур' };
 
 const intro = (function () {
@@ -705,8 +709,6 @@ const intro = (function () {
   const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const fine = matchMedia('(pointer: fine)').matches;
   const tone = [getComputedStyle(html).getPropertyValue('--n100').trim() || 'white', getComputedStyle(html).getPropertyValue('--accent-soft').trim() || 'white'];
-  /* положение карт: [сдвиг по x, vw; наклон, °] — у каждой своё, при новой карте сверху не меняется */
-  const POS = [[-3.4, -4], [3.2, 3.2], [0, -1.2]];
   let S = null;   // текущий показ
 
   addEventListener('pointermove', e => { if (S && fine) { S.P.tx = e.clientX / innerWidth * 2 - 1; S.P.ty = e.clientY / innerHeight * 2 - 1; } });
@@ -715,7 +717,9 @@ const intro = (function () {
   addEventListener('keydown', e => { if (S && !S.done && ['Escape', 'Enter', ' '].includes(e.key)) { e.preventDefault(); S.finish(); } });
   addEventListener('resize', () => { if (S && !S.done) S.resize(); });
 
-  function play(mode) {
+  /* Первый показ — длинная версия: если всё загрузилось быстрее, колода всё равно идёт не меньше 2,2 с.
+     Повторные — по реальной загрузке: каждая загруженная часть кладёт следующую афишу. */
+  function play(mode, long) {
     if (S && !S.done) S.kill();
     const narrow = innerWidth < 768;
     const run = S = { done: false, timers: [], P: { x: 0, y: 0, tx: 0, ty: 0 }, raf: 0 };
@@ -733,8 +737,6 @@ const intro = (function () {
     INTRO_IMAGES.forEach((src, i) => {
       const c = document.createElement('figure');
       c.className = 'ic';
-      c.style.setProperty('--x', `${POS[i][0] * (narrow ? 1.3 : 1)}vw`);
-      c.style.setProperty('--r', `${POS[i][1]}deg`);
       c.innerHTML = `<img src="${src}" alt="" decoding="async" referrerpolicy="no-referrer">`;
       c.firstChild.addEventListener('error', e => { if (!e.target.dataset.fb) { e.target.dataset.fb = 1; e.target.src = INTRO_FALLBACK[i]; } });
       deck.appendChild(c);
@@ -745,14 +747,34 @@ const intro = (function () {
     const LINES = narrow
       ? [['TICKET TO', ''], ['SHOW', '&nbsp;—'], ['', 'БИЛЕТЫ БЕЗ'], ['', 'КАССОВЫХ'], ['', 'СБОРОВ']]
       : [['TICKET TO SHOW', '&nbsp;—'], ['', 'БИЛЕТЫ БЕЗ'], ['', 'КАССОВЫХ СБОРОВ']];
-    head.innerHTML = LINES.map(([a, b]) => `<span class="ih-line"><span class="ih-in">${a ? `<span class="ih-s">${a}</span>` : ''}${b ? `<span class="ih-n">${b}</span>` : ''}</span></span>`).join('');
+    /* примерно каждая третья буква — случайная — коротко перебирает знаки разных алфавитов и встаёт на место */
+    const wrap = t => t.split(/(&nbsp;)/).map(part => part === '&nbsp;' ? part : [...part].map(ch => ch !== ' ' && ch !== '—' && Math.random() < .34 ? `<span class="dc" data-c="${ch}">${ch}</span>` : ch).join('')).join('');
+    head.innerHTML = LINES.map(([a, b]) => `<span class="ih-line"><span class="ih-in">${a ? `<span class="ih-s">${wrap(a)}</span>` : ''}${b ? `<span class="ih-n">${wrap(b)}</span>` : ''}</span></span>`).join('');
+    const dcs = [...head.querySelectorAll('.dc')];
     const lines = [...head.querySelectorAll('.ih-line')], inners = [...head.querySelectorAll('.ih-in')];
     function fit() {
+      dcs.forEach(d => { d.style.width = ''; d.textContent = d.dataset.c; });
       head.style.fontSize = '100px';
       const w = Math.max(...inners.map(x => x.getBoundingClientRect().width));
       const byW = head.clientWidth / w * 100;
       const byH = (innerHeight - 2 * box.querySelector('.intro-bar-t').offsetHeight - 48) / (lines.length * 1.12 * .98);
       head.style.fontSize = Math.floor(Math.min(byW, byH)) + 'px';
+      dcs.forEach(d => { d.style.width = d.getBoundingClientRect().width + 'px'; });
+    }
+    /* расшифровка: латиница, кириллица, греческий, армянский, грузинский, иврит, катакана */
+    const GLYPHS = [...'ABCDEFGHJKLMNPQRSTUVWXYZБГДЖЗИЛПФЦЧШЩЭЮЯΔΘΛΞΠΣΦΨΩԱԲԳԴԷԺԽՃՇႠႡႢႣႥႦאבגדהלשתアカサタナハマヤラワ'];
+    function decrypt(d, startMs) {
+      const end = startMs + 380 + Math.random() * 420;
+      at(startMs, () => {
+        const tick = () => {
+          if (run.done) { d.textContent = d.dataset.c; return; }
+          if (performance.now() >= tEnd) { d.textContent = d.dataset.c; return; }
+          d.textContent = GLYPHS[Math.random() * GLYPHS.length | 0];
+          run.timers.push(setTimeout(tick, 55));
+        };
+        const tEnd = performance.now() + (end - startMs);
+        tick();
+      });
     }
 
     /* луч: источник за кадром сверху слева, конус — в центр колоды; пыль видна только в луче */
@@ -791,9 +813,9 @@ const intro = (function () {
       run.raf = requestAnimationFrame(loop);
     }
 
-    let n = 0;
-    const deal = () => { cards.forEach((c, i) => { if (i <= n) c.dataset.d = String(Math.min(n - i, 2)); }); n++; };
-    const fontsReady = document.fonts ? Promise.all([document.fonts.load('400 100px "Cormorant Garamond"', 'TICKET'), document.fonts.load('200 100px "Manrope"', 'БИЛЕТЫ')]) : Promise.resolve();
+    let n = 0, lastDeal = -1e9;
+    const deal = () => { cards.forEach((c, i) => { if (i <= n) c.dataset.d = String(Math.min(n - i, 3)); }); n++; lastDeal = performance.now(); };
+    const fontsReady = document.fonts ? Promise.all([document.fonts.load('italic 400 100px "Cormorant Garamond"', 'TICKET'), document.fonts.load('200 100px "Manrope"', 'БИЛЕТЫ')]) : Promise.resolve();
     const assets = [fontsReady, ...cards.map(c => { const im = c.querySelector('img'); return im.decode ? im.decode() : Promise.resolve(); })];
     let loaded = 0;
     assets.forEach(p => p.then(() => loaded++, () => loaded++));
@@ -803,17 +825,24 @@ const intro = (function () {
       box.classList.add('is-run');
       aim(); sizeDust(); cx.clearRect(0, 0, cv.width, cv.height);
       run.raf = requestAnimationFrame(loop);
-      /* отсчёт: реальная загрузка картинок и шрифтов, не быстрее 0,5 с и не дольше 2,5 с */
+      /* отсчёт и колода идут от реальной загрузки картинок и шрифтов; первый показ — не быстрее 2,2 с */
+      let first = long;
+      if (first == null) { try { first = !localStorage.getItem('tts-intro-seen'); } catch (e) { first = true; } }
+      const minDur = first ? 2200 : 0, gap = first ? 560 : 300;
       const t0 = performance.now(), num = $('#introNum'), bar = $('#introLine');
       let p = 0;
       (function count(t) {
         if (run.done) return;
-        const el = t - t0, goal = Math.min(loaded / assets.length, el / 500);
-        p += (Math.max(goal, el > 2500 ? 1 : 0) - p) * (RM ? 1 : .25);
-        if (p > .985) p = 1;
+        const el = t - t0, real = el > 4000 ? 1 : loaded / assets.length;
+        const goal = minDur ? Math.min(real, el / minDur) : real;
+        p += (goal - p) * (RM ? 1 : .2);
+        if (p > .985 && goal === 1) p = 1;
         num.textContent = String(Math.round(p * 100)).padStart(3, '0');
         bar.style.setProperty('--p', p.toFixed(3));
-        if (p < 1) requestAnimationFrame(count); else show();
+        /* сколько афиш уже положено — по доле загрузки; новая — не чаще, чем раз в gap мс, чтобы движение оставалось мягким */
+        const due = Math.min(cards.length, Math.max(1, Math.ceil(p * cards.length)));
+        if (!RM && n < due && t - lastDeal >= gap) deal();
+        if (p < 1 || (!RM && n < cards.length)) requestAnimationFrame(count); else show();
       })(t0);
     }
     function show() {
@@ -821,16 +850,17 @@ const intro = (function () {
       box.classList.add('is-ready');
       fit();
       if (RM) { n = cards.length - 1; deal(); inners.forEach(x => x.classList.add('in')); at(1500, () => run.finish()); return; }
-      cards.forEach((_, i) => at(i * 380, deal));
       inners.forEach((x, i) => { x.style.transitionDelay = `${200 + i * 110}ms`; });
       requestAnimationFrame(() => inners.forEach(x => x.classList.add('in')));
-      at(200 + inners.length * 110 + 1500, () => run.finish());
+      dcs.forEach(d => { const li = inners.indexOf(d.closest('.ih-in')); decrypt(d, 200 + li * 110 + 120 + Math.random() * 260); });
+      at(200 + inners.length * 110 + 1700, () => run.finish());
     }
     run.resize = () => { aim(); sizeDust(); fit(); };
     run.kill = () => { run.done = true; run.timers.forEach(clearTimeout); cancelAnimationFrame(run.raf); };
     run.finish = toTickets => {
       if (run.done) return;
       run.kill();
+      try { localStorage.setItem('tts-intro-seen', '1'); } catch (e) {}
       box.style.setProperty('--px', 0); box.style.setProperty('--py', 0);
       box.classList.add('is-ready');
       inners.forEach((x, i) => { x.style.transitionDelay = `${i * 40}ms`; x.classList.remove('in'); x.classList.add('out'); });
@@ -872,7 +902,7 @@ const intro = (function () {
   lab.addEventListener('click', e => {
     const b = e.target.closest('[data-light], [data-replay]'); if (!b) return;
     if (b.dataset.light) { mode = b.dataset.light; try { localStorage.setItem('tts-intro-light', mode); } catch (e) {} paint(); }
-    intro.play(mode);
+    intro.play(mode, true);
   });
   if (q.get('intro') === '0') { $('#intro').classList.add('is-gone'); html.classList.add('page-in', 'poster-in'); }
   else intro.play(mode);
