@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Поиск увеличивает страницу на iPhone — TTS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>/* Страница открыта вне репозитория — ядро берём с GitHub Pages */
+var CORE_PAGES='https://hitch-npc.github.io/tts-design-system/';
+function coreFallback(l){if(l.dataset.fb)return;l.dataset.fb=1;l.href=CORE_PAGES+'ds-core-r14.css'}</script>
+<link rel="stylesheet" href="../../ds-core-r14.css" onerror="coreFallback(this)">
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--ink); color: var(--n100); font-family: var(--font); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+.page { max-width: 1120px; margin: 0 auto; padding: var(--sp-12) var(--page-pad) var(--sp-16); display: flex; flex-direction: column; gap: var(--sp-12); }
+.top { display: flex; flex-direction: column; gap: var(--sp-4); }
+h1 { margin: 0; font-family: var(--f-thin); font-weight: 500; font-size: clamp(32px, 5vw, 52px); line-height: 1.05; }
+h2 { margin: 0 0 var(--sp-4); font-family: var(--f-thin); font-weight: 500; font-size: clamp(26px, 3.4vw, 34px); line-height: 1.1; }
+.lead { margin: 0; max-width: 720px; font-size: 15px; line-height: 1.75; color: var(--n300); }
+p, li { font-size: 14px; line-height: 1.75; color: var(--n300); }
+p { margin: 0 0 var(--sp-3); max-width: 760px; }
+ul { margin: 0; padding-left: 18px; max-width: 760px; }
+strong { color: var(--n100); font-weight: 600; }
+code { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 12px; color: var(--n200); background: var(--n900); padding: 1px 6px; border-radius: var(--r-sm); }
+pre { margin: 0 0 var(--sp-4); padding: var(--sp-4); max-width: 760px; overflow-x: auto; background: var(--n950); border: 1px solid var(--n800); border-radius: var(--r-sm); font: 12px/1.7 ui-monospace, 'SF Mono', Menlo, monospace; color: var(--n200); }
+.tags { display: flex; flex-wrap: wrap; gap: 8px; }
+section { border-top: 1px solid var(--n850); padding-top: var(--sp-8); }
+.ba { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-6); }
+.ba figure { margin: 0; display: flex; flex-direction: column; gap: var(--sp-3); }
+.ba img { display: block; width: 100%; height: auto; border: 1px solid var(--n800); border-radius: var(--r-sm); }
+.ba figcaption { font-size: 13px; line-height: 1.6; color: var(--n300); }
+.ba .st { font-size: 10px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--n500); }
+.ba .bad .st { color: var(--tag-r-fg); }
+.ba .good .st { color: var(--tag-g-fg); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { text-align: left; font-size: 10px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--n500); padding: 0 16px 10px 0; border-bottom: 1px solid var(--n800); }
+td { padding: 12px 16px 12px 0; border-bottom: 1px solid var(--n850); color: var(--n300); vertical-align: top; }
+td:first-child { color: var(--n100); }
+.tbl { overflow-x: auto; }
+@media (max-width: 760px) {
+  .ba { grid-template-columns: 1fr; }
+  .ba figure { max-width: 360px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="top">
+    <span class="t-eyebrow">Баг · сайт на iPhone</span>
+    <h1>Поиск увеличивает страницу на iPhone</h1>
+    <p class="lead">Человек касается строки поиска — Safari увеличивает страницу. Правая часть шапки уходит за край экрана, и после поиска страницу приходится уменьшать двумя пальцами.</p>
+    <div class="tags"><span class="tag tag-orange">iOS Safari и браузеры на iPhone</span><span class="tag tag-default">Главная, профиль, формы</span><span class="tag tag-green">Решение — 1 правило CSS</span></div>
+  </header>
+
+  <section>
+    <h2>Проблема</h2>
+    <ul>
+      <li>Касание строки поиска — масштаб страницы вырастает примерно на треть.</li>
+      <li>Кнопки справа в шапке и у поиска (фильтры, профиль, меню) оказываются за краем экрана.</li>
+      <li>После того как клавиатура закрылась, масштаб не возвращается сам: страницу нужно уменьшать двумя пальцами.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Причина</h2>
+    <p>Safari на iPhone увеличивает страницу, когда фокус попадает в поле с текстом мельче <strong>16 px</strong>: так он делает мелкий ввод читаемым. Так же ведут себя все браузеры на iPhone — они работают на движке Safari.</p>
+    <p>У нас текст в строке поиска — <strong>12 px</strong>, в полях форм ядра — <strong>14 px</strong>. Значит, увеличение срабатывает на любом поле.</p>
+  </section>
+
+  <section>
+    <h2>Решение</h2>
+    <p>На сенсорных экранах текст в полях ввода — не мельче 16 px. Внешний вид строки почти не меняется: она той же высоты, крупнее только набранный текст и подсказка внутри.</p>
+<pre><code>/* iOS увеличивает страницу при фокусе на поле мельче 16 px */
+@media (max-width: 1080px), (pointer: coarse) {
+  input, select, textarea { font-size: 16px; }
+}</code></pre>
+    <p>Правило задаёт только размер шрифта в полях, остальное оформление не трогает. <code>pointer: coarse</code> ловит планшеты в горизонтальном положении, где экран шире 1080 px.</p>
+    <p><strong>Чего не делать:</strong> запрещать масштаб через <code>maximum-scale=1</code> или <code>user-scalable=no</code> в <code>&lt;meta name="viewport"&gt;</code>. На iPhone это тоже уберёт увеличение, но на Android человек больше не сможет увеличить страницу пальцами — это нарушает требование доступности WCAG 1.4.4 (увеличение текста до 200 %).</p>
+  </section>
+
+  <section>
+    <h2>До и после</h2>
+    <div class="ba">
+      <figure class="bad">
+        <span class="st">До · фокус в поле 12 px</span>
+        <img src="ios-input-zoom/before-normal.webp" alt="Главная на телефоне: в строке поиска набрано «Дра», текст в поле мелкий" width="780" height="1688" loading="lazy">
+        <figcaption>Так поле выглядит до увеличения: текст 12 px.</figcaption>
+      </figure>
+      <figure class="bad">
+        <span class="st">До · что видит человек на iPhone</span>
+        <img src="ios-input-zoom/before-zoomed.webp" alt="Та же страница, увеличенная примерно на треть: кнопки справа в шапке и у поиска ушли за край" width="780" height="1688" loading="lazy">
+        <figcaption>Safari увеличил страницу: фильтры, профиль и меню за краем. Кадр собран по снимку из браузера и увеличен так же, как это делает Safari, — примерно до 16 px текста в поле.</figcaption>
+      </figure>
+      <figure class="good">
+        <span class="st">После · поле 16 px</span>
+        <img src="ios-input-zoom/after.webp" alt="Главная на телефоне: в строке поиска набрано «Дра» текстом 16 px, вся шапка на экране" width="780" height="1688" loading="lazy">
+        <figcaption>Масштаб не меняется: вся шапка на месте, после поиска ничего уменьшать не нужно.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Где встречается</h2>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Где</th><th>Поле</th><th>Сейчас</th><th>Состояние</th></tr></thead>
+        <tbody>
+          <tr><td>Главная (макет)</td><td>Строка поиска в шапке, <code>.hdr-search input</code></td><td>12 px</td><td>Исправлено в <code>site/home-new.html</code></td></tr>
+          <tr><td>Личный кабинет</td><td>Строка поиска в шапке, <code>.hdr-search input</code></td><td>12 px</td><td>Нужно то же правило</td></tr>
+          <tr><td>Редизайн v2</td><td>Строка поиска в шапке</td><td>12 px</td><td>Нужно то же правило</td></tr>
+          <tr><td>Ядро: формы</td><td><code>.form-input</code> — вход, данные покупателя, оформление</td><td>14 px</td><td>Нужно то же правило</td></tr>
+          <tr><td>Ядро: промокод</td><td><code>.order-promo .form-input</code></td><td>12 px</td><td>Нужно то же правило</td></tr>
+          <tr><td>Ядро: поиск в hero</td><td><code>.hero-search-input</code></td><td>14 px</td><td>Нужно то же правило</td></tr>
+          <tr><td>Ядро: фильтр цены</td><td><code>.filter-price-input</code></td><td>14 px</td><td>Нужно то же правило</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top: var(--sp-4)">Проще всего — одно общее правило из раздела «Решение» на весь сайт: оно закроет и поля, которых в этом списке нет.</p>
+  </section>
+
+  <section>
+    <h2>Как проверить</h2>
+    <ul>
+      <li>iPhone, Safari: коснуться строки поиска — масштаб не меняется, вся шапка на экране.</li>
+      <li>Набрать запрос, закрыть клавиатуру — страница в том же масштабе, что и до касания.</li>
+      <li>Увеличить страницу двумя пальцами — увеличивается: масштаб не запрещён.</li>
+      <li>То же — в формах входа и оформления заказа.</li>
+    </ul>
+  </section>
+
+</div>
+</body>
+</html>
