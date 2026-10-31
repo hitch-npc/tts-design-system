@@ -437,8 +437,7 @@ html.page-in .hw > span, .no-js .hw > span { transform: none; transition: transf
       </div>
     </div>
     <a class="hero2-poster" href="#" aria-label="Одни во вселенной, 14 ноября, 19:00">
-      <img src="home-new/stage-curtain.webp" alt="" decoding="async">
-      <span class="hp-cap"><span class="hp-date">14 ноября · 19:00</span><span class="hp-title">Одни во вселенной</span><span class="hp-venue">Театр «Современник»</span></span>
+      <img src="https://moscowshow.com/upload/iblock/40f/xk8jj9k4o0ozlw47j22ys3tdaf4g13et/einstein_i_margarita_.jpg" alt="" decoding="async" referrerpolicy="no-referrer" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='home-new/stage-curtain.webp'}">
     </a>
   </div>
 </section>
@@ -644,9 +643,19 @@ const onDay = k => pool().filter(e => e.days.includes(k));
 const label = k => { const d = parse(k); return `${d.getDate()} ${MON_G[d.getMonth()]}`; };
 
 /* ════════ заставка ════════ */
-/* Кадры колоды (3:4). Сейчас — атмосферные кадры сцены, сгенерированные для макета; настоящие афиши кладутся сюда же.
-   Последний ложится сверху и перелетает в постер первого экрана — это кадр события из hero. */
-const INTRO_IMAGES = ['home-new/stage-flares.webp', 'home-new/stage-bokeh.webp', 'home-new/stage-rays.webp', 'home-new/stage-spotlight.webp', 'home-new/stage-beams.webp', 'home-new/stage-curtain.webp'];
+/* Афиши колоды — ссылки на картинки с сайта, их грузит браузер зрителя.
+   Последняя ложится сверху и перелетает в постер первого экрана (тот же адрес стоит в .hero2-poster img).
+   Если картинка не загрузилась, на её месте — кадр сцены из site/home-new/. */
+const MS = 'https://moscowshow.com/upload/iblock/';
+const INTRO_IMAGES = [
+  MS + '85a/fndnxz2eojab1nki8b3ikufmvaywsadl/lavr2_.jpg',
+  MS + '356/kqkkzqpzk8rh4oaifiy0lrqlesvz3f8f/frida_.jpg',
+  MS + 'a6e/p1s2iu3363lw6xmus1246vpttxptb7p4/galiny_vish.jpg',
+  MS + '511/8dx8lcsr659f8oh338abwf80tfulp5y9/drakula_.jpg',
+  MS + '96c/x7v4i1vpdywxyqe3tlkfy9bklwjy1d9x/paolo_baccianella_.jpg',
+  MS + '40f/xk8jj9k4o0ozlw47j22ys3tdaf4g13et/einstein_i_margarita_.jpg',
+];
+const INTRO_FALLBACK = ['home-new/stage-flares.webp', 'home-new/stage-bokeh.webp', 'home-new/stage-rays.webp', 'home-new/stage-spotlight.webp', 'home-new/stage-beams.webp', 'home-new/stage-curtain.webp'];
 (function intro() {
   const box = $('#intro');
   const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -669,7 +678,8 @@ const INTRO_IMAGES = ['home-new/stage-flares.webp', 'home-new/stage-bokeh.webp',
     c.style.setProperty('--fr', `${side * 18}deg`);
     c.style.setProperty('--x',  `${side * (narrow ? 3 : 2.2)}vw`);
     c.style.setProperty('--r',  `${side * (2.5 + (i % 3) * 1.4)}deg`);
-    c.innerHTML = `<img src="${src}" alt="" decoding="async">`;
+    c.innerHTML = `<img src="${src}" alt="" decoding="async" referrerpolicy="no-referrer">`;
+    c.firstChild.addEventListener('error', e => { if (!e.target.dataset.fb) { e.target.dataset.fb = 1; e.target.src = INTRO_FALLBACK[i]; } });
     deck.appendChild(c);
   });
   const cards = [...deck.children];
