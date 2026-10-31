@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="ru" data-theme="dark" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>TTS — Главная с заставкой</title>
+<script>document.documentElement.classList.remove('no-js');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link id="ds-theme" rel="stylesheet" href="../ds-core-r14.css">
+<style>
+/* ════════ основа страницы ════════ */
+:root { --logo: var(--n100); --ease-io: cubic-bezier(.76,0,.24,1); --ease-in: cubic-bezier(.16,1,.3,1); }
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--ink); color: var(--n100); font-family: var(--font); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+html.intro-lock, html.intro-lock body { overflow: hidden; }
+html.sheet-lock, html.sheet-lock body { overflow: hidden; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+[hidden] { display: none !important; }
+.wrap { max-width: var(--content-max); margin: 0 auto; padding: 0 var(--page-pad); }
+
+/* ════════ заставка ════════ */
+.intro { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; overflow: hidden; background: var(--ink); clip-path: inset(0 0 0 0); transition: clip-path 820ms var(--ease-io); cursor: pointer; }
+.intro.is-out { clip-path: inset(0 0 100% 0); pointer-events: none; }
+.intro.is-gone, .no-js .intro { display: none; }
+
+/* колода афиш: каждая новая ложится сверху, нижние уходят вглубь и гаснут */
+.intro-deck { position: absolute; inset: 0; display: grid; place-items: center; transition: transform 820ms var(--ease-io), opacity 820ms var(--ease-io); }
+.intro.is-out .intro-deck { transform: translateY(-10vh) scale(1.04); opacity: .4; }
+.intro-deck .intro-card { position: absolute; height: min(86vh, 780px, 140vw); aspect-ratio: 2 / 3; opacity: 0;
+  transform: translate(var(--fx), 16vh) rotate(var(--fr)) scale(1.06);
+  transition: transform 900ms var(--ease-in), opacity 420ms var(--ease-out), filter 900ms var(--ease-in), border-color 600ms var(--ease-out); }
+.intro-card[data-d="0"] { opacity: 1; transform: translate(var(--x), 0) rotate(var(--r)); filter: none; border-color: var(--accent); }
+.intro-card[data-d="1"] { opacity: 1; transform: translate(calc(var(--x) * .5), -3%) rotate(calc(var(--r) * .5)) scale(.94); filter: brightness(.5); }
+.intro-card[data-d="2"] { opacity: .9;  transform: translate(0, -6%) scale(.88); filter: brightness(.28); }
+.intro-card[data-d="3"] { opacity: 0;   transform: translate(0, -9%) scale(.82); filter: brightness(.2); }
+/* затемнение под текстом, чтобы логотип читался поверх афиш */
+.intro-scrim { position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 62% 30% at 50% 50%, color-mix(in srgb, var(--ink) 72%, transparent) 0%, color-mix(in srgb, var(--ink) 30%, transparent) 60%, transparent 100%),
+              linear-gradient(180deg, var(--ink) 0%, transparent 14%, transparent 86%, var(--ink) 100%); }
+
+.intro-text { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: clamp(20px, 3.4vw, 40px); padding: 0 var(--page-pad); text-align: center; transition: transform 820ms var(--ease-io), opacity 600ms var(--ease-io); }
+.intro.is-out .intro-text { transform: translateY(-6vh); opacity: 0; }
+.intro-logo { display: block; width: min(86vw, 880px); height: auto; color: var(--n100); overflow: visible; }
+.il-eye { transform-box: fill-box; transform-origin: center; transform: scaleY(0); animation: il-eye 900ms var(--ease-in) 200ms forwards; }
+.il-div { transform-box: fill-box; transform-origin: center; transform: scaleY(0); animation: il-grow 760ms var(--ease-in) 520ms forwards; }
+.il-l1, .il-l2 { opacity: 0; transform: translateY(34px); animation: il-up 860ms var(--ease-in) forwards; }
+.il-l1 { animation-delay: 680ms; }
+.il-l2 { animation-delay: 820ms; }
+.intro-tag { margin: 0; font-family: var(--f-thin); font-weight: 500; font-size: clamp(28px, 4.6vw, 56px); line-height: 1.08; color: var(--n100); }
+.intro-tag .w { display: inline-block; opacity: 0; transform: translateY(.45em); animation: il-up 760ms var(--ease-in) forwards; animation-delay: calc(1180ms + var(--i) * 90ms); }
+.intro-skip { position: absolute; z-index: 3; right: var(--page-pad); bottom: calc(20px + env(safe-area-inset-bottom)); opacity: 0; animation: il-fade 400ms var(--ease-out) 900ms forwards; }
+@keyframes il-eye  { 0% { transform: scaleY(0); } 60% { transform: scaleY(1.08); } 100% { transform: scaleY(1); } }
+@keyframes il-grow { to { transform: scaleY(1); } }
+@keyframes il-up   { to { opacity: 1; transform: none; } }
+@keyframes il-fade { to { opacity: 1; } }
+
+/* ════════ афиша-постер (заставка и hero) ════════ */
+.pst { position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; padding: clamp(16px, 2.4vh, 24px); background: var(--n950); border: 1px solid var(--accent-border); border-radius: var(--r-sm); box-shadow: 0 30px 60px -24px var(--shadow-color); }
+.pst-cool  { --pc1: var(--blob-core-cool);  --pc2: var(--blob-mid-cool); }
+.pst-warm  { --pc1: var(--blob-core-warm);  --pc2: var(--blob-mid-warm); }
+.pst-green { --pc1: var(--blob-core-green); --pc2: var(--blob-mid-green); }
+.pst-art { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.pst-b1 { position: absolute; left: -15%; bottom: -30%; width: 130%; aspect-ratio: 1; border-radius: 50%; filter: blur(36px); background: radial-gradient(circle, var(--pc1) 0%, var(--pc2) 46%, transparent 70%); }
+.pst-b2 { position: absolute; right: -25%; top: -18%; width: 75%; aspect-ratio: 1; border-radius: 50%; filter: blur(30px); opacity: .85; background: radial-gradient(circle, var(--blob-purple) 0%, transparent 70%); }
+.pst-shade { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 38%, color-mix(in srgb, var(--n950) 78%, transparent) 100%); }
+.pst > :not(.pst-art) { position: relative; z-index: 1; }
+.pst-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.pst-num { font-family: var(--f-num); font-size: clamp(88px, 15vh, 150px); line-height: .8; color: color-mix(in srgb, var(--n100) 16%, transparent); }
+.pst-date { font-family: var(--f-num); font-size: clamp(17px, 2.4vh, 22px); color: var(--n100); margin-bottom: 10px; }
+.pst-title { font-family: var(--f-thin); font-weight: 500; font-size: clamp(24px, 3.8vh, 36px); line-height: 1.04; color: var(--n100); }
+.pst-venue { margin-top: 10px; font-size: 11px; line-height: 1.5; color: var(--n300); }
+
+/* ════════ появление страницы после заставки ════════ */
+.rv { opacity: 0; transform: translateY(18px); }
+html.page-in .rv, .no-js .rv { opacity: 1; transform: none; transition: opacity 900ms var(--ease-in), transform 900ms var(--ease-in); transition-delay: calc(240ms + var(--i, 0) * 90ms); }
+
+/* ════════ шапка (как в профиле и редизайне v2) ════════ */
+.hdr { display: flex; align-items: center; gap: 20px; padding: 14px 32px; background: var(--ink); border-bottom: 1px solid var(--n850); }
+.logo { color: var(--logo); display: flex; align-items: center; flex: none; }
+.logo svg { height: 22px; width: auto; display: block; }
+.hdr-links { display: flex; gap: 20px; margin-left: 24px; }
+.hdr-link { font-size: 11px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--n300); transition: color var(--dur-fast) var(--ease-out); }
+.hdr-link:hover, .hdr-link[aria-current="page"] { color: var(--n100); }
+.hdr-search { display: flex; align-items: center; gap: 8px; height: 36px; flex: 1; max-width: 460px; margin-left: auto; padding: 0 4px 0 14px; border: 1px solid var(--n800); border-radius: var(--r-sm); color: var(--n600); transition: border-color var(--dur-fast); }
+.hdr-search:focus-within { border-color: var(--n600); }
+.hdr-search input { flex: 1; min-width: 0; height: 100%; background: none; border: 0; outline: none; font: inherit; font-size: 12px; color: var(--n100); }
+.hdr-search input::placeholder { color: var(--n600); }
+.hdr-filter { display: flex; align-items: center; height: 28px; padding: 0 8px; border: 1px solid var(--n800); border-radius: var(--r-sm); color: var(--n100); font-size: 12px; font-weight: 500; }
+.hdr-filter-l { max-width: 0; overflow: hidden; white-space: nowrap; opacity: 0; transition: max-width 420ms var(--ease-in), opacity 252ms, margin 252ms; }
+.hdr-filter:hover .hdr-filter-l, .hdr-filter:focus-visible .hdr-filter-l { max-width: 72px; opacity: 1; margin-right: 6px; }
+.hdr-filter svg { flex: none; display: block; }
+.hdr-city { height: 36px; padding: 0 14px; border: 1px solid var(--n800); border-radius: var(--r-sm); font-size: 12px; font-weight: 500; color: var(--n100); transition: border-color var(--dur-fast); }
+.hdr-city:hover { border-color: var(--n700); }
+.hdr-burger { display: none; }
+.m-search { display: none; }
+
+/* ════════ hero ════════ */
+.hero2 { position: relative; overflow: hidden; background: var(--ink); border-bottom: 1px solid var(--n850); }
+.hero2-bg { position: absolute; inset: 0; pointer-events: none; }
+.hero2-bg span { position: absolute; border-radius: 50%; filter: blur(80px); }
+.hero2-b1 { width: 62vw; max-width: 900px; aspect-ratio: 1; right: -12vw; top: -30%; background: radial-gradient(circle, var(--blob-core) 0%, var(--blob-mid) 48%, transparent 72%); opacity: .9; }
+.hero2-b2 { width: 40vw; max-width: 600px; aspect-ratio: 1; left: -14vw; bottom: -40%; background: radial-gradient(circle, var(--blob-purple) 0%, transparent 70%); opacity: .8; }
+.hero2-in { position: relative; display: grid; grid-template-columns: 1.4fr 1fr; gap: var(--sp-12); align-items: center; max-width: var(--content-max); margin: 0 auto; padding: var(--sp-16) var(--page-pad); min-height: min(78vh, 680px); }
+.hero2-meta { display: flex; align-items: center; gap: 14px; margin-bottom: var(--sp-6); }
+.hero2-title { margin: 0 0 var(--sp-5); font-family: var(--f-thin); font-weight: 500; font-size: clamp(2.6rem, 6vw, 5rem); line-height: 1.02; color: var(--n100); }
+.hero2-sub { margin: 0 0 var(--sp-8); max-width: 520px; font-size: 15px; line-height: 1.75; color: var(--n300); }
+.hero2-cta { display: flex; flex-wrap: wrap; gap: 10px; }
+.hero2-usp { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: var(--sp-8); }
+.hero2-usp span { display: inline-flex; align-items: center; gap: 8px; }
+.hero2-usp svg { flex: none; color: var(--n300); }
+.hero2-poster { justify-self: end; width: min(100%, 380px); aspect-ratio: 2 / 3; transition: border-color var(--dur-base) var(--ease-out), transform var(--dur-slow) var(--ease-out); }
+.hero2-poster:hover { border-color: var(--accent); }
+
+/* ════════ афиша: категории, даты, карточки ════════ */
+.home { padding: var(--sp-12) 0 var(--sp-16); }
+.home-cats { margin-bottom: var(--sp-8); }
+.home-cats .filter-chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.home-cats .filter-chips::-webkit-scrollbar { display: none; }
+.home-cats .filter-chip { flex: none; }
+
+.cal { position: relative; margin-bottom: var(--sp-10); scroll-margin-top: 16px; }
+.cal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.cal-ctrl { display: flex; align-items: center; gap: 6px; }
+.cal-month { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border: 1px solid var(--n700); border-radius: var(--r-sm); color: var(--n100); font-size: 11px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; white-space: nowrap; transition: border-color var(--dur-base) var(--ease-out), background-color var(--dur-base) var(--ease-out); }
+.cal-month:hover { border-color: var(--n500); }
+.cal-month[aria-expanded="true"] { border-color: var(--accent); background: var(--accent-ghost); }
+.cal-month .ic { flex: none; color: var(--n300); }
+.cal-month .chev { flex: none; transition: transform 320ms var(--ease-in); }
+.cal-month[aria-expanded="true"] .chev { transform: rotate(180deg); }
+.cal-nav { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: 1px solid var(--n800); border-radius: var(--r-sm); color: var(--n300); transition: border-color var(--dur-base), color var(--dur-base); }
+.cal-nav:hover { border-color: var(--n700); color: var(--n100); }
+.cal-nav:disabled { color: var(--n700); cursor: default; border-color: var(--n850); }
+
+/* полоса дней: свайп на телефоне, стрелки на десктопе */
+.cal-strip { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; border: 1px solid var(--n800); border-radius: var(--r-sm); background: var(--ink); }
+.cal-strip::-webkit-scrollbar { display: none; }
+.cd { flex: 0 0 calc(100% / 14); scroll-snap-align: start; display: flex; flex-direction: column; align-items: center; padding: 12px 0 10px; border-left: 1px solid var(--n850); transition: background-color 160ms var(--ease-out); }
+.cd:first-child { border-left: 0; }
+.cd.m1 { border-left-color: var(--n700); }
+.cd-w { font-size: 10px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--n500); white-space: nowrap; }
+.cd-n { margin-top: 6px; font-family: var(--f-num); font-size: 21px; line-height: 1; color: var(--n100); }
+.cd-bar { width: 16px; height: 3px; margin-top: 9px; border-radius: 1px; background: var(--n600); }
+.cd-x { display: none; }
+.cd.today .cd-w { color: var(--n100); }
+.cd.today .cd-bar { background: var(--accent); }
+.cd[aria-pressed="true"] { background: var(--accent-ghost); box-shadow: inset 0 0 0 1px var(--accent); }
+/* день без событий: не нажимается, без плашки, цифра гаснет */
+.cd[aria-disabled="true"] { cursor: default; }
+.cd[aria-disabled="true"] .cd-w, .cd[aria-disabled="true"] .cd-n { color: var(--n700); }
+.cd[aria-disabled="true"] .cd-bar { visibility: hidden; }
+@media (hover: hover) {
+  .cd:not([aria-disabled="true"]):not([aria-pressed="true"]):hover { background: var(--n950); }
+  .cd[aria-disabled="true"]:hover .cd-bar { display: none; }
+  .cd[aria-disabled="true"]:hover .cd-x { display: block; margin-top: 7px; font-size: 9px; font-weight: 500; color: var(--n500); white-space: nowrap; }
+}
+
+/* ════════ окно «весь месяц» ════════ */
+.calm { position: fixed; inset: 0; z-index: 90; visibility: hidden; pointer-events: none; transition: visibility 0s linear 252ms; }
+.calm.open { visibility: visible; pointer-events: auto; transition: none; }
+.calm-scrim { position: absolute; inset: 0; background: var(--overlay); opacity: 0; transition: opacity 252ms var(--ease-out); }
+.calm.open .calm-scrim { opacity: 1; transition-duration: 420ms; }
+.calm-box { position: absolute; left: 0; right: 0; bottom: 0; max-height: 90vh; overflow-y: auto; overscroll-behavior: contain; padding: 10px var(--page-pad) calc(20px + env(safe-area-inset-bottom)); background: var(--ink); border-top: 1px solid var(--n800); transform: translateY(100%); transition: transform 252ms cubic-bezier(.4,0,1,1); }
+.calm.open .calm-box { transform: none; transition: transform 420ms var(--ease-in); }
+.calm-grab { width: 36px; height: 4px; margin: 0 auto 14px; border-radius: var(--r-full); background: var(--n800); }
+.calm-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.calm-t { margin: 0 0 4px; font-family: var(--f-thin); font-weight: 500; font-size: 26px; line-height: 1.1; }
+.calm-x { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; margin: -4px -8px 0 0; color: var(--n300); border-radius: var(--r-sm); }
+.calm-x:hover { color: var(--n100); }
+.calm-tabs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; margin: 0 calc(-1 * var(--page-pad)) 16px; padding: 0 var(--page-pad) 2px; }
+.calm-tabs::-webkit-scrollbar { display: none; }
+.calm-tabs .filter-chip { flex: none; }
+.calm-tabs .filter-chip[aria-disabled="true"] { color: var(--n700); cursor: default; }
+.calm-wd, .calm-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.calm-wd { margin-bottom: 4px; }
+.calm-wd span { padding: 6px 0; text-align: center; }
+.cm { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; aspect-ratio: 1 / 1; min-height: 44px; border: 1px solid transparent; border-radius: var(--r-sm); transition: background-color 160ms var(--ease-out), border-color 160ms var(--ease-out); }
+.cm-n { font-family: var(--f-num); font-size: 19px; line-height: 1; color: var(--n100); }
+.cm-bar { width: 14px; height: 3px; border-radius: 1px; background: var(--n600); }
+.cm.today .cm-bar { background: var(--accent); }
+.cm.today .cm-n::after { content: ''; }
+.cm[aria-pressed="true"] { background: var(--accent-ghost); border-color: var(--accent); }
+.cm[aria-disabled="true"] { cursor: default; }
+.cm[aria-disabled="true"] .cm-n { color: var(--n700); }
+.cm[aria-disabled="true"] .cm-bar { visibility: hidden; }
+.cm.past { opacity: .5; }
+@media (hover: hover) { .cm:not([aria-disabled="true"]):not([aria-pressed="true"]):hover { background: var(--n950); border-color: var(--n800); } }
+.calm-leg { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--n850); font-size: 12px; color: var(--n400); }
+.calm-leg span { display: inline-flex; align-items: center; gap: 8px; }
+.lg-bar { width: 14px; height: 3px; border-radius: 1px; background: var(--n600); }
+.lg-bar.today { background: var(--accent); }
+.lg-off { font-family: var(--f-num); font-size: 15px; color: var(--n700); font-style: normal; }
+@keyframes cm-in { from { opacity: 0; transform: translateX(var(--dir, 12px)); } to { opacity: 1; transform: none; } }
+.calm-grid.swap { animation: cm-in 320ms var(--ease-in); }
+
+/* ════════ лента карточек ════════ */
+.af-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px 16px; margin-bottom: var(--sp-6); }
+.af-title { margin: 0; font-family: var(--f-thin); font-weight: 400; font-size: clamp(1.8rem, 3.4vw, 2.4rem); line-height: 1.1; }
+.af-reset { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; }
+.af-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--col-gap); }
+.af-grid .event-card { animation: card-in 520ms var(--ease-in) both; animation-delay: calc(var(--i, 0) * 40ms); }
+@keyframes card-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.event-card .cover-date .t-caption { color: var(--n100); }
+.af-more { display: flex; justify-content: center; margin-top: var(--sp-10); }
+
+/* ════════ адаптив ════════ */
+@media (max-width: 1180px) { .hdr-links { display: none; } }
+@media (max-width: 1080px) {
+  .hdr { padding: 12px var(--page-pad); gap: 8px; }
+  .hdr-search, .hdr-city { display: none; }
+  .theme-toggle { margin-left: auto; border-color: transparent; }
+  .hdr-burger { display: inline-flex; }
+  .m-search { display: flex; gap: 8px; padding: 14px var(--page-pad) 0; }
+  .m-search .hdr-search { display: flex; max-width: none; margin: 0; height: 42px; }
+  .m-search .m-filter { width: 42px; flex: none; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--n800); border-radius: var(--r-sm); color: var(--n100); }
+  .af-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 768px) {
+  /* десктоп и планшет: окно разворачивается из-под кнопки месяца, без затемнения */
+  .calm { position: absolute; inset: auto; top: 48px; right: 0; width: 380px; }
+  .calm-scrim { position: fixed; background: transparent; }
+  .calm-box { position: relative; max-height: none; padding: 18px 16px 14px; border: 1px solid var(--n800); border-radius: var(--r-sm); box-shadow: 0 18px 40px -12px var(--shadow-color); opacity: 0; transform: translateY(-6px); transition: opacity 252ms cubic-bezier(.4,0,1,1), transform 252ms cubic-bezier(.4,0,1,1); }
+  .calm.open .calm-box { opacity: 1; transform: none; transition: opacity 420ms var(--ease-in), transform 420ms var(--ease-in); }
+  .calm-grab { display: none; }
+  .calm-tabs { margin: 0 0 14px; padding: 0; }
+  .cm { min-height: 0; }
+  .cm-n { font-size: 17px; }
+}
+@media (max-width: 900px) {
+  .hero2-in { grid-template-columns: 1fr; min-height: 0; padding: var(--sp-10) var(--page-pad) var(--sp-12); }
+  .hero2-poster { display: none; }
+}
+@media (max-width: 767px) {
+  .home { padding-top: var(--sp-8); }
+  .cal-nav { display: none; }
+  .cal-head .t-caption { font-size: 10px; }
+  /* 6,5 дня на экране: край следующего подсказывает, что полосу можно листать */
+  .cd { flex-basis: calc(100% / 6.5); padding: 10px 0 9px; }
+  .cd-w { font-size: 8px; font-weight: 600; letter-spacing: .06em; }
+  .cd-n { font-size: 18px; margin-top: 5px; }
+  .cd-bar { margin-top: 8px; }
+  .af-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .af-grid .event-card-body { padding: 12px; gap: 8px; }
+  .af-grid .event-card-title { font-size: 1.05rem; }
+  .af-grid .event-card-footer .btn { display: none; }
+  .af-reset { margin-left: 0; }
+  .hero2-title { font-size: clamp(2.4rem, 11vw, 3rem); }
+  .hero2-cta .btn { flex: 1 1 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .intro, .intro *, .rv, .calm, .calm *, .af-grid .event-card { animation-duration: 1ms !important; animation-delay: 0ms !important; transition-duration: 1ms !important; transition-delay: 0ms !important; }
+  .intro { transition: opacity 240ms linear !important; }
+  .intro.is-out { clip-path: inset(0 0 0 0); opacity: 0; }
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="tts-logo" viewBox="0 0 676 194" fill="none">
+<path d="M415.013 85.8721C412.48 86.3456 409.995 86.5467 407.557 86.4756C405.143 86.4282 402.978 85.9906 401.061 85.1622C399.144 84.31 397.688 82.9728 396.694 81.1507C395.818 79.4938 395.356 77.8017 395.31 76.0736C395.262 74.3456 395.238 72.3934 395.238 70.216V36.8804H403.759V69.719C403.759 71.2573 403.77 72.606 403.794 73.7657C403.841 74.9261 404.09 75.8724 404.54 76.606C405.392 78.0266 406.753 78.8191 408.622 78.9851C410.492 79.1503 412.622 79.0555 415.013 78.7005V85.8721ZM388.28 54.2404V47.5307H415.013V54.2404H388.28Z" fill="currentColor"/>
+<path d="M423.968 41.7086V33.8628H432.524V41.7086H423.968ZM423.968 85.8721V47.5307H432.524V85.8721H423.968Z" fill="currentColor"/>
+<path d="M459.806 86.9365C455.853 86.9365 452.481 86.0607 449.688 84.3096C446.895 82.5342 444.753 80.1207 443.262 77.0677C441.795 74.014 441.049 70.5588 441.025 66.701C441.049 62.7722 441.819 59.293 443.333 56.2636C444.872 53.2105 447.049 50.8201 449.865 49.0924C452.682 47.341 456.031 46.4653 459.912 46.4653C464.267 46.4653 467.948 47.5658 470.953 49.7669C473.982 51.9443 475.959 54.9264 476.882 58.7132L468.361 61.0208C467.699 58.9617 466.598 57.3642 465.06 56.2281C463.521 55.0684 461.77 54.4886 459.806 54.4886C457.581 54.4886 455.747 55.0211 454.303 56.0862C452.859 57.1275 451.795 58.5712 451.108 60.4172C450.421 62.2633 450.079 64.3579 450.079 66.701C450.079 70.3458 450.895 73.2926 452.528 75.5408C454.161 77.7891 456.587 78.9136 459.806 78.9136C462.078 78.9136 463.865 78.3926 465.166 77.3515C466.492 76.3096 467.486 74.8072 468.149 72.8428L476.882 74.795C475.698 78.7002 473.627 81.7064 470.669 83.8124C467.71 85.8954 464.09 86.9365 459.806 86.9365Z" fill="currentColor"/>
+<path d="M483.954 85.8739L484.025 34.4946H492.731V65.893L506.825 47.3394H517.565L502.615 66.6067L518.849 85.8739H507.467L492.731 67.3203V85.8739H483.954Z" fill="currentColor"/>
+<path d="M539.246 86.944C535.344 86.944 531.919 86.0991 528.97 84.4105C526.02 82.7213 523.713 80.3789 522.048 77.3813C520.406 74.3843 519.586 70.9353 519.586 67.0343C519.586 62.8241 520.395 59.1728 522.012 56.0806C523.63 52.9645 525.878 50.5501 528.756 48.8375C531.634 47.1249 534.964 46.2686 538.746 46.2686C542.742 46.2686 546.132 47.2081 548.915 49.0872C551.722 50.9426 553.803 53.5711 555.159 56.9725C556.515 60.374 557.026 64.3821 556.693 68.9967H548.166V65.8569C548.142 61.6704 547.405 58.6139 545.953 56.6871C544.503 54.7604 542.219 53.797 539.103 53.797C535.582 53.797 532.966 54.8912 531.253 57.0796C529.541 59.2442 528.685 62.4197 528.685 66.6061C528.685 70.5072 529.541 73.5279 531.253 75.669C532.966 77.8095 535.464 78.8801 538.746 78.8801C540.863 78.8801 542.683 78.4159 544.205 77.4883C545.752 76.537 546.941 75.1697 547.773 73.3856L556.265 75.9543C554.79 79.4269 552.507 82.1271 549.414 84.0534C546.346 85.9805 542.956 86.944 539.246 86.944ZM525.973 68.9967V62.503H552.483V68.9967H525.973Z" fill="currentColor"/>
+<path d="M587.235 85.8733C584.689 86.3489 582.191 86.5508 579.741 86.4797C577.316 86.4323 575.139 85.9918 573.212 85.1598C571.286 84.3033 569.823 82.9597 568.823 81.1274C567.943 79.4626 567.48 77.7619 567.432 76.0252C567.384 74.2893 567.361 72.327 567.361 70.1383V36.6348H575.924V69.6388C575.924 71.1849 575.936 72.5404 575.96 73.7066C576.007 74.872 576.257 75.8233 576.709 76.5605C577.565 77.9882 578.933 78.7851 580.812 78.9511C582.692 79.1177 584.832 79.0229 587.235 78.6658V85.8733ZM560.367 54.0823V47.3388H587.235V54.0823H560.367Z" fill="currentColor"/>
+<path d="M632.395 85.8733C629.849 86.3489 627.352 86.5508 624.902 86.4797C622.476 86.4323 620.299 85.9918 618.372 85.1598C616.446 84.3033 614.983 82.9597 613.984 81.1274C613.103 79.4626 612.64 77.7619 612.593 76.0252C612.544 74.2893 612.521 72.327 612.521 70.1383V36.6348H621.084V69.6388C621.084 71.1849 621.096 72.5404 621.12 73.7066C621.167 74.872 621.417 75.8233 621.869 76.5605C622.725 77.9882 624.093 78.7851 625.972 78.9511C627.852 79.1177 629.992 79.0229 632.395 78.6658V85.8733ZM605.527 54.0823V47.3388H632.395V54.0823H605.527Z" fill="currentColor"/>
+<path d="M655.751 86.944C651.897 86.944 648.532 86.0753 645.654 84.3394C642.775 82.6027 640.539 80.2122 638.945 77.1672C637.375 74.0991 636.591 70.5785 636.591 66.6061C636.591 62.5624 637.399 59.0182 639.017 55.9735C640.635 52.9288 642.882 50.5501 645.761 48.8375C648.639 47.1249 651.969 46.2686 655.751 46.2686C659.628 46.2686 663.006 47.1367 665.884 48.8732C668.763 50.6096 670.999 53.0121 672.592 56.0806C674.186 59.1252 674.983 62.6337 674.983 66.6061C674.983 70.6023 674.174 74.1343 672.556 77.2031C670.963 80.2482 668.727 82.6387 665.848 84.3746C662.971 86.0876 659.604 86.944 655.751 86.944ZM655.751 78.8801C659.176 78.8801 661.721 77.7384 663.387 75.4549C665.051 73.1715 665.884 70.2217 665.884 66.6061C665.884 62.8716 665.04 59.8983 663.351 57.6862C661.662 55.4502 659.129 54.3322 655.751 54.3322C653.444 54.3322 651.54 54.8555 650.042 55.9022C648.567 56.925 647.473 58.3641 646.759 60.2195C646.046 62.051 645.689 64.1799 645.689 66.6061C645.689 70.3406 646.534 73.326 648.222 75.562C649.935 77.7743 652.444 78.8801 655.751 78.8801Z" fill="currentColor"/>
+<path d="M407.348 158.388C402.615 158.388 398.769 157.323 395.81 155.193C392.852 153.063 391.054 150.069 390.414 146.211L399.148 144.862C399.597 146.755 400.591 148.246 402.13 149.335C403.668 150.424 405.609 150.968 407.952 150.968C410.011 150.968 411.597 150.566 412.709 149.761C413.845 148.933 414.413 147.809 414.413 146.389C414.413 145.513 414.2 144.815 413.774 144.294C413.371 143.75 412.473 143.229 411.076 142.732C409.68 142.235 407.538 141.608 404.65 140.851C401.431 139.999 398.875 139.087 396.982 138.117C395.089 137.123 393.728 135.951 392.899 134.602C392.071 133.253 391.656 131.62 391.656 129.703C391.656 127.312 392.284 125.23 393.538 123.455C394.793 121.68 396.544 120.319 398.793 119.372C401.041 118.402 403.692 117.917 406.745 117.917C409.727 117.917 412.366 118.378 414.661 119.302C416.981 120.224 418.851 121.538 420.271 123.242C421.69 124.946 422.566 126.946 422.898 129.242L414.165 130.804C413.951 129.17 413.206 127.881 411.928 126.934C410.673 125.987 408.993 125.455 406.887 125.336C404.875 125.218 403.254 125.526 402.023 126.26C400.792 126.97 400.177 127.976 400.177 129.277C400.177 130.011 400.425 130.638 400.922 131.159C401.42 131.68 402.413 132.2 403.905 132.721C405.42 133.242 407.668 133.88 410.65 134.638C413.703 135.419 416.141 136.318 417.963 137.336C419.809 138.33 421.134 139.525 421.939 140.922C422.768 142.318 423.182 144.01 423.182 145.998C423.182 149.856 421.774 152.885 418.957 155.087C416.164 157.288 412.294 158.388 407.348 158.388Z" fill="currentColor"/>
+<path d="M457.477 157.32V138.86C457.477 137.653 457.394 136.316 457.228 134.849C457.063 133.381 456.672 131.973 456.057 130.624C455.465 129.251 454.566 128.127 453.359 127.251C452.176 126.375 450.566 125.938 448.531 125.938C447.442 125.938 446.365 126.115 445.3 126.47C444.235 126.825 443.265 127.441 442.389 128.316C441.537 129.168 440.85 130.351 440.33 131.866C439.809 133.357 439.549 135.275 439.549 137.618L434.472 135.452C434.472 132.186 435.099 129.228 436.354 126.576C437.632 123.926 439.502 121.82 441.963 120.258C444.424 118.672 447.454 117.879 451.051 117.879C453.892 117.879 456.235 118.352 458.08 119.299C459.926 120.246 461.394 121.453 462.483 122.92C463.571 124.387 464.376 125.949 464.897 127.606C465.417 129.263 465.748 130.836 465.891 132.328C466.057 133.795 466.139 134.99 466.139 135.914V157.32H457.477ZM430.887 157.32V106.199H438.52V133.109H439.549V157.32H430.887Z" fill="currentColor"/>
+<path d="M492.442 158.393C488.589 158.393 485.223 157.525 482.345 155.788C479.467 154.051 477.23 151.661 475.637 148.616C474.067 145.548 473.282 142.028 473.282 138.055C473.282 134.011 474.091 130.467 475.708 127.422C477.325 124.378 479.574 121.999 482.452 120.287C485.33 118.574 488.66 117.717 492.442 117.717C496.319 117.717 499.697 118.586 502.576 120.322C505.453 122.059 507.689 124.461 509.283 127.529C510.877 130.574 511.673 134.083 511.673 138.055C511.673 142.051 510.865 145.584 509.248 148.652C507.654 151.697 505.418 154.087 502.54 155.824C499.661 157.536 496.296 158.393 492.442 158.393ZM492.442 150.329C495.867 150.329 498.412 149.187 500.078 146.903C501.743 144.62 502.576 141.671 502.576 138.055C502.576 134.321 501.731 131.348 500.042 129.135C498.353 126.899 495.82 125.781 492.442 125.781C490.135 125.781 488.232 126.304 486.734 127.351C485.258 128.374 484.164 129.813 483.451 131.669C482.737 133.5 482.38 135.629 482.38 138.055C482.38 141.79 483.225 144.775 484.914 147.011C486.627 149.223 489.136 150.329 492.442 150.329Z" fill="currentColor"/>
+<path d="M526.35 157.322L514.576 118.717L522.996 118.788L530.525 143.514L538.161 118.788H545.403L553.003 143.514L560.568 118.788H568.988L557.214 157.322H550.506L541.764 130.812L533.059 157.322H526.35Z" fill="currentColor"/>
+<path d="M300.178 3.59277V185.521" stroke="currentColor" stroke-opacity="0.45" stroke-width="7.18518" stroke-linecap="square"/>
+<mask id="tts-mask" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="33" width="242" height="124">
+<path d="M241.43 33.8628H0V156.732H241.43V33.8628Z" fill="white"/>
+</mask>
+<g mask="url(#tts-mask)">
+<path d="M120.717 33.877C187.382 33.8789 241.427 95.3157 241.427 95.3157C240.957 95.8482 187.094 156.746 120.717 156.748C54.2542 156.748 0.333887 95.6944 0 95.3157C0 95.3157 54.0501 33.877 120.717 33.877ZM120.633 49.6928C95.4466 49.6928 75.0306 70.1087 75.0306 95.2949C75.0306 120.481 95.4459 140.897 120.633 140.897C145.818 140.896 166.234 120.481 166.234 95.2949C166.234 70.109 145.818 49.6933 120.633 49.6928ZM120.639 68.0628C135.682 68.0646 147.879 80.2592 147.879 95.3021C147.878 110.344 135.681 122.539 120.639 122.541C105.596 122.541 93.3945 110.345 93.393 95.3021C93.393 80.2577 105.596 68.0628 120.639 68.0628Z" fill="currentColor"/>
+</g>
+</symbol>
+</svg>
+
+<!-- ════════ заставка ════════ -->
+<div class="intro" id="intro" role="dialog" aria-modal="true" aria-label="Ticket to Show — билеты без кассовых сборов">
+  <div class="intro-deck" id="introDeck" aria-hidden="true"></div>
+  <div class="intro-scrim" aria-hidden="true"></div>
+  <div class="intro-text">
+    <svg class="intro-logo" viewBox="0 0 676 194" fill="none" role="img" aria-label="Ticket to Show">
+      <defs><mask id="il-mask" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="33" width="242" height="124"><path d="M241.43 33.8628H0V156.732H241.43V33.8628Z" fill="white"/></mask></defs>
+      <g class="il-eye" mask="url(#il-mask)"><path d="M120.717 33.877C187.382 33.8789 241.427 95.3157 241.427 95.3157C240.957 95.8482 187.094 156.746 120.717 156.748C54.2542 156.748 0.333887 95.6944 0 95.3157C0 95.3157 54.0501 33.877 120.717 33.877ZM120.633 49.6928C95.4466 49.6928 75.0306 70.1087 75.0306 95.2949C75.0306 120.481 95.4459 140.897 120.633 140.897C145.818 140.896 166.234 120.481 166.234 95.2949C166.234 70.109 145.818 49.6933 120.633 49.6928ZM120.639 68.0628C135.682 68.0646 147.879 80.2592 147.879 95.3021C147.878 110.344 135.681 122.539 120.639 122.541C105.596 122.541 93.3945 110.345 93.393 95.3021C93.393 80.2577 105.596 68.0628 120.639 68.0628Z" fill="currentColor"/></g>
+      <g class="il-div"><path d="M300.178 3.59277V185.521" stroke="currentColor" stroke-opacity="0.45" stroke-width="7.18518" stroke-linecap="square"/></g>
+      <g class="il-l1"><path d="M415.013 85.8721C412.48 86.3456 409.995 86.5467 407.557 86.4756C405.143 86.4282 402.978 85.9906 401.061 85.1622C399.144 84.31 397.688 82.9728 396.694 81.1507C395.818 79.4938 395.356 77.8017 395.31 76.0736C395.262 74.3456 395.238 72.3934 395.238 70.216V36.8804H403.759V69.719C403.759 71.2573 403.77 72.606 403.794 73.7657C403.841 74.9261 404.09 75.8724 404.54 76.606C405.392 78.0266 406.753 78.8191 408.622 78.9851C410.492 79.1503 412.622 79.0555 415.013 78.7005V85.8721ZM388.28 54.2404V47.5307H415.013V54.2404H388.28Z" fill="currentColor"/><path d="M423.968 41.7086V33.8628H432.524V41.7086H423.968ZM423.968 85.8721V47.5307H432.524V85.8721H423.968Z" fill="currentColor"/><path d="M459.806 86.9365C455.853 86.9365 452.481 86.0607 449.688 84.3096C446.895 82.5342 444.753 80.1207 443.262 77.0677C441.795 74.014 441.049 70.5588 441.025 66.701C441.049 62.7722 441.819 59.293 443.333 56.2636C444.872 53.2105 447.049 50.8201 449.865 49.0924C452.682 47.341 456.031 46.4653 459.912 46.4653C464.267 46.4653 467.948 47.5658 470.953 49.7669C473.982 51.9443 475.959 54.9264 476.882 58.7132L468.361 61.0208C467.699 58.9617 466.598 57.3642 465.06 56.2281C463.521 55.0684 461.77 54.4886 459.806 54.4886C457.581 54.4886 455.747 55.0211 454.303 56.0862C452.859 57.1275 451.795 58.5712 451.108 60.4172C450.421 62.2633 450.079 64.3579 450.079 66.701C450.079 70.3458 450.895 73.2926 452.528 75.5408C454.161 77.7891 456.587 78.9136 459.806 78.9136C462.078 78.9136 463.865 78.3926 465.166 77.3515C466.492 76.3096 467.486 74.8072 468.149 72.8428L476.882 74.795C475.698 78.7002 473.627 81.7064 470.669 83.8124C467.71 85.8954 464.09 86.9365 459.806 86.9365Z" fill="currentColor"/><path d="M483.954 85.8739L484.025 34.4946H492.731V65.893L506.825 47.3394H517.565L502.615 66.6067L518.849 85.8739H507.467L492.731 67.3203V85.8739H483.954Z" fill="currentColor"/><path d="M539.246 86.944C535.344 86.944 531.919 86.0991 528.97 84.4105C526.02 82.7213 523.713 80.3789 522.048 77.3813C520.406 74.3843 519.586 70.9353 519.586 67.0343C519.586 62.8241 520.395 59.1728 522.012 56.0806C523.63 52.9645 525.878 50.5501 528.756 48.8375C531.634 47.1249 534.964 46.2686 538.746 46.2686C542.742 46.2686 546.132 47.2081 548.915 49.0872C551.722 50.9426 553.803 53.5711 555.159 56.9725C556.515 60.374 557.026 64.3821 556.693 68.9967H548.166V65.8569C548.142 61.6704 547.405 58.6139 545.953 56.6871C544.503 54.7604 542.219 53.797 539.103 53.797C535.582 53.797 532.966 54.8912 531.253 57.0796C529.541 59.2442 528.685 62.4197 528.685 66.6061C528.685 70.5072 529.541 73.5279 531.253 75.669C532.966 77.8095 535.464 78.8801 538.746 78.8801C540.863 78.8801 542.683 78.4159 544.205 77.4883C545.752 76.537 546.941 75.1697 547.773 73.3856L556.265 75.9543C554.79 79.4269 552.507 82.1271 549.414 84.0534C546.346 85.9805 542.956 86.944 539.246 86.944ZM525.973 68.9967V62.503H552.483V68.9967H525.973Z" fill="currentColor"/><path d="M587.235 85.8733C584.689 86.3489 582.191 86.5508 579.741 86.4797C577.316 86.4323 575.139 85.9918 573.212 85.1598C571.286 84.3033 569.823 82.9597 568.823 81.1274C567.943 79.4626 567.48 77.7619 567.432 76.0252C567.384 74.2893 567.361 72.327 567.361 70.1383V36.6348H575.924V69.6388C575.924 71.1849 575.936 72.5404 575.96 73.7066C576.007 74.872 576.257 75.8233 576.709 76.5605C577.565 77.9882 578.933 78.7851 580.812 78.9511C582.692 79.1177 584.832 79.0229 587.235 78.6658V85.8733ZM560.367 54.0823V47.3388H587.235V54.0823H560.367Z" fill="currentColor"/><path d="M632.395 85.8733C629.849 86.3489 627.352 86.5508 624.902 86.4797C622.476 86.4323 620.299 85.9918 618.372 85.1598C616.446 84.3033 614.983 82.9597 613.984 81.1274C613.103 79.4626 612.64 77.7619 612.593 76.0252C612.544 74.2893 612.521 72.327 612.521 70.1383V36.6348H621.084V69.6388C621.084 71.1849 621.096 72.5404 621.12 73.7066C621.167 74.872 621.417 75.8233 621.869 76.5605C622.725 77.9882 624.093 78.7851 625.972 78.9511C627.852 79.1177 629.992 79.0229 632.395 78.6658V85.8733ZM605.527 54.0823V47.3388H632.395V54.0823H605.527Z" fill="currentColor"/><path d="M655.751 86.944C651.897 86.944 648.532 86.0753 645.654 84.3394C642.775 82.6027 640.539 80.2122 638.945 77.1672C637.375 74.0991 636.591 70.5785 636.591 66.6061C636.591 62.5624 637.399 59.0182 639.017 55.9735C640.635 52.9288 642.882 50.5501 645.761 48.8375C648.639 47.1249 651.969 46.2686 655.751 46.2686C659.628 46.2686 663.006 47.1367 665.884 48.8732C668.763 50.6096 670.999 53.0121 672.592 56.0806C674.186 59.1252 674.983 62.6337 674.983 66.6061C674.983 70.6023 674.174 74.1343 672.556 77.2031C670.963 80.2482 668.727 82.6387 665.848 84.3746C662.971 86.0876 659.604 86.944 655.751 86.944ZM655.751 78.8801C659.176 78.8801 661.721 77.7384 663.387 75.4549C665.051 73.1715 665.884 70.2217 665.884 66.6061C665.884 62.8716 665.04 59.8983 663.351 57.6862C661.662 55.4502 659.129 54.3322 655.751 54.3322C653.444 54.3322 651.54 54.8555 650.042 55.9022C648.567 56.925 647.473 58.3641 646.759 60.2195C646.046 62.051 645.689 64.1799 645.689 66.6061C645.689 70.3406 646.534 73.326 648.222 75.562C649.935 77.7743 652.444 78.8801 655.751 78.8801Z" fill="currentColor"/></g>
+      <g class="il-l2"><path d="M407.348 158.388C402.615 158.388 398.769 157.323 395.81 155.193C392.852 153.063 391.054 150.069 390.414 146.211L399.148 144.862C399.597 146.755 400.591 148.246 402.13 149.335C403.668 150.424 405.609 150.968 407.952 150.968C410.011 150.968 411.597 150.566 412.709 149.761C413.845 148.933 414.413 147.809 414.413 146.389C414.413 145.513 414.2 144.815 413.774 144.294C413.371 143.75 412.473 143.229 411.076 142.732C409.68 142.235 407.538 141.608 404.65 140.851C401.431 139.999 398.875 139.087 396.982 138.117C395.089 137.123 393.728 135.951 392.899 134.602C392.071 133.253 391.656 131.62 391.656 129.703C391.656 127.312 392.284 125.23 393.538 123.455C394.793 121.68 396.544 120.319 398.793 119.372C401.041 118.402 403.692 117.917 406.745 117.917C409.727 117.917 412.366 118.378 414.661 119.302C416.981 120.224 418.851 121.538 420.271 123.242C421.69 124.946 422.566 126.946 422.898 129.242L414.165 130.804C413.951 129.17 413.206 127.881 411.928 126.934C410.673 125.987 408.993 125.455 406.887 125.336C404.875 125.218 403.254 125.526 402.023 126.26C400.792 126.97 400.177 127.976 400.177 129.277C400.177 130.011 400.425 130.638 400.922 131.159C401.42 131.68 402.413 132.2 403.905 132.721C405.42 133.242 407.668 133.88 410.65 134.638C413.703 135.419 416.141 136.318 417.963 137.336C419.809 138.33 421.134 139.525 421.939 140.922C422.768 142.318 423.182 144.01 423.182 145.998C423.182 149.856 421.774 152.885 418.957 155.087C416.164 157.288 412.294 158.388 407.348 158.388Z" fill="currentColor"/><path d="M457.477 157.32V138.86C457.477 137.653 457.394 136.316 457.228 134.849C457.063 133.381 456.672 131.973 456.057 130.624C455.465 129.251 454.566 128.127 453.359 127.251C452.176 126.375 450.566 125.938 448.531 125.938C447.442 125.938 446.365 126.115 445.3 126.47C444.235 126.825 443.265 127.441 442.389 128.316C441.537 129.168 440.85 130.351 440.33 131.866C439.809 133.357 439.549 135.275 439.549 137.618L434.472 135.452C434.472 132.186 435.099 129.228 436.354 126.576C437.632 123.926 439.502 121.82 441.963 120.258C444.424 118.672 447.454 117.879 451.051 117.879C453.892 117.879 456.235 118.352 458.08 119.299C459.926 120.246 461.394 121.453 462.483 122.92C463.571 124.387 464.376 125.949 464.897 127.606C465.417 129.263 465.748 130.836 465.891 132.328C466.057 133.795 466.139 134.99 466.139 135.914V157.32H457.477ZM430.887 157.32V106.199H438.52V133.109H439.549V157.32H430.887Z" fill="currentColor"/><path d="M492.442 158.393C488.589 158.393 485.223 157.525 482.345 155.788C479.467 154.051 477.23 151.661 475.637 148.616C474.067 145.548 473.282 142.028 473.282 138.055C473.282 134.011 474.091 130.467 475.708 127.422C477.325 124.378 479.574 121.999 482.452 120.287C485.33 118.574 488.66 117.717 492.442 117.717C496.319 117.717 499.697 118.586 502.576 120.322C505.453 122.059 507.689 124.461 509.283 127.529C510.877 130.574 511.673 134.083 511.673 138.055C511.673 142.051 510.865 145.584 509.248 148.652C507.654 151.697 505.418 154.087 502.54 155.824C499.661 157.536 496.296 158.393 492.442 158.393ZM492.442 150.329C495.867 150.329 498.412 149.187 500.078 146.903C501.743 144.62 502.576 141.671 502.576 138.055C502.576 134.321 501.731 131.348 500.042 129.135C498.353 126.899 495.82 125.781 492.442 125.781C490.135 125.781 488.232 126.304 486.734 127.351C485.258 128.374 484.164 129.813 483.451 131.669C482.737 133.5 482.38 135.629 482.38 138.055C482.38 141.79 483.225 144.775 484.914 147.011C486.627 149.223 489.136 150.329 492.442 150.329Z" fill="currentColor"/><path d="M526.35 157.322L514.576 118.717L522.996 118.788L530.525 143.514L538.161 118.788H545.403L553.003 143.514L560.568 118.788H568.988L557.214 157.322H550.506L541.764 130.812L533.059 157.322H526.35Z" fill="currentColor"/></g>
+    </svg>
+    <p class="intro-tag" aria-label="Билеты без кассовых сборов"><span class="w" style="--i:0" aria-hidden="true">Билеты</span> <span class="w" style="--i:1" aria-hidden="true">без</span> <span class="w" style="--i:2" aria-hidden="true">кассовых</span> <span class="w" style="--i:3" aria-hidden="true">сборов</span></p>
+  </div>
+  <button class="btn btn-ghost btn-sm intro-skip" id="introSkip" type="button">Пропустить</button>
+</div>
+
+<!-- ════════ шапка ════════ -->
+<header class="hdr">
+  <a href="#" class="logo" aria-label="Ticket to Show"><svg viewBox="0 0 676 194"><use href="#tts-logo"/></svg></a>
+  <nav class="hdr-links" aria-label="Основная навигация">
+    <a class="hdr-link" href="#" aria-current="page">Афиша</a>
+    <a class="hdr-link" href="#">Площадки</a>
+    <a class="hdr-link" href="#">Партнерам</a>
+    <a class="hdr-link" href="#">Отзывы</a>
+  </nav>
+  <div class="hdr-search" role="search">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input type="search" placeholder="Театр, спектакль, артист…" aria-label="Поиск по афише" autocomplete="off">
+    <button class="hdr-filter" type="button" aria-label="Фильтры"><span class="hdr-filter-l">Фильтры</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg></button>
+  </div>
+  <button class="theme-toggle" id="themeBtn" type="button" data-mode="dark" aria-label="Включить светлую тему" title="Включить светлую тему">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+      <path class="tt-moon" d="M20 12.19A8 8 0 1 1 11.81 4A6.5 6.5 0 0 0 20 12.19Z"/>
+      <g class="tt-sun"><circle cx="12" cy="12" r="4"/>
+        <path class="tt-ray" style="--i:0" d="M12 2v2.25"/><path class="tt-ray" style="--i:1" d="M19.07 4.93l-1.59 1.59"/>
+        <path class="tt-ray" style="--i:2" d="M22 12h-2.25"/><path class="tt-ray" style="--i:3" d="M19.07 19.07l-1.59-1.59"/>
+        <path class="tt-ray" style="--i:4" d="M12 22v-2.25"/><path class="tt-ray" style="--i:5" d="M4.93 19.07l1.59-1.59"/>
+        <path class="tt-ray" style="--i:6" d="M2 12h2.25"/><path class="tt-ray" style="--i:7" d="M4.93 4.93l1.59 1.59"/>
+      </g>
+    </svg>
+  </button>
+  <button class="hdr-city" type="button">Москва</button>
+  <button class="hdr-profile" type="button" aria-label="Войти">
+    <span class="pm-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/></svg></span>
+    <span class="pm-l">Войти</span>
+  </button>
+  <button class="nav-icon-btn hdr-burger" type="button" aria-label="Меню">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  </button>
+</header>
+<div class="m-search">
+  <div class="hdr-search" role="search">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input type="search" placeholder="Театр, спектакль, артист…" aria-label="Поиск по афише" autocomplete="off">
+  </div>
+  <button class="m-filter" type="button" aria-label="Фильтры"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg></button>
+</div>
+
+<main>
+<!-- ════════ hero ════════ -->
+<section class="hero2" aria-labelledby="heroT">
+  <div class="hero2-bg" aria-hidden="true"><span class="hero2-b1"></span><span class="hero2-b2"></span></div>
+  <div class="hero2-in">
+    <div>
+      <div class="hero2-meta rv" style="--i:0"><span class="tag tag-default">Спектакль</span><span class="t-eyebrow">14 ноября · 19:00</span></div>
+      <h1 class="hero2-title rv" style="--i:1" id="heroT">Одни во вселенной</h1>
+      <p class="hero2-sub rv" style="--i:2">Театр «Современник». Спектакль о поиске смысла в большом городе — история двоих, которые встречаются в последнем поезде метро.</p>
+      <div class="hero2-cta rv" style="--i:3">
+        <a class="btn btn-primary btn-lg" href="#">Купить — от 1 500 ₽</a>
+        <a class="btn btn-ghost btn-lg" href="#">Все даты</a>
+      </div>
+      <div class="hero2-usp rv" style="--i:4">
+        <span class="t-caption"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Без кассовых сборов</span>
+        <span class="t-caption"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M3 7l9 6 9-6"/></svg>Билет приходит на почту</span>
+      </div>
+    </div>
+    <a class="pst pst-cool hero2-poster rv" style="--i:2" href="#" aria-label="Одни во вселенной, 14 ноября">
+      <span class="pst-art" aria-hidden="true"><span class="pst-b1"></span><span class="pst-b2"></span><span class="pst-shade"></span></span>
+      <span class="pst-top"><span class="pst-num">14</span><span class="t-caption">Спектакль</span></span>
+      <span><span class="pst-date" style="display:block">14 ноября · 19:00</span><span class="pst-title" style="display:block">Одни во вселенной</span><span class="pst-venue" style="display:block">Театр «Современник»</span></span>
+    </a>
+  </div>
+</section>
+
+<!-- ════════ афиша ════════ -->
+<section class="home">
+  <div class="wrap">
+    <div class="home-cats">
+      <div class="filter-chips" id="cats" role="group" aria-label="Категории"></div>
+    </div>
+
+    <div class="cal" id="cal">
+      <div class="cal-head">
+        <span class="t-caption" id="calCap">Выберите дату</span>
+        <div class="cal-ctrl">
+          <button class="cal-month" id="calMonth" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="calm">
+            <svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="1.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>
+            <span id="calMonthL">Ноябрь</span>
+            <svg class="chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <button class="cal-nav" id="calPrev" type="button" aria-label="Предыдущая неделя"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+          <button class="cal-nav" id="calNext" type="button" aria-label="Следующая неделя"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+      <div class="cal-strip" id="strip" role="group" aria-label="Даты показов"></div>
+
+      <div class="calm" id="calm">
+        <div class="calm-scrim" data-close></div>
+        <div class="calm-box" role="dialog" aria-modal="true" aria-labelledby="calmT">
+          <div class="calm-grab" aria-hidden="true"></div>
+          <div class="calm-head">
+            <div><h2 class="calm-t" id="calmT">Ноябрь 2026</h2><div class="t-caption" id="calmC"></div></div>
+            <button class="calm-x" type="button" aria-label="Закрыть" data-close><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+          </div>
+          <div class="calm-tabs" id="calmTabs" role="group" aria-label="Месяц"></div>
+          <div class="calm-wd" aria-hidden="true"><span class="t-caption">Пн</span><span class="t-caption">Вт</span><span class="t-caption">Ср</span><span class="t-caption">Чт</span><span class="t-caption">Пт</span><span class="t-caption">Сб</span><span class="t-caption">Вс</span></div>
+          <div class="calm-grid" id="calmGrid"></div>
+          <div class="calm-leg">
+            <span><i class="lg-bar"></i>Есть события</span>
+            <span><i class="lg-bar today"></i>Сегодня</span>
+            <span><i class="lg-off">12</i>Событий нет — дата не выбирается</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="af-head">
+      <h2 class="af-title" id="afT">Афиша</h2>
+      <span class="t-caption" id="afC"></span>
+      <button class="filter-chip filter-chip-active af-reset" id="afReset" type="button" hidden></button>
+    </div>
+    <div class="af-grid" id="afGrid"></div>
+    <div class="af-more"><a class="btn btn-ghost btn-md" href="#">Все события</a></div>
+  </div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-top-line"></div>
+  <div class="footer-inner">
+    <div class="footer-main">
+
+      <!-- Колонка 1: Бренд, юридика -->
+      <div class="footer-brand">
+        <a href="/" class="footer-logo" aria-label="Ticket To Show">
+          <svg viewBox="0 0 676 194"><use href="#tts-logo"/></svg>
+        </a>
+        <p class="footer-tagline">
+          <strong>Ticket To Show</strong> — официальный дистрибьютор<br>
+          компании Moscow Show. Билеты без кассового сбора.
+        </p>
+        <nav class="footer-legal" aria-label="Правовые документы">
+          <a class="footer-legal-link" href="https://tickettoshow.ru/public_offer" target="_blank" rel="noopener">Публичная оферта</a>
+          <a class="footer-legal-link" href="https://tickettoshow.ru/processing_pers_data" target="_blank" rel="noopener">Обработка персональных данных</a>
+          <a class="footer-legal-link" href="https://tickettoshow.ru/policy" target="_blank" rel="noopener">Политика конфиденциальности</a>
+          <a class="footer-legal-link" href="https://tickettoshow.ru/consent_to_receive_advertising_mailings" target="_blank" rel="noopener">Согласие на рекламную рассылку</a>
+        </nav>
+      </div>
+
+      <!-- Колонка 2: Соцсети + контакт продаж -->
+      <div class="footer-col">
+        <div>
+          <div class="footer-col-label">Следите за нами</div>
+          <div class="social-icons-row">
+            <a class="social-btn" href="https://t.me/tickettoshow" target="_blank" rel="noopener" aria-label="Telegram">
+              <svg viewBox="612 141 16 16" fill="none"><path d="M626.053 142.214L613.668 146.99C612.823 147.329 612.828 147.801 613.513 148.011L616.693 149.003L624.05 144.361C624.397 144.149 624.715 144.263 624.454 144.495L618.493 149.875H618.492L618.493 149.875L618.274 153.153C618.595 153.153 618.737 153.005 618.917 152.831L620.462 151.33L623.674 153.703C624.267 154.029 624.692 153.861 624.84 153.154L626.948 143.216C627.164 142.35 626.618 141.958 626.053 142.214Z" fill="currentColor"/></svg>
+            </a>
+            <a class="social-btn" href="https://vk.com/tickettoshow" target="_blank" rel="noopener" aria-label="ВКонтакте">
+              <svg viewBox="660.5 140.5 15 15" fill="currentColor"><path d="M670.302 140.5H665.698C661.495 140.5 660.5 141.495 660.5 145.698V150.302C660.5 154.505 661.495 155.5 665.698 155.5H670.302C674.505 155.5 675.5 154.505 675.5 150.302V145.698C675.5 141.495 674.505 140.5 670.302 140.5ZM672.61 151.202H671.52C671.108 151.202 670.98 150.874 670.239 150.122C669.593 149.497 669.307 149.413 669.149 149.413C668.926 149.413 668.863 149.477 668.863 149.784V150.768C668.863 151.033 668.778 151.192 668.079 151.192C666.926 151.192 665.644 150.493 664.745 149.191C663.657 147.75 663.035 146.259 663.035 145.931C663.035 145.772 663.099 145.624 663.406 145.624H664.496C664.771 145.624 664.877 145.751 664.983 146.048C665.523 147.604 666.423 148.969 666.793 148.969C666.931 148.969 666.994 148.906 666.994 148.557V146.576C666.952 145.834 666.56 145.771 666.56 145.507C666.56 145.379 666.666 145.253 666.835 145.253H668.55C668.783 145.253 668.867 145.379 668.867 145.654V147.825C668.867 148.058 668.974 148.142 669.037 148.142C669.174 148.142 669.291 148.057 669.545 147.804C670.329 146.925 670.889 145.57 670.889 145.57C670.964 145.411 671.091 145.263 671.366 145.263H672.456C672.784 145.263 672.859 145.432 672.784 145.665C672.647 146.301 671.313 148.184 671.313 148.184C671.197 148.375 671.154 148.459 671.313 148.672C671.429 148.831 671.811 149.159 672.065 149.455C672.531 149.984 672.89 150.429 672.986 150.736C673.092 151.043 672.932 151.202 672.626 151.202H672.61Z"/></svg>
+            </a>
+            <a class="social-btn" href="https://instagram.com/tickettoshow" target="_blank" rel="noopener" aria-label="Instagram">
+              <svg viewBox="708.5 140.5 15 15" fill="currentColor"><path d="M716 141.852C718.002 141.852 718.24 141.859 719.031 141.896C721.064 141.988 722.013 142.953 722.106 144.97C722.142 145.761 722.149 145.998 722.149 148.001C722.149 150.004 722.141 150.241 722.106 151.031C722.012 153.047 721.066 154.013 719.031 154.106C718.24 154.142 718.004 154.149 716 154.149C713.997 154.149 713.76 154.142 712.969 154.106C710.932 154.012 709.988 153.044 709.895 151.031C709.859 150.24 709.851 150.003 709.851 148C709.851 145.997 709.859 145.761 709.895 144.969C709.988 142.953 710.935 141.988 712.969 141.895C713.761 141.859 713.997 141.852 716 141.852ZM716 140.5C713.963 140.5 713.708 140.509 712.908 140.545C710.184 140.67 708.671 142.181 708.546 144.908C708.509 145.708 708.5 145.963 708.5 148C708.5 150.037 708.509 150.292 708.545 151.092C708.67 153.816 710.181 155.33 712.908 155.455C713.708 155.491 713.963 155.5 716 155.5C718.037 155.5 718.292 155.491 719.092 155.455C721.814 155.33 723.331 153.819 723.454 151.092C723.491 150.292 723.5 150.037 723.5 148C723.5 145.963 723.491 145.708 723.455 144.908C723.332 142.187 721.819 140.671 719.093 140.546C718.292 140.509 718.037 140.5 716 140.5ZM716 144.149C714.979 144.149 714 144.555 713.277 145.277C712.555 145.999 712.149 146.979 712.149 148C712.149 149.021 712.555 150.001 713.277 150.723C714 151.445 714.979 151.851 716 151.851C717.021 151.851 718.001 151.445 718.723 150.723C719.445 150.001 719.851 149.021 719.851 148C719.851 146.979 719.445 145.999 718.723 145.277C718.001 144.555 717.021 144.149 716 144.149ZM716 150.5C715.337 150.5 714.701 150.237 714.232 149.768C713.763 149.299 713.5 148.663 713.5 148C713.5 147.337 713.763 146.701 714.232 146.232C714.701 145.763 715.337 145.5 716 145.5C716.663 145.5 717.299 145.763 717.768 146.232C718.237 146.701 718.5 147.337 718.5 148C718.5 148.663 718.237 149.299 717.768 149.768C717.299 150.237 716.663 150.5 716 150.5ZM720.004 143.097C719.765 143.097 719.536 143.192 719.367 143.361C719.199 143.529 719.103 143.758 719.103 143.997C719.103 144.236 719.199 144.465 719.367 144.634C719.536 144.803 719.765 144.898 720.004 144.898C720.243 144.898 720.472 144.803 720.64 144.634C720.809 144.465 720.904 144.236 720.904 143.997C720.904 143.758 720.809 143.529 720.64 143.361C720.472 143.192 720.243 143.097 720.004 143.097Z"/></svg>
+            </a>
+            <a class="social-btn" href="https://youtube.com/@tickettoshow" target="_blank" rel="noopener" aria-label="YouTube">
+              <svg viewBox="756.5 140.5 15 15" fill="currentColor"><path d="M771.186 144.366C771.102 144.047 770.934 143.756 770.702 143.522C770.469 143.287 770.179 143.118 769.86 143.031C768.691 142.716 764 142.716 764 142.716C764 142.716 759.309 142.716 758.139 143.031C757.821 143.118 757.531 143.288 757.298 143.522C757.066 143.756 756.898 144.047 756.814 144.366C756.5 145.544 756.5 148 756.5 148C756.5 148 756.5 150.456 756.814 151.634C756.898 151.953 757.066 152.244 757.298 152.479C757.531 152.713 757.821 152.882 758.14 152.969C759.309 153.285 764 153.285 764 153.285C764 153.285 768.691 153.285 769.861 152.969C770.179 152.882 770.47 152.713 770.702 152.479C770.935 152.245 771.102 151.953 771.187 151.634C771.5 150.456 771.5 148 771.5 148C771.5 148 771.5 145.544 771.186 144.366ZM762.466 150.23V145.77L766.386 148L762.466 150.23Z"/></svg>
+            </a>
+            <a class="social-btn" href="https://tiktok.com/@tickettoshow" target="_blank" rel="noopener" aria-label="TikTok">
+              <svg viewBox="1102 1755 33 38" fill="currentColor"><path d="M1124.65 1758.32H1119.65V1780.32C1119.65 1781.21 1119.39 1782.08 1118.89 1782.82C1118.4 1783.56 1117.69 1784.14 1116.87 1784.48C1116.05 1784.82 1115.14 1784.91 1114.27 1784.74C1113.4 1784.56 1112.6 1784.13 1111.97 1783.51C1111.34 1782.88 1110.91 1782.07 1110.74 1781.2C1110.56 1780.33 1110.65 1779.42 1110.99 1778.6C1111.33 1777.78 1111.91 1777.08 1112.65 1776.58C1113.39 1776.09 1114.26 1775.82 1115.15 1775.82C1115.65 1775.82 1116.07 1775.91 1116.57 1776.07V1770.82C1116.07 1770.74 1115.65 1770.74 1115.15 1770.74C1113.25 1770.72 1111.39 1771.27 1109.8 1772.31C1108.22 1773.36 1106.97 1774.85 1106.24 1776.6C1105.5 1778.35 1105.3 1780.28 1105.66 1782.14C1106.02 1784.01 1106.92 1785.72 1108.26 1787.07C1109.6 1788.42 1111.3 1789.34 1113.17 1789.72C1115.03 1790.09 1116.96 1789.91 1118.71 1789.18C1120.47 1788.46 1121.97 1787.23 1123.03 1785.66C1124.08 1784.08 1124.65 1782.22 1124.65 1780.32V1769.57C1126.66 1771.03 1129.08 1771.82 1131.57 1771.82V1766.82C1127.82 1766.74 1124.65 1763.74 1124.65 1758.32Z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-label">Отдел продаж</div>
+          <div class="footer-contact-role">Руководитель департамента продаж</div>
+          <a class="footer-contact-email" href="mailto:partners@example.com">partners@example.com</a>
+        </div>
+      </div>
+
+      <!-- Колонка 3: Кнопки + техподдержка -->
+      <div class="footer-actions">
+        <div class="footer-action-buttons">
+          <div class="footer-col-label">Помощь</div>
+          <a href="#refund" class="btn btn-dark btn-md btn-full">
+            <svg width="16" height="16" viewBox="833 547 27 27" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M857.04 560.204C857.042 562.609 856.219 564.941 854.708 566.812C853.197 568.682 851.09 569.978 848.739 570.481C846.387 570.985 843.935 570.666 841.79 569.578C839.646 568.49 837.94 566.699 836.957 564.505C835.974 562.31 835.775 559.845 836.391 557.521C837.008 555.197 838.404 553.155 840.345 551.736C842.287 550.317 844.656 549.608 847.058 549.727C849.46 549.845 851.748 550.785 853.54 552.388"/>
+              <path d="M857.04 550.871V556.704H851.207"/>
+            </svg>
+            Возврат билетов
+          </a>
+          <a href="mailto:support@tickettoshow.ru" class="btn btn-dark btn-md btn-full">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+              <rect x="2" y="5" width="16" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M2 7l8 5.5L18 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            Написать в поддержку
+          </a>
+          <a href="https://moscowshow.com/proverka/" class="btn btn-dark btn-md btn-full" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a2 2 0 0 0 0 4v2a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-2a2 2 0 0 0 0-4z"/>
+              <path d="M7.5 10l2 2 3.5-4"/>
+            </svg>
+            Проверка билета
+          </a>
+        </div>
+        <div class="footer-tech-support">
+          <div class="footer-col-label">Техническая поддержка</div>
+          <a class="footer-contact-email" href="mailto:support@tickettoshow.ru">support@tickettoshow.ru</a>
+        </div>
+      </div>
+
+    </div><!-- /footer-main -->
+
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2026 Ticket To Show</span>
+      <span class="footer-disclaimer">Instagram признан экстремистской организацией на территории РФ.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+const $ = (s, r = document) => r.querySelector(s);
+const html = document.documentElement;
+
+/* ════════ данные (заглушки) ════════ */
+const TODAY = new Date(2026, 9, 31);              // 31 октября 2026
+const LAST  = new Date(2027, 0, 31);              // лента и календарь — до конца января
+const MON_N = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+const MON_G = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+const MON_S = ['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
+const WD_S  = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+const WD_F  = ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
+const pad = n => String(n).padStart(2, '0');
+const key = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const plural = (n, a, b, c) => { const m10 = n % 10, m100 = n % 100; return m10 === 1 && m100 !== 11 ? a : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? b : c; };
+const evWord = n => plural(n, 'событие', 'события', 'событий');
+const rub = n => n.toLocaleString('ru-RU').replace(/ |,/g, ' ') + ' ₽';
+
+const CATS = [['all','Все'],['spect','Спектакли'],['conc','Концерты'],['classic','Классика'],['musical','Мюзиклы'],['kids','Детям']];
+/* dows: 0 — вс … 6 — сб */
+const EVENTS = [
+  { t:'Одни во вселенной',          g:'Спектакль', c:'spect',   v:'Театр «Современник»',     b:'cool',  p:1500, dows:[2,4,6],   time:'19:00', to:'2026-12-26' },
+  { t:'Вишнёвый сад',               g:'Спектакль', c:'spect',   v:'Театр Вахтангова',        b:'warm',  p:2200, dows:[3,5,0],   time:'19:00', to:'2027-01-31', tag:['tag-orange','Мало мест'] },
+  { t:'Лебединое озеро',            g:'Балет',     c:'classic', v:'Большой театр',           b:'cool',  p:3500, dows:[6,0],     time:'18:00', to:'2026-11-29' },
+  { t:'Алые паруса',                g:'Мюзикл',    c:'musical', v:'МДМ',                     b:'green', p:1800, dows:[5,6,0],   time:'20:00', to:'2027-01-31' },
+  { t:'Щелкунчик',                  g:'Балет',     c:'classic', v:'Кремлёвский дворец',      b:'warm',  p:2500, dows:[0,2,3,4,5,6], time:'12:00', from:'2026-12-19', to:'2027-01-10', tag:['tag-green','Новинка'] },
+  { t:'Вечер русского романса',     g:'Концерт',   c:'conc',    v:'Дом музыки',              b:'warm',  p:1200, dows:[4],       time:'19:30', to:'2026-12-24' },
+  { t:'Чайковский. Пятая симфония', g:'Концерт',   c:'classic', v:'Зал «Зарядье»',           b:'cool',  p:2000, dates:['2026-11-07','2026-11-15','2026-11-28','2026-12-13'], time:'19:00' },
+  { t:'Маленький принц',            g:'Детям',     c:'kids',    v:'РАМТ',                    b:'green', p:900,  dows:[6,0],     time:'12:00', to:'2027-01-31' },
+  { t:'Мастер и Маргарита',         g:'Спектакль', c:'spect',   v:'Театр на Таганке',        b:'cool',  p:2800, dows:[3,6],     time:'19:00', to:'2027-01-31' },
+  { t:'Джаз на крыше',              g:'Концерт',   c:'conc',    v:'Клуб «Алексеевский»',     b:'warm',  p:1500, dows:[5],       time:'21:00', to:'2026-12-25' },
+  { t:'Ревизор',                    g:'Спектакль', c:'spect',   v:'Малый театр',             b:'warm',  p:1700, dows:[2,5],     time:'19:00', to:'2027-01-31' },
+  { t:'Морозко',                    g:'Детям',     c:'kids',    v:'Театр кукол Образцова',   b:'green', p:800,  dows:[6,0],     time:'11:00', from:'2026-12-05', to:'2027-01-11' },
+  { t:'Большой сольный стендап',    g:'Концерт',   c:'conc',    v:'Крокус Сити Холл',        b:'cool',  p:2500, dates:['2026-11-09','2026-11-23','2026-12-07'], time:'20:00' },
+];
+/* дни, когда показов нет совсем: понедельники (кроме стендапа) и пара будней */
+const DARK = new Set(['2026-11-12','2026-11-18','2026-12-02','2026-12-10','2026-12-31','2027-01-01','2027-01-02']);
+const parse = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+
+EVENTS.forEach((e, i) => {
+  e.id = 'e' + i;
+  let ds = [];
+  if (e.dates) ds = e.dates.map(parse);
+  else for (let d = new Date(e.from ? parse(e.from) : TODAY); d <= parse(e.to); d.setDate(d.getDate() + 1)) if (e.dows.includes(d.getDay())) ds.push(new Date(d));
+  e.days = ds.filter(d => d >= TODAY && !DARK.has(key(d)) && (d.getDay() !== 1 || e.dates)).map(key);
+});
+const DAYS = [];
+for (let d = new Date(TODAY); d <= LAST; d.setDate(d.getDate() + 1)) DAYS.push(new Date(d));
+const MONTHS = [...new Set(DAYS.map(d => d.getFullYear() * 12 + d.getMonth()))];
+
+const st = { cat: 'all', sel: null, mm: MONTHS[1] };
+const pool  = () => EVENTS.filter(e => st.cat === 'all' || e.c === st.cat);
+const onDay = k => pool().filter(e => e.days.includes(k));
+const label = k => { const d = parse(k); return `${d.getDate()} ${MON_G[d.getMonth()]}`; };
+
+/* ════════ заставка ════════ */
+(function intro() {
+  const box = $('#intro');
+  const skip = new URLSearchParams(location.search).get('intro') === '0';
+  const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const pageIn = () => html.classList.add('page-in');
+  if (skip) { box.classList.add('is-gone'); pageIn(); return; }
+
+  /* колода: последняя — событие из hero, чтобы заставка «передавала» его первому экрану */
+  const order = [8, 3, 1, 6, 7, 0];
+  const deck = $('#introDeck');
+  const narrow = innerWidth < 768;
+  order.forEach((n, i) => {
+    const e = EVENTS[n], d = parse(n === 0 ? '2026-11-14' : e.days[0]);
+    const c = document.createElement('div');
+    c.className = `pst pst-${e.b} intro-card`;
+    const side = i % 2 ? -1 : 1;
+    c.style.setProperty('--fx', `${side * (narrow ? 90 : 60)}vw`);
+    c.style.setProperty('--fr', `${side * 14}deg`);
+    c.style.setProperty('--x',  `${side * (narrow ? 4 : 2.5)}vw`);
+    c.style.setProperty('--r',  `${side * (2 + (i % 3))}deg`);
+    c.innerHTML = `<span class="pst-art"><span class="pst-b1"></span><span class="pst-b2"></span><span class="pst-shade"></span></span>
+      <span class="pst-top"><span class="pst-num">${d.getDate()}</span><span class="t-caption">${e.g}</span></span>
+      <span><span class="pst-date" style="display:block">${label(key(d))} · ${e.time}</span><span class="pst-title" style="display:block">${e.t}</span><span class="pst-venue" style="display:block">${e.v}</span></span>`;
+    deck.appendChild(c);
+  });
+  const cards = [...deck.children];
+  html.classList.add('intro-lock');
+
+  const timers = [];
+  let n = 0, done = false;
+  const deal = () => { cards.forEach((c, i) => { if (i <= n) c.dataset.d = String(Math.min(n - i, 3)); }); n++; };
+  if (RM) { n = cards.length - 1; deal(); }
+  else cards.forEach((_, i) => timers.push(setTimeout(deal, 120 + i * 440)));
+
+  function finish() {
+    if (done) return; done = true;
+    timers.forEach(clearTimeout);
+    box.classList.add('is-out');
+    pageIn();
+    setTimeout(() => { box.classList.add('is-gone'); html.classList.remove('intro-lock'); }, RM ? 300 : 860);
+  }
+  timers.push(setTimeout(finish, RM ? 1400 : 3000));
+  box.addEventListener('click', finish);
+  addEventListener('keydown', e => { if (!done && ['Escape', 'Enter', ' '].includes(e.key)) { e.preventDefault(); finish(); } });
+})();
+
+/* ════════ категории ════════ */
+const cats = $('#cats');
+cats.innerHTML = CATS.map(([v, n]) => `<button class="filter-chip${v === st.cat ? ' filter-chip-active' : ''}" type="button" data-cat="${v}" aria-pressed="${v === st.cat}">${n}</button>`).join('');
+cats.addEventListener('click', e => {
+  const b = e.target.closest('[data-cat]'); if (!b) return;
+  st.cat = b.dataset.cat;
+  cats.querySelectorAll('[data-cat]').forEach(x => { const on = x === b; x.classList.toggle('filter-chip-active', on); x.setAttribute('aria-pressed', on); });
+  if (st.sel && !onDay(st.sel).length) st.sel = null;   // в выбранный день нет событий этой категории — снимаем дату
+  renderStrip(); renderAfisha(); if ($('#calm').classList.contains('open')) renderMonth();
+});
+
+/* ════════ полоса дней ════════ */
+const strip = $('#strip');
+function dayLabel(d, i) { return i === 0 ? 'Сегодня' : d.getDate() === 1 ? MON_S[d.getMonth()] : WD_S[d.getDay()]; }
+function ariaDay(k, n, today) { const d = parse(k); return `${label(k)}, ${WD_F[d.getDay()]}${today ? ', сегодня' : ''}, ${n ? n + ' ' + evWord(n) : 'событий нет'}`; }
+function renderStrip() {
+  strip.innerHTML = DAYS.map((d, i) => {
+    const k = key(d), n = onDay(k).length, off = !n;
+    return `<button class="cd${i === 0 ? ' today' : ''}${d.getDate() === 1 && i ? ' m1' : ''}" type="button" data-k="${k}"
+      aria-pressed="${st.sel === k}" ${off ? 'aria-disabled="true" tabindex="-1"' : ''} aria-label="${ariaDay(k, n, i === 0)}">
+      <span class="cd-w">${dayLabel(d, i)}</span><span class="cd-n">${d.getDate()}</span><span class="cd-bar"></span>${off ? '<span class="cd-x">нет событий</span>' : ''}</button>`;
+  }).join('');
+  syncStrip();
+}
+const cellW = () => strip.firstElementChild.getBoundingClientRect().width;
+function syncStrip() {
+  const w = cellW(), vis = Math.round(strip.clientWidth / w);
+  const first = Math.round(strip.scrollLeft / w);
+  const mid = DAYS[Math.min(DAYS.length - 1, first + Math.floor(vis / 2))];
+  $('#calMonthL').textContent = MON_N[mid.getMonth()];
+  $('#calPrev').disabled = strip.scrollLeft <= 2;
+  $('#calNext').disabled = strip.scrollLeft + strip.clientWidth >= strip.scrollWidth - 2;
+}
+let raf = 0;
+strip.addEventListener('scroll', () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(syncStrip); }, { passive: true });
+addEventListener('resize', () => requestAnimationFrame(syncStrip));
+$('#calPrev').addEventListener('click', () => strip.scrollBy({ left: -7 * cellW(), behavior: 'smooth' }));
+$('#calNext').addEventListener('click', () => strip.scrollBy({ left:  7 * cellW(), behavior: 'smooth' }));
+strip.addEventListener('click', e => {
+  const b = e.target.closest('.cd'); if (!b || b.getAttribute('aria-disabled') === 'true') return;
+  pick(b.dataset.k === st.sel ? null : b.dataset.k);
+});
+function showInStrip(k, smooth) {
+  const i = DAYS.findIndex(d => key(d) === k); if (i < 0) return;
+  const w = cellW(), left = i * w, vis = strip.clientWidth;
+  if (left < strip.scrollLeft || left + w > strip.scrollLeft + vis) strip.scrollTo({ left: Math.max(0, (i - 1) * w), behavior: smooth ? 'smooth' : 'auto' });
+}
+function pick(k) {
+  st.sel = k;
+  strip.querySelectorAll('.cd').forEach(b => b.setAttribute('aria-pressed', b.dataset.k === k));
+  if (k) showInStrip(k, true);
+  renderAfisha();
+}
+
+/* ════════ окно «весь месяц» ════════ */
+const calm = $('#calm'), mBtn = $('#calMonth');
+const isSheet = () => innerWidth < 768;
+const mOf = d => d.getFullYear() * 12 + d.getMonth();
+function monthStats(mi) {
+  const ev = new Set();
+  DAYS.filter(d => mOf(d) === mi).forEach(d => onDay(key(d)).forEach(e => ev.add(e.id)));
+  return ev.size;
+}
+function renderMonth(dir) {
+  const y = Math.floor(st.mm / 12), m = st.mm % 12;
+  $('#calmT').textContent = `${MON_N[m]} ${y}`;
+  const cnt = monthStats(st.mm);
+  $('#calmC').textContent = cnt ? `${cnt} ${evWord(cnt)} в ${['январе','феврале','марте','апреле','мае','июне','июле','августе','сентябре','октябре','ноябре','декабре'][m]}` : 'В этом месяце событий нет';
+  $('#calmTabs').innerHTML = MONTHS.map(mi => {
+    const on = mi === st.mm;
+    return `<button class="filter-chip${on ? ' filter-chip-active' : ''}" type="button" data-m="${mi}" aria-pressed="${on}">${MON_N[mi % 12]}</button>`;
+  }).join('');
+  const first = new Date(y, m, 1), lead = (first.getDay() + 6) % 7, len = new Date(y, m + 1, 0).getDate();
+  let cells = '<span></span>'.repeat(lead);
+  for (let dd = 1; dd <= len; dd++) {
+    const d = new Date(y, m, dd), k = key(d), past = d < TODAY, out = d > LAST;
+    const n = past || out ? 0 : onDay(k).length, today = k === key(TODAY);
+    cells += `<button class="cm${today ? ' today' : ''}${past ? ' past' : ''}" type="button" data-k="${k}" aria-pressed="${st.sel === k}"
+      ${n ? '' : 'aria-disabled="true" tabindex="-1"'} aria-label="${past ? label(k) + ', прошло' : ariaDay(k, n, today)}">
+      <span class="cm-n">${dd}</span><span class="cm-bar"></span></button>`;
+  }
+  const g = $('#calmGrid');
+  g.innerHTML = cells;
+  if (dir) { g.classList.remove('swap'); g.style.setProperty('--dir', dir > 0 ? '14px' : '-14px'); void g.offsetWidth; g.classList.add('swap'); }
+}
+function openCal() {
+  const visible = DAYS.find(d => MON_N[d.getMonth()] === $('#calMonthL').textContent && d >= TODAY);
+  st.mm = st.sel ? mOf(parse(st.sel)) : mOf(visible || DAYS[0]);
+  renderMonth();
+  calm.classList.add('open');
+  mBtn.setAttribute('aria-expanded', 'true');
+  if (isSheet()) html.classList.add('sheet-lock');
+  const f = calm.querySelector('.cm[aria-pressed="true"]') || calm.querySelector('.cm:not([aria-disabled="true"])');
+  setTimeout(() => (f || calm.querySelector('.calm-x')).focus({ preventScroll: true }), 60);
+}
+function closeCal(back = true) {
+  calm.classList.remove('open');
+  mBtn.setAttribute('aria-expanded', 'false');
+  html.classList.remove('sheet-lock');
+  if (back) mBtn.focus({ preventScroll: true });
+}
+mBtn.addEventListener('click', () => calm.classList.contains('open') ? closeCal() : openCal());
+calm.addEventListener('click', e => {
+  if (e.target.closest('[data-close]')) return closeCal();
+  const t = e.target.closest('[data-m]');
+  if (t) { const nm = +t.dataset.m; if (nm !== st.mm) { const dir = nm > st.mm ? 1 : -1; st.mm = nm; renderMonth(dir); } return; }
+  const c = e.target.closest('.cm');
+  if (!c || c.getAttribute('aria-disabled') === 'true') return;
+  pick(c.dataset.k);
+  closeCal();
+  $('#cal').scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+calm.addEventListener('keydown', e => {
+  if (e.key === 'Escape') return closeCal();
+  if (!e.target.classList.contains('cm') || !['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)) return;
+  e.preventDefault();
+  const all = [...calm.querySelectorAll('.cm:not([aria-disabled="true"])')];
+  const cur = parse(e.target.dataset.k), step = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -7, ArrowDown: 7 }[e.key];
+  /* ищем ближайший доступный день в направлении стрелки */
+  const cand = all.filter(b => Math.sign((parse(b.dataset.k) - cur)) === Math.sign(step))
+                  .sort((a, b) => Math.abs(parse(a.dataset.k) - cur - step * 864e5) - Math.abs(parse(b.dataset.k) - cur - step * 864e5));
+  if (cand[0]) cand[0].focus();
+});
+/* свайп по сетке на телефоне листает месяцы */
+let tx = null;
+$('#calmGrid').addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+$('#calmGrid').addEventListener('touchend', e => {
+  if (tx == null) return;
+  const dx = e.changedTouches[0].clientX - tx; tx = null;
+  if (Math.abs(dx) < 50) return;
+  const i = MONTHS.indexOf(st.mm) + (dx < 0 ? 1 : -1);
+  if (i >= 0 && i < MONTHS.length) { st.mm = MONTHS[i]; renderMonth(dx < 0 ? 1 : -1); }
+});
+
+/* ════════ лента карточек ════════ */
+function chip(e) {
+  const ds = e.days;
+  if (st.sel) return `${label(st.sel)} · ${e.time}`;
+  if (ds.length === 1) return label(ds[0]);
+  if (ds.length <= 5) return `${ds.length} ${plural(ds.length, 'дата', 'даты', 'дат')}`;
+  const a = parse(ds[0]), b = parse(ds[ds.length - 1]);
+  return a.getMonth() === b.getMonth() ? `${a.getDate()}–${b.getDate()} ${MON_G[b.getMonth()]}` : `${a.getDate()} ${MON_S[a.getMonth()]} – ${b.getDate()} ${MON_S[b.getMonth()]}`;
+}
+function card(e, i) {
+  return `<a class="event-card card-${e.b}" href="#" style="--i:${i}">
+    <div class="event-card-cover"><div class="cover-blob cover-blob-1"></div><div class="cover-blob cover-blob-2"></div>
+      ${e.tag ? `<div class="cover-tag"><span class="tag ${e.tag[0]}">${e.tag[1]}</span></div>` : ''}
+      <div class="cover-date"><div class="t-caption">${chip(e)}</div></div></div>
+    <div class="event-card-body">
+      <div class="t-caption">${e.g} · Москва</div>
+      <div class="event-card-title">${e.t}</div>
+      <div class="event-card-sub">${e.v}</div>
+      <div class="event-card-footer"><div><span class="event-card-price-label">от</span><span class="event-card-price">${rub(e.p)}</span></div><span class="btn btn-primary btn-sm">Билеты</span></div>
+    </div></a>`;
+}
+function renderAfisha() {
+  let list = st.sel ? onDay(st.sel) : pool().filter(e => e.days.length);
+  list = list.slice().sort((a, b) => (st.sel ? a.time.localeCompare(b.time) : a.days[0].localeCompare(b.days[0])));
+  const reset = $('#afReset');
+  if (st.sel) {
+    const d = parse(st.sel);
+    $('#afT').textContent = label(st.sel);
+    $('#afC').textContent = `${WD_F[d.getDay()]} · ${list.length} ${evWord(list.length)}`;
+    reset.hidden = false;
+    reset.innerHTML = `${label(st.sel)}<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>`;
+    reset.setAttribute('aria-label', 'Сбросить дату ' + label(st.sel));
+  } else {
+    $('#afT').textContent = 'Афиша';
+    $('#afC').textContent = `${list.length} ${evWord(list.length)}`;
+    reset.hidden = true;
+  }
+  $('#afGrid').innerHTML = list.map(card).join('');
+}
+$('#afReset').addEventListener('click', () => pick(null));
+
+/* ════════ тема: замена одного CSS-файла на другой ════════ */
+const themeBtn = $('#themeBtn');
+themeBtn.addEventListener('click', () => {
+  const toLight = themeBtn.dataset.mode === 'dark';
+  $('#ds-theme').href = toLight ? '../ds-core-r14-light.css' : '../ds-core-r14.css';
+  html.dataset.theme = toLight ? 'light' : 'dark';
+  const l = toLight ? 'Включить тёмную тему' : 'Включить светлую тему';
+  themeBtn.dataset.mode = toLight ? 'light' : 'dark';
+  themeBtn.setAttribute('aria-label', l); themeBtn.title = l;
+});
+
+renderStrip();
+renderAfisha();
+</script>
+</body>
+</html>
