@@ -318,9 +318,22 @@ html.page-in .hw > span, .no-js .hw > span { transform: none; transition: transf
   .cm { min-height: 0; }
   .cm-n { font-size: 17px; }
 }
+/* обложка фоном первого экрана — только ниже 900 px, где постера рядом нет */
+.hero2-cover, .hero2-shade { display: none; }
 @media (max-width: 900px) {
-  .hero2-in { grid-template-columns: 1fr; min-height: 0; padding: var(--sp-10) var(--page-pad) var(--sp-12); }
+  .hero2-in { grid-template-columns: 1fr; min-height: 0; padding: var(--sp-16) var(--page-pad) var(--sp-12); }
   .hero2-poster { display: none; }
+  .hero2-b1, .hero2-b2 { display: none; }
+  .hero2-cover { display: block; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 25%; opacity: 0; filter: brightness(.55) saturate(.9); transform: scale(1.02);
+    transition: opacity 900ms var(--ease-out), transform 1400ms cubic-bezier(.16,1,.3,1), filter 900ms var(--ease-out); }
+  html.poster-in .hero2-cover, .no-js .hero2-cover { opacity: 1; }
+  /* затемнение: сверху — под шапку, снизу — под текст и кнопки */
+  .hero2-shade { display: block; position: absolute; inset: 0;
+    background: linear-gradient(180deg, var(--ink) 0%, color-mix(in srgb, var(--ink) 30%, transparent) 22%, color-mix(in srgb, var(--ink) 35%, transparent) 42%, color-mix(in srgb, var(--ink) 88%, transparent) 72%, var(--ink) 100%); }
+  .hero2:active .hero2-cover { transform: scale(1.08); filter: brightness(.75) saturate(1); }
+}
+@media (max-width: 900px) and (hover: hover) {
+  .hero2:hover .hero2-cover { transform: scale(1.08); filter: brightness(.75) saturate(1); }
 }
 @media (max-width: 767px) {
   .home { padding-top: var(--sp-8); }
@@ -453,7 +466,7 @@ html.page-in .hw > span, .no-js .hw > span { transform: none; transition: transf
 <main>
 <!-- ════════ hero ════════ -->
 <section class="hero2" aria-labelledby="heroT">
-  <div class="hero2-bg" aria-hidden="true"><span class="hero2-b1"></span><span class="hero2-b2"></span><i class="hero2-beam"></i><i class="hero2-grain grain-tex"></i></div>
+  <div class="hero2-bg" aria-hidden="true"><span class="hero2-b1"></span><span class="hero2-b2"></span><img class="hero2-cover" src="https://moscowshow.com/upload/iblock/40f/xk8jj9k4o0ozlw47j22ys3tdaf4g13et/einstein_i_margarita_.jpg" alt="" decoding="async" referrerpolicy="no-referrer" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='home-new/stage-curtain.webp'}"><i class="hero2-shade"></i><i class="hero2-beam"></i><i class="hero2-grain grain-tex"></i></div>
   <div class="hero2-in">
     <div>
       <div class="hero2-meta rv" style="--i:0"><span class="tag tag-default">Спектакль</span><span class="t-eyebrow">14 ноября · 19:00</span></div>
