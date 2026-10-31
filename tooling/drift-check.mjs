@@ -9,6 +9,11 @@
  *   node tooling/drift-check.mjs           # отчёт; выход 1, если есть ошибки
  *   node tooling/drift-check.mjs --json    # то же в JSON (для агента ds-drift-watcher)
  *   node tooling/drift-check.mjs --all     # показать и сводку по hex вне палитры в редизайне
+ *   node tooling/drift-check.mjs --only pages,figma   # только названные проверки
+ *   node tooling/drift-check.mjs --changed            # только проверки, которые задевают файлы,
+ *                                                     # изменённые относительно HEAD (вкл. неотслеживаемые)
+ *   node tooling/drift-check.mjs --changed main       # то же относительно другой ветки или коммита
+ *   node tooling/drift-check.mjs --files site/account.html,CLAUDE.md   # проверки для этих файлов (хук)
  *
  * Только читает. Ничего не правит. Зависимостей нет — только Node и git.
  *
@@ -22,10 +27,49 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join, relative, posix } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { homedir } from 'node:os';
+import { COPIES } from './build-copies.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const JSON_OUT = process.argv.includes('--json');
 const SHOW_ALL = process.argv.includes('--all');
+
+/* ── выбор проверок: --only и --changed ── */
+const CHECKS = ['tokens', 'pages', 'components', 'copies', 'redesign', 'claude-md', 'decisions', 'figma', 'index', 'downloads'];
+/* какой файл какие проверки задевает; правка ядра или токенов — всё, кроме копий в «Загрузках» */
+const CORE_HIT = ['tokens', 'pages', 'components', 'redesign', 'claude-md', 'decisions', 'figma'];
+const AFFECTS = [
+  [/^(tokens\.json|ds-core-r14(-light)?\.css|tooling\/build-tokens\.mjs)$/, CORE_HIT],
+  [/^site\/partner-program\//, ['pages', 'components', 'copies']],
+  [/^tooling\/build-copies\.mjs$/, ['copies']],
+  [/^site\/(account\.html|cookie-banner\/)/, ['pages', 'components']],
+  [/^site\/redesign-v2-/, ['redesign', 'downloads']],
+  [/^CLAUDE\.md$/, ['claude-md', 'decisions']],
+  [/^DECISIONS\.md$/, ['decisions']],
+  [/^figma\/.*\.js$/, ['figma']],
+  [/^(index\.html|\.gitignore)$|^site\/.*\.html$/, ['index']],
+  [/^tooling\/drift-check\.mjs$/, CHECKS],
+];
+const argVal = (k) => { const i = process.argv.indexOf(k); const v = process.argv[i + 1]; return i > 0 && v && !v.startsWith('--') ? v : null; };
+let ONLY = null;
+let CHANGED_FILES = null;
+if (process.argv.includes('--only')) {
+  ONLY = new Set((argVal('--only') || '').split(',').map((x) => x.trim()).filter(Boolean));
+  const bad = [...ONLY].filter((c) => !CHECKS.includes(c));
+  if (bad.length) { console.error(`Неизвестные проверки: ${bad.join(', ')}. Есть: ${CHECKS.join(', ')}`); process.exit(2); }
+}
+if (process.argv.includes('--files')) {
+  CHANGED_FILES = (argVal('--files') || '').split(',').map((x) => x.trim().replace(/^\.\//, '')).filter(Boolean);
+} else if (process.argv.includes('--changed')) {
+  const ref = argVal('--changed') || 'HEAD';
+  const git = (...a) => execFileSync('git', a, { cwd: ROOT, encoding: 'utf8' }).split('\n').filter(Boolean);
+  CHANGED_FILES = [...new Set([...git('diff', '--name-only', ref), ...git('ls-files', '--others', '--exclude-standard')])];
+}
+if (CHANGED_FILES) {
+  const hit = new Set();
+  for (const f of CHANGED_FILES) for (const [re, list] of AFFECTS) if (re.test(f)) list.forEach((c) => hit.add(c));
+  ONLY = ONLY ? new Set([...ONLY].filter((c) => hit.has(c))) : hit;
+}
+const on = (check) => !ONLY || ONLY.has(check);
 
 const read = (p) => readFileSync(join(ROOT, p), 'utf8');
 const lineOf = (text, idx) => text.slice(0, idx).split('\n').length;
@@ -77,7 +121,7 @@ function nearest(th, h) {
 const fmtHex = (th, list) => list.map(([v, n]) => { const near = nearest(th, v); return `${v}×${n}${near ? ` (${near})` : ''}`; }).join(' ');
 
 /* 0. tokens.json ↔ :root ядра — штатная проверка сборки */
-try {
+if (on('tokens')) try {
   execFileSync(process.execPath, [join(ROOT, 'tooling/build-tokens.mjs'), '--check'], { stdio: 'pipe' });
 } catch (e) {
   add('error', 'tokens', 'tokens.json', null, ':root ядра не совпадает с tokens.json (build-tokens --check упал)',
@@ -87,16 +131,20 @@ try {
 /* Плоские правила CSS «selector { body }» — линейный проход (регулярка ([^{}]+)\{ квадратична на длинном тексте) */
 function cssRules(text) {
   const out = [];
+  const at = []; // открытые @-блоки (@media, @supports …) — контекст правила
   let prev = 0; // позиция после последней { или }
   for (let i = 0; i < text.length; i++) {
     const c = text.charCodeAt(i);
-    if (c === 125) { prev = i + 1; continue; } // }
+    if (c === 125) { at.pop(); prev = i + 1; continue; } // } закрывает @-блок
     if (c !== 123) continue; // {
     const close = text.indexOf('}', i + 1), nextOpen = text.indexOf('{', i + 1);
     if (close < 0) break;
-    if (nextOpen >= 0 && nextOpen < close) { prev = i + 1; continue; } // вложенный блок (@media) — заходим внутрь
+    if (nextOpen >= 0 && nextOpen < close) { // вложенный блок — заходим внутрь, помня условие
+      at.push(text.slice(prev, i).replace(/\/\*[\s\S]*?\*\//g, '').trim().replace(/\s+/g, ' '));
+      prev = i + 1; continue;
+    }
     const selRaw = text.slice(prev, i);
-    out.push({ sel: selRaw.trim().split('\n').pop().replace(/\/\*[\s\S]*?\*\//g, '').trim(), body: text.slice(i + 1, close), index: prev, bodyStart: i + 1, end: close + 1 });
+    out.push({ sel: selRaw.trim().split('\n').pop().replace(/\/\*[\s\S]*?\*\//g, '').trim(), body: text.slice(i + 1, close), index: prev, bodyStart: i + 1, end: close + 1, at: at.join(' ') });
     i = close; prev = close + 1;
   }
   return out;
@@ -141,9 +189,11 @@ const PAGES = [
 /* Локальные переменные, общие для нескольких страниц: эталон — страница партнёров (CLAUDE.md, «Футер») */
 const SHARED_LOCAL_REF = 'site/partner-program/partner-program-r14.html';
 const SHARED_LOCAL = /^--(foot-[a-z]+|logo)$/;
+/* локальные переменные, записанные исключением в DECISIONS.md («Исключения») */
+const ALLOWED_LOCAL = new Set(['site/partner-program/partner-program-r14.html|--premium|light']);
 
 const sharedRef = {};
-for (const pg of PAGES) {
+if (on('pages')) for (const pg of PAGES) {
   if (!existsSync(join(ROOT, pg.file))) { add('warn', 'pages', pg.file, null, 'файл не найден', '', 'убрать из PAGES в drift-check.mjs'); continue; }
   const html = read(pg.file);
   const vars = themedVars(html, pg.map);
@@ -172,7 +222,7 @@ for (const pg of PAGES) {
       if (h) {
         const hit = PALETTE[v.theme].get(h);
         // локальная переменная с hex, которого нет в палитре темы, — кандидат в токены
-        if (!hit) add('warn', 'pages', pg.file, line, `локальная ${v.name} (${v.theme}) = ${h} — такого цвета нет в палитре темы`,
+        if (!hit && !ALLOWED_LOCAL.has(`${pg.file}|${v.name}|${v.theme}`)) add('warn', 'pages', pg.file, line, `локальная ${v.name} (${v.theme}) = ${h} — такого цвета нет в палитре темы`,
           `${CORE_FILE[v.theme]}`, 'вынести в tokens.json или взять существующий токен');
       }
     }
@@ -200,42 +250,42 @@ function resolveVal(v, vars) {
   if (/^transparent$/i.test(v)) v = 'transparent';
   return v;
 }
-for (const pg of PAGES) {
+if (on('components')) for (const pg of PAGES) {
   if (!existsSync(join(ROOT, pg.file))) continue;
   const html = read(pg.file);
   const coreRules = new Map();
-  for (const r of cssRules(read('ds-core-r14.css'))) if (!coreRules.has(r.sel.replace(/\s+/g, ' '))) coreRules.set(r.sel.replace(/\s+/g, ' '), r.body);
+  // ключ — условие @media + селектор: правило из @media сверяется только с таким же правилом ядра
+  const key = (r) => `${r.at}|${r.sel.replace(/\s+/g, ' ')}`;
+  for (const r of cssRules(read('ds-core-r14.css'))) if (!coreRules.has(key(r))) coreRules.set(key(r), r.body);
   const vars = { ...CORE.dark };
   for (const v of themedVars(html, pg.map)) if (v.theme === 'dark') vars[v.name] = v.value;
   for (const { css, offset } of styleBlocks(html)) {
     for (const r of cssRules(css)) {
       const sel = r.sel.replace(/\s+/g, ' ');
-      if (!COMPONENT.test(sel) || !coreRules.has(sel)) continue;
-      const a = declMap(r.body), b = declMap(coreRules.get(sel));
+      if (!COMPONENT.test(sel) || !coreRules.has(key(r))) continue;
+      const a = declMap(r.body), b = declMap(coreRules.get(key(r)));
       const diff = [];
       for (const k of PROPS) {
         if (a[k] === undefined || b[k] === undefined) continue;
         const va = resolveVal(a[k], vars), vb = resolveVal(b[k], CORE.dark);
         if (k === 'font-family' ? va.split(',')[0] !== vb.split(',')[0] : va !== vb) diff.push(`${k}: ${a[k]} ≠ ${b[k]}`);
       }
-      if (diff.length) add('warn', 'components', pg.file, lineOf(html, offset + r.bodyStart), `${sel} — ${diff.join('; ')}`,
-        `ds-core-r14.css ${sel}`, 'перенести значения из ядра (правило на странице копируется руками, в обе копии)');
+      if (diff.length) add('warn', 'components', pg.file, lineOf(html, offset + r.bodyStart), `${r.at ? r.at + ' ' : ''}${sel} — ${diff.join('; ')}`,
+        `ds-core-r14.css ${r.at ? r.at + ' ' : ''}${sel}`, 'перенести значения из ядра (правило на странице копируется руками, в обе копии)');
     }
   }
 }
 
 /* 1b. Байтовые копии */
-const COPIES = [
-  ['site/partner-program/partner-program-r14.html', 'site/partner-program/handoff/partner-program.html'],
-];
-for (const [a, b] of COPIES) {
+/* пары «источник → копия» — общий список со сборкой копий (build-copies.mjs) */
+if (on('copies')) for (const [a, b] of COPIES) {
   if (!existsSync(join(ROOT, a)) || !existsSync(join(ROOT, b))) continue;
   const A = readFileSync(join(ROOT, a)), B = readFileSync(join(ROOT, b));
   if (!A.equals(B)) {
     const la = A.toString('utf8').split('\n'), lb = B.toString('utf8').split('\n');
     let i = 0; while (i < la.length && la[i] === lb[i]) i++;
     add('error', 'copies', b, i + 1, `копия расходится с эталоном с строки ${i + 1} (${A.length} → ${B.length} байт)`,
-      a, `cp "${a}" "${b}"`);
+      a, 'npm run build — копию пишет tooling/build-copies.mjs');
   }
 }
 
@@ -249,7 +299,7 @@ function bundleTemplate(file) {
 /* экраны и блоки, где цвета другой темы стоят намеренно */
 const EXPECTED_FOREIGN = /Билет|tts-tk2/;
 const BUNDLES = [['site/redesign-v2-dark.html', 'dark'], ['site/redesign-v2-light.html', 'light']];
-for (const [file, th] of BUNDLES) {
+if (on('redesign')) for (const [file, th] of BUNDLES) {
   if (!existsSync(join(ROOT, file))) continue;
   const tpl = bundleTemplate(file);
   if (typeof tpl !== 'string') { add('error', 'redesign', file, null, 'не читается __bundler/template как JSON-строка', '', 'проверить сборку'); continue; }
@@ -322,7 +372,7 @@ for (const [file, th] of BUNDLES) {
 }
 
 /* ═════════════ 3. CLAUDE.md и DECISIONS.md ═════════════ */
-{
+if (on('claude-md')) {
   const file = 'CLAUDE.md';
   const md = read(file);
   const sections = [['### Тёмная тема', 'dark'], ['### Светлая тема', 'light']];
@@ -350,7 +400,7 @@ for (const [file, th] of BUNDLES) {
     }
   }
 }
-for (const file of ['CLAUDE.md', 'DECISIONS.md']) {
+if (on('decisions')) for (const file of ['CLAUDE.md', 'DECISIONS.md']) {
   const md = read(file);
   // «`--name` (`#HEX`)» и похожие пары в тексте: значение должно быть у токена хотя бы в одной теме
   const fence = [];
@@ -367,7 +417,7 @@ for (const file of ['CLAUDE.md', 'DECISIONS.md']) {
 }
 
 /* ═════════════ 4. Figma-скрипты ═════════════ */
-{
+if (on('figma')) {
   const tokens = JSON.parse(read('tokens.json'));
   const fs = 'figma/figma-script.js';
   const COLORS = new Set();
@@ -438,7 +488,7 @@ for (const file of ['CLAUDE.md', 'DECISIONS.md']) {
 }
 
 /* ═════════════ 5. Витрина index.html ═════════════ */
-{
+if (on('index')) {
   let published = [];
   try {
     published = execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard', '--', 'site'], { cwd: ROOT, encoding: 'utf8' })
@@ -476,7 +526,7 @@ for (const file of ['CLAUDE.md', 'DECISIONS.md']) {
 }
 
 /* ═════════════ 6. Офлайн-копии редизайна в ~/Downloads ═════════════ */
-{
+if (on('downloads')) {
   const dl = join(homedir(), 'Downloads');
   const pairs = [
     ['TTS Redesign v2 - офлайн.html', 'site/redesign-v2-light.html'],
@@ -501,11 +551,13 @@ const order = { error: 0, warn: 1, info: 2 };
 findings.sort((a, b) => order[a.level] - order[b.level] || a.check.localeCompare(b.check) || a.file.localeCompare(b.file) || (a.line || 0) - (b.line || 0));
 const errors = findings.filter((f) => f.level === 'error').length;
 const warns = findings.filter((f) => f.level === 'warn').length;
+const ran = CHECKS.filter(on);
 
 if (JSON_OUT) {
-  process.stdout.write(JSON.stringify({ errors, warnings: warns, findings }, null, 2) + '\n');
+  process.stdout.write(JSON.stringify({ errors, warnings: warns, checks: ran, changed: CHANGED_FILES, findings }, null, 2) + '\n');
 } else {
   const label = { error: '✗ ОШИБКА', warn: '! ВНИМАНИЕ', info: '· сводка' };
+  if (ONLY) console.log(ran.length ? `Проверки: ${ran.join(', ')}` : 'Изменённые файлы не задевают ни одной проверки.');
   let cur = '';
   for (const f of findings) {
     if (f.check !== cur) { cur = f.check; console.log(`\n── ${cur} ──`); }

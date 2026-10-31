@@ -17,7 +17,8 @@ jobs:
         with:
           node-version: 20
       # Сборка и проверки без зависимостей — npm install не нужен
-      - name: Токены и страж правил
+      # check:strict — токены, копии, страж правил и сторож расхождений
+      - name: Токены, копии, страж и сторож расхождений
         run: npm run check:strict
       - name: Проверка перед публикацией
         run: npm run security

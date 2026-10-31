@@ -6,3 +6,11 @@ node tooling/security-check.mjs || {
   echo "Push отменён: исправьте находки выше и повторите."
   exit 1
 }
+
+# Сторож расхождений: ядро и tokens.json против копий системы (страницы, редизайн, CLAUDE.md, Figma, витрина).
+node tooling/drift-check.mjs > /dev/null || {
+  node tooling/drift-check.mjs | grep -A3 "ОШИБКА"
+  echo ""
+  echo "Push отменён: копии разошлись с эталоном (npm run drift — полный отчёт)."
+  exit 1
+}

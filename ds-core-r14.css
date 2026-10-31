@@ -24,6 +24,7 @@
   --accent-ghost:    #0B142A;
   --accent-border:   #091E56;
   --accent-soft:     #7A9FFF;
+  --accent-text:     #A3BCFF;
 
   --n100:            #D6D6D2;
   --n200:            #C0C0BC;
@@ -616,7 +617,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .form-input.error { border-color: var(--error-bd); }
 .form-input.success { border-color: var(--success); }
 
-.form-helper { font-size: 11px; color: var(--n600); }
+.form-helper { font-size: 11px; color: var(--n300); }
 .form-error  { font-size: 11px; color: var(--error-fg); }
 
 /* Select */
@@ -829,6 +830,39 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* Подпись над названием: «Театр · Москва · 2 площадки» — правило multi-venue */
+.event-card-meta {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--n500);
+  margin-bottom: var(--sp-1);
+}
+
+/* Бейдж категории на обложке — только на странице «Все события» (решение №33) */
+.cat-badge {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--n100);
+  background: color-mix(in srgb, var(--n950) 72%, transparent);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid color-mix(in srgb, var(--n800) 70%, transparent);
+  border-radius: var(--r-sm);
+}
+
 .event-card-footer {
   display: flex;
   align-items: center;
@@ -1046,7 +1080,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .row-12 { gap: 12px; }
 .row-16 { gap: 16px; }
 .muted { color: var(--n500); }
-.accent-text { color: var(--accent); }
+.accent-text { color: var(--accent-text); }
 .text-right { text-align: right; }
 .flex-1 { flex: 1; }
 .hidden { display: none !important; }
@@ -1868,7 +1902,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .date-chip-active .date-chip-mon { color: var(--n300); }
 .date-chip-dow {
   font-size: 9px;
-  color: var(--n700);
+  color: var(--n500);
   letter-spacing: .08em;
 }
 .date-chip-sold { opacity: .6; cursor: not-allowed; pointer-events: none; }
@@ -2059,7 +2093,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   flex-shrink: 0;
   white-space: nowrap;
 }
-.session-row-selected .session-price { color: var(--accent); }
+.session-row-selected .session-price { color: var(--accent-text); }
 
 .session-chev {
   color: var(--n500);
@@ -2067,7 +2101,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   font-size: 14px;
   line-height: 1;
 }
-.session-row-selected .session-chev { color: var(--accent); }
+.session-row-selected .session-chev { color: var(--accent-text); }
 
 .session-row-sold {
   opacity: .55;

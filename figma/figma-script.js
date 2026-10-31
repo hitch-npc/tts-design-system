@@ -91,6 +91,7 @@ const COLORS = [
   ['zone-5',           '#33B978',                 '#33B978'],
   ['seat-check',       '#FFFFFF',                 '#FFFFFF'],
   ['accent-soft',      '#7A9FFF',                 '#0436B6'],
+  ['accent-text',      '#A3BCFF',                 '#0436B6'],
   ['on-accent',        '#FFFFFF',                 '#FFFFFF'],
   ['premium-bg',       '#F5F4EE',                 '#0D0D0D'],
   ['premium-ink',      '#0D0D0D',                 '#FFFFFF'],

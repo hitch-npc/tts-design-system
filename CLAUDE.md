@@ -33,7 +33,7 @@
 
 | Папка | Что внутри |
 |-------|-----------|
-| `site/` | Продуктовые сборки: `case-r14.html` (кейс системы для портфолио, публичный), `redesign-v2-dark.html` / `-light.html` (оффлайн, всё внутри одного файла; новая схема зала — внутри них), `behance-hero-blocks.html` (только локально), `cookie-banner/`, `partner-program/` (актуальный html + `handoff/` — пакет для передачи), `account.html` — личный кабинет (профиль, обе темы), `handoff/` — передача фронтенду: `account/` — пакет профиля, `frontend-changes.html` и `redesign-changes.html` («было / стало» с 8 сентября) |
+| `site/` | Продуктовые сборки: `case-r14.html` (кейс системы для портфолио, публичный), `redesign-v2-dark.html` / `-light.html` (оффлайн, всё внутри одного файла; новая схема зала — внутри них), `behance-hero-blocks.html` (только локально), `cookie-banner/`, `partner-program/` (актуальный html + `handoff/` — пакет для передачи; копию в `handoff/` пишет `npm run build`, руками не править), `account.html` — личный кабинет (профиль, обе темы), `handoff/` — передача фронтенду: `account/` — пакет профиля, `frontend-changes.html` и `redesign-changes.html` («было / стало» с 8 сентября) |
 | `concepts/` | Ранние концепты DS (март 2026): Cobalt, CobaltFog, AcidLime, Stone v3, Horizon, Light in Darkness, мобильные v1/v2. Историческая витрина, не эталон — эталон R14. В публичный репо не входит |
 | `emails/` | Транзакционные письма на R14 (светлая тема): `email-1-payment-confirmation.html`, `email-2-reminder.html`, `emails-all.html` (витрина: оба письма + письмо после события). `mailings/` — рассылки на R14 (светлая тема; тёмная версия — `MAILINGS_THEME = 'dark'` в генераторе): после спектакля, перенос, напоминание, промокод, подборка. Все письма **генерируются** `tooling/build-emails.py` (`npm run build:emails`), руками не править. Кампании v3 — в `_archive/emails/` |
 | `docs/` | `audits/` (SEO, UX, redesign v1/v2, рынок), `council/` (репорты и транскрипты советов), `refs/` (референсы, скриншоты интерфейса), `metrika-goals.pdf`, `skills-review.html` |
@@ -55,8 +55,9 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 - **Правила постов (решение №34):** на картинке — надзаголовок, название и одна строка «дата, время · площадка», остальное — в тексте поста.
   Поле 112, название не больше двух строк, кобальт — только активная палочка, метка статуса — инверсия `.smm-mark`,
   свечение — один цвет жанра (`.smm-fx--footlight` с картинкой; `--beam`, `--depth`, `--halo` без картинки). Город на картинке не пишется.
-- Перед фиксацией: `npm run check` (сборка `--check` + страж). Страж (`tooling/guardrail.mjs`) превращает запреты ниже в автопроверку: `font-weight:300` вне `.smap-zoom-btn`, `border-radius>8px`, сырой `#hex` вне `:root`.
-- **Сторож расхождений:** `npm run drift` (`tooling/drift-check.mjs`) сверяет ядро и `tokens.json` со страницами со своим CSS, копией страницы партнёров, сборками редизайна, справочником токенов здесь, Figma-скриптами, витриной и копиями в `~/Downloads`; только читает. Агент `ds-drift-watcher` (`.claude/agents/`) запускает его, проверяет остальное вручную и отдаёт отчёт с правками.
+- Перед фиксацией: `npm run check` (сборка `--check`, копии, страж, сторож расхождений; так же проверяют CI и pre-push). Страж (`tooling/guardrail.mjs`) превращает запреты ниже в автопроверку: `font-weight:300` вне `.smap-zoom-btn`, `border-radius>8px`, сырой `#hex` вне `:root`.
+- **Сторож расхождений:** `npm run drift` (`tooling/drift-check.mjs`) сверяет ядро и `tokens.json` со страницами со своим CSS, копией страницы партнёров, сборками редизайна, справочником токенов здесь, Figma-скриптами, витриной и копиями в `~/Downloads`; только читает; ошибка сторожа валит `npm run check`, CI и push. Узкий охват — `--changed`, `--only <проверки>`, `--files <файлы>`. Агент `ds-drift-watcher` (`.claude/agents/`, Sonnet) по умолчанию смотрит только изменённое, при находках читает только их строки; полный прогон — по просьбе «полный прогон».
+- **Контраст — по APCA:** `npm run contrast` (`tooling/contrast-check.mjs`), минимумы APCA Bronze по роли текста. **Пересмотр решений:** `npm run decisions` — решения из `DECISIONS.md`, у которых наступила веха 1/3/6/12 месяцев. Правка файла в сессии Claude Code сама запускает задетые проверки сторожа, правка `tokens.json` или ядра — ещё и APCA (хук `tooling/drift-hook.mjs`, при чистом результате молчит).
 - Полная инструкция — `tooling/README.md`.
 
 ### Git и публикация (репозиторий ПУБЛИЧНЫЙ)
@@ -89,7 +90,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 - **Главные кнопки — всегда кобальт** `.btn-primary`, включая «Перейти к оформлению» и «Купить». Зелёную кнопку
   пробовали в 14.3.0 и отменили в 14.3.1: белый текст на зелёном давал контраст 2,3 : 1 при норме 4,5 : 1.
   Зелёный остаётся только у выбранного места на схеме зала.
-- **Кобальт в тексте** — только крупно (от 17px); у ссылок кобальт только в подчёркивании (`.t-link`). Мелкие подписи и капс до 11px — серые. Светлого кобальта нет.
+- **Кобальт в тексте** — только крупно (от 17px) и цветом `--accent-text` (`#A3BCFF` в тёмной — `#0047FF` на тёмном не читается); у ссылок кобальт только в подчёркивании (`.t-link`). Мелкие подписи и капс до 11px — серые. Светлого кобальта нет.
 - **Ссылка в тексте** — `.t-link`: текст `--n100`, подчёркивание кобальтом (1px, отступ 3px); при наведении подчёркивание светлеет.
   Кобальтовым текстом ссылки не делаются — как «Маршрут ↗» в редизайне.
 - **Надзаголовок** — строка `.t-eyebrow` (10px, 600, .22em, `--n300`), без плашки и рамки.
@@ -230,6 +231,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 --zone-5:             #33B978
 --seat-check:         #FFFFFF
 --accent-soft:        #7A9FFF
+--accent-text:        #A3BCFF   /* кобальт текстом: цена выбранного сеанса, .accent-text */
 --on-accent:          #FFFFFF
 --premium-bg:         #F5F4EE
 --premium-ink:        #0D0D0D
@@ -314,6 +316,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 --zone-5:             #33B978
 --seat-check:         #FFFFFF
 --accent-soft:        #0436B6
+--accent-text:        #0436B6
 --on-accent:          #FFFFFF
 --premium-bg:         #0D0D0D
 --premium-ink:        #FFFFFF
@@ -443,7 +446,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 <span class="tag tag-orange">Мало мест</span>
 <span class="tag tag-green">Новинка</span>
 <span class="tag tag-premium">Premium</span>   <!-- ivory inversion -->
-<span class="badge badge-count">3</span>       <!-- числовой бейдж nav -->
+<span class="badge badge-accent">3</span>      <!-- числовой бейдж: .badge-accent | .badge-muted -->
 ```
 
 ### Event Card (вертикальная)
@@ -452,6 +455,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
   <div class="event-card-cover">
     <div class="cover-blob cover-blob-1"></div>
     <div class="cover-blob cover-blob-2"></div>
+    <span class="cat-badge">Театр</span>   <!-- только на «Всех событиях» (решение №33) -->
     <div class="cover-tag"><span class="tag tag-accent">Премьера</span></div>
     <div class="cover-date"><div class="t-caption">14 июня</div></div>
   </div>
@@ -491,17 +495,18 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 ### Навигация
 ```html
 <!-- Mobile: хедер + drawer -->
-<nav class="nav-mobile">
-  <div class="nav-mobile-header">
-    <svg><!-- logo --></svg>
-    <button class="nav-icon-btn"><!-- burger --></button>
-  </div>
-</nav>
+<header class="nav-mobile-header">
+  <svg><!-- logo --></svg>
+  <button class="nav-icon-btn"><!-- burger --></button>
+</header>
 
 <!-- Desktop -->
 <nav class="nav-desktop">
-  <div class="nav-desktop-left"><!-- logo + links --></div>
-  <div class="nav-desktop-right"><!-- search + login + cart --></div>
+  <svg><!-- logo --></svg>
+  <div class="nav-desktop-links">
+    <a class="nav-desktop-link" href="#">Театр</a>
+  </div>
+  <!-- справа: поиск, кнопка темы, город, профиль, корзина -->
 </nav>
 <span class="nav-cart-badge">3</span>  <!-- бейдж корзины -->
 ```
@@ -632,19 +637,25 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 ### Sticky Buy (мобильная фиксированная панель)
 ```html
 <div class="sticky-buy">
-  <div class="sticky-buy-price">…</div>
-  <button class="btn btn-primary btn-md">Купить билеты</button>
+  <div class="sticky-buy-info">
+    <div class="sticky-buy-title">Название</div>
+    <div class="sticky-buy-meta">14 мая · 19:00</div>
+  </div>
+  <div class="sticky-buy-right">
+    <span class="sticky-buy-total">3 000 ₽</span>
+    <button class="btn btn-primary btn-md">Купить билеты</button>
+  </div>
 </div>
 ```
 
 ### Steps (индикатор шагов чекаута)
 ```html
 <div class="steps-bar">
-  <div class="step-item step-done"><div class="step-dot"></div><div class="step-label">Места</div></div>
+  <div class="step-item step-done"><div class="step-circle"></div><div class="step-label">Места</div></div>
   <div class="step-line"></div>
-  <div class="step-item step-active"><div class="step-dot"></div><div class="step-label">Данные</div></div>
+  <div class="step-item step-active"><div class="step-circle"></div><div class="step-label">Данные</div></div>
   <div class="step-line"></div>
-  <div class="step-item"><div class="step-dot"></div><div class="step-label">Оплата</div></div>
+  <div class="step-item"><div class="step-circle"></div><div class="step-label">Оплата</div></div>
 </div>
 ```
 
@@ -658,13 +669,19 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 ### Seat Map
 ```html
 <div class="smap-wrap">
-  <div class="smap-scene">Сцена</div>
-  <div class="smap-rows">
-    <div class="smap-row">
-      <button class="smap-dot smap-t-partet"></button>                    <!-- доступно: цвет зоны -->
-      <button class="smap-dot smap-t-partet smap-dot-sold"></button>      <!-- продано: --seat-sold -->
-      <button class="smap-dot smap-t-partet smap-dot-selected"></button>  <!-- выбрано: зелёное с галочкой -->
-      <!-- зоны: .smap-t-vip (ложа) · .smap-t-partet · .smap-t-amphi · .smap-t-belet · .smap-t-balkon = --zone-1…5 -->
+  <div class="smap-stage-wrap"><div class="smap-stage">Сцена</div></div>
+  <div class="smap-viewport">
+    <div class="smap-canvas">
+      <div class="smap-zone-label">Партер</div>
+      <div class="smap-row">
+        <span class="smap-rl">1</span>
+        <div class="smap-seats">
+          <button class="smap-dot smap-t-partet"></button>                    <!-- доступно: цвет зоны -->
+          <button class="smap-dot smap-t-partet smap-dot-sold"></button>      <!-- продано: --seat-sold -->
+          <button class="smap-dot smap-t-partet smap-dot-selected"></button>  <!-- выбрано: зелёное с галочкой -->
+          <!-- зоны: .smap-t-vip (ложа) · .smap-t-partet · .smap-t-amphi · .smap-t-belet · .smap-t-balkon = --zone-1…5 -->
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -672,8 +689,14 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 
 ### Skeleton Loading
 ```html
-<div class="skeleton skeleton-text"></div>
-<div class="skeleton skeleton-card"></div>
+<div class="event-card-skeleton">
+  <div class="skeleton sk-cover"></div>
+  <div class="sk-body">
+    <div class="skeleton sk-tag"></div>
+    <div class="skeleton sk-title-1"></div>
+    <div class="skeleton sk-sub"></div>
+  </div>
+</div>
 ```
 
 ---
@@ -716,7 +739,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 - **Никогда** не задавай цвет или шрифт вручную — только через CSS-переменные
 - **Никогда** не используй border-radius > 8px в UI-компонентах (система угловатая)
 - Accent (`--accent`) только для интерактивных элементов и статусных тегов; в тексте — только крупно (от 17px: цифры, выбранный день, скидка) и в ссылках, на мелких подписях никогда
-- Ivory (`--premium`) только для Premium-блоков, не декоративно
+- Ivory (`--premium-bg`, текст `--premium-ink`) только для Premium-блоков, не декоративно
 - Blob только через `.cover-blob-1/.cover-blob-2` или radial-gradient с blur
 - Шрифт Cormorant — только названия событий и display. Для UI — Manrope
 - Минимальная высота кнопки `.btn-sm` — 36px
@@ -763,7 +786,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 - **НЕ используй** `date-chip` когда у события >1 площадки или >2 разрозненных дат — для этого `session-list`.
 - **НЕ задавай** `border-radius > 8px` в UI. Система угловатая, основной радиус — `2px` (`--r-sm`).
 - **НЕ применяй** `--accent` (Cobalt) к декоративным элементам. Только интерактив и статусные теги.
-- **НЕ применяй** `--premium` (ivory) декоративно. Только Premium-блоки.
+- **НЕ применяй** `--premium-bg` (ivory) декоративно. Только Premium-блоки.
 - **НЕ хардкодь** цвета и шрифты — только через CSS-переменные.
 
 ### Версионирование
