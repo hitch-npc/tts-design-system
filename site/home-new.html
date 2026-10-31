@@ -75,14 +75,12 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 /* надпись: буквы выезжают из-под маски; смена шрифта — та же маска: антиква уходит вверх, Manrope приходит снизу */
 .intro-head { position: absolute; z-index: 2; left: 50%; top: 50%; width: min(1320px, calc(100vw - 2 * var(--page-pad))); margin: 0; color: var(--n100); text-transform: uppercase; pointer-events: none;
   transform: translate(-50%, -50%) translate3d(calc(var(--px, 0) * 8px), calc(var(--py, 0) * 5px), 0); }
-.ih-line { display: block; width: max-content; white-space: nowrap; line-height: .98; }
-.cw { display: inline-block; overflow: hidden; vertical-align: top; padding: .1em .02em .2em; margin: -.1em -.02em -.2em; }
-.cw.sp { width: .26em; }
-.ch { display: inline-block; font-family: var(--f-thin); font-weight: 500; font-size: calc(var(--sf, 1.12) * 1em); letter-spacing: 0; transform: translateY(118%); will-change: transform; }
-.ch.stay { font-size: 1.12em; }
-.ch.sans { font-family: var(--font); font-weight: 200; font-size: 1em; letter-spacing: -.02em; }
-.ch.in  { transform: none; transition: transform 1000ms var(--expo); }
-.ch.out { transform: translateY(-118%); transition: transform 380ms var(--expo-in); }
+.ih-line { display: block; width: max-content; white-space: nowrap; line-height: .98; overflow: hidden; padding: .08em .06em .18em 0; margin: -.08em -.06em -.18em 0; }
+.ih-in { display: inline-block; transform: translateY(112%); will-change: transform; }
+.ih-in.in  { transform: none; transition: transform 1100ms var(--expo); }
+.ih-in.out { transform: translateY(-112%); transition: transform 460ms var(--expo-in); }
+.ih-s { font-family: var(--f-thin); font-weight: 400; font-size: 1.12em; letter-spacing: 0; }
+.ih-n { font-family: var(--font); font-weight: 200; letter-spacing: -.02em; }
 
 /* кинорамка */
 .intro-bar { position: absolute; z-index: 4; left: 0; right: 0; height: var(--lb); display: flex; align-items: center; padding: 0 var(--page-pad); background: var(--ink); transition: transform 900ms var(--expo-io) 120ms; }
@@ -436,7 +434,6 @@ html.page-in .hw > span, .no-js .hw > span { transform: none; transition: transf
       </div>
       <div class="hero2-usp rv" style="--i:4">
         <span class="t-caption"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Без кассовых сборов</span>
-        <span class="t-caption"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M3 7l9 6 9-6"/></svg>Билет приходит на почту</span>
       </div>
     </div>
     <a class="hero2-poster" href="#" aria-label="Одни во вселенной, 14 ноября, 19:00">
@@ -679,37 +676,20 @@ const INTRO_IMAGES = ['home-new/stage-flares.webp', 'home-new/stage-bokeh.webp',
   const topCard = cards[cards.length - 1];
   topCard.style.setProperty('--r', '-1.5deg');
 
-  /* ─ надпись: каждая буква в своей маске ─ */
+  /* ─ надпись: каждая строка выдвигается из своей маски; «Ticket to Show» — Cormorant 400, остальное — Manrope 200 ─ */
   const head = $('#introHead');
   const LINES = narrow
-    ? [['TICKET TO', 1], ['SHOW', 1, ' —'], ['БИЛЕТЫ БЕЗ'], ['КАССОВЫХ'], ['СБОРОВ']]
-    : [['TICKET TO SHOW', 1, ' —'], ['БИЛЕТЫ БЕЗ'], ['КАССОВЫХ СБОРОВ']];
-  /* [текст, 1 — остаётся антиквой, хвост — уходит в Manrope] */
-  head.innerHTML = LINES.map(([a, keep, tail = '']) => '<span class="ih-line">' +
-    [[a, !!keep], [tail, false]].map(([t, stay]) => [...t].map(ch => ch === ' '
-      ? '<span class="cw sp"></span>'
-      : `<span class="cw"><span class="ch${stay ? ' stay' : ''}">${ch}</span></span>`).join('')).join('') + '</span>').join('');
+    ? [['TICKET TO', ''], ['SHOW', '&nbsp;—'], ['', 'БИЛЕТЫ БЕЗ'], ['', 'КАССОВЫХ'], ['', 'СБОРОВ']]
+    : [['TICKET TO SHOW', '&nbsp;—'], ['', 'БИЛЕТЫ БЕЗ'], ['', 'КАССОВЫХ СБОРОВ']];
+  head.innerHTML = LINES.map(([a, b]) => `<span class="ih-line"><span class="ih-in">${a ? `<span class="ih-s">${a}</span>` : ''}${b ? `<span class="ih-n">${b}</span>` : ''}</span></span>`).join('');
   const lines = [...head.querySelectorAll('.ih-line')];
-  const spans = [...head.querySelectorAll('.ch')];
-  const swapList = spans.filter(s => !s.classList.contains('stay'));
+  const inners = [...head.querySelectorAll('.ih-in')];
 
-  /* Размер — по итоговому виду: самая длинная строка во всю ширину.
-     Буквы, которые потом станут Manrope, в антикве масштабируются так, чтобы строка не меняла ширину при смене шрифта. */
+  /* размер — чтобы самая длинная строка заняла всю ширину и всё влезло по высоте */
   function fit() {
     head.style.fontSize = '100px';
-    const saved = swapList.map(s => s.classList.contains('sans'));
-    lines.forEach(l => l.style.removeProperty('--sf'));
-    swapList.forEach(s => s.classList.remove('sans'));
-    const wSerif = lines.map(l => l.getBoundingClientRect().width);
-    swapList.forEach(s => s.classList.add('sans'));
-    const wSans = lines.map(l => l.getBoundingClientRect().width);
-    lines.forEach((l, i) => {
-      if (!l.querySelector('.ch:not(.stay)')) return;
-      const fixed = [...l.querySelectorAll('.ch.stay')].reduce((a, c) => a + c.parentNode.getBoundingClientRect().width, 0);
-      l.style.setProperty('--sf', (1.12 * (wSans[i] - fixed) / Math.max(1, wSerif[i] - fixed)).toFixed(3));
-    });
-    swapList.forEach((s, i) => s.classList.toggle('sans', saved[i]));
-    const byW = head.clientWidth / Math.max(...wSans) * 100;
+    const w = Math.max(...inners.map(x => x.getBoundingClientRect().width));
+    const byW = head.clientWidth / w * 100;
     const byH = (innerHeight - 2 * box.querySelector('.intro-bar-t').offsetHeight - 48) / (lines.length * 1.12 * .98);
     head.style.fontSize = Math.floor(Math.min(byW, byH)) + 'px';
   }
@@ -771,13 +751,8 @@ const INTRO_IMAGES = ['home-new/stage-flares.webp', 'home-new/stage-bokeh.webp',
   const at = (ms, fn) => timers.push(setTimeout(fn, ms));
   let n = 0;
   const deal = () => { cards.forEach((c, i) => { if (i <= n) c.dataset.d = String(Math.min(n - i, 3)); }); n++; };
-  function swap(s) {
-    s.style.transitionDelay = '0ms';
-    s.classList.remove('in'); s.classList.add('out');
-    setTimeout(() => { s.classList.remove('out'); s.classList.add('sans'); void s.offsetWidth; s.classList.add('in'); }, 400);
-  }
   const fontsReady = document.fonts ? Promise.all([
-    document.fonts.load('500 100px "Cormorant Garamond"', 'TICKETБ'),
+    document.fonts.load('400 100px "Cormorant Garamond"', 'TICKET'),
     document.fonts.load('200 100px "Manrope"', 'TICKETБ'),
   ]) : Promise.resolve();
   const assets = [fontsReady, ...cards.map(c => { const im = c.querySelector('img'); return im.decode ? im.decode() : Promise.resolve(); })];
@@ -789,13 +764,13 @@ const INTRO_IMAGES = ['home-new/stage-flares.webp', 'home-new/stage-bokeh.webp',
     aim(); sizeDust();
     addEventListener('resize', onResize);
     raf = requestAnimationFrame(loop);
-    /* отсчёт: реальная загрузка картинок и шрифтов, не быстрее 1,3 с и не дольше 4 с */
+    /* отсчёт: реальная загрузка картинок и шрифтов, не быстрее 0,6 с и не дольше 2,5 с */
     const t0 = performance.now(), num = $('#introNum'), bar = $('#introLine');
     let p = 0;
     (function count(t) {
       if (done) return;
-      const el = t - t0, goal = Math.min(loaded / assets.length, el / 1100);
-      p += (Math.max(goal, el > 3500 ? 1 : 0) - p) * (RM ? 1 : .22);
+      const el = t - t0, goal = Math.min(loaded / assets.length, el / 600);
+      p += (Math.max(goal, el > 2500 ? 1 : 0) - p) * (RM ? 1 : .3);
       if (p > .985) p = 1;
       num.textContent = String(Math.round(p * 100)).padStart(3, '0');
       bar.style.setProperty('--p', p.toFixed(3));
@@ -808,16 +783,14 @@ const INTRO_IMAGES = ['home-new/stage-flares.webp', 'home-new/stage-bokeh.webp',
     fit();
     if (RM) {
       n = cards.length - 1; deal();
-      spans.forEach(s => s.classList.add('in')); swapList.forEach(s => s.classList.add('sans'));
-      at(1800, () => finish());
+      inners.forEach(x => x.classList.add('in'));
+      at(1500, () => finish());
       return;
     }
-    cards.forEach((_, i) => at(i * 300, deal));
-    spans.forEach((s, i) => { s.style.transitionDelay = `${120 + i * 24}ms`; });
-    requestAnimationFrame(() => spans.forEach(s => s.classList.add('in')));
-    /* антиква держится целиком ~1,3 с, потом буквы по одной уходят в Manrope */
-    swapList.forEach((s, i) => at(2300 + i * 32, () => swap(s)));
-    at(2300 + swapList.length * 32 + 1150, () => finish());
+    cards.forEach((_, i) => at(i * 200, deal));
+    inners.forEach((x, i) => { x.style.transitionDelay = `${120 + i * 90}ms`; });
+    requestAnimationFrame(() => inners.forEach(x => x.classList.add('in')));
+    at(120 + inners.length * 90 + 1500, () => finish());
   }
   function onResize() { aim(); sizeDust(); fit(); }
 
@@ -829,7 +802,7 @@ const INTRO_IMAGES = ['home-new/stage-flares.webp', 'home-new/stage-bokeh.webp',
     box.style.setProperty('--px', 0); box.style.setProperty('--py', 0);
     box.classList.add('is-ready');
     /* надпись уходит вверх построчно */
-    lines.forEach((l, li) => l.querySelectorAll('.ch').forEach(s => { s.style.transitionDelay = `${li * 60}ms`; s.classList.remove('in'); s.classList.add('out'); }));
+    inners.forEach((x, i) => { x.style.transitionDelay = `${i * 50}ms`; x.classList.remove('in'); x.classList.add('out'); });
     /* верхняя афиша перелетает в постер, если он на экране */
     const poster = $('.hero2-poster');
     const pr = poster && poster.getBoundingClientRect();
