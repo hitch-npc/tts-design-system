@@ -35,8 +35,25 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .il-l1 { animation-delay: 480ms; }
 .il-l2 { animation-delay: 580ms; }
 
+/* свет: холодный бело-синий прожектор из-за кадра сверху слева, луч наискосок через колоду, блик-полоса как от анаморфотной линзы */
+.intro-light { --cold: color-mix(in srgb, var(--accent-soft) 55%, var(--n100)); position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity 1200ms var(--ease-out), transform 820ms var(--ease-io); }
+.intro.is-run .intro-light { opacity: 1; }
+.intro.is-out .intro-light { transform: translateY(-10vh); }
+.il-src { position: absolute; left: var(--sx0, -6vw); top: var(--sy0, -14vh); width: 40vmax; height: 40vmax; transform: translate(-50%, -50%); border-radius: 50%; filter: blur(36px);
+  background: radial-gradient(circle, color-mix(in srgb, var(--cold) 70%, transparent) 0%, color-mix(in srgb, var(--accent) 30%, transparent) 34%, transparent 68%); }
+/* конус света: точка — источник за кадром, направление — на колоду (угол считает скрипт) */
+.il-beam { position: absolute; inset: -30%; transform-origin: var(--sx) var(--sy); filter: blur(22px); opacity: .9;
+  background: conic-gradient(from calc(var(--ba, 130deg) - 13deg) at var(--sx) var(--sy), transparent 0deg, color-mix(in srgb, var(--cold) 10%, transparent) 5deg, color-mix(in srgb, var(--cold) 22%, transparent) 11deg, color-mix(in srgb, var(--accent-soft) 14%, transparent) 17deg, color-mix(in srgb, var(--accent) 6%, transparent) 23deg, transparent 27deg);
+  -webkit-mask-image: radial-gradient(circle at var(--sx) var(--sy), var(--scrim) 0%, var(--scrim) 35%, transparent 75%); mask-image: radial-gradient(circle at var(--sx) var(--sy), var(--scrim) 0%, var(--scrim) 35%, transparent 75%);
+  animation: il-sweep 9s ease-in-out infinite alternate; }
+.il-beam-2 { filter: blur(10px); opacity: .7; animation-duration: 6.5s; animation-delay: -3s;
+  background: conic-gradient(from calc(var(--ba, 130deg) - 3deg) at var(--sx) var(--sy), transparent 0deg, color-mix(in srgb, var(--cold) 26%, transparent) 2.5deg, transparent 6deg); }
+.il-halo { position: absolute; left: 50%; top: 52%; width: 70vmin; height: 70vmin; transform: translate(-50%, -50%); border-radius: 50%; filter: blur(60px); opacity: .55;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 26%, transparent) 0%, transparent 65%); }
+@keyframes il-sweep { from { transform: rotate(-2.5deg); } to { transform: rotate(2.5deg); } }
+
 /* колода: каждая новая афиша ложится сверху, нижние уходят вглубь и гаснут */
-.intro-deck { position: absolute; inset: 0; display: grid; place-items: center; transition: transform 820ms var(--ease-io), opacity 820ms var(--ease-io); }
+.intro-deck { position: absolute; inset: 0; z-index: 1; display: grid; place-items: center; transition: transform 820ms var(--ease-io), opacity 820ms var(--ease-io); }
 .intro.is-out .intro-deck { transform: translateY(-10vh) scale(1.04); opacity: .3; }
 .intro-deck .ic { position: absolute; left: 50%; top: 50%; height: min(64vh, 600px, 118vw); aspect-ratio: 3 / 4; margin: 0; overflow: hidden; background: var(--n950); border: 1px solid var(--accent); border-radius: var(--r-sm); box-shadow: 0 40px 80px -30px var(--shadow-color); opacity: 0;
   transform: translate(-50%, -50%) translate(var(--fx), 18vh) rotate(var(--fr)) scale(1.06);
@@ -49,20 +66,20 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 /* место под картинку, пока её нет: только цвет жанра, без текста */
 .ic-ph { position: absolute; inset: 0; }
 .ic-ph .pst-b1 { opacity: 1; }
-.ic-ph b { position: absolute; left: 7%; top: 5%; font-family: var(--f-num); font-weight: 400; font-size: clamp(80px, 14vh, 140px); line-height: .8; color: color-mix(in srgb, var(--n100) 14%, transparent); }
 
 /* крупная надпись: появляется антиквой, в конце «Ticket to Show» остаётся антиквой, остальное — тонкий Manrope */
 .intro-head { position: absolute; z-index: 2; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(var(--content-max), calc(100vw - 2 * var(--page-pad))); margin: 0; color: var(--n100); text-transform: uppercase; pointer-events: none; transition: transform 820ms var(--ease-io), opacity 600ms var(--ease-io); }
 .intro.is-out .intro-head { transform: translate(-50%, calc(-50% - 8vh)); opacity: 0; }
 .ih-line { display: block; width: max-content; white-space: nowrap; line-height: .98; }
-.ch { display: inline-block; font-family: var(--f-thin); font-weight: 500; font-size: calc(var(--sf, 1.12) * 1em); letter-spacing: 0; opacity: 0; transform: translateY(.3em); filter: blur(10px); }
-.ch.on { opacity: 1; transform: none; filter: none; transition: opacity 640ms var(--ease-out), transform 820ms var(--ease-in), filter 640ms var(--ease-out); }
+.ch { display: inline-block; font-family: var(--f-thin); font-weight: 500; font-size: calc(var(--sf, 1.12) * 1em); letter-spacing: 0; opacity: 0; transform: translateY(.35em); }
+.ch.on { opacity: 1; transform: none; transition: opacity 520ms var(--ease-out), transform 760ms var(--ease-in); }
 .ch.stay { font-size: 1.12em; }
-.ch.sans { font-family: var(--font); font-weight: 200; font-size: 1em; letter-spacing: -.02em; animation: ch-swap 520ms var(--ease-in); }
+.ch.sans { font-family: var(--font); font-weight: 200; font-size: 1em; letter-spacing: -.02em; animation: ch-swap 560ms var(--ease-in); }
 .ch.sp { width: .26em; }
-@keyframes ch-swap { 0% { opacity: .15; filter: blur(8px); transform: translateY(.06em) scaleY(.92); } 100% { opacity: 1; filter: none; transform: none; } }
+@keyframes ch-swap { 0% { opacity: 0; transform: translateY(.22em); } 100% { opacity: 1; transform: none; } }
 
-.intro-go { position: absolute; z-index: 3; left: 50%; bottom: calc(26px + env(safe-area-inset-bottom)); transform: translateX(-50%); display: inline-flex; align-items: center; gap: 10px; padding: 10px 14px; font-size: 15px; font-weight: 400; color: var(--n100); opacity: 0; animation: il-fade 500ms var(--ease-out) 1400ms forwards; }
+.intro-go { position: absolute; z-index: 3; left: 50%; bottom: calc(26px + env(safe-area-inset-bottom)); transform: translateX(-50%); display: inline-flex; align-items: center; gap: 10px; padding: 10px 14px; font-size: 15px; font-weight: 400; color: var(--n100); opacity: 0; }
+.intro.is-run .intro-go { animation: il-fade 500ms var(--ease-out) 1600ms forwards; }
 .intro-go svg { transition: transform var(--dur-slow) var(--ease-out); }
 .intro-go:hover svg { transform: translateY(3px); }
 @keyframes il-eye  { 0% { transform: scaleY(0); } 60% { transform: scaleY(1.08); } 100% { transform: scaleY(1); } }
@@ -306,6 +323,7 @@ html.page-in .rv, .no-js .rv { opacity: 1; transform: none; transition: opacity 
       <g class="il-l2"><path d="M407.348 158.388C402.615 158.388 398.769 157.323 395.81 155.193C392.852 153.063 391.054 150.069 390.414 146.211L399.148 144.862C399.597 146.755 400.591 148.246 402.13 149.335C403.668 150.424 405.609 150.968 407.952 150.968C410.011 150.968 411.597 150.566 412.709 149.761C413.845 148.933 414.413 147.809 414.413 146.389C414.413 145.513 414.2 144.815 413.774 144.294C413.371 143.75 412.473 143.229 411.076 142.732C409.68 142.235 407.538 141.608 404.65 140.851C401.431 139.999 398.875 139.087 396.982 138.117C395.089 137.123 393.728 135.951 392.899 134.602C392.071 133.253 391.656 131.62 391.656 129.703C391.656 127.312 392.284 125.23 393.538 123.455C394.793 121.68 396.544 120.319 398.793 119.372C401.041 118.402 403.692 117.917 406.745 117.917C409.727 117.917 412.366 118.378 414.661 119.302C416.981 120.224 418.851 121.538 420.271 123.242C421.69 124.946 422.566 126.946 422.898 129.242L414.165 130.804C413.951 129.17 413.206 127.881 411.928 126.934C410.673 125.987 408.993 125.455 406.887 125.336C404.875 125.218 403.254 125.526 402.023 126.26C400.792 126.97 400.177 127.976 400.177 129.277C400.177 130.011 400.425 130.638 400.922 131.159C401.42 131.68 402.413 132.2 403.905 132.721C405.42 133.242 407.668 133.88 410.65 134.638C413.703 135.419 416.141 136.318 417.963 137.336C419.809 138.33 421.134 139.525 421.939 140.922C422.768 142.318 423.182 144.01 423.182 145.998C423.182 149.856 421.774 152.885 418.957 155.087C416.164 157.288 412.294 158.388 407.348 158.388Z" fill="currentColor"/><path d="M457.477 157.32V138.86C457.477 137.653 457.394 136.316 457.228 134.849C457.063 133.381 456.672 131.973 456.057 130.624C455.465 129.251 454.566 128.127 453.359 127.251C452.176 126.375 450.566 125.938 448.531 125.938C447.442 125.938 446.365 126.115 445.3 126.47C444.235 126.825 443.265 127.441 442.389 128.316C441.537 129.168 440.85 130.351 440.33 131.866C439.809 133.357 439.549 135.275 439.549 137.618L434.472 135.452C434.472 132.186 435.099 129.228 436.354 126.576C437.632 123.926 439.502 121.82 441.963 120.258C444.424 118.672 447.454 117.879 451.051 117.879C453.892 117.879 456.235 118.352 458.08 119.299C459.926 120.246 461.394 121.453 462.483 122.92C463.571 124.387 464.376 125.949 464.897 127.606C465.417 129.263 465.748 130.836 465.891 132.328C466.057 133.795 466.139 134.99 466.139 135.914V157.32H457.477ZM430.887 157.32V106.199H438.52V133.109H439.549V157.32H430.887Z" fill="currentColor"/><path d="M492.442 158.393C488.589 158.393 485.223 157.525 482.345 155.788C479.467 154.051 477.23 151.661 475.637 148.616C474.067 145.548 473.282 142.028 473.282 138.055C473.282 134.011 474.091 130.467 475.708 127.422C477.325 124.378 479.574 121.999 482.452 120.287C485.33 118.574 488.66 117.717 492.442 117.717C496.319 117.717 499.697 118.586 502.576 120.322C505.453 122.059 507.689 124.461 509.283 127.529C510.877 130.574 511.673 134.083 511.673 138.055C511.673 142.051 510.865 145.584 509.248 148.652C507.654 151.697 505.418 154.087 502.54 155.824C499.661 157.536 496.296 158.393 492.442 158.393ZM492.442 150.329C495.867 150.329 498.412 149.187 500.078 146.903C501.743 144.62 502.576 141.671 502.576 138.055C502.576 134.321 501.731 131.348 500.042 129.135C498.353 126.899 495.82 125.781 492.442 125.781C490.135 125.781 488.232 126.304 486.734 127.351C485.258 128.374 484.164 129.813 483.451 131.669C482.737 133.5 482.38 135.629 482.38 138.055C482.38 141.79 483.225 144.775 484.914 147.011C486.627 149.223 489.136 150.329 492.442 150.329Z" fill="currentColor"/><path d="M526.35 157.322L514.576 118.717L522.996 118.788L530.525 143.514L538.161 118.788H545.403L553.003 143.514L560.568 118.788H568.988L557.214 157.322H550.506L541.764 130.812L533.059 157.322H526.35Z" fill="currentColor"/></g>
     </svg>
   </div>
+  <div class="intro-light" aria-hidden="true"><span class="il-src"></span><span class="il-beam"></span><span class="il-beam il-beam-2"></span><span class="il-halo"></span></div>
   <div class="intro-deck" id="introDeck" aria-hidden="true"></div>
   <p class="intro-head" id="introHead" aria-hidden="true"></p>
   <button class="intro-go" id="introSkip" type="button">К билетам <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16M6 14l6 6 6-6"/></svg></button>
@@ -595,7 +613,6 @@ const INTRO_IMAGES = [];
   const deck = $('#introDeck');
   const narrow = innerWidth < 768;
   const genres = ['cool', 'warm', 'green', 'warm', 'cool', 'green'];
-  const nums = [14, 21, 7, 28, 3, 19];
   genres.forEach((g, i) => {
     const c = document.createElement('figure');
     c.className = 'ic';
@@ -607,7 +624,7 @@ const INTRO_IMAGES = [];
     const src = INTRO_IMAGES[i % (INTRO_IMAGES.length || 1)];
     c.innerHTML = src
       ? `<img src="${src}" alt="" decoding="async">`
-      : `<span class="ic-ph pst-${g}"><span class="pst-art"><span class="pst-b1"></span><span class="pst-b2"></span></span><b>${nums[i]}</b></span>`;
+      : `<span class="ic-ph pst-${g}"><span class="pst-art"><span class="pst-b1"></span><span class="pst-b2"></span></span></span>`;
     deck.appendChild(c);
   });
   const cards = [...deck.children];
@@ -654,6 +671,17 @@ const INTRO_IMAGES = [];
     head.style.fontSize = Math.floor(Math.min(byW, byH)) + 'px';
   }
 
+  /* прожектор: источник за кадром сверху слева, конус направлен в центр колоды */
+  function aim() {
+    const L = box.querySelector('.intro-light'), W = innerWidth, H = innerHeight;
+    const x0 = -0.06 * W, y0 = -0.14 * H;                 // точка источника на экране
+    const dx = W * .5 - x0, dy = H * .52 - y0;
+    const bearing = Math.atan2(dx, -dy) * 180 / Math.PI;   // 0° — вверх, по часовой
+    L.style.setProperty('--sx0', x0 + 'px'); L.style.setProperty('--sy0', y0 + 'px');
+    L.style.setProperty('--sx', (x0 + .3 * W) + 'px'); L.style.setProperty('--sy', (y0 + .3 * H) + 'px');  // у луча поля -30%
+    L.style.setProperty('--ba', bearing.toFixed(1) + 'deg');
+  }
+
   const timers = [];
   const at = (ms, fn) => timers.push(setTimeout(fn, ms));
   let n = 0, done = false;
@@ -661,8 +689,10 @@ const INTRO_IMAGES = [];
 
   function run() {
     if (done) return;
+    box.classList.add('is-run');
+    aim();
     fit();
-    addEventListener('resize', fit);
+    addEventListener('resize', fit); addEventListener('resize', aim);
     if (RM) {
       n = cards.length - 1; deal();
       spans.forEach(s => s.classList.add('on'));
@@ -670,18 +700,19 @@ const INTRO_IMAGES = [];
       at(1800, finish);
       return;
     }
-    cards.forEach((_, i) => at(120 + i * 420, deal));
-    spans.forEach((s, i) => { s.style.transitionDelay = `${300 + i * 24}ms`; });
+    cards.forEach((_, i) => at(120 + i * 480, deal));
+    spans.forEach((s, i) => { s.style.transitionDelay = `${250 + i * 32}ms`; });
     requestAnimationFrame(() => spans.forEach(s => s.classList.add('on')));
     /* смена шрифта: слева направо, строка за строкой */
-    swapList.forEach((s, i) => at(2350 + i * 30, () => { s.style.transitionDelay = '0ms'; s.classList.add('sans'); }));
-    at(4700, finish);
+    /* антиква держится ~1,5 с целиком, потом буквы по одной уходят в Manrope */
+    swapList.forEach((s, i) => at(3100 + i * 38, () => { s.style.transitionDelay = '0ms'; s.classList.add('sans'); }));
+    at(6000, finish);
   }
 
   function finish(toTickets) {
     if (done) return; done = true;
     timers.forEach(clearTimeout);
-    removeEventListener('resize', fit);
+    removeEventListener('resize', fit); removeEventListener('resize', aim);
     box.classList.add('is-out');
     pageIn();
     setTimeout(() => {
@@ -698,7 +729,13 @@ const INTRO_IMAGES = [];
     document.fonts.load('500 100px "Cormorant Garamond"', 'TICKETБ'),
     document.fonts.load('200 100px "Manrope"', 'TICKETБ'),
   ]) : Promise.resolve();
-  Promise.race([fontsReady, new Promise(r => setTimeout(r, 1500))]).then(run, run);
+  /* старт — когда шрифты готовы и страницу действительно видно (во вкладке в фоне анимация не тратится впустую) */
+  const visible = () => new Promise(r => {
+    if (document.visibilityState === 'visible') return r();
+    const h = () => { if (document.visibilityState === 'visible') { document.removeEventListener('visibilitychange', h); r(); } };
+    document.addEventListener('visibilitychange', h);
+  });
+  Promise.race([fontsReady, new Promise(r => setTimeout(r, 2500))]).then(visible, visible).then(() => requestAnimationFrame(run));
 })();
 
 /* ════════ категории ════════ */
