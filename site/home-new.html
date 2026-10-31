@@ -469,22 +469,22 @@ html.page-in .hw > span, .no-js .hw > span { transform: none; transition: transf
 <main>
 <!-- ════════ hero ════════ -->
 <section class="hero2" aria-labelledby="heroT">
-  <div class="hero2-bg" aria-hidden="true"><span class="hero2-b1"></span><span class="hero2-b2"></span><img class="hero2-cover" src="https://moscowshow.com/upload/iblock/40f/xk8jj9k4o0ozlw47j22ys3tdaf4g13et/einstein_i_margarita_.jpg" alt="" decoding="async" referrerpolicy="no-referrer" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='home-new/stage-curtain.webp'}"><i class="hero2-shade"></i><i class="hero2-beam"></i><i class="hero2-grain grain-tex"></i></div>
+  <div class="hero2-bg" aria-hidden="true"><span class="hero2-b1"></span><span class="hero2-b2"></span><img class="hero2-cover" src="https://moscowshow.com/upload/iblock/511/8dx8lcsr659f8oh338abwf80tfulp5y9/drakula_.jpg" alt="" decoding="async" referrerpolicy="no-referrer" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='home-new/stage-curtain.webp'}"><i class="hero2-shade"></i><i class="hero2-beam"></i><i class="hero2-grain grain-tex"></i></div>
   <div class="hero2-in">
     <div>
-      <div class="hero2-meta rv" style="--i:0"><span class="tag tag-default">Спектакль</span><span class="t-eyebrow">14 ноября · 19:00</span></div>
-      <h1 class="hero2-title rv" style="--i:1" id="heroT">Одни во вселенной</h1>
-      <p class="hero2-sub rv" style="--i:2">Театр «Современник». Спектакль о поиске смысла в большом городе — история двоих, которые встречаются в последнем поезде метро.</p>
+      <div class="hero2-meta rv" style="--i:0"><span class="tag tag-default">Спектакль</span><span class="t-eyebrow">16 ноября</span></div>
+      <h1 class="hero2-title rv" style="--i:1" id="heroT">Дракула</h1>
+      <p class="hero2-sub rv" style="--i:2">Театр им. Ермоловой, 16 ноября.</p>
       <div class="hero2-cta rv" style="--i:3">
-        <a class="btn btn-primary btn-lg" href="#">Купить — от 1 500 ₽</a>
+        <a class="btn btn-primary btn-lg" href="#">Купить — от 3 000 ₽</a>
         <a class="btn btn-ghost btn-lg" href="#">Все даты</a>
       </div>
       <div class="hero2-usp rv" style="--i:4">
         <span class="t-caption"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Без кассовых сборов</span>
       </div>
     </div>
-    <a class="hero2-poster" href="#" aria-label="Одни во вселенной, 14 ноября, 19:00">
-      <img src="https://moscowshow.com/upload/iblock/40f/xk8jj9k4o0ozlw47j22ys3tdaf4g13et/einstein_i_margarita_.jpg" alt="" decoding="async" referrerpolicy="no-referrer" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='home-new/stage-curtain.webp'}">
+    <a class="hero2-poster" href="#" aria-label="Дракула, 16 ноября, Театр им. Ермоловой">
+      <img src="https://moscowshow.com/upload/iblock/511/8dx8lcsr659f8oh338abwf80tfulp5y9/drakula_.jpg" alt="" decoding="async" referrerpolicy="no-referrer" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='home-new/stage-curtain.webp'}">
     </a>
   </div>
 </section>
@@ -697,8 +697,8 @@ const MS = 'https://moscowshow.com/upload/iblock/';
 const INTRO_IMAGES = [
   MS + '85a/fndnxz2eojab1nki8b3ikufmvaywsadl/lavr2_.jpg',
   MS + '356/kqkkzqpzk8rh4oaifiy0lrqlesvz3f8f/frida_.jpg',
-  MS + '511/8dx8lcsr659f8oh338abwf80tfulp5y9/drakula_.jpg',
   MS + '40f/xk8jj9k4o0ozlw47j22ys3tdaf4g13et/einstein_i_margarita_.jpg',
+  MS + '511/8dx8lcsr659f8oh338abwf80tfulp5y9/drakula_.jpg',
 ];
 const INTRO_FALLBACK = ['home-new/stage-bokeh.webp', 'home-new/stage-rays.webp', 'home-new/stage-spotlight.webp', 'home-new/stage-curtain.webp'];
 const LIGHTS = { halo: 'Ореол', ramp: 'Рампа', beam: 'Луч', rim: 'Контур' };
@@ -761,8 +761,8 @@ const intro = (function () {
       head.style.fontSize = Math.floor(Math.min(byW, byH)) + 'px';
       dcs.forEach(d => { d.style.width = d.getBoundingClientRect().width + 'px'; });
     }
-    /* расшифровка: латиница, кириллица, греческий, армянский, грузинский, иврит, катакана */
-    const GLYPHS = [...'ABCDEFGHJKLMNPQRSTUVWXYZБГДЖЗИЛПФЦЧШЩЭЮЯΔΘΛΞΠΣΦΨΩԱԲԳԴԷԺԽՃՇႠႡႢႣႥႦאבגדהלשתアカサタナハマヤラワ'];
+    /* расшифровка: только латиница (с латинскими лигатурами Æ, Œ) и кириллица */
+    const GLYPHS = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZÆŒØАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ'];
     function decrypt(d, startMs) {
       const end = startMs + 380 + Math.random() * 420;
       at(startMs, () => {
@@ -820,9 +820,20 @@ const intro = (function () {
     let loaded = 0;
     assets.forEach(p => p.then(() => loaded++, () => loaded++));
 
+    /* надпись выдвигается сразу, пока ложатся афиши: ждёт только шрифты, чтобы не прыгнуть по размеру */
+    function revealText() {
+      if (run.done || run.textEnd) return;
+      fit();
+      const t = 150;
+      inners.forEach((x, i) => { x.style.transitionDelay = `${t + i * 110}ms`; });
+      requestAnimationFrame(() => inners.forEach(x => x.classList.add('in')));
+      if (!RM) dcs.forEach(d => { const li = inners.indexOf(d.closest('.ih-in')); decrypt(d, t + li * 110 + 120 + Math.random() * 260); });
+      run.textEnd = performance.now() + t + inners.length * 110 + 1400;
+    }
     function start() {
       if (run.done) return;
       box.classList.add('is-run');
+      fontsReady.then(revealText, revealText);
       aim(); sizeDust(); cx.clearRect(0, 0, cv.width, cv.height);
       run.raf = requestAnimationFrame(loop);
       /* отсчёт и колода идут от реальной загрузки картинок и шрифтов; первый показ — не быстрее 2,2 с */
@@ -845,17 +856,15 @@ const intro = (function () {
         if (p < 1 || (!RM && n < cards.length)) requestAnimationFrame(count); else show();
       })(t0);
     }
+    /* всё загружено и все афиши легли: держим кадр, пока надпись не встала, плюс короткая пауза */
     function show() {
       if (run.done) return;
       box.classList.add('is-ready');
-      fit();
-      if (RM) { n = cards.length - 1; deal(); inners.forEach(x => x.classList.add('in')); at(1500, () => run.finish()); return; }
-      inners.forEach((x, i) => { x.style.transitionDelay = `${200 + i * 110}ms`; });
-      requestAnimationFrame(() => inners.forEach(x => x.classList.add('in')));
-      dcs.forEach(d => { const li = inners.indexOf(d.closest('.ih-in')); decrypt(d, 200 + li * 110 + 120 + Math.random() * 260); });
-      at(200 + inners.length * 110 + 1700, () => run.finish());
+      revealText();
+      if (RM) { n = cards.length - 1; deal(); at(1500, () => run.finish()); return; }
+      at(Math.max(0, run.textEnd - performance.now()) + 900, () => run.finish());
     }
-    run.resize = () => { aim(); sizeDust(); fit(); };
+    run.resize = () => { aim(); sizeDust(); if (run.textEnd) fit(); };
     run.kill = () => { run.done = true; run.timers.forEach(clearTimeout); cancelAnimationFrame(run.raf); };
     run.finish = toTickets => {
       if (run.done) return;
