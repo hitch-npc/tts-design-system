@@ -304,6 +304,20 @@ textarea.form-input { min-height: 112px; resize: vertical; line-height: 1.5; }
 .req-sum { font-family: var(--f-num); font-size: 1.1rem; color: var(--n100); white-space: nowrap; }
 .req-body { padding: 0 var(--sp-5) var(--sp-5) calc(96px + var(--sp-5) * 2); display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--n300); line-height: 1.6; }
 .req-body .t-caption { margin-top: 6px; }
+/* мои возвраты: группы «На рассмотрении» и «Закрытые» */
+.rt-group + .rt-group { margin-top: var(--sp-10); }
+.rt-group-h { display: flex; align-items: baseline; gap: 8px; margin-bottom: var(--sp-3); font-size: 10px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--n500); }
+.rt-group-h span { color: var(--n600); letter-spacing: .06em; }
+/* закрытые заявки — как архив в истории: без подложки, рамка пунктиром, афиша ч/б, текст серый; цвет тега-итога остаётся */
+.rt-group.closed .rt-card { background: transparent; border-style: dashed; }
+.rt-group.closed .req { border-top-style: dashed; }
+.rt-group.closed .req:first-child { border-top: 0; }
+.rt-group.closed .req .poster img { filter: grayscale(1) contrast(.9); opacity: .55; }
+.rt-group.closed .req .poster::before { display: none; }
+.rt-group.closed .req-title { color: var(--n300); }
+.rt-group.closed .req-sum { color: var(--n400); }
+:root[data-theme="light"] .rt-group.closed .req .poster img { opacity: .45; filter: grayscale(1) contrast(.8) brightness(1.15); }
+.req-again { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; margin-top: 8px; }
 
 /* ── уведомление ── */
 .note { position: fixed; left: 50%; bottom: 80px; transform: translate(-50%, 16px); z-index: 60; display: flex; align-items: center; gap: 16px; padding: 12px 12px 12px 18px; background: var(--n900); border: 1px solid var(--n700); border-radius: var(--r-sm); box-shadow: 0 12px 40px var(--shadow-color); font-size: 13px; color: var(--n100); opacity: 0; pointer-events: none; transition: opacity var(--dur-base) var(--ease-out), transform var(--dur-slow) var(--ease-out); }
@@ -1029,7 +1043,7 @@ function renderRet(freshNo) {
       </div>
     </section>`;
   }
-  const list = reqs.length ? `<div class="rt-card">${reqs.map(r => {
+  const reqHTML = r => {
     const o = orderBy(r.order), s = SHOWS[o.show], st = REQ_STATUS[r.status];
     return `<details class="req${r.no === freshNo ? ' fresh' : ''}"${r.no === freshNo ? ' open' : ''}>
       <summary>
@@ -1046,9 +1060,14 @@ function renderRet(freshNo) {
         ${r.comment ? `<span class="t-caption">Комментарий</span><div>${esc(r.comment)}</div>` : ''}
         ${r.answer ? `<span class="t-caption">Ответ</span><div>${esc(r.answer)}</div>` : ''}
         ${r.status === 'pending' ? '<div class="form-helper">Рассмотрение обычно занимает до 3 рабочих дней. Решение придёт на почту.</div>' : ''}
+        ${r.status === 'declined' && !isPast(o.show) ? `<div class="req-again"><button class="btn btn-ghost btn-sm" data-act="ret-order" data-o="${o.no}">Подать повторно</button><span class="form-helper">До начала показа заявку можно подать ещё раз — она заменит эту.</span></div>` : ''}
       </div>
     </details>`;
-  }).join('')}</div>` : `<div class="empty-state"><div class="empty-title">Заявок на возврат нет</div><div class="empty-sub">Вернуть заказ можно на вкладке «Предстоящие».</div></div>`;
+  };
+  // на рассмотрении — живые заявки сверху; отклонённые и завершённые — закрытые, приглушены, как архив в истории
+  const open = reqs.filter(r => r.status === 'pending'), closed = reqs.filter(r => r.status !== 'pending');
+  const group = (title, arr, cls) => arr.length ? `<div class="rt-group${cls}"><div class="rt-group-h">${title}<span>${arr.length}</span></div><div class="rt-card">${arr.map(reqHTML).join('')}</div></div>` : '';
+  const list = reqs.length ? group('На рассмотрении', open, '') + group('Закрытые', closed, ' closed') : `<div class="empty-state"><div class="empty-title">Заявок на возврат нет</div><div class="empty-sub">Вернуть заказ можно на вкладке «Предстоящие».</div></div>`;
   el.innerHTML = `
     <button class="back" data-act="home">${ICON.back} Профиль</button>
     <div class="rt-head">
