@@ -92,6 +92,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .me-data dd.none { color: var(--n500); }
 .me-actions { display: flex; flex-direction: column; gap: 8px; }
 .me-actions .btn { justify-content: flex-start; }
+.me-actions .badge-n { margin-left: auto; padding-left: 12px; }
 .badge-n { font-size: 10px; color: var(--n400); letter-spacing: .06em; }
 .me-panel { border: 1px solid var(--n800); background: var(--n950); border-radius: var(--r-sm); padding: var(--sp-6); margin-bottom: var(--sp-8); display: flex; flex-direction: column; gap: var(--sp-5); }
 .me-form { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-5) var(--sp-4); max-width: 640px; }
@@ -188,6 +189,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .tk-doc { font-size: 12px; color: var(--n400); margin-top: 2px; }
 .tk-price { font-family: var(--f-num); font-size: 1.1rem; color: var(--n100); white-space: nowrap; }
 .tk-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.tk-row .tk-price, .rt-tk .tk-price { grid-column: 3; }
 .tk-panel { border: 1px solid var(--n800); background: var(--n900); border-radius: var(--r-sm); padding: var(--sp-5); display: flex; flex-direction: column; gap: var(--sp-4); }
 .tk-form { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: var(--sp-4); }
 .tk-form .form-input, .tk-form .form-select, .me-form .form-input, .me-form .form-select { background-color: var(--n950); }
@@ -328,9 +330,12 @@ textarea.form-input { min-height: 112px; resize: vertical; line-height: 1.5; }
   .fav-grid::-webkit-scrollbar { display: none; }
   .fav-grid > .fav { flex: 0 0 calc((100% - var(--sp-4)) / 2.3); scroll-snap-align: start; }
   .fav-sec:not(.open) .fav-grid > .fav:nth-child(n+4) { display: flex; }
-  .shelf-more { display: none; }
+  /* «Все N» раскрывает ленту в столбец: так видно, что карточек больше */
+  .fav-sec.open .fav-grid { flex-direction: column; overflow: visible; }
+  .fav-sec.open .fav-grid > .fav { flex: 0 0 auto; }
   .tk-row { grid-template-columns: 1fr auto; }
   .tk-who { grid-column: 1 / -1; order: 3; }
+  .tk-row .tk-price, .rt-tk .tk-price { grid-column: 2; }
   .tk-actions { grid-column: 1 / -1; order: 4; justify-content: flex-start; }
 }
 @media (max-width: 720px) {
@@ -338,6 +343,7 @@ textarea.form-input { min-height: 112px; resize: vertical; line-height: 1.5; }
   .me { grid-template-columns: 1fr; gap: var(--sp-5); }
   .me-actions { flex-direction: row; flex-wrap: wrap; }
   .me-actions .btn { flex: 1 1 auto; justify-content: center; }
+  .me-actions .badge-n { margin-left: 0; padding-left: 0; }
   .me-form, .tk-form { grid-template-columns: 1fr; }
   .ev-head { grid-template-columns: 1fr; gap: var(--sp-4); padding: var(--sp-4); }
   .ev-title { font-size: 1.375rem; }
@@ -809,7 +815,7 @@ function ticketHTML(t, editable) {
   <div class="tk" data-t="${t.id}">
     <div class="tk-row">
       <div><div class="tk-place">${esc(t.place)}</div><div class="tk-zone">${esc(t.zone)}</div></div>
-      <div class="tk-who"><span class="t-caption">На кого билет</span><div class="tk-name">${esc(t.name)}</div>${doc}</div>
+      ${t.doc ? `<div class="tk-who"><span class="t-caption">На кого билет</span><div class="tk-name">${esc(t.name)}</div>${doc}</div>` : ''}
       <div class="tk-price">${rub(t.price)}</div>
       ${editable ? `<div class="tk-actions"><button class="btn btn-ghost btn-sm" data-act="edit" data-t="${t.id}">Изменить данные</button></div>` : ''}
     </div>
@@ -988,7 +994,7 @@ function renderRet(freshNo) {
         <div class="rt-tks">${o.tickets.map(t => `
           <div class="rt-tk">
             <div><div class="tk-place">${esc(t.place)}</div><div class="tk-zone">${esc(t.zone)}</div></div>
-            <div class="tk-who"><span class="t-caption">На кого билет</span><div class="tk-name">${esc(t.name)}</div></div>
+            ${t.doc ? `<div class="tk-who"><span class="t-caption">На кого билет</span><div class="tk-name">${esc(t.name)}</div></div>` : ''}
             <div class="tk-price">${rub(t.price)}</div>
           </div>`).join('')}</div>
         <div class="rt-form">
@@ -1192,7 +1198,10 @@ document.addEventListener('click', e => {
       break;
     }
     case 'hint-terms': hintTerms = !hintTerms; b.setAttribute('aria-expanded', hintTerms); b.classList.toggle('open', hintTerms); $('#hintTerms').hidden = !hintTerms; break;
-    case 'shelf': shelfOpen[b.dataset.k] = !shelfOpen[b.dataset.k]; renderFav(); break;
+    case 'shelf': shelfOpen[b.dataset.k] = !shelfOpen[b.dataset.k]; renderFav();
+      /* в ленте (ниже 1080px) «Все N» раскрывает столбец: страница плавно ложится вкладками к верху экрана */
+      if (matchMedia('(max-width: 1080px)').matches) $('.tabs')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'start' });
+      break;
     case 'fav-rm': {
       const arr = b.dataset.k === 'vn' ? venues : favs;
       const i = arr.findIndex(f => f.id === b.dataset.f), item = arr[i];
