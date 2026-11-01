@@ -422,7 +422,7 @@ textarea.form-input { min-height: 112px; resize: vertical; line-height: 1.5; }
       <span class="pm-l">Профиль</span>
     </button>
     <div class="pm-menu" id="pmMenu" role="menu" aria-labelledby="pmBtn">
-      <div class="pm-head"><span class="t-caption">Профиль</span><b class="pm-name" id="pmName"></b><button class="pm-edit" role="menuitem" data-act="pm-go" data-to="data">Редактировать профиль</button></div>
+      <div class="pm-head"><span class="t-caption">Профиль</span><b class="pm-name" id="pmName"></b><button class="pm-edit" role="menuitem" data-act="pm-go" data-to="data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Редактировать профиль</button></div>
       <button class="pm-item" role="menuitem" data-act="pm-go" data-to="up">Предстоящие<span class="pm-n" id="pmUp"></span></button>
       <button class="pm-item" role="menuitem" data-act="pm-go" data-to="fav">Избранное<span class="pm-n" id="pmFav"></span></button>
       <button class="pm-item" role="menuitem" data-act="pm-go" data-to="hist">История покупок</button>
@@ -1237,7 +1237,7 @@ $$('.states [data-state]').forEach(b => b.addEventListener('click', () => {
 const themeBtn = $('#themeBtn');
 themeBtn.addEventListener('click', () => {
   const toLight = themeBtn.dataset.mode === 'dark';
-  $('#ds-theme').href = toLight ? '../ds-core-r14-light.css' : '../ds-core-r14.css';
+  $('#ds-theme').href = toLight ? 'ds-core-r14-light.css' : 'ds-core-r14.css';
   document.documentElement.dataset.theme = toLight ? 'light' : 'dark';
   const label = toLight ? 'Включить тёмную тему' : 'Включить светлую тему';
   themeBtn.dataset.mode = toLight ? 'light' : 'dark';
