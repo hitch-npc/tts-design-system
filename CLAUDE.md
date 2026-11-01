@@ -539,7 +539,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
     <span class="pm-l">Профиль</span>
   </button>
   <div class="pm-menu" role="menu">  <!-- строкам style="--i:N" — проявляются по очереди -->
-    <div class="pm-head"><span class="t-caption">Профиль</span><b class="pm-name">Иван Иванов</b><button class="pm-edit" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Редактировать профиль</button></div>
+    <div class="pm-head"><span class="t-caption">Профиль</span><b class="pm-name">Иван Иванов</b><button class="pm-edit" role="menuitem"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Редактировать профиль</button></div>
     <button class="pm-item" role="menuitem">Предстоящие<span class="pm-n">7</span></button>
     <button class="pm-item" role="menuitem">Избранное<span class="pm-n">12</span></button>
     <button class="pm-item" role="menuitem">История покупок</button>
