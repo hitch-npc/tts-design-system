@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Выбор мест по цене — демо</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+  :root { --ink:#0D0D0D; --n100:#D6D6D2; --n300:#A6A6A2; --n500:#7A7A78; --n800:#262930; --n900:#191C22; --n950:#111318;
+    --accent:#0047FF; --accent-ghost:#0B142A; --seat-sel:#22C55E; --seat-sold:#2C2F36;
+    --font:'Manrope',system-ui,sans-serif; --f-num:'Oranienbaum',Georgia,serif; --f-head:'Forum',Georgia,serif; --f-thin:'Cormorant Garamond',Georgia,serif; }
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin:0; padding:32px 20px 64px; background:var(--ink); color:var(--n100); font-family:var(--font); -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:1100px; margin:0 auto; display:grid; gap:24px; }
+  h1 { font-family:var(--f-thin); font-weight:400; font-size:2.2rem; margin:8px 0 0; }
+  .eyebrow { font-size:10px; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:var(--n300); }
+  .cap { font-size:10px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--n500); }
+  .panel { border:1px solid var(--n800); background:var(--n950); border-radius:2px; padding:20px; }
+  .grid { display:grid; grid-template-columns:1.7fr 1fr; gap:24px; align-items:start; }
+  @media (max-width:860px){ .grid{ grid-template-columns:1fr; } }
+  .opts { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+  .opt { font:500 12px var(--font); color:var(--n300); background:transparent; border:1px solid var(--n800); border-radius:9999px; padding:8px 14px; cursor:pointer; }
+  .opt[aria-pressed=true] { background:var(--accent-ghost); border-color:var(--accent); color:var(--n100); }
+  .sliders { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin-top:16px; }
+  .sliders input { width:100%; accent-color:var(--accent); }
+
+  .stage { text-align:center; font-size:10px; letter-spacing:.3em; text-transform:uppercase; color:var(--n500); border-bottom:2px solid var(--n800); padding-bottom:6px; margin:0 12% 16px; }
+  .hall { display:grid; gap:5px; width:100%; }
+  .row { display:grid; width:100%; grid-template-columns:20px repeat(24, minmax(0,1fr)) 20px; gap:5px; align-items:center; }
+  .rl { font-size:9px; color:var(--n500); text-align:center; }
+  .seat { aspect-ratio:1; border-radius:50%; border:0; padding:0; cursor:pointer; transition:opacity .25s, transform .15s, filter .15s; position:relative; }
+  .seat:hover:not(.sold) { filter:brightness(1.25); transform:scale(1.2); z-index:2; }
+  .seat:focus-visible { outline:2px solid var(--n100); outline-offset:2px; }
+  .seat.sold { background:var(--seat-sold) !important; cursor:default; opacity:.6; }
+  .seat.dim { opacity:.1; }
+  .seat.sold.dim { opacity:.05; }
+  .seat.sel { background:var(--seat-sel) !important; box-shadow:0 0 0 2px var(--ink), 0 0 0 3px var(--seat-sel); opacity:1; }
+  .seat.sel::after { content:''; position:absolute; left:28%; top:20%; width:26%; height:46%; border:solid #fff; border-width:0 2px 2px 0; transform:rotate(45deg); }
+  .aisle { width:0; }
+
+  .leg { display:grid; gap:8px; }
+  .chip { display:grid; grid-template-columns:18px 1fr auto; gap:12px; align-items:center; text-align:left; width:100%; font:500 13px var(--font); color:var(--n100);
+    background:transparent; border:1px solid var(--n800); border-radius:2px; padding:12px; cursor:pointer; }
+  .chip:hover { border-color:var(--n500); }
+  .chip[aria-pressed=true] { background:var(--accent-ghost); border-color:var(--accent); }
+  .chip i { width:18px; height:18px; border-radius:50%; display:block; }
+  .chip .p { font-family:var(--f-num); font-size:17px; }
+  .chip .n { font-size:10px; color:var(--n500); display:block; margin-top:2px; letter-spacing:.1em; text-transform:uppercase; }
+  .sum { display:flex; justify-content:space-between; align-items:baseline; margin-top:16px; padding-top:16px; border-top:1px solid var(--n800); }
+  .sum b { font-family:var(--f-num); font-size:24px; font-weight:400; }
+  .reset { background:none; border:0; color:var(--n300); font:500 11px var(--font); letter-spacing:.14em; text-transform:uppercase; cursor:pointer; text-decoration:underline; text-decoration-color:var(--accent); text-underline-offset:3px; padding:0; }
+  .note { font-size:12px; line-height:1.6; color:var(--n300); }
+  .dE { font-size:12px; color:var(--n300); margin-top:12px; }
+  .dE b { color:var(--n100); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div>
+    <div class="eyebrow">Выбор мест · ценовые категории</div>
+    <h1>Как найти место нужной цены</h1>
+  </div>
+
+  <div class="panel">
+    <div class="cap">Цвета категорий</div>
+    <div class="opts" id="palOpts"></div>
+    <div class="cap" style="margin-top:20px">Фильтр по цене</div>
+    <div class="opts" id="filtOpts"></div>
+    <div class="sliders" id="gradSliders">
+      <div><div class="cap">Шаг светлоты, %: <span id="vL"></span></div><input id="sL" type="range" min="0" max="40" value="22"></div>
+      <div><div class="cap">Сдвиг оттенка, °: <span id="vH"></span></div><input id="sH" type="range" min="0" max="140" value="60"></div>
+    </div>
+    <div class="dE" id="dEout"></div>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="stage">Сцена</div>
+      <div class="hall" id="hall"></div>
+    </div>
+    <div class="panel">
+      <div class="cap">Цена · свободно мест</div>
+      <div class="leg" id="leg" style="margin-top:12px"></div>
+      <div class="sum"><div><div class="cap">Выбрано</div><span id="selN" class="note"></span></div><b id="selSum">0 ₽</b></div>
+      <div style="margin-top:12px"><button class="reset" id="reset" type="button">Сбросить фильтр</button></div>
+    </div>
+  </div>
+
+  <p class="note">В режиме «Фильтр» нажатие на цену гасит все остальные места, оставшиеся светятся своим цветом: цвет перестаёт быть единственным способом найти категорию. Несколько цен можно включить вместе.</p>
+</div>
+
+<script>
+const prices = [12000, 8500, 5200, 3400, 1800];
+const fmt = n => n.toLocaleString('ru-RU').replace(/ /g,' ') + ' ₽';
+const ROWS = 14, COLS = 24;
+
+/* ---- цвета ---- */
+function oklch(L,C,H){const a=C*Math.cos(H*Math.PI/180),b=C*Math.sin(H*Math.PI/180);
+  const l=(L+.3963377774*a+.2158037573*b)**3,m=(L-.1055613458*a-.0638541728*b)**3,s=(L-.0894841775*a-1.291485548*b)**3;
+  const f=x=>{x=Math.min(1,Math.max(0,x));return x<=.0031308?12.92*x:1.055*x**(1/2.4)-.055};
+  return '#'+[4.0767416621*l-3.3077115913*m+.2309699292*s,-1.2684380046*l+2.6097574011*m-.3413193965*s,-.0041960863*l-.7034186147*m+1.707614701*s].map(v=>Math.round(f(v)*255).toString(16).padStart(2,'0')).join('');}
+function lab(h){const [r,g,b]=[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);
+  const l=Math.cbrt(.4122214708*r+.5363325363*g+.0514459929*b),m=Math.cbrt(.2119034982*r+.6806995451*g+.1073969566*b),s=Math.cbrt(.0883024619*r+.2817188376*g+.6299787005*b);
+  return [.2104542553*l+.793617785*m-.0040720468*s,1.9779984951*l-2.428592205*m+.4505937099*s,.0259040371*l+.7827717662*m-.808675766*s];}
+const dE=(a,b)=>{const x=lab(a),y=lab(b);return Math.hypot(x[0]-y[0],x[1]-y[1],x[2]-y[2])*100};
+const grad=(sL,sH)=>prices.map((_,i)=>oklch(.42+sL/100*i/4,.15,(250+sH*i/4)%360));
+
+const pals = {
+  small:    {name:'Градиент, малый шаг (как на тесте)', get:()=>grad(8,20)},
+  big:      {name:'Градиент, увеличенный шаг',          get:()=>grad(+sL.value,+sH.value)},
+  contrast: {name:'Контрастный набор (как на проде)',   get:()=>['#C9975A','#3F73E3','#2BA7B8','#7E6FD0','#33B978']}
+};
+const filts = {off:'Без фильтра', on:'Фильтр по цене'};
+let pal='small', filt='off', active=new Set(), selected=new Set();
+
+/* ---- зал: категория зависит от ряда и удалённости от центра ---- */
+let seed=7; const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+const seats=[];
+for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){
+  const d=Math.abs(c-(COLS-1)/2);
+  const tier=Math.min(4,Math.max(0,Math.floor(r*.26+d*.17)));
+  seats.push({r,c,tier,sold:rnd()<.32,id:r*COLS+c});
+}
+const hall=document.getElementById('hall');
+seats.forEach(()=>{});
+for(let r=0;r<ROWS;r++){
+  const row=document.createElement('div');row.className='row';
+  row.innerHTML=`<span class="rl">${r+1}</span>`;
+  for(let c=0;c<COLS;c++){
+    const s=seats[r*COLS+c];
+    const b=document.createElement('button');b.type='button';b.className='seat'+(s.sold?' sold':'');
+    b.dataset.id=s.id;b.setAttribute('aria-label',`Ряд ${r+1}, место ${c+1}, ${fmt(prices[s.tier])}${s.sold?', занято':''}`);
+    b.title=`Ряд ${r+1} · место ${c+1} · ${fmt(prices[s.tier])}`;
+    if(!s.sold)b.onclick=()=>{selected.has(s.id)?selected.delete(s.id):selected.add(s.id);paint();};
+    s.el=b;row.appendChild(b);
+  }
+  row.insertAdjacentHTML('beforeend',`<span class="rl">${r+1}</span>`);
+  hall.appendChild(row);
+}
+
+/* ---- управление ---- */
+function pills(host,obj,get,set){
+  host.innerHTML='';
+  for(const k in obj){const b=document.createElement('button');b.type='button';b.className='opt';
+    b.textContent=typeof obj[k]==='string'?obj[k]:obj[k].name;b.setAttribute('aria-pressed',get()===k);
+    b.onclick=()=>{set(k);paint();};host.appendChild(b);}
+}
+
+function paint(){
+  const cols=pals[pal].get();
+  vL.textContent=sL.value;vH.textContent=sH.value;
+  gradSliders.style.display=pal==='big'?'grid':'none';
+  pills(palOpts,pals,()=>pal,k=>pal=k);
+  pills(filtOpts,filts,()=>filt,k=>{filt=k;if(k==='off')active.clear();});
+  const md=Math.min(...cols.slice(1).map((c,i)=>dE(cols[i],c)));
+  dE_.innerHTML=`Минимальная разница соседних цен: <b>${md.toFixed(1)} ΔE</b>`;
+  const useF=filt==='on'&&active.size>0;
+  seats.forEach(s=>{
+    s.el.style.background=cols[s.tier];
+    s.el.classList.toggle('dim',useF&&!active.has(s.tier));
+    s.el.classList.toggle('sel',selected.has(s.id));
+  });
+  leg.innerHTML='';
+  prices.forEach((p,i)=>{
+    const free=seats.filter(s=>s.tier===i&&!s.sold).length;
+    const b=document.createElement('button');b.type='button';b.className='chip';
+    b.setAttribute('aria-pressed',active.has(i)&&filt==='on');
+    b.innerHTML=`<i style="background:${cols[i]}"></i><span class="p">${fmt(p)}<span class="n">${free} свободно</span></span><span class="n">${i===0?'ложа':i===4?'балкон':''}</span>`;
+    b.onclick=()=>{ if(filt!=='on'){filt='on';} active.has(i)?active.delete(i):active.add(i); paint(); };
+    leg.appendChild(b);
+  });
+  const arr=[...selected];
+  selN.textContent=arr.length?`${arr.length} ${arr.length===1?'место':'мест(а)'}`:'нет';
+  selSum.textContent=fmt(arr.reduce((a,id)=>a+prices[seats[id].tier],0));
+}
+const dE_=document.getElementById('dEout');
+[sL,sH].forEach(s=>s.addEventListener('input',paint));
+reset.onclick=()=>{active.clear();selected.clear();paint();};
+paint();
+</script>
+</body>
+</html>
