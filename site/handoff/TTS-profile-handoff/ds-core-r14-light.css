@@ -3355,7 +3355,7 @@ summary:focus-visible, [tabindex]:not([tabindex="-1"]):focus-visible,
 .footer-copy { font-size: 11px; color: var(--n600); white-space: nowrap; }
 .footer-disclaimer { font-size: 11px; color: var(--n700); line-height: 1.5; }
 /* разделитель «Рампа»: светлая сердцевина по центру, кобальт к краям, лёгкое свечение */
-.footer-top-line { position: relative; height: 1px; opacity: .8; background: linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--accent) 22%, transparent) 20%, color-mix(in srgb, var(--rampa-violet) 45%, transparent) 37%, color-mix(in srgb, var(--n100) 45%, var(--accent)) 50%, color-mix(in srgb, var(--rampa-violet) 40%, transparent) 64%, color-mix(in srgb, var(--accent) 18%, transparent) 82%, transparent 100%); }
+.footer-top-line { position: relative; height: 1px; opacity: .8; background: linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--accent) 22%, transparent) 20%, color-mix(in srgb, var(--rampa-violet) 45%, transparent) 37%, color-mix(in srgb, var(--n100) 18%, var(--accent)) 50%, color-mix(in srgb, var(--rampa-violet) 40%, transparent) 64%, color-mix(in srgb, var(--accent) 18%, transparent) 82%, transparent 100%); }
 /* свечение только вверх: несколько смещённых овалов дают неровный край */
 .footer-top-line::before,
 .footer-top-line::after { content: ''; position: absolute; bottom: 0; pointer-events: none; }
@@ -3366,7 +3366,7 @@ summary:focus-visible, [tabindex]:not([tabindex="-1"]):focus-visible,
     radial-gradient(ellipse 18% 85% at 34% 100%, color-mix(in srgb, var(--rampa-violet) 11%, transparent) 0%, transparent 70%),
     radial-gradient(ellipse 44% 38% at 52% 100%, color-mix(in srgb, var(--accent) 13%, transparent) 0%, transparent 75%); }
 .footer-top-line::after { left: 50%; width: min(380px, 40%); height: 34px; transform: translateX(-50%); filter: blur(6px);
-  background: radial-gradient(ellipse 50% 100% at 50% 100%, color-mix(in srgb, var(--n100) 16%, transparent) 0%, transparent 70%); }
+  background: radial-gradient(ellipse 50% 100% at 50% 100%, color-mix(in srgb, var(--n100) 6%, transparent) 0%, transparent 70%); }
 
 @media (max-width: 767px) {
   .footer-main { grid-template-columns: 1fr; gap: 40px; }
