@@ -422,12 +422,11 @@ textarea.form-input { min-height: 112px; resize: vertical; line-height: 1.5; }
       <span class="pm-l">Профиль</span>
     </button>
     <div class="pm-menu" id="pmMenu" role="menu" aria-labelledby="pmBtn">
-      <div class="pm-head"><span class="t-caption">Профиль</span><b class="pm-name" id="pmName"></b></div>
+      <div class="pm-head"><span class="t-caption">Профиль</span><b class="pm-name" id="pmName"></b><button class="pm-edit" role="menuitem" data-act="pm-go" data-to="data">Редактировать профиль</button></div>
       <button class="pm-item" role="menuitem" data-act="pm-go" data-to="up">Предстоящие<span class="pm-n" id="pmUp"></span></button>
       <button class="pm-item" role="menuitem" data-act="pm-go" data-to="fav">Избранное<span class="pm-n" id="pmFav"></span></button>
       <button class="pm-item" role="menuitem" data-act="pm-go" data-to="hist">История покупок</button>
       <button class="pm-item" role="menuitem" data-act="pm-go" data-to="returns">Мои возвраты<span class="pm-n" id="pmReq"></span></button>
-      <button class="pm-item" role="menuitem" data-act="pm-go" data-to="data">Изменить данные</button>
       <div class="pm-sep" role="separator"></div>
       <button class="pm-item pm-out" role="menuitem" data-act="logout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h10"/></svg>Выйти</button>
     </div>
@@ -453,7 +452,7 @@ textarea.form-input { min-height: 112px; resize: vertical; line-height: 1.5; }
         </dl>
       </div>
       <div class="me-actions">
-        <button class="btn btn-ghost btn-sm" data-act="me" data-p="data">Изменить данные</button>
+        <button class="btn btn-ghost btn-sm" data-act="me" data-p="data">Редактировать профиль</button>
         <button class="btn btn-ghost btn-sm" data-act="me" data-p="pass">Сменить пароль</button>
         <button class="btn btn-dark btn-sm" data-act="returns">Мои возвраты <span class="badge-n" id="n-req"></span></button>
       </div>
@@ -1071,7 +1070,7 @@ $('#pmBtn').addEventListener('click', e => {
 });
 document.addEventListener('pointerdown', e => { if (!e.target.closest('#pm')) pmClose(false); });
 $('#pm').addEventListener('keydown', e => {
-  const items = $$('.pm-item'), i = items.indexOf(document.activeElement);
+  const items = $$('.pm-edit, .pm-item'), i = items.indexOf(document.activeElement);
   if (e.key === 'Escape') { pmClose(true); }
   else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
     e.preventDefault();
