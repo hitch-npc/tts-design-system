@@ -51,6 +51,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 ### Сборка из токенов (важно для агента)
 - **`:root` в `ds-core-r14.css` / `-light.css` генерируется** из `tokens.json` скриптом `tooling/build-tokens.mjs`. **Никогда не редактируй `:root` вручную** — меняй значения в `tokens.json`, затем `npm run build`.
 - Компоненты (всё ниже `:root`) правятся руками, цвета — только через `var(--…)`.
+- **Спецификации handoff:** `spec.html` в `site/handoff/account/` и `site/handoff/TTS-profile-handoff/` собирается из `README.md` пакета (`tooling/build-specs.mjs`, `npm run build`). Правится README, не `spec.html`; GitHub Pages отдаёт `.md` сырым, поэтому ссылки ведут на `spec.html`, а README — кнопкой «Скачать».
 - SMM: меняешь `smm.tokens.json` → `npm run build` пересобирает `ds-smm.css`. Шаблоны слоя — строка `TEMPLATES` в `tooling/build-smm.mjs`.
 - **Правила постов (решение №34):** на картинке — надзаголовок, название и одна строка «дата, время · площадка», остальное — в тексте поста.
   Поле 112, название не больше двух строк, кобальт — только активная палочка, метка статуса — инверсия `.smm-mark`,

@@ -103,6 +103,10 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* ── вкладки ── */
 .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--n800); margin-bottom: var(--sp-8); overflow-x: auto; scrollbar-width: none; }
 .tabs::-webkit-scrollbar { display: none; }
+/* вкладки не помещаются (телефон): край, за которым есть ещё вкладки, растворяется — видно, что ленту можно листать */
+.tabs.fade-r { -webkit-mask-image: linear-gradient(to right, var(--ink) calc(100% - 48px), transparent); mask-image: linear-gradient(to right, var(--ink) calc(100% - 48px), transparent); }
+.tabs.fade-l { -webkit-mask-image: linear-gradient(to left, var(--ink) calc(100% - 48px), transparent); mask-image: linear-gradient(to left, var(--ink) calc(100% - 48px), transparent); }
+.tabs.fade-l.fade-r { -webkit-mask-image: linear-gradient(to right, transparent, var(--ink) 48px, var(--ink) calc(100% - 48px), transparent); mask-image: linear-gradient(to right, transparent, var(--ink) 48px, var(--ink) calc(100% - 48px), transparent); }
 .tab { display: inline-flex; align-items: center; gap: 8px; padding: 14px 16px; font-size: 11px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--n300); white-space: nowrap; position: relative; transition: color var(--dur-fast) var(--ease-out); }
 .tab { color: var(--n500); transition: color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out); }
 .tab:hover { color: var(--n200); }
@@ -637,7 +641,7 @@ textarea.form-input { min-height: 112px; resize: vertical; line-height: 1.5; }
 
     <div class="footer-bottom">
       <span class="footer-copy">© 2026 Ticket To Show</span>
-      <span class="footer-disclaimer">Instagram признан экстремистской организацией на территории РФ.</span>
+      <span class="footer-disclaimer">Instagram&nbsp;— продукт компании Meta, признанной экстремистской организацией и&nbsp;запрещённой в&nbsp;России.</span>
     </div>
   </div>
 </footer>
@@ -720,7 +724,8 @@ function seed() {
       const base = SHOWS[keys[i % keys.length]];
       const d = new Date('2027-01-05T19:00'); d.setDate(d.getDate() + i * 4);
       const sid = 'm' + i;
-      SHOWS[sid] = { ...base, date: d.toISOString().slice(0, 16) };
+      const pad = x => String(x).padStart(2, '0');
+      SHOWS[sid] = { ...base, date: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T19:00` };
       orders.push({ no: String(49000 + i), bought: '2026-10-2' + (i % 4), show: sid, tickets:
         Array.from({ length: 1 + (i % 3) }, (_, k) => ({ id: sid + 't' + k, zone: 'Партер', place: `Ряд ${4 + i % 6}, место ${10 + k}`, name: 'Иванов Иван Иванович', price: 2400 + i * 100 })) });
     }
@@ -742,7 +747,7 @@ const NOW_T = new Date(NOW + 'T12:00');
 // часы до начала показа — считаются точно, не по календарным дням
 const hoursLeft = sid => (new Date(SHOWS[sid].date) - NOW_T) / 36e5;
 const isPast = sid => hoursLeft(sid) <= 0;
-// условия возврата при «передумал»: от 240 ч — 100 %, от 120 ч — 50 %, от 72 ч — 30 %, меньше 72 ч — 0; сбор распространителя 10 % не возвращается
+// условия возврата при «передумал»: от 240 ч — 100 %, от 120 ч — 50 %, от 72 ч — 30 %, меньше 72 ч — 0; сбор дистрибьютора 10 % не возвращается
 const LATE_H = 72;
 const refundPct = h => h >= 240 ? 100 : h >= 120 ? 50 : h >= 72 ? 30 : 0;
 const refundSum = (o, h) => Math.max(0, Math.round(sumOf(o) * (refundPct(h) - 10) / 100));
@@ -941,7 +946,7 @@ function renderFav() {
         </div>
         <div class="fav-body">
           <div class="vn-title">${esc(v.title)}</div>
-          <div class="fav-meta">${v.events} ${plural(v.events, 'мероприятие', 'мероприятия', 'мероприятий')} в афише</div>
+          <div class="fav-meta">${v.events} ${plural(v.events, 'событие', 'события', 'событий')} в афише</div>
           <div class="fav-foot">
             <span class="fav-meta">Москва</span>
             <a class="btn btn-ghost btn-sm" href="#">Афиша площадки</a>
@@ -971,7 +976,7 @@ const RET_REASONS = [['mind', 'Передумал(а)'], ['ill', 'Болезнь
 function estHTML(o, h, reason) {
   if (reason !== 'mind') return `<span class="t-caption">К возврату</span><span class="rt-est-v">по документам</span><div class="form-helper">Сумму определит поддержка после проверки документов.</div>`;
   const p = refundPct(h);
-  return `<span class="t-caption">К возврату</span><b>${rub(refundSum(o, h))}</b><div class="form-helper">${p ? `${p} % стоимости по общим условиям, за вычетом сбора распространителя 10 %. До начала — ${leftText(h)}.` : `Меньше 3 суток до начала: по общим условиям возврат не делается. Запрос можно отправить — поддержка рассмотрит его.`}</div>`;
+  return `<span class="t-caption">К возврату</span><b>${rub(refundSum(o, h))}</b><div class="form-helper">${p ? `${p} % стоимости по общим условиям, за вычетом сбора дистрибьютора 10 %. До начала — ${leftText(h)}.` : `Меньше 3 суток до начала: по общим условиям возврат не делается. Запрос можно отправить — поддержка рассмотрит его.`}</div>`;
 }
 /* ════════ возврат: форма ════════ */
 function renderRet(freshNo) {
@@ -1052,7 +1057,7 @@ function renderRet(freshNo) {
     </div>
     ${form}
     <section class="rt-sec" id="rt-list">
-      ${draft ? '<span class="t-eyebrow">Мои заявки</span>' : ''}
+      ${draft ? '<span class="t-eyebrow">Мои возвраты</span>' : ''}
       ${list}
     </section>`;
 }
@@ -1087,7 +1092,9 @@ $('#pm').addEventListener('keydown', e => {
 });
 
 /* ════════ навигация ════════ */
-function renderAll() { renderUp(); renderFav(); renderHist(); $('#n-req').textContent = reqs.length || ''; }
+// «Мои возвраты N»: N — заявки на рассмотрении
+const reqPending = () => reqs.filter(r => r.status === 'pending').length || '';
+function renderAll() { renderUp(); renderFav(); renderHist(); $('#n-req').textContent = reqPending(); tabsFade(); }
 function go(view, freshNo) {
   const ret = view === 'returns', guest = state === 'guest';
   $('#v-login').hidden = !guest;
@@ -1102,6 +1109,9 @@ function go(view, freshNo) {
 }
 function tab(name) {
   $$('.tab').forEach(x => x.setAttribute('aria-selected', x.dataset.tab === name));
+  // выбранная вкладка целиком в видимой части ленты
+  const t = $(`.tab[data-tab="${name}"]`), bar = $('.tabs');
+  if (t && bar.scrollWidth > bar.clientWidth) bar.scrollTo({ left: Math.max(0, t.offsetLeft - bar.offsetLeft - (bar.clientWidth - t.offsetWidth) / 2), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
   $$('.panel').forEach(p => p.hidden = p.id !== 'p-' + name);
 }
 function note(text, undo) {
@@ -1141,7 +1151,7 @@ document.addEventListener('click', e => {
       const to = b.dataset.to; pmClose(false); draft = null;
       if (to === 'returns') { go('returns'); break; }
       go('main');
-      if (to === 'data') $('[data-act=me][data-p=data]').click(); else tab(to);
+      if (to === 'data') { $$('.me-panel').forEach(x => x.hidden = x.id !== 'me-data'); $('#f-name').focus(); } else tab(to);
       if (to !== 'data' && to !== 'up') $('.tabs')?.scrollIntoView({ behavior: 'instant', block: 'start' });
       break;
     }
@@ -1193,7 +1203,7 @@ document.addEventListener('click', e => {
       reqs = reqs.filter((r, i) => i === 0 || r.order !== o.no);
       draft = null;
       go('returns', no);
-      $('#n-req').textContent = reqs.length;
+      $('#n-req').textContent = reqPending();
       note('Запрос на возврат отправлен');
       break;
     }
@@ -1235,6 +1245,15 @@ document.addEventListener('input', e => {
 });
 
 $$('.tab').forEach(t => t.addEventListener('click', () => tab(t.dataset.tab)));
+// растворение края ленты вкладок, пока за ним есть ещё вкладки
+function tabsFade() {
+  const bar = $('.tabs'); if (!bar) return;
+  const max = bar.scrollWidth - bar.clientWidth;
+  bar.classList.toggle('fade-l', max > 1 && bar.scrollLeft > 1);
+  bar.classList.toggle('fade-r', max > 1 && bar.scrollLeft < max - 1);
+}
+$('.tabs').addEventListener('scroll', tabsFade, { passive: true });
+addEventListener('resize', tabsFade);
 
 $$('.states [data-state]').forEach(b => b.addEventListener('click', () => {
   state = b.dataset.state; shown = PAGE; draft = null;
