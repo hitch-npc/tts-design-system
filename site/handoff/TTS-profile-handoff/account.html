@@ -669,7 +669,7 @@ const SHOWS = {
   s0: { title: 'Квартетник', venue: 'Театр эстрады', hall: 'Большой зал', date: '2026-10-27T19:00', img: IMG('3d9/rh8c4v29ptak6t0fiq5l991898661fla/kvartetnik_.jpg') },
   s1: { title: 'Опасные игры', venue: 'Театр Ленком', hall: 'Основная сцена', date: '2026-11-07T19:00', img: IMG('06d/ptrweq48do15fc7pka9h0r25h8mhev98/opasnye_igry1.jpg') },
   s2: { title: 'Эйнштейн и Маргарита', venue: 'Театр эстрады', hall: 'Большой зал', date: '2026-11-14T19:00', img: IMG('40f/xk8jj9k4o0ozlw47j22ys3tdaf4g13et/einstein_i_margarita_.jpg') },
-  s3: { title: 'Фрида', venue: 'МХАТ им. Горького', hall: 'Основная сцена', date: '2026-11-21T19:00', img: IMG('356/kqkkzqpzk8rh4oaifiy0lrqlesvz3f8f/frida_.jpg') },
+  s3: { title: 'Фрида', venue: 'МХАТ им. Горького', hall: 'Основная сцена', date: '2026-11-21T19:00', img: 'img/posters/frida.webp', pos: '50% 22%' },
   s4: { title: 'Предновогодний джаз', venue: 'Дом музыки', hall: 'Светлановский зал', date: '2026-12-19T19:00', img: IMG('d1e/gibof3e48g1dtlo1cw2bqwaqo0vlvqa4/p_dzhaz.jpg') },
   s5: { title: 'Любимый Щелкунчик', venue: 'Кремлёвский дворец', hall: 'Основной зал', date: '2026-12-27T12:00', img: IMG('e02/onz3az5djbwotj13vpopw1vowtcek85x/shchelkunchik__2.jpg') },
   s6: { title: 'Любимый Щелкунчик', venue: 'Дом музыки', hall: 'Камерный зал', date: '2026-12-27T12:00', img: IMG('e02/onz3az5djbwotj13vpopw1vowtcek85x/shchelkunchik__2.jpg') },
@@ -769,7 +769,8 @@ const leftText = h => h >= 48 ? `${Math.floor(h / 24)} ${plural(Math.floor(h / 2
 const mask = n => '•••• ' + n.replace(/\s/g, '').slice(-4);
 const sumOf = o => o.tickets.reduce((a, t) => a + t.price, 0);
 const orderBy = no => orders.find(o => o.no === no);
-const poster = s => `<div class="poster"><img src="${s.img}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"></div>`;
+// pos — кадрирование вертикальной афиши в окне 16:10 (object-position), иначе по центру
+const poster = s => `<div class="poster"><img src="${s.img}" alt="" loading="lazy" referrerpolicy="no-referrer"${s.pos ? ` style="object-position: ${s.pos}"` : ''} onerror="this.remove()"></div>`;
 
 const ICON = {
   chev: '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>',
