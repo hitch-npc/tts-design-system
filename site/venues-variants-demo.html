@@ -99,9 +99,9 @@
   .vt { position:relative; isolation:isolate; overflow:hidden; display:flex; flex-direction:column; gap:10px; min-height:208px; padding:24px;
     background:var(--n950); border:1px solid var(--n800); border-radius:2px; text-decoration:none; color:inherit; cursor:pointer; transition:border-color 320ms var(--ease); }
   .vt::before { content:""; position:absolute; inset:-30%; z-index:-1; pointer-events:none; opacity:0;
-    background:radial-gradient(circle at 70% 85%, var(--blob-core) 0%, var(--blob-mid) 38%, transparent 66%); filter:blur(28px); transition:opacity 320ms var(--ease); }
+    background:radial-gradient(ellipse 70% 60% at 72% 100%, var(--blob-core) 0%, var(--blob-mid) 45%, transparent 78%); filter:blur(40px); transition:opacity 320ms var(--ease); }
   .vt:hover, .vt.is-hover { border-color:var(--n600); }
-  .vt:hover::before, .vt.is-hover::before { opacity:1; }
+  .vt:hover::before, .vt.is-hover::before { opacity:.7; }
   .vt .mono { width:48px; height:48px; font-size:18px; }
   .vt .name { font-size:22px; line-height:1.2; }
   .vt .addr { font-size:12px; color:var(--n400); }
