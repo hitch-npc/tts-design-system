@@ -5,10 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Большой зал — много цен</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400&text=%E2%82%BD&display=swap">
 <style>
   :root { --ink:#0D0D0D; --n100:#D6D6D2; --n300:#A6A6A2; --n400:#8A8A88; --n500:#7A7A78; --n600:#626260; --n800:#262930; --n900:#191C22; --n950:#111318;
     --accent:#0047FF; --accent-ghost:#0B142A; --seat-sel:#22C55E; --seat-sold:#2C2F36; --seat-check:#FFFFFF; --r-sm:2px; --scrim:#000000;
-    --font:'Manrope',system-ui,sans-serif; --f-num:'Oranienbaum',Georgia,serif; --f-head:'Forum',Georgia,serif; --f-thin:'Cormorant Garamond',Georgia,serif; }
+    --font:'Manrope',system-ui,sans-serif; --f-num:'Oranienbaum','Source Serif 4',Georgia,serif; /* в Oranienbaum нет ₽ — знак берётся из Source Serif 4, как .rub на странице партнёров */ --f-head:'Forum',Georgia,serif; --f-thin:'Cormorant Garamond',Georgia,serif; }
   *, *::before, *::after { box-sizing:border-box; }
   body { margin:0; padding:32px 20px 64px; background:var(--ink); color:var(--n100); font-family:var(--font); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
   button { font:inherit; color:inherit; }
@@ -39,7 +40,7 @@
   .seat.dim { opacity:.1; }
   .seat.sold.dim { opacity:.05; }
   .seat.sel { background:var(--seat-sel) !important; opacity:1; box-shadow:0 0 0 1px var(--ink), 0 0 0 2px var(--seat-sel); }
-  .seat.sel::after { content:''; position:absolute; left:30%; top:16%; width:26%; height:46%; border:solid var(--seat-check); border-width:0 1.5px 1.5px 0; transform:rotate(45deg); }
+  .seat.sel::after { content:'✓'; position:absolute; inset:0; display:grid; place-items:center; font:700 calc(var(--s) * .72)/1 var(--font); color:var(--seat-check); } /* как .smap-dot-selected в ядре */
 
   .leg { display:flex; flex-direction:column; gap:6px; margin-top:12px; }
   .band { border:1px solid var(--n800); border-radius:2px; }
