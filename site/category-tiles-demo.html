@@ -73,61 +73,8 @@
   .gn-grid[data-move="arrow"] .gn:is(:hover, .is-hover) .gn-a i + i { transform: translateX(0); opacity: 1; }
   .gn-grid[data-move="arrow"] .gn:active .gn-a i + i { transform: translateX(3px); transition-duration: 120ms; }
 
-  /* Кромка: серебро по краю, у тёплого жанра — золото */
-  .gn-grid[data-edge] .gn.warm { --edge: var(--gold); }
-  .gn-grid[data-edge] .gn { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--edge) 8%, transparent),
-    inset 0 1px 0 0 color-mix(in srgb, var(--edge) 22%, transparent); }
-  .gn-grid[data-edge] .gn:is(:hover, .is-hover) { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--edge) 18%, transparent),
-    inset 0 1px 0 0 color-mix(in srgb, var(--edge) 40%, transparent), 0 0 24px -10px color-mix(in srgb, var(--edge) 55%, transparent); }
-  .gn-grid[data-edge][data-move="lift"] .gn:is(:hover, .is-hover) { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--edge) 18%, transparent),
-    inset 0 1px 0 0 color-mix(in srgb, var(--edge) 40%, transparent), 0 0 24px -10px color-mix(in srgb, var(--edge) 55%, transparent),
-    0 16px 28px -14px color-mix(in srgb, var(--g) 85%, var(--scrim)); }
-
-
-  /* E, F — развитие текущего: свечение не гаснет, а меняется */
-  .gn-g2 { position: absolute; inset: 0; z-index: -2; pointer-events: none; opacity: 0; }
-  .gn-grid[data-v="flow"] .gn:is(:hover, .is-hover),
-  .gn-grid[data-v="shape"] .gn:is(:hover, .is-hover) { border-color: var(--n700); }
-  .gn-grid[data-v="flow"] .gn:is(:hover, .is-hover) .gn-a,
-  .gn-grid[data-v="shape"] .gn:is(:hover, .is-hover) .gn-a { color: var(--n100); }
-  .gn-grid[data-v="flow"] .gn:is(:hover, .is-hover) .gn-a i:first-child,
-  .gn-grid[data-v="shape"] .gn:is(:hover, .is-hover) .gn-a i:first-child { transform: translateX(3px); }
-
-  /* E · Перетекание: уходит из правого верхнего угла, проявляется в левом нижнем */
-  .gn-grid[data-v="flow"] .gn-g2 { background: radial-gradient(circle at 12% 88%, var(--g) 0%, transparent 55%);
-    transform: translate(18%, -18%) scale(.9); transform-origin: 12% 88%;
-    transition: opacity 720ms var(--ease-silk), transform 900ms var(--ease-silk); }
-  .gn-grid[data-v="flow"] .gn:is(:hover, .is-hover)::before { opacity: 0; transform: translate(-18%, 18%) scale(1.1); }
-  .gn-grid[data-v="flow"] .gn:is(:hover, .is-hover) .gn-g2 { opacity: 1; transform: none; }
-
-  /* F · Своё свечение у каждой плитки: форма под жанр */
-  .gn-grid[data-v="shape"] .gn-g2 { transition: opacity 720ms var(--ease-silk), transform 1100ms var(--ease-silk); }
-  .gn-grid[data-v="shape"] .gn:is(:hover, .is-hover)::before { opacity: 0; transform: scale(1.2); }
-  .gn-grid[data-v="shape"] .gn:is(:hover, .is-hover) .gn-g2 { opacity: 1; transform: none; }
-  /* Спектакли — занавес: мягкие вертикальные складки выезжают справа */
-  .gn-grid[data-v="shape"] .gn[data-k="drama"] .gn-g2 {
-    background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--g) 95%, transparent) 0 10px,
-      color-mix(in srgb, var(--g) 25%, transparent) 18px, color-mix(in srgb, var(--g) 95%, transparent) 26px);
-    -webkit-mask-image: linear-gradient(to left, var(--scrim) 0%, transparent 78%); mask-image: linear-gradient(to left, var(--scrim) 0%, transparent 78%);
-    filter: brightness(1.35); transform: translateX(16%); }
-  /* Концерты — лучи рампы: веер света из правого верхнего угла */
-  .gn-grid[data-v="shape"] .gn[data-k="concert"] .gn-g2 {
-    background: conic-gradient(from 200deg at 92% -30%, transparent 0deg, color-mix(in srgb, var(--g) 95%, transparent) 10deg, transparent 20deg,
-      color-mix(in srgb, var(--g) 80%, transparent) 30deg, transparent 42deg, color-mix(in srgb, var(--g) 95%, transparent) 52deg, transparent 66deg, transparent 360deg);
-    filter: blur(5px) brightness(1.7); transform: rotate(-10deg); transform-origin: 92% 0; }
-  /* Классика — шёлковая лента: две вытянутые волны по диагонали */
-  .gn-grid[data-v="shape"] .gn[data-k="classic"] .gn-g2 {
-    background: radial-gradient(ellipse 70% 24% at 62% 36%, var(--g), transparent 70%), radial-gradient(ellipse 55% 18% at 84% 74%, var(--g), transparent 70%);
-    filter: blur(3px) brightness(1.8); transform: rotate(-8deg) translate(12%, -14%); }
-  .gn-grid[data-v="shape"] .gn[data-k="classic"]:is(:hover, .is-hover) .gn-g2 { transform: rotate(-8deg); }
-  /* Детям — пузырьки: мягкие круги поднимаются снизу */
-  .gn-grid[data-v="shape"] .gn[data-k="kids"] .gn-g2 {
-    background: radial-gradient(circle at 70% 30%, var(--g) 0 9%, transparent 21%), radial-gradient(circle at 87% 68%, var(--g) 0 7%, transparent 16%),
-      radial-gradient(circle at 55% 78%, var(--g) 0 5%, transparent 12%), radial-gradient(circle at 93% 22%, var(--g) 0 4%, transparent 10%);
-    filter: blur(1px) brightness(1.9); transform: translateY(22%); }
-
   @media (prefers-reduced-motion: reduce) {
-    .gn, .gn::before, .gn::after, .gn-a, .gn-a i, .gn-g2 { transition: none !important; }
+    .gn, .gn::before, .gn::after, .gn-a, .gn-a i { transition: none !important; }
     .gn-grid .gn:is(:hover, .is-hover) { transform: none !important; }
     .gn-grid .gn:is(:hover, .is-hover)::before { transform: none !important; opacity: 1 !important; }
     .gn-grid .gn:is(:hover, .is-hover)::after { opacity: 0 !important; }
@@ -142,35 +89,19 @@
     <div class="eyebrow">Главная · плитки категорий</div>
     <h1>Наведение без потери цвета</h1>
   </div>
-  <p class="note">Цвет жанра виден всегда — в покое и при наведении. Наведение показывают движение плитки или стрелки и рост свечения; E и F — развитие текущего варианта: свечение не гаснет, а перетекает или меняет форму. Наведите на плитку; на телефоне — нажмите или включите «Показать наведение».</p>
+  <p class="note">Цвет жанра виден всегда — в покое и при наведении. Наведение показывают движение плитки или стрелки и рост свечения. Наведите на плитку; на телефоне — нажмите или включите «Показать наведение».</p>
   <div class="gn-set" id="gnSet">
   <div class="gn-row">
     <div class="gn-row-h"><div><div class="gn-row-t">Сейчас</div><div class="gn-row-d">При наведении свечение гаснет, стрелка сдвигается на 3 px.</div></div><button class="gn-try" type="button" aria-pressed="false">Показать наведение</button></div>
-    <div class="gn-grid" data-v="now"><button class="gn" type="button" data-k="drama" style="--g:var(--blob-core)"><span class="gn-g2" aria-hidden="true"></span><span class="gn-t">Спектакли</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn warm" type="button" data-k="concert" style="--g:var(--blob-core-warm)"><span class="gn-g2" aria-hidden="true"></span><span class="gn-t">Концерты</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn" type="button" data-k="classic" style="--g:var(--blob-purple)"><span class="gn-g2" aria-hidden="true"></span><span class="gn-t">Классика</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn" type="button" data-k="kids" style="--g:var(--blob-core-green)"><span class="gn-g2" aria-hidden="true"></span><span class="gn-t">Детям</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button></div>
+    <div class="gn-grid" data-v="now"><button class="gn" type="button" style="--g:var(--blob-core)"><span class="gn-t">Спектакли</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn" type="button" style="--g:var(--blob-core-warm)"><span class="gn-t">Концерты</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn" type="button" style="--g:var(--blob-purple)"><span class="gn-t">Классика</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn" type="button" style="--g:var(--blob-core-green)"><span class="gn-t">Детям</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button></div>
   </div>
   <div class="gn-row">
     <div class="gn-row-h"><div><div class="gn-row-t">A · Подъём</div><div class="gn-row-d">Плитка поднимается на 4 px, свечение остаётся, растёт и становится ярче.</div></div><button class="gn-try" type="button" aria-pressed="false">Показать наведение</button></div>
-    <div class="gn-grid" data-v="new" data-move="lift"><button class="gn" type="button" data-k="drama" style="--g:var(--blob-core)"><span class="gn-g2" aria-hidden="true"></span><span class="gn-t">Спектакли</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn warm" type="button" data-k="concert" style="--g:var(--blob-core-warm)"><span class="gn-g2" aria-hidden="true"></span><span class="gn-t">Концерты</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn" type="button" data-k="classic" style="--g:var(--blob-purple)"><span class="gn-g2" aria-hidden="true"></span><span class="gn-t">Классика</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn" type="button" data-k="kids" style="--g:var(--blob-core-green)"><span class="gn-g2" aria-hidden="true"></span><span class="gn-t">Детям</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button></div>
+    <div class="gn-grid" data-v="new" data-move="lift"><button class="gn" type="button" style="--g:var(--blob-core)"><span class="gn-t">Спектакли</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn" type="button" style="--g:var(--blob-core-warm)"><span class="gn-t">Концерты</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn" type="button" style="--g:var(--blob-purple)"><span class="gn-t">Классика</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn" type="button" style="--g:var(--blob-core-green)"><span class="gn-t">Детям</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button></div>
   </div>
   <div class="gn-row">
     <div class="gn-row-h"><div><div class="gn-row-t">B · Стрелка</div><div class="gn-row-d">Плитка на месте, стрелка уходит вправо и въезжает новая; свечение — как в A.</div></div><button class="gn-try" type="button" aria-pressed="false">Показать наведение</button></div>
-    <div class="gn-grid" data-v="new" data-move="arrow"><button class="gn" type="button" data-k="drama" style="--g:var(--blob-core)"><span class="gn-g2" aria-hidden="true"></span><span class="gn-t">Спектакли</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn warm" type="button" data-k="concert" style="--g:var(--blob-core-warm)"><span class="gn-g2" aria-hidden="true"></span><span class="gn-t">Концерты</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn" type="button" data-k="classic" style="--g:var(--blob-purple)"><span class="gn-g2" aria-hidden="true"></span><span class="gn-t">Классика</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn" type="button" data-k="kids" style="--g:var(--blob-core-green)"><span class="gn-g2" aria-hidden="true"></span><span class="gn-t">Детям</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button></div>
-  </div>
-  <div class="gn-row">
-    <div class="gn-row-h"><div><div class="gn-row-t">C · Подъём и кромка</div><div class="gn-row-d">Как A, плюс серебряная кромка по краю; у «Концертов» — золотая.</div></div><button class="gn-try" type="button" aria-pressed="false">Показать наведение</button></div>
-    <div class="gn-grid" data-v="new" data-move="lift" data-edge><button class="gn" type="button" data-k="drama" style="--g:var(--blob-core)"><span class="gn-g2" aria-hidden="true"></span><span class="gn-t">Спектакли</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn warm" type="button" data-k="concert" style="--g:var(--blob-core-warm)"><span class="gn-g2" aria-hidden="true"></span><span class="gn-t">Концерты</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn" type="button" data-k="classic" style="--g:var(--blob-purple)"><span class="gn-g2" aria-hidden="true"></span><span class="gn-t">Классика</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn" type="button" data-k="kids" style="--g:var(--blob-core-green)"><span class="gn-g2" aria-hidden="true"></span><span class="gn-t">Детям</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button></div>
-  </div>
-  <div class="gn-row">
-    <div class="gn-row-h"><div><div class="gn-row-t">D · Стрелка и кромка</div><div class="gn-row-d">Как B, плюс серебряная кромка; у «Концертов» — золотая.</div></div><button class="gn-try" type="button" aria-pressed="false">Показать наведение</button></div>
-    <div class="gn-grid" data-v="new" data-move="arrow" data-edge><button class="gn" type="button" data-k="drama" style="--g:var(--blob-core)"><span class="gn-g2" aria-hidden="true"></span><span class="gn-t">Спектакли</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn warm" type="button" data-k="concert" style="--g:var(--blob-core-warm)"><span class="gn-g2" aria-hidden="true"></span><span class="gn-t">Концерты</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn" type="button" data-k="classic" style="--g:var(--blob-purple)"><span class="gn-g2" aria-hidden="true"></span><span class="gn-t">Классика</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn" type="button" data-k="kids" style="--g:var(--blob-core-green)"><span class="gn-g2" aria-hidden="true"></span><span class="gn-t">Детям</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button></div>
-  </div>
-  <div class="gn-row">
-    <div class="gn-row-h"><div><div class="gn-row-t">E · Перетекание</div><div class="gn-row-d">Как сейчас, но свечение не гаснет: уходит из правого верхнего угла и проявляется в левом нижнем.</div></div><button class="gn-try" type="button" aria-pressed="false">Показать наведение</button></div>
-    <div class="gn-grid" data-v="flow"><button class="gn" type="button" data-k="drama" style="--g:var(--blob-core)"><span class="gn-g2" aria-hidden="true"></span><span class="gn-t">Спектакли</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn warm" type="button" data-k="concert" style="--g:var(--blob-core-warm)"><span class="gn-g2" aria-hidden="true"></span><span class="gn-t">Концерты</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn" type="button" data-k="classic" style="--g:var(--blob-purple)"><span class="gn-g2" aria-hidden="true"></span><span class="gn-t">Классика</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn" type="button" data-k="kids" style="--g:var(--blob-core-green)"><span class="gn-g2" aria-hidden="true"></span><span class="gn-t">Детям</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button></div>
-  </div>
-  <div class="gn-row">
-    <div class="gn-row-h"><div><div class="gn-row-t">F · Своё свечение у каждой плитки</div><div class="gn-row-d">Свечение меняет форму под жанр: занавес у спектаклей, лучи рампы у концертов, шёлковая лента у классики, пузырьки у детей.</div></div><button class="gn-try" type="button" aria-pressed="false">Показать наведение</button></div>
-    <div class="gn-grid" data-v="shape"><button class="gn" type="button" data-k="drama" style="--g:var(--blob-core)"><span class="gn-g2" aria-hidden="true"></span><span class="gn-t">Спектакли</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn warm" type="button" data-k="concert" style="--g:var(--blob-core-warm)"><span class="gn-g2" aria-hidden="true"></span><span class="gn-t">Концерты</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn" type="button" data-k="classic" style="--g:var(--blob-purple)"><span class="gn-g2" aria-hidden="true"></span><span class="gn-t">Классика</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn" type="button" data-k="kids" style="--g:var(--blob-core-green)"><span class="gn-g2" aria-hidden="true"></span><span class="gn-t">Детям</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button></div>
+    <div class="gn-grid" data-v="new" data-move="arrow"><button class="gn" type="button" style="--g:var(--blob-core)"><span class="gn-t">Спектакли</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn" type="button" style="--g:var(--blob-core-warm)"><span class="gn-t">Концерты</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn" type="button" style="--g:var(--blob-purple)"><span class="gn-t">Классика</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button><button class="gn" type="button" style="--g:var(--blob-core-green)"><span class="gn-t">Детям</span><span class="gn-a" aria-hidden="true"><i>→</i><i>→</i></span></button></div>
   </div>
 </div>
 </div>
