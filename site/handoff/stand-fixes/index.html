@@ -179,11 +179,16 @@
     border-radius: 2px; box-shadow: 0 0 0 1px color-mix(in srgb, var(--n800) calc(var(--p, 0) * 100%), transparent); }
   .ab-poster img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; }
   .ab-poster::after { content: ""; position: absolute; inset: 0; opacity: calc(1 - var(--p, 0));
-    background: linear-gradient(to bottom, transparent 40%, color-mix(in srgb, var(--ink) 82%, transparent) 76%, var(--ink) 100%); }
+    background: linear-gradient(to bottom, transparent var(--gs, 40%), color-mix(in srgb, var(--ink) 82%, transparent) calc(var(--gs, 40%) + 36%), var(--ink) 100%); }
   /* название: не едет поверх афиши, а растворяется в размытии на старом месте и проявляется на новом */
   .ab-txt { position: absolute; display: flex; flex-direction: column; gap: 8px; will-change: opacity, filter, transform; }
   .ab-txt.ab-a { left: 20px; top: 318px; width: 350px; --fs: 34px; opacity: var(--oa, 1); filter: blur(var(--ba, 0px)); transform: translateY(var(--ya, 0px)); }
   .ab-txt.ab-b { left: 148px; top: 92px; width: 222px; --fs: 28px; opacity: var(--ob, 0); filter: blur(var(--bb, 8px)); transform: translateY(var(--yb, 10px)); }
+  /* длинное название: в полном виде до 4 строк, в сложенном до 3, дальше многоточие; положение и высоту шапки считает скрипт */
+  .ab-txt .ab-title { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
+  .ab-txt.ab-a .ab-title { -webkit-line-clamp: 4; }
+  .ab-txt.ab-b .ab-title { -webkit-line-clamp: 3; }
+  [data-ab][data-long] .ab-txt.ab-b { --fs: 22px; }
   .ab-tag { align-self: flex-start; font-size: 10px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--n200);
     border: 1px solid var(--n700); background: color-mix(in srgb, var(--ink) 55%, transparent); padding: 5px 8px; border-radius: 2px; }
   .ab-title { margin: 0; font-family: var(--f-thin); font-weight: 500; font-size: var(--fs, 34px); line-height: 1.05; color: var(--n100); }
@@ -513,9 +518,53 @@
   <div class="ab-bar"><span class="back">‹</span><span class="ttl">Событие</span><span></span></div>
   <div class="ab-scroll">
     <div class="ab-head">
-      <div class="ab-poster"><img src="../../img/posters/frida.webp" alt="Афиша спектакля «Фрида»"></div>
+      <div class="ab-poster"><img src="../../img/posters/frida.webp" alt="Афиша: Фрида"></div>
       <div class="ab-txt ab-a"><span class="ab-tag">Спектакль</span><h2 class="ab-title">Фрида</h2><div class="ab-venue">МХАТ им. Горького · Основная сцена</div></div>
       <div class="ab-txt ab-b" aria-hidden="true"><span class="ab-tag">Спектакль</span><div class="ab-title">Фрида</div><div class="ab-venue">МХАТ им. Горького · Основная сцена</div></div>
+    </div>
+    <div class="ab-body">
+      <div class="ab-meta"><div><div class="k">Дата</div><div class="v">21 ноября</div></div><div><div class="k">Время</div><div class="v">19:00</div></div><div><div class="k">Сеансы</div><div class="v">1</div></div></div>
+      <div class="ab-cta">Выбрать места</div>
+      <p class="ab-lead">Здесь описание события. При прокрутке афиша сверху уменьшается и встаёт слева от названия, шапка становится компактной и остаётся наверху, пока человек читает и выбирает сеанс.</p>
+      <p class="ab-lead">Второй абзац описания нужен, чтобы экран можно было прокрутить: на настоящей странице здесь полный текст, состав, продолжительность и возраст.</p>
+      <div class="ab-cap">Сеансы</div>
+      <div class="ab-sess"><span class="t">19:00</span><span><span class="h">21 ноября, суббота</span><br><span class="h">Основная сцена</span></span><span class="pr">›</span></div>
+      <p class="ab-lead">Ещё немного текста, чтобы прокрутка дошла до конца и шапка осталась в сложенном виде.</p>
+      <p class="ab-lead">Площадка, адрес и «Маршрут» — ниже, как сейчас на странице события.</p>
+    </div>
+  </div>
+</div>
+        </div>
+        <div class="col"><span class="lbl lbl-new">D · Горизонтальная афиша</span>
+<div class="ab-phone" data-ab>
+  <div class="ab-bar"><span class="back">‹</span><span class="ttl">Событие</span><span></span></div>
+  <div class="ab-scroll">
+    <div class="ab-head">
+      <div class="ab-poster"><img src="../../img/posters/landscape-sample.webp" alt="Афиша: Название спектакля"></div>
+      <div class="ab-txt ab-a"><span class="ab-tag">Спектакль</span><h2 class="ab-title">Название спектакля</h2><div class="ab-venue">МХАТ им. Горького · Основная сцена</div></div>
+      <div class="ab-txt ab-b" aria-hidden="true"><span class="ab-tag">Спектакль</span><div class="ab-title">Название спектакля</div><div class="ab-venue">МХАТ им. Горького · Основная сцена</div></div>
+    </div>
+    <div class="ab-body">
+      <div class="ab-meta"><div><div class="k">Дата</div><div class="v">21 ноября</div></div><div><div class="k">Время</div><div class="v">19:00</div></div><div><div class="k">Сеансы</div><div class="v">1</div></div></div>
+      <div class="ab-cta">Выбрать места</div>
+      <p class="ab-lead">Здесь описание события. При прокрутке афиша сверху уменьшается и встаёт слева от названия, шапка становится компактной и остаётся наверху, пока человек читает и выбирает сеанс.</p>
+      <p class="ab-lead">Второй абзац описания нужен, чтобы экран можно было прокрутить: на настоящей странице здесь полный текст, состав, продолжительность и возраст.</p>
+      <div class="ab-cap">Сеансы</div>
+      <div class="ab-sess"><span class="t">19:00</span><span><span class="h">21 ноября, суббота</span><br><span class="h">Основная сцена</span></span><span class="pr">›</span></div>
+      <p class="ab-lead">Ещё немного текста, чтобы прокрутка дошла до конца и шапка осталась в сложенном виде.</p>
+      <p class="ab-lead">Площадка, адрес и «Маршрут» — ниже, как сейчас на странице события.</p>
+    </div>
+  </div>
+</div>
+        </div>
+        <div class="col"><span class="lbl lbl-new">D · Длинное название</span>
+<div class="ab-phone" data-ab data-long>
+  <div class="ab-bar"><span class="back">‹</span><span class="ttl">Событие</span><span></span></div>
+  <div class="ab-scroll">
+    <div class="ab-head">
+      <div class="ab-poster"><img src="../../img/posters/frida.webp" alt="Афиша: Квартет И + Моральный кодекс «Песни и письма мужчин среднего возраста»"></div>
+      <div class="ab-txt ab-a"><span class="ab-tag">Спектакль</span><h2 class="ab-title">Квартет И + Моральный кодекс «Песни и письма мужчин среднего возраста»</h2><div class="ab-venue">МХАТ им. Горького · Основная сцена</div></div>
+      <div class="ab-txt ab-b" aria-hidden="true"><span class="ab-tag">Спектакль</span><div class="ab-title">Квартет И + Моральный кодекс «Песни и письма мужчин среднего возраста»</div><div class="ab-venue">МХАТ им. Горького · Основная сцена</div></div>
     </div>
     <div class="ab-body">
       <div class="ab-meta"><div><div class="k">Дата</div><div class="v">21 ноября</div></div><div><div class="k">Время</div><div class="v">19:00</div></div><div><div class="k">Сеансы</div><div class="v">1</div></div></div>
@@ -539,7 +588,7 @@
       </div>
       <table class="spec">
         <tr><th>Что</th><th>Сейчас</th><th>Предложение</th></tr>
-        <tr><td class="p">D · Складывается при прокрутке</td><td class="o" data-h="Сейчас">афиши нет</td><td class="n" data-h="Предложение">300 px прокрутки в три фазы: старое название растворяется в размытии 8 px (0–40 %), афиша 390 × 440 px сжимается до 112 × 150 px у левого края, без размытия (0–60 %), новое название 28 px проявляется из размытия справа от афиши (55–100 %). Объекты не наезжают друг на друга. Дата идёт сразу под афишей, без зазора. Сложенная шапка закреплена наверху (sticky), под ней линия <code>--n900</code> и мягкая тень. Движение привязано к прокрутке, без таймера</td></tr>
+        <tr><td class="p">D · Складывается при прокрутке</td><td class="o" data-h="Сейчас">афиши нет</td><td class="n" data-h="Предложение">300 px прокрутки в три фазы: старое название растворяется в размытии 8 px (0–40 %), афиша 390 × 440 px сжимается до 112 × 150 px у левого края, без размытия (0–60 %), новое название 28 px проявляется из размытия справа от афиши (55–100 %). Объекты не наезжают друг на друга. Дата идёт сразу под афишей, без зазора. Сложенная шапка закреплена наверху (sticky), под ней линия <code>--n900</code> и мягкая тень. Движение привязано к прокрутке, без таймера. Горизонтальная афиша сжимается в горизонтальную миниатюру 148 × 99; длинное название — до 4 строк в полном виде и до 3 строк 22 px в сложенном, шапка растёт по высоте текста</td></tr>
         <tr><td class="p">A · Во всю ширину</td><td class="o" data-h="Сейчас">афиши нет</td><td class="n" data-h="Предложение">афиша занимает верх экрана (440 px) и уходит в фон градиентом; категория и название на её нижнем крае; сверху затемнение под шапкой. Нужен хороший кадр</td></tr>
         <tr><td class="p">Откуда афиша</td><td class="o" data-h="Сейчас">—</td><td class="n" data-h="Предложение">та же картинка, что у события в афише и в профиле; кадрирование — по фокусу картинки</td></tr>
       </table>
@@ -548,34 +597,49 @@
       </div>
       <script>
 (function () {
-  // A → B: прогресс складывания — первые 300 px прокрутки
+  // Афиша складывается при прокрутке. Ориентация картинки и высота названия считаются на месте:
+  // горизонтальная афиша сжимается в горизонтальную миниатюру, длинное название растит сложенную шапку.
   var RANGE = 300, W = 390, BAR = 52;
-  var A = { px: 0, py: 0, pw: W, ph: 440, tx: 20, ty: 300, tw: W - 40, fs: 34, hh: 440 };
-  var B = { px: 20, py: BAR + 16, pw: 112, ph: 150, tx: 148, ty: BAR + 40, tw: W - 168, fs: 28, hh: BAR + 16 + 150 + 16 };
   var ease = function (t) { return t * t * (3 - 2 * t); };
   document.querySelectorAll('[data-ab]').forEach(function (ph) {
     var sc = ph.querySelector('.ab-scroll'), head = ph.querySelector('.ab-head');
-    var start = +(ph.getAttribute('data-p') || 0);
+    var ta = ph.querySelector('.ab-a'), tb = ph.querySelector('.ab-b'), img = ph.querySelector('.ab-poster img');
+    var A = { px: 0, py: 0, pw: W, ph: 440, hh: 440 }, B = { px: 20, py: BAR + 16, pw: 112, ph: 150, hh: BAR + 182 };
+    function layout() {
+      var land = img.naturalWidth > img.naturalHeight;
+      B.pw = land ? 148 : 112; B.ph = land ? 99 : 150;
+      tb.style.left = (B.px + B.pw + 16) + 'px';
+      tb.style.width = (W - B.px - B.pw - 16 - 20) + 'px';
+      var aH = ta.offsetHeight, bH = tb.offsetHeight;
+      var aTop = Math.max(BAR + 96, A.ph - 22 - aH);
+      ta.style.top = aTop + 'px';
+      // затемнение афиши начинается над названием: длинное название не ложится на светлый кадр
+      head.style.setProperty('--gs', Math.max(8, Math.min(40, (aTop - 90) / A.ph * 100)).toFixed(1) + '%');
+      B.hh = BAR + 16 + Math.max(B.ph, bH) + 16;
+      tb.style.top = (BAR + 16 + Math.max(0, (B.ph - bH) / 2)) + 'px';
+      set(Math.min(1, Math.max(0, sc.scrollTop / RANGE)));
+    }
     function set(p) {
       // три фазы: старое название гаснет (0–40 %), афиша сжимается (0–60 %), новое проявляется (55–100 %)
       var e = ease(p), pe = ease(Math.min(1, p / 0.6));
-      var L = function (k) { return A[k] + (B[k] - A[k]) * e; }, LP = function (k) { return A[k] + (B[k] - A[k]) * pe; };
+      var LP = function (k) { return A[k] + (B[k] - A[k]) * pe; };
       ph.style.setProperty('--p', e.toFixed(3));
       ['px', 'py', 'pw', 'ph'].forEach(function (k) { head.style.setProperty('--' + k, LP(k).toFixed(1) + 'px'); });
-      var ta = ease(Math.min(1, p / 0.4)), tb = ease(Math.max(0, (p - 0.55) / 0.45));
-      head.style.setProperty('--oa', (1 - ta).toFixed(3));
-      head.style.setProperty('--ba', (8 * ta).toFixed(2) + 'px');
-      head.style.setProperty('--ya', (-12 * ta).toFixed(1) + 'px');
-      head.style.setProperty('--ob', tb.toFixed(3));
-      head.style.setProperty('--bb', (8 * (1 - tb)).toFixed(2) + 'px');
-      head.style.setProperty('--yb', (10 * (1 - tb)).toFixed(1) + 'px');
+      var a = ease(Math.min(1, p / 0.4)), b = ease(Math.max(0, (p - 0.55) / 0.45));
+      head.style.setProperty('--oa', (1 - a).toFixed(3));
+      head.style.setProperty('--ba', (8 * a).toFixed(2) + 'px');
+      head.style.setProperty('--ya', (-12 * a).toFixed(1) + 'px');
+      head.style.setProperty('--ob', b.toFixed(3));
+      head.style.setProperty('--bb', (8 * (1 - b)).toFixed(2) + 'px');
+      head.style.setProperty('--yb', (10 * (1 - b)).toFixed(1) + 'px');
       head.style.setProperty('--hh', LP('hh').toFixed(1) + 'px');
       // высота шапки уменьшается вместе с прокруткой — компенсируем, чтобы текст ниже не прыгал
       head.style.marginBottom = (A.hh - LP('hh')).toFixed(1) + 'px';
     }
     sc.addEventListener('scroll', function () { set(Math.min(1, Math.max(0, sc.scrollTop / RANGE))); }, { passive: true });
-    if (start) { sc.scrollTop = start * RANGE; }
-    set(Math.min(1, Math.max(0, sc.scrollTop / RANGE)));
+    if (img.complete) layout(); else img.addEventListener('load', layout);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+    layout();
   });
 })();
       </script>
