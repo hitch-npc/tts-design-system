@@ -10,7 +10,7 @@
     --n800:#262930; --n850:#1F222A; --n900:#191C22; --n950:#111318; --accent:#0047FF; --accent-ghost:#0B142A;
     --blob-core:#06277F; --blob-mid:#15092A; --blob-purple:#200840;
     --font:'Manrope',system-ui,sans-serif; --f-head:'Forum',Georgia,serif; --f-thin:'Cormorant Garamond',Georgia,serif; --f-num:'Oranienbaum',Georgia,serif;
-    --ease:cubic-bezier(.16,1,.3,1); }
+    --ease:cubic-bezier(.16,1,.3,1); --ease-std:cubic-bezier(.4,0,.2,1); }
   *, *::before, *::after { box-sizing: border-box; }
   body { margin:0; background:var(--ink); color:var(--n100); font-family:var(--font); font-size:14px; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
   button, input { font: inherit; color: inherit; }
@@ -106,21 +106,23 @@
   @media (max-width:1000px) { .tiles { grid-template-columns:repeat(2, minmax(0,1fr)); } }
   @media (max-width:600px) { .tiles { grid-template-columns:1fr; gap:10px; } }
   .vt { position:relative; isolation:isolate; overflow:hidden; display:flex; flex-direction:column; gap:10px; min-height:208px; padding:24px;
-    background:var(--n950); border:1px solid var(--n800); border-radius:2px; text-decoration:none; color:inherit; cursor:pointer; transition:border-color 320ms var(--ease); }
+    background:var(--n950); border:1px solid var(--n800); border-radius:2px; text-decoration:none; color:inherit; cursor:pointer; transition:border-color 120ms var(--ease-std); }
   .vt::before { content:""; position:absolute; inset:-30%; z-index:-1; pointer-events:none; opacity:0;
-    background:radial-gradient(ellipse 70% 60% at 72% 100%, var(--blob-core) 0%, var(--blob-mid) 45%, transparent 78%); filter:blur(40px); transition:opacity 320ms var(--ease); }
+    background:radial-gradient(ellipse 70% 60% at 72% 100%, var(--blob-core) 0%, var(--blob-mid) 45%, transparent 78%); filter:blur(40px);
+    /* движение — как на стенде площадок: блоб растёт из 85 % и проявляется, 320 мс */
+    transform:scale(.85); transform-origin:72% 100%; transition:opacity 320ms var(--ease-std), transform 320ms var(--ease-std); }
   .vt:hover, .vt.is-hover { border-color:var(--n600); }
-  .vt:hover::before, .vt.is-hover::before { opacity:.7; }
+  .vt:hover::before, .vt.is-hover::before { opacity:.7; transform:scale(1); }
   .vt .mono { width:48px; height:48px; font-size:18px; }
   .vt .name { font-size:22px; line-height:1.2; }
   .vt .addr { font-size:12px; color:var(--n400); }
   .vt .vt-foot { margin-top:auto; display:flex; align-items:baseline; justify-content:space-between; gap:10px; padding-top:14px; border-top:1px solid var(--n900); }
-  .vt .vt-arr { color:var(--n500); transition:transform 320ms var(--ease), color 320ms var(--ease); }
-  .vt:hover .vt-arr, .vt.is-hover .vt-arr { color:var(--n100); transform:scale(1.25); }
+  .vt .vt-arr { display:inline-block; color:var(--n500); transition:transform 200ms var(--ease-std), color 200ms var(--ease-std); }
+  .vt:hover .vt-arr, .vt.is-hover .vt-arr { color:var(--n100); transform:translateX(2px) scale(1.25); }
   .vt.off .name { color:var(--n300); }
   @media (max-width:600px) { .vt { min-height:0; padding:20px; } .vt .name { font-size:20px; } }
   .empty { padding:32px 0; color:var(--n400); font-size:13px; }
-  @media (prefers-reduced-motion: reduce) { * { transition:none !important; } }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; } .vt::before { transform:none !important; } .vt .vt-arr { transform:none !important; } }
 </style>
 </head>
 <body>
@@ -172,7 +174,7 @@ function tools(){
   return `<div class="tools"><label class="search">${ICON_S}<input id="q" type="search" placeholder="Найти площадку или адрес" value="${esc(st.q)}" aria-label="Поиск площадки"><button class="search-clear" type="button" aria-label="Очистить поиск"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></label>${chips()}</div>`;
 }
 function right(v){
-  return v.c?`<div class="right"><div class="cnt">${ev(v.c)}</div><div class="cnt-sub">ближайшее ${v.next}</div></div>`:`<div class="right none">Шоу ещё не анонсированы</div>`;
+  return v.c?`<div class="right"><div class="cnt">${ev(v.c)}</div></div>`:`<div class="right none">Шоу ещё не анонсированы</div>`;
 }
 function row(v){
   return `<a class="row${st.hl===v.i?' is-hl':''}" href="#" data-i="${v.i}"><span class="mono" aria-hidden="true">${mono(v.n)}</span><span style="min-width:0"><div class="name">${v.n}</div><div class="meta">${v.t} · ${v.a}</div></span>${right(v)}<span class="chev" aria-hidden="true">›</span></a>`;
@@ -193,7 +195,7 @@ function viewB(){
   const groups=GROUPS.filter(([,t])=>st.type==='Все'||st.type===t).map(([lab,t])=>{
     const vs=sorted().filter(v=>v.t===t&&match(v));
     if(!vs.length) return '';
-    return `<section><div class="group-h"><h2>${lab}</h2><span class="cap">${vs.length}</span></div><div class="cards">${vs.map(v=>`<a class="card" href="#"><span class="cap">${v.t}</span><span class="name">${v.n}</span><span class="meta">${v.a}</span><span class="foot">${v.c?`<span class="cnt">${ev(v.c)}</span><span class="cnt-sub">ближайшее ${v.next}</span>`:'<span class="none">Шоу ещё не анонсированы</span>'}</span></a>`).join('')}</div></section>`;
+    return `<section><div class="group-h"><h2>${lab}</h2><span class="cap">${vs.length}</span></div><div class="cards">${vs.map(v=>`<a class="card" href="#"><span class="cap">${v.t}</span><span class="name">${v.n}</span><span class="meta">${v.a}</span><span class="foot">${v.c?`<span class="cnt">${ev(v.c)}</span>`:'<span class="none">Шоу ещё не анонсированы</span>'}</span></a>`).join('')}</div></section>`;
   }).join('');
   return head()+tools()+(groups?`<div class="groups">${groups}</div>`:`<div class="empty">Ничего не нашлось. Попробуйте название площадки или улицу.</div>`);
 }
@@ -205,7 +207,7 @@ function viewC(){
 }
 function viewD(){
   const list=sorted().filter(v=>st.type==='Все'||v.t===st.type);
-  const tile=v=>`<a class="vt${v.c?'':' off'}${st.hl===v.i?' is-hover':''}" href="#"><span class="mono" aria-hidden="true">${mono(v.n)}</span><span class="name">${v.n}</span><span class="addr">${v.a}</span><span class="vt-foot">${v.c?`<span><span class="cnt">${ev(v.c)}</span> <span class="cnt-sub">· ближайшее ${v.next}</span></span>`:'<span class="none">Шоу ещё не анонсированы</span>'}<span class="vt-arr" aria-hidden="true">→</span></span></a>`;
+  const tile=v=>`<a class="vt${v.c?'':' off'}${st.hl===v.i?' is-hover':''}" href="#"><span class="mono" aria-hidden="true">${mono(v.n)}</span><span class="name">${v.n}</span><span class="addr">${v.a}</span><span class="vt-foot">${v.c?`<span class="cnt">${ev(v.c)}</span>`:'<span class="none">Шоу ещё не анонсированы</span>'}<span class="vt-arr" aria-hidden="true">→</span></span></a>`;
   return head()+chips()+`<div class="tiles">${list.map(tile).join('')}</div>`;
 }
 function render(){
