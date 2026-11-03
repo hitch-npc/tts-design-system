@@ -44,22 +44,7 @@
     background:linear-gradient(to bottom, color-mix(in srgb, var(--ink) 62%, transparent) 0%, color-mix(in srgb, var(--ink) 36%, transparent) 55%, transparent 100%);
     -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
     -webkit-mask-image:linear-gradient(to bottom, var(--scrim) 45%, transparent 100%); mask-image:linear-gradient(to bottom, var(--scrim) 45%, transparent 100%); }
-  /* B · афиша рядом с названием */
-  .b-head { display:grid; grid-template-columns:112px minmax(0,1fr); gap:16px; align-items:end; padding-top:20px; }
-  .b-head img { width:112px; height:150px; object-fit:cover; object-position:50% 20%; display:block; border:1px solid var(--n800); border-radius:2px; }
-  .b-head .title { font-size:30px; }
-  .b-head .txt { display:flex; flex-direction:column; gap:8px; min-width:0; }
 
-  /* C · афиша в атмосфере */
-  .c-bg { position:absolute; inset:-40px -40px auto; height:560px; z-index:0; background:url('img/posters/frida.webp') 50% 20% / cover; filter:blur(36px) saturate(1.1); opacity:.42; }
-  .c-bg::after { content:""; position:absolute; inset:0; background:linear-gradient(to bottom, transparent 30%, var(--ink) 92%); }
-  .c-poster { position:relative; z-index:2; display:flex; justify-content:center; padding:24px 0 18px; }
-  .c-poster img { width:196px; height:262px; object-fit:cover; object-position:50% 20%; display:block; border-radius:2px;
-    box-shadow:0 24px 48px -18px color-mix(in srgb, var(--scrim) 90%, transparent), 0 0 0 1px color-mix(in srgb, var(--n100) 14%, transparent); }
-  .c .body { align-items:center; text-align:center; }
-  .c .tag { align-self:center; }
-  .c .meta { width:100%; text-align:left; }
-  .c .cta { align-self:stretch; }
   /* Афиша A → B: при прокрутке афиша во всю ширину складывается в миниатюру рядом с названием */
   .ab-phone { position: relative; width: 100%; max-width: 390px; height: 700px; overflow: hidden; border: 1px solid var(--n800); border-radius: 2px; background: var(--ink); }
   .ab-scroll { position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
@@ -77,7 +62,7 @@
     box-shadow: 0 1px 0 color-mix(in srgb, var(--n900) calc(var(--p, 0) * 100%), transparent), 0 14px 16px -6px color-mix(in srgb, var(--ink) calc(var(--p, 0) * 100%), transparent); }
   .ab-poster { position: absolute; left: var(--px); top: var(--py); width: var(--pw); height: var(--ph); overflow: hidden;
     border-radius: 2px; box-shadow: 0 0 0 1px color-mix(in srgb, var(--n800) calc(var(--p, 0) * 100%), transparent); }
-  .ab-poster img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; filter: blur(var(--pb, 0px)); transform: scale(1.04); }
+  .ab-poster img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; }
   .ab-poster::after { content: ""; position: absolute; inset: 0; opacity: calc(1 - var(--p, 0));
     background: linear-gradient(to bottom, transparent 40%, color-mix(in srgb, var(--ink) 82%, transparent) 76%, var(--ink) 100%); }
   /* название: не едет поверх афиши, а растворяется в размытии на старом месте и проявляется на новом */
@@ -125,40 +110,11 @@
       </div>
     </div>
 
-    <div class="fr">
-      <div class="fr-t">B · Афиша рядом с названием</div>
-      <div class="fr-d">Небольшая афиша слева, текст справа. Меньше всего меняет текущий экран стенда и не зависит от качества картинки.</div>
-      <div class="phone">
-        <div class="bar"><span class="back">‹</span><span class="ttl">Событие</span><span></span></div>
-        <div class="body">
-          <div class="b-head"><img src="img/posters/frida.webp" alt="Афиша спектакля «Фрида»"><div class="txt"><span class="tag">Спектакль</span><h2 class="title">Фрида</h2><div class="venue">МХАТ им. Горького · Основная сцена</div></div></div>
-          <div class="lead">Здесь две строки лида из описания события; полный текст открывается по ссылке. <a href="#">Читать полностью</a></div>
-          <div class="meta"><div><div class="k">Дата</div><div class="v">21 ноября</div></div><div><div class="k">Время</div><div class="v">19:00</div></div><div><div class="k">Сеансы</div><div class="v">1</div></div></div>
-          <div class="cta">Выбрать места</div>
-        </div>
-      </div>
-    </div>
 
-    <div class="fr c">
-      <div class="fr-t">C · Афиша в атмосфере</div>
-      <div class="fr-d">Размытая афиша заменяет жанровое свечение, сверху — сама афиша с тенью, текст по центру. Цвет фона у каждого события свой, из его афиши.</div>
-      <div class="phone">
-        <div class="c-bg" aria-hidden="true"></div>
-        <div class="bar" style="border-color:transparent"><span class="back">‹</span><span class="ttl">Событие</span><span></span></div>
-        <div class="c-poster"><img src="img/posters/frida.webp" alt="Афиша спектакля «Фрида»"></div>
-        <div class="body">
-          <span class="tag">Спектакль</span>
-          <h2 class="title">Фрида</h2>
-          <div class="venue">МХАТ им. Горького · Основная сцена</div>
-          <div class="meta"><div><div class="k">Дата</div><div class="v">21 ноября</div></div><div><div class="k">Время</div><div class="v">19:00</div></div><div><div class="k">Сеансы</div><div class="v">1</div></div></div>
-          <div class="cta">Выбрать места</div>
-        </div>
-      </div>
-    </div>
 
     <div class="fr">
-      <div class="fr-t">D · A складывается в B при прокрутке</div>
-      <div class="fr-d">Сверху — афиша во всю ширину, как в A. Первые 300 px прокрутки она уменьшается до миниатюры слева от названия, как в B, и шапка остаётся наверху. Экран живой — прокрутите.</div>
+      <div class="fr-t">D · Складывается при прокрутке</div>
+      <div class="fr-d">Сверху — афиша во всю ширину, как в A. Первые 300 px прокрутки она уменьшается до миниатюры слева от названия, и шапка остаётся наверху. Экран живой — прокрутите.</div>
 <div class="ab-phone" data-ab>
   <div class="ab-bar"><span class="back">‹</span><span class="ttl">Событие</span><span></span></div>
   <div class="ab-scroll">
@@ -206,8 +162,6 @@
       head.style.setProperty('--ob', tb.toFixed(3));
       head.style.setProperty('--bb', (8 * (1 - tb)).toFixed(2) + 'px');
       head.style.setProperty('--yb', (10 * (1 - tb)).toFixed(1) + 'px');
-      // афиша чуть размывается, пока сжимается, и снова резкая к концу
-      head.style.setProperty('--pb', (1.5 * Math.sin(Math.PI * pe)).toFixed(2) + 'px');
       head.style.setProperty('--hh', LP('hh').toFixed(1) + 'px');
       // высота шапки уменьшается вместе с прокруткой — компенсируем, чтобы текст ниже не прыгал
       head.style.marginBottom = (A.hh - LP('hh')).toFixed(1) + 'px';
