@@ -10,8 +10,12 @@
    • Caption / blue uppercase   → Medium (500) минимум
    • Серый малозначимый caption → допускается Regular (400)
    Подключаемые шрифты: Cormorant Garamond 400;500, Manrope 400-700,
-   Forum, Oranienbaum.
+   Forum, Oranienbaum. Знак ₽ — Source Serif 4, подключается ниже.
    ══════════════════════════════════════════════════════════ */
+
+/* Знак ₽: в Oranienbaum его нет, поэтому --f-num берёт ₽ из Source Serif 4 (решение №40).
+   Подгружается только этот символ — text=₽. */
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400&text=%E2%82%BD&display=swap');
 
 /* ─── ТОКЕНЫ ─── */
 :root {
@@ -110,7 +114,7 @@
   --font:            'Manrope', system-ui, sans-serif;
   --f-head:          'Forum', serif;
   --f-thin:          'Cormorant Garamond', serif;
-  --f-num:           'Oranienbaum', serif;
+  --f-num:           'Oranienbaum', 'Source Serif 4', serif;
 
   /* Отступы */
   --sp-1:            4px;
@@ -1612,6 +1616,17 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   min-width: 0;
 }
 .hero-search-input::placeholder { color: var(--n600); }
+
+/* Поле поиска: свой крестик очистки вместо браузерного (синего и жирного в Chrome и Safari).
+   Кнопка .search-clear стоит сразу после поля и видна, только когда в поле есть текст. */
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration { -webkit-appearance: none; appearance: none; display: none; }
+.search-clear { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; padding: 0;
+  background: none; border: 0; border-radius: var(--r-sm); color: var(--n500); cursor: pointer; transition: color var(--dur-fast) var(--ease-out); }
+.search-clear:hover, .search-clear:focus-visible { color: var(--n100); }
+.search-clear svg { width: 14px; height: 14px; }
+input:placeholder-shown + .search-clear { display: none; }
+@media (pointer: coarse) { .search-clear { width: 36px; height: 36px; } }
 .hero-search-btn {
   border-radius: 0;
   border-left: 1px solid var(--n800);

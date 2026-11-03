@@ -425,6 +425,7 @@ textarea.form-input { min-height: 112px; resize: vertical; line-height: 1.5; }
   <div class="hdr-search" role="search">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
     <input type="search" id="sgIn" placeholder="Театр, спектакль, артист…" aria-label="Поиск по афише" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="sgBox">
+    <button class="search-clear" type="button" aria-label="Очистить поиск"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     <div class="sg" id="sgBox" role="listbox"></div>
     <button class="hdr-filter" type="button" aria-label="Фильтры"><span class="hdr-filter-l">Фильтры</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg></button>
   </div>
@@ -1332,6 +1333,8 @@ function sgInit() {
     } else if (e.key === 'Enter' && i >= 0) { e.preventDefault(); sgOpen(false); }
   });
   document.addEventListener('pointerdown', e => { if (!e.target.closest('.hdr-search')) sgOpen(false); });
+  const clr = inp.nextElementSibling;
+  if (clr && clr.classList.contains('search-clear')) clr.addEventListener('click', () => { inp.value = ''; inp.dispatchEvent(new Event('input')); inp.focus(); });
 }
 sgInit();
 /* ════════ вход: код на почту или пароль ════════ */

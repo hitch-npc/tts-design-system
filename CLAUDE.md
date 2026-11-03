@@ -99,6 +99,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 - **Меню** — капс, Manrope 500, 11px, .16em; неактивные пункты `--n300`, активный `--n100`.
 - **Активный чип / фильтр** — `--accent-ghost` + рамка `--accent` + текст `--n100`; жирность та же, что у неактивного (500) — выбор показывают рамка и фон, не толщина.
 - **Иконки** — точка в восклицательном и информационном знаке рисуется отрезком нулевой длины, поэтому у таких `svg` обязателен `stroke-linecap="round"`: с торцом по умолчанию точка не рисуется вообще.
+- **Крестик очистки в поиске** — `.search-clear` из ядра: тонкая иконка × (линия 1.5, `--n500`, при наведении `--n100`) сразу после поля, видна только при тексте. Браузерный крестик ядро скрывает у всех `input[type="search"]`.
 - **Штрихкод** — всегда тёмные полосы на светлой плашке, даже в тёмной теме. Инверсию читают не все сканеры.
 - **Сглаживание шрифта** — `-webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale` на `body` — в ядре обеих тем,
   на страницах и в редизайне. Без него Mac утолщает светлый текст на тёмном, и макет в браузере жирнее, чем в Figma.
@@ -359,7 +360,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 | `--font` | Manrope | UI-элементы, кнопки, метки |
 | `--f-head` | Forum | Названия мельче 22px: карточки афиши, плитки, подзаголовки (`.t-h3`) |
 | `--f-thin` | Cormorant Garamond 400/500 | Display и заголовки **от 22px** (до 25pt — 500, крупнее — 400/500) |
-| `--f-num` | Oranienbaum | Числа (цены, даты) |
+| `--f-num` | Oranienbaum (+ Source Serif 4 для ₽) | Числа (цены, даты); знак ₽ — из Source Serif 4, ядро подгружает его само (решение №40) |
 
 ### Классы типографики
 ```
@@ -743,7 +744,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 - Blob только через `.cover-blob-1/.cover-blob-2` или radial-gradient с blur
 - Шрифт Cormorant — только названия событий и display. Для UI — Manrope
 - Минимальная высота кнопки `.btn-sm` — 36px
-- Подключаемые шрифты (R14): `https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap`
+- Подключаемые шрифты (R14): `https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap`. Знак ₽ (Source Serif 4, только этот символ) ядро подключает само; странице без ядра — второй строкой: `https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400&text=%E2%82%BD&display=swap`
 
 ---
 

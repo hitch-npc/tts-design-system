@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Афиша на странице события — варианты</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+  :root { --ink:#0D0D0D; --n100:#D6D6D2; --n200:#C0C0BC; --n300:#A6A6A2; --n400:#8A8A88; --n500:#7A7A78; --n700:#4A4A48;
+    --n800:#262930; --n900:#191C22; --n950:#111318; --accent:#0047FF; --on-accent:#FFFFFF; --scrim:#000000;
+    --font:'Manrope',system-ui,sans-serif; --f-head:'Forum',Georgia,serif; --f-thin:'Cormorant Garamond',Georgia,serif; --f-num:'Oranienbaum',Georgia,serif; }
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin:0; padding:32px 20px 64px; background:var(--ink); color:var(--n100); font-family:var(--font); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+  .wrap { max-width:1260px; margin:0 auto; display:flex; flex-direction:column; gap:28px; }
+  .eyebrow { font-size:10px; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:var(--n300); }
+  h1 { margin:8px 0 0; font-family:var(--f-thin); font-weight:400; font-size:2.2rem; }
+  .frames { display:flex; flex-wrap:wrap; gap:28px; align-items:flex-start; }
+  .fr { display:flex; flex-direction:column; gap:10px; width:390px; max-width:100%; }
+  .fr-t { font-size:13px; font-weight:600; }
+  .fr-d { font-size:12px; color:var(--n400); line-height:1.55; min-height:56px; }
+  .phone { position:relative; width:100%; height:700px; overflow:hidden; border:1px solid var(--n800); border-radius:2px; background:var(--ink); isolation:isolate; }
+
+  /* общие части экрана события */
+  .bar { position:relative; z-index:3; height:52px; display:grid; grid-template-columns:40px 1fr 40px; align-items:center; padding:0 8px; border-bottom:1px solid var(--n900); }
+  .bar .back { color:var(--n300); font-size:18px; text-align:center; }
+  .bar .ttl { text-align:center; font-size:11px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--n300); }
+  .body { position:relative; z-index:2; padding:0 20px; display:flex; flex-direction:column; gap:12px; }
+  .tag { align-self:flex-start; font-size:10px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--n200); border:1px solid var(--n700); background:color-mix(in srgb, var(--ink) 55%, transparent); padding:5px 8px; border-radius:2px; }
+  .title { margin:0; font-family:var(--f-thin); font-weight:500; font-size:34px; line-height:1.05; color:var(--n100); }
+  .venue { font-size:13px; color:var(--n300); line-height:1.5; }
+  .lead { font-size:13px; line-height:1.6; color:var(--n300); }
+  .lead a { color:var(--n100); text-decoration:underline; text-decoration-color:var(--accent); text-underline-offset:3px; }
+  .meta { display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; padding:14px 0; border-top:1px solid var(--n900); border-bottom:1px solid var(--n900); }
+  .meta .k { font-size:10px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--n500); }
+  .meta .v { font-family:var(--f-num); font-size:17px; color:var(--n100); margin-top:4px; }
+  .cta { height:46px; display:grid; place-items:center; background:var(--accent); color:var(--on-accent); font-size:11px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; border-radius:2px; }
+
+  /* A · афиша во всю ширину */
+  .a-cover { position:relative; height:440px; margin-bottom:-120px; }
+  .a-cover img { width:100%; height:100%; object-fit:cover; object-position:50% 18%; display:block; }
+  .a-cover::after { content:""; position:absolute; inset:0; background:linear-gradient(to bottom, color-mix(in srgb, var(--ink) 0%, transparent) 40%, color-mix(in srgb, var(--ink) 82%, transparent) 76%, var(--ink) 100%); }
+
+  .bar-over::before { content:""; position:absolute; inset:0 0 -44px; z-index:-1; pointer-events:none;
+    background:linear-gradient(to bottom, color-mix(in srgb, var(--ink) 62%, transparent) 0%, color-mix(in srgb, var(--ink) 36%, transparent) 55%, transparent 100%);
+    -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
+    -webkit-mask-image:linear-gradient(to bottom, var(--scrim) 45%, transparent 100%); mask-image:linear-gradient(to bottom, var(--scrim) 45%, transparent 100%); }
+
+  /* Афиша A → B: при прокрутке афиша во всю ширину складывается в миниатюру рядом с названием */
+  .ab-phone { position: relative; width: 100%; max-width: 390px; height: 700px; overflow: hidden; border: 1px solid var(--n800); border-radius: 2px; background: var(--ink); }
+  .ab-scroll { position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
+  .ab-scroll::-webkit-scrollbar { display: none; }
+  .ab-bar { position: absolute; z-index: 6; inset: 0 0 auto; height: 52px; display: grid; grid-template-columns: 40px 1fr 40px; align-items: center; padding: 0 8px;
+    border-bottom: 1px solid color-mix(in srgb, var(--n900) calc(var(--p, 0) * 100%), transparent);
+    background: color-mix(in srgb, var(--ink) calc(var(--p, 0) * 100%), transparent); }
+  .ab-bar::before { content: ""; position: absolute; inset: 0 0 -44px; z-index: -1; pointer-events: none; opacity: calc(1 - var(--p, 0));
+    background: linear-gradient(to bottom, color-mix(in srgb, var(--ink) 62%, transparent) 0%, color-mix(in srgb, var(--ink) 36%, transparent) 55%, transparent 100%);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    -webkit-mask-image: linear-gradient(to bottom, var(--scrim) 45%, transparent 100%); mask-image: linear-gradient(to bottom, var(--scrim) 45%, transparent 100%); }
+  .ab-bar .back { color: var(--n300); font-size: 18px; text-align: center; }
+  .ab-bar .ttl { text-align: center; font-size: 11px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--n300); }
+  .ab-head { position: sticky; top: 0; z-index: 4; height: var(--hh, 600px); background: var(--ink); overflow: hidden;
+    box-shadow: 0 1px 0 color-mix(in srgb, var(--n900) calc(var(--p, 0) * 100%), transparent), 0 14px 16px -6px color-mix(in srgb, var(--ink) calc(var(--p, 0) * 100%), transparent); }
+  .ab-poster { position: absolute; left: var(--px); top: var(--py); width: var(--pw); height: var(--ph); overflow: hidden;
+    border-radius: 2px; box-shadow: 0 0 0 1px color-mix(in srgb, var(--n800) calc(var(--p, 0) * 100%), transparent); }
+  .ab-poster img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; }
+  .ab-poster::after { content: ""; position: absolute; inset: 0; opacity: calc(1 - var(--p, 0));
+    background: linear-gradient(to bottom, transparent 40%, color-mix(in srgb, var(--ink) 82%, transparent) 76%, var(--ink) 100%); }
+  /* название: не едет поверх афиши, а растворяется в размытии на старом месте и проявляется на новом */
+  .ab-txt { position: absolute; display: flex; flex-direction: column; gap: 8px; will-change: opacity, filter, transform; }
+  .ab-txt.ab-a { left: 20px; top: 318px; width: 350px; --fs: 34px; opacity: var(--oa, 1); filter: blur(var(--ba, 0px)); transform: translateY(var(--ya, 0px)); }
+  .ab-txt.ab-b { left: 148px; top: 92px; width: 222px; --fs: 28px; opacity: var(--ob, 0); filter: blur(var(--bb, 8px)); transform: translateY(var(--yb, 10px)); }
+  .ab-tag { align-self: flex-start; font-size: 10px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--n200);
+    border: 1px solid var(--n700); background: color-mix(in srgb, var(--ink) 55%, transparent); padding: 5px 8px; border-radius: 2px; }
+  .ab-title { margin: 0; font-family: var(--f-thin); font-weight: 500; font-size: var(--fs, 34px); line-height: 1.05; color: var(--n100); }
+  .ab-venue { font-size: 13px; color: var(--n300); line-height: 1.5; }
+  .ab-body { position: relative; z-index: 1; padding: 0 20px 40px; display: flex; flex-direction: column; gap: 14px; }
+  .ab-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 14px 0; border-top: 1px solid var(--n900); border-bottom: 1px solid var(--n900); }
+  .ab-meta .k { font-size: 10px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--n500); }
+  .ab-meta .v { font-family: var(--f-num); font-size: 17px; color: var(--n100); margin-top: 4px; }
+  .ab-cta { height: 46px; display: grid; place-items: center; background: var(--accent); color: var(--on-accent); font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; border-radius: 2px; }
+  .ab-lead { font-size: 13px; line-height: 1.7; color: var(--n300); margin: 0; }
+  .ab-cap { font-size: 10px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--n500); margin-top: 8px; }
+  .ab-sess { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 14px; border: 1px solid var(--n800); border-radius: 2px; }
+  .ab-sess .t { font-family: var(--f-num); font-size: 20px; }
+  .ab-sess .h { font-size: 12px; color: var(--n400); }
+  .ab-sess .pr { font-family: var(--f-num); font-size: 16px; color: var(--n100); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div>
+    <div class="eyebrow">Страница события · телефон, первый экран</div>
+    <h1>Афиша на странице события</h1>
+  </div>
+  <div class="frames">
+
+    <div class="fr">
+      <div class="fr-t">A · Афиша во всю ширину</div>
+      <div class="fr-d">Афиша занимает верх экрана и уходит в фон градиентом; категория и название ложатся на её нижний край. Самый «кинотеатральный» вариант, нужен хороший кадр.</div>
+      <div class="phone">
+        <div class="bar bar-over" style="position:absolute;inset:0 0 auto;border:0"><span class="back">‹</span><span class="ttl">Событие</span><span></span></div>
+        <div class="a-cover"><img src="img/posters/frida.webp" alt="Афиша спектакля «Фрида»"></div>
+        <div class="body">
+          <span class="tag">Спектакль</span>
+          <h2 class="title">Фрида</h2>
+          <div class="venue">МХАТ им. Горького · Основная сцена</div>
+          <div class="meta"><div><div class="k">Дата</div><div class="v">21 ноября</div></div><div><div class="k">Время</div><div class="v">19:00</div></div><div><div class="k">Сеансы</div><div class="v">1</div></div></div>
+          <div class="cta">Выбрать места</div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="fr">
+      <div class="fr-t">D · Складывается при прокрутке</div>
+      <div class="fr-d">Сверху — афиша во всю ширину, как в A. Первые 300 px прокрутки она уменьшается до миниатюры слева от названия, и шапка остаётся наверху. Экран живой — прокрутите.</div>
+<div class="ab-phone" data-ab>
+  <div class="ab-bar"><span class="back">‹</span><span class="ttl">Событие</span><span></span></div>
+  <div class="ab-scroll">
+    <div class="ab-head">
+      <div class="ab-poster"><img src="img/posters/frida.webp" alt="Афиша спектакля «Фрида»"></div>
+      <div class="ab-txt ab-a"><span class="ab-tag">Спектакль</span><h2 class="ab-title">Фрида</h2><div class="ab-venue">МХАТ им. Горького · Основная сцена</div></div>
+      <div class="ab-txt ab-b" aria-hidden="true"><span class="ab-tag">Спектакль</span><div class="ab-title">Фрида</div><div class="ab-venue">МХАТ им. Горького · Основная сцена</div></div>
+    </div>
+    <div class="ab-body">
+      <div class="ab-meta"><div><div class="k">Дата</div><div class="v">21 ноября</div></div><div><div class="k">Время</div><div class="v">19:00</div></div><div><div class="k">Сеансы</div><div class="v">1</div></div></div>
+      <div class="ab-cta">Выбрать места</div>
+      <p class="ab-lead">Здесь описание события. При прокрутке афиша сверху уменьшается и встаёт слева от названия, шапка становится компактной и остаётся наверху, пока человек читает и выбирает сеанс.</p>
+      <p class="ab-lead">Второй абзац описания нужен, чтобы экран можно было прокрутить: на настоящей странице здесь полный текст, состав, продолжительность и возраст.</p>
+      <div class="ab-cap">Сеансы</div>
+      <div class="ab-sess"><span class="t">19:00</span><span><span class="h">21 ноября, суббота</span><br><span class="h">Основная сцена</span></span><span class="pr">›</span></div>
+      <p class="ab-lead">Ещё немного текста, чтобы прокрутка дошла до конца и шапка осталась в сложенном виде.</p>
+      <p class="ab-lead">Площадка, адрес и «Маршрут» — ниже, как сейчас на странице события.</p>
+    </div>
+  </div>
+</div>
+    </div>
+
+  </div>
+</div>
+<script>
+(function () {
+  // A → B: прогресс складывания — первые 300 px прокрутки
+  var RANGE = 300, W = 390, BAR = 52;
+  var A = { px: 0, py: 0, pw: W, ph: 440, tx: 20, ty: 300, tw: W - 40, fs: 34, hh: 440 };
+  var B = { px: 20, py: BAR + 16, pw: 112, ph: 150, tx: 148, ty: BAR + 40, tw: W - 168, fs: 28, hh: BAR + 16 + 150 + 16 };
+  var ease = function (t) { return t * t * (3 - 2 * t); };
+  document.querySelectorAll('[data-ab]').forEach(function (ph) {
+    var sc = ph.querySelector('.ab-scroll'), head = ph.querySelector('.ab-head');
+    var start = +(ph.getAttribute('data-p') || 0);
+    function set(p) {
+      // три фазы: старое название гаснет (0–40 %), афиша сжимается (0–60 %), новое проявляется (55–100 %)
+      var e = ease(p), pe = ease(Math.min(1, p / 0.6));
+      var L = function (k) { return A[k] + (B[k] - A[k]) * e; }, LP = function (k) { return A[k] + (B[k] - A[k]) * pe; };
+      ph.style.setProperty('--p', e.toFixed(3));
+      ['px', 'py', 'pw', 'ph'].forEach(function (k) { head.style.setProperty('--' + k, LP(k).toFixed(1) + 'px'); });
+      var ta = ease(Math.min(1, p / 0.4)), tb = ease(Math.max(0, (p - 0.55) / 0.45));
+      head.style.setProperty('--oa', (1 - ta).toFixed(3));
+      head.style.setProperty('--ba', (8 * ta).toFixed(2) + 'px');
+      head.style.setProperty('--ya', (-12 * ta).toFixed(1) + 'px');
+      head.style.setProperty('--ob', tb.toFixed(3));
+      head.style.setProperty('--bb', (8 * (1 - tb)).toFixed(2) + 'px');
+      head.style.setProperty('--yb', (10 * (1 - tb)).toFixed(1) + 'px');
+      head.style.setProperty('--hh', LP('hh').toFixed(1) + 'px');
+      // высота шапки уменьшается вместе с прокруткой — компенсируем, чтобы текст ниже не прыгал
+      head.style.marginBottom = (A.hh - LP('hh')).toFixed(1) + 'px';
+    }
+    sc.addEventListener('scroll', function () { set(Math.min(1, Math.max(0, sc.scrollTop / RANGE))); }, { passive: true });
+    if (start) { sc.scrollTop = start * RANGE; }
+    set(Math.min(1, Math.max(0, sc.scrollTop / RANGE)));
+  });
+})();
+</script>
+</body>
+</html>
