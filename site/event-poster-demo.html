@@ -38,8 +38,12 @@
   /* A · афиша во всю ширину */
   .a-cover { position:relative; height:440px; margin-bottom:-120px; }
   .a-cover img { width:100%; height:100%; object-fit:cover; object-position:50% 18%; display:block; }
-  .a-cover::after { content:""; position:absolute; inset:0; background:linear-gradient(to bottom, color-mix(in srgb, var(--ink) 70%, transparent) 0%, color-mix(in srgb, var(--ink) 0%, transparent) 18%, color-mix(in srgb, var(--ink) 0%, transparent) 40%, color-mix(in srgb, var(--ink) 82%, transparent) 76%, var(--ink) 100%); }
+  .a-cover::after { content:""; position:absolute; inset:0; background:linear-gradient(to bottom, color-mix(in srgb, var(--ink) 0%, transparent) 40%, color-mix(in srgb, var(--ink) 82%, transparent) 76%, var(--ink) 100%); }
 
+  .bar-over::before { content:""; position:absolute; inset:0 0 -44px; z-index:-1; pointer-events:none;
+    background:linear-gradient(to bottom, color-mix(in srgb, var(--ink) 62%, transparent) 0%, color-mix(in srgb, var(--ink) 36%, transparent) 55%, transparent 100%);
+    -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
+    -webkit-mask-image:linear-gradient(to bottom, var(--scrim) 45%, transparent 100%); mask-image:linear-gradient(to bottom, var(--scrim) 45%, transparent 100%); }
   /* B · афиша рядом с названием */
   .b-head { display:grid; grid-template-columns:112px minmax(0,1fr); gap:16px; align-items:end; padding-top:20px; }
   .b-head img { width:112px; height:150px; object-fit:cover; object-position:50% 20%; display:block; border:1px solid var(--n800); border-radius:2px; }
@@ -63,8 +67,10 @@
   .ab-bar { position: absolute; z-index: 6; inset: 0 0 auto; height: 52px; display: grid; grid-template-columns: 40px 1fr 40px; align-items: center; padding: 0 8px;
     border-bottom: 1px solid color-mix(in srgb, var(--n900) calc(var(--p, 0) * 100%), transparent);
     background: color-mix(in srgb, var(--ink) calc(var(--p, 0) * 100%), transparent); }
-  .ab-bar::before { content: ""; position: absolute; inset: 0 0 -24px; z-index: -1; pointer-events: none; opacity: calc(1 - var(--p, 0));
-    background: linear-gradient(to bottom, color-mix(in srgb, var(--ink) 70%, transparent), transparent); }
+  .ab-bar::before { content: ""; position: absolute; inset: 0 0 -44px; z-index: -1; pointer-events: none; opacity: calc(1 - var(--p, 0));
+    background: linear-gradient(to bottom, color-mix(in srgb, var(--ink) 62%, transparent) 0%, color-mix(in srgb, var(--ink) 36%, transparent) 55%, transparent 100%);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    -webkit-mask-image: linear-gradient(to bottom, var(--scrim) 45%, transparent 100%); mask-image: linear-gradient(to bottom, var(--scrim) 45%, transparent 100%); }
   .ab-bar .back { color: var(--n300); font-size: 18px; text-align: center; }
   .ab-bar .ttl { text-align: center; font-size: 11px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--n300); }
   .ab-head { position: sticky; top: 0; z-index: 4; height: var(--hh, 600px); background: var(--ink); overflow: hidden;
@@ -106,7 +112,7 @@
       <div class="fr-t">A · Афиша во всю ширину</div>
       <div class="fr-d">Афиша занимает верх экрана и уходит в фон градиентом; категория и название ложатся на её нижний край. Самый «кинотеатральный» вариант, нужен хороший кадр.</div>
       <div class="phone">
-        <div class="bar" style="position:absolute;inset:0 0 auto;border:0"><span class="back">‹</span><span class="ttl">Событие</span><span></span></div>
+        <div class="bar bar-over" style="position:absolute;inset:0 0 auto;border:0"><span class="back">‹</span><span class="ttl">Событие</span><span></span></div>
         <div class="a-cover"><img src="img/posters/frida.webp" alt="Афиша спектакля «Фрида»"></div>
         <div class="body">
           <span class="tag">Спектакль</span>
