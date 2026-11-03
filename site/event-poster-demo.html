@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Афиша на странице события — варианты</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+  :root { --ink:#0D0D0D; --n100:#D6D6D2; --n200:#C0C0BC; --n300:#A6A6A2; --n400:#8A8A88; --n500:#7A7A78; --n700:#4A4A48;
+    --n800:#262930; --n900:#191C22; --n950:#111318; --accent:#0047FF; --on-accent:#FFFFFF; --scrim:#000000;
+    --font:'Manrope',system-ui,sans-serif; --f-head:'Forum',Georgia,serif; --f-thin:'Cormorant Garamond',Georgia,serif; --f-num:'Oranienbaum',Georgia,serif; }
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin:0; padding:32px 20px 64px; background:var(--ink); color:var(--n100); font-family:var(--font); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+  .wrap { max-width:1260px; margin:0 auto; display:flex; flex-direction:column; gap:28px; }
+  .eyebrow { font-size:10px; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:var(--n300); }
+  h1 { margin:8px 0 0; font-family:var(--f-thin); font-weight:400; font-size:2.2rem; }
+  .frames { display:flex; flex-wrap:wrap; gap:28px; align-items:flex-start; }
+  .fr { display:flex; flex-direction:column; gap:10px; width:390px; max-width:100%; }
+  .fr-t { font-size:13px; font-weight:600; }
+  .fr-d { font-size:12px; color:var(--n400); line-height:1.55; min-height:56px; }
+  .phone { position:relative; width:100%; height:700px; overflow:hidden; border:1px solid var(--n800); border-radius:2px; background:var(--ink); isolation:isolate; }
+
+  /* общие части экрана события */
+  .bar { position:relative; z-index:3; height:52px; display:grid; grid-template-columns:40px 1fr 40px; align-items:center; padding:0 8px; border-bottom:1px solid var(--n900); }
+  .bar .back { color:var(--n300); font-size:18px; text-align:center; }
+  .bar .ttl { text-align:center; font-size:11px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--n300); }
+  .body { position:relative; z-index:2; padding:0 20px; display:flex; flex-direction:column; gap:12px; }
+  .tag { align-self:flex-start; font-size:10px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--n200); border:1px solid var(--n700); background:color-mix(in srgb, var(--ink) 55%, transparent); padding:5px 8px; border-radius:2px; }
+  .title { margin:0; font-family:var(--f-thin); font-weight:500; font-size:34px; line-height:1.05; color:var(--n100); }
+  .venue { font-size:13px; color:var(--n300); line-height:1.5; }
+  .lead { font-size:13px; line-height:1.6; color:var(--n300); }
+  .lead a { color:var(--n100); text-decoration:underline; text-decoration-color:var(--accent); text-underline-offset:3px; }
+  .meta { display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; padding:14px 0; border-top:1px solid var(--n900); border-bottom:1px solid var(--n900); }
+  .meta .k { font-size:10px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--n500); }
+  .meta .v { font-family:var(--f-num); font-size:17px; color:var(--n100); margin-top:4px; }
+  .cta { height:46px; display:grid; place-items:center; background:var(--accent); color:var(--on-accent); font-size:11px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; border-radius:2px; }
+
+  /* A · афиша во всю ширину */
+  .a-cover { position:relative; height:440px; margin-bottom:-120px; }
+  .a-cover img { width:100%; height:100%; object-fit:cover; object-position:50% 18%; display:block; }
+  .a-cover::after { content:""; position:absolute; inset:0; background:linear-gradient(to bottom, color-mix(in srgb, var(--ink) 70%, transparent) 0%, color-mix(in srgb, var(--ink) 0%, transparent) 18%, color-mix(in srgb, var(--ink) 0%, transparent) 40%, color-mix(in srgb, var(--ink) 82%, transparent) 76%, var(--ink) 100%); }
+
+  /* B · афиша рядом с названием */
+  .b-head { display:grid; grid-template-columns:112px minmax(0,1fr); gap:16px; align-items:end; padding-top:20px; }
+  .b-head img { width:112px; height:150px; object-fit:cover; object-position:50% 20%; display:block; border:1px solid var(--n800); border-radius:2px; }
+  .b-head .title { font-size:30px; }
+  .b-head .txt { display:flex; flex-direction:column; gap:8px; min-width:0; }
+
+  /* C · афиша в атмосфере */
+  .c-bg { position:absolute; inset:-40px -40px auto; height:560px; z-index:0; background:url('img/posters/frida.webp') 50% 20% / cover; filter:blur(36px) saturate(1.1); opacity:.42; }
+  .c-bg::after { content:""; position:absolute; inset:0; background:linear-gradient(to bottom, transparent 30%, var(--ink) 92%); }
+  .c-poster { position:relative; z-index:2; display:flex; justify-content:center; padding:24px 0 18px; }
+  .c-poster img { width:196px; height:262px; object-fit:cover; object-position:50% 20%; display:block; border-radius:2px;
+    box-shadow:0 24px 48px -18px color-mix(in srgb, var(--scrim) 90%, transparent), 0 0 0 1px color-mix(in srgb, var(--n100) 14%, transparent); }
+  .c .body { align-items:center; text-align:center; }
+  .c .tag { align-self:center; }
+  .c .meta { width:100%; text-align:left; }
+  .c .cta { align-self:stretch; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div>
+    <div class="eyebrow">Страница события · телефон, первый экран</div>
+    <h1>Афиша на странице события</h1>
+  </div>
+  <div class="frames">
+
+    <div class="fr">
+      <div class="fr-t">A · Афиша во всю ширину</div>
+      <div class="fr-d">Афиша занимает верх экрана и уходит в фон градиентом; категория и название ложатся на её нижний край. Самый «кинотеатральный» вариант, нужен хороший кадр.</div>
+      <div class="phone">
+        <div class="bar" style="position:absolute;inset:0 0 auto;border:0"><span class="back">‹</span><span class="ttl">Событие</span><span></span></div>
+        <div class="a-cover"><img src="img/posters/frida.webp" alt="Афиша спектакля «Фрида»"></div>
+        <div class="body">
+          <span class="tag">Спектакль</span>
+          <h2 class="title">Фрида</h2>
+          <div class="venue">МХАТ им. Горького · Основная сцена</div>
+          <div class="meta"><div><div class="k">Дата</div><div class="v">21 ноября</div></div><div><div class="k">Время</div><div class="v">19:00</div></div><div><div class="k">Сеансы</div><div class="v">1</div></div></div>
+          <div class="cta">Выбрать места</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fr">
+      <div class="fr-t">B · Афиша рядом с названием</div>
+      <div class="fr-d">Небольшая афиша слева, текст справа. Меньше всего меняет текущий экран стенда и не зависит от качества картинки.</div>
+      <div class="phone">
+        <div class="bar"><span class="back">‹</span><span class="ttl">Событие</span><span></span></div>
+        <div class="body">
+          <div class="b-head"><img src="img/posters/frida.webp" alt="Афиша спектакля «Фрида»"><div class="txt"><span class="tag">Спектакль</span><h2 class="title">Фрида</h2><div class="venue">МХАТ им. Горького · Основная сцена</div></div></div>
+          <div class="lead">Здесь две строки лида из описания события; полный текст открывается по ссылке. <a href="#">Читать полностью</a></div>
+          <div class="meta"><div><div class="k">Дата</div><div class="v">21 ноября</div></div><div><div class="k">Время</div><div class="v">19:00</div></div><div><div class="k">Сеансы</div><div class="v">1</div></div></div>
+          <div class="cta">Выбрать места</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fr c">
+      <div class="fr-t">C · Афиша в атмосфере</div>
+      <div class="fr-d">Размытая афиша заменяет жанровое свечение, сверху — сама афиша с тенью, текст по центру. Цвет фона у каждого события свой, из его афиши.</div>
+      <div class="phone">
+        <div class="c-bg" aria-hidden="true"></div>
+        <div class="bar" style="border-color:transparent"><span class="back">‹</span><span class="ttl">Событие</span><span></span></div>
+        <div class="c-poster"><img src="img/posters/frida.webp" alt="Афиша спектакля «Фрида»"></div>
+        <div class="body">
+          <span class="tag">Спектакль</span>
+          <h2 class="title">Фрида</h2>
+          <div class="venue">МХАТ им. Горького · Основная сцена</div>
+          <div class="meta"><div><div class="k">Дата</div><div class="v">21 ноября</div></div><div><div class="k">Время</div><div class="v">19:00</div></div><div><div class="k">Сеансы</div><div class="v">1</div></div></div>
+          <div class="cta">Выбрать места</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

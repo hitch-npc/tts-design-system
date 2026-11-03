@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@400;500;600;700&display=swap">
 <style>
   :root { --ink:#0D0D0D; --n100:#D6D6D2; --n300:#A6A6A2; --n500:#7A7A78; --n800:#262930; --n900:#191C22; --n950:#111318;
-    --accent:#0047FF; --accent-ghost:#0B142A; --seat-sel:#22C55E; --seat-sold:#2C2F36;
+    --accent:#0047FF; --accent-ghost:#0B142A; --seat-sel:#22C55E; --seat-sold:#2C2F36; --r-sm:2px; --r-md:4px;
     --font:'Manrope',system-ui,sans-serif; --f-num:'Oranienbaum',Georgia,serif; --f-head:'Forum',Georgia,serif; --f-thin:'Cormorant Garamond',Georgia,serif; }
   *, *::before, *::after { box-sizing: border-box; }
   body { margin:0; padding:32px 20px 64px; background:var(--ink); color:var(--n100); font-family:var(--font); -webkit-font-smoothing:antialiased; }
@@ -28,7 +28,7 @@
   .hall { display:grid; gap:5px; width:100%; }
   .row { display:grid; width:100%; grid-template-columns:20px repeat(24, minmax(0,1fr)) 20px; gap:5px; align-items:center; }
   .rl { font-size:9px; color:var(--n500); text-align:center; }
-  .seat { aspect-ratio:1; border-radius:50%; border:0; padding:0; cursor:pointer; transition:opacity .25s, transform .15s, filter .15s; position:relative; }
+  .seat { aspect-ratio:1; border-radius:var(--r-md); border:0; padding:0; cursor:pointer; transition:opacity .25s, transform .15s, filter .15s; position:relative; }
   .seat:hover:not(.sold) { filter:brightness(1.25); transform:scale(1.2); z-index:2; }
   .seat:focus-visible { outline:2px solid var(--n100); outline-offset:2px; }
   .seat.sold { background:var(--seat-sold) !important; cursor:default; opacity:.6; }
@@ -43,7 +43,7 @@
     background:transparent; border:1px solid var(--n800); border-radius:2px; padding:12px; cursor:pointer; }
   .chip:hover { border-color:var(--n500); }
   .chip[aria-pressed=true] { background:var(--accent-ghost); border-color:var(--accent); }
-  .chip i { width:18px; height:18px; border-radius:50%; display:block; }
+  .chip i { width:18px; height:18px; border-radius:var(--r-sm); display:block; }
   .chip .p { font-family:var(--f-num); font-size:17px; }
   .chip .n { font-size:10px; color:var(--n500); display:block; margin-top:2px; letter-spacing:.1em; text-transform:uppercase; }
   .sum { display:flex; justify-content:space-between; align-items:baseline; margin-top:16px; padding-top:16px; border-top:1px solid var(--n800); }
