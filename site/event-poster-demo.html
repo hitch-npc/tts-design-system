@@ -56,6 +56,42 @@
   .c .tag { align-self:center; }
   .c .meta { width:100%; text-align:left; }
   .c .cta { align-self:stretch; }
+  /* Афиша A → B: при прокрутке афиша во всю ширину складывается в миниатюру рядом с названием */
+  .ab-phone { position: relative; width: 100%; max-width: 390px; height: 700px; overflow: hidden; border: 1px solid var(--n800); border-radius: 2px; background: var(--ink); }
+  .ab-scroll { position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
+  .ab-scroll::-webkit-scrollbar { display: none; }
+  .ab-bar { position: absolute; z-index: 6; inset: 0 0 auto; height: 52px; display: grid; grid-template-columns: 40px 1fr 40px; align-items: center; padding: 0 8px;
+    border-bottom: 1px solid color-mix(in srgb, var(--n900) calc(var(--p, 0) * 100%), transparent);
+    background: color-mix(in srgb, var(--ink) calc(var(--p, 0) * 100%), transparent); }
+  .ab-bar::before { content: ""; position: absolute; inset: 0 0 -24px; z-index: -1; pointer-events: none; opacity: calc(1 - var(--p, 0));
+    background: linear-gradient(to bottom, color-mix(in srgb, var(--ink) 70%, transparent), transparent); }
+  .ab-bar .back { color: var(--n300); font-size: 18px; text-align: center; }
+  .ab-bar .ttl { text-align: center; font-size: 11px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--n300); }
+  .ab-head { position: sticky; top: 0; z-index: 4; height: var(--hh, 600px); background: var(--ink); overflow: hidden;
+    box-shadow: 0 1px 0 color-mix(in srgb, var(--n900) calc(var(--p, 0) * 100%), transparent), 0 14px 16px -6px color-mix(in srgb, var(--ink) calc(var(--p, 0) * 100%), transparent); }
+  .ab-poster { position: absolute; left: var(--px); top: var(--py); width: var(--pw); height: var(--ph); overflow: hidden;
+    border-radius: 2px; box-shadow: 0 0 0 1px color-mix(in srgb, var(--n800) calc(var(--p, 0) * 100%), transparent); }
+  .ab-poster img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; }
+  .ab-poster::after { content: ""; position: absolute; inset: 0; opacity: calc(1 - var(--p, 0));
+    background: linear-gradient(to bottom, transparent 40%, color-mix(in srgb, var(--ink) 82%, transparent) 76%, var(--ink) 100%); }
+  .ab-txt { position: absolute; left: var(--tx); top: var(--ty); width: var(--tw); display: flex; flex-direction: column; gap: 8px; }
+  .ab-tag { align-self: flex-start; font-size: 10px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--n200);
+    border: 1px solid var(--n700); background: color-mix(in srgb, var(--ink) 55%, transparent); padding: 5px 8px; border-radius: 2px; }
+  .ab-title { margin: 0; font-family: var(--f-thin); font-weight: 500; font-size: var(--fs, 34px); line-height: 1.05; color: var(--n100); }
+  .ab-venue { font-size: 13px; color: var(--n300); line-height: 1.5; }
+  .ab-body { position: relative; z-index: 1; padding: 16px 20px 40px; display: flex; flex-direction: column; gap: 14px; }
+  .ab-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 14px 0; border-top: 1px solid var(--n900); border-bottom: 1px solid var(--n900); }
+  .ab-meta .k { font-size: 10px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--n500); }
+  .ab-meta .v { font-family: var(--f-num); font-size: 17px; color: var(--n100); margin-top: 4px; }
+  .ab-cta { height: 46px; display: grid; place-items: center; background: var(--accent); color: var(--on-accent); font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; border-radius: 2px; }
+  .ab-lead { font-size: 13px; line-height: 1.7; color: var(--n300); margin: 0; }
+  .ab-cap { font-size: 10px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--n500); margin-top: 8px; }
+  .ab-sess { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 14px; border: 1px solid var(--n800); border-radius: 2px; }
+  .ab-sess .t { font-family: var(--f-num); font-size: 20px; }
+  .ab-sess .h { font-size: 12px; color: var(--n400); }
+  .ab-sess .pr { font-family: var(--f-num); font-size: 16px; color: var(--n100); }
+  .ab-hint { position: absolute; z-index: 7; left: 50%; bottom: 14px; transform: translateX(-50%); font-size: 10px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--n100); background: var(--n900); border: 1px solid var(--n800); padding: 7px 12px; border-radius: 2px; opacity: calc(1 - var(--p, 0) * 3); pointer-events: none; }
 </style>
 </head>
 <body>
@@ -113,7 +149,57 @@
       </div>
     </div>
 
+    <div class="fr">
+      <div class="fr-t">D · A складывается в B при прокрутке</div>
+      <div class="fr-d">Сверху — афиша во всю ширину, как в A. Первые 300 px прокрутки она уменьшается до миниатюры слева от названия, как в B, и шапка остаётся наверху. Экран живой — прокрутите.</div>
+<div class="ab-phone" data-ab>
+  <div class="ab-bar"><span class="back">‹</span><span class="ttl">Событие</span><span></span></div>
+  <div class="ab-scroll">
+    <div class="ab-head">
+      <div class="ab-poster"><img src="img/posters/frida.webp" alt="Афиша спектакля «Фрида»"></div>
+      <div class="ab-txt"><span class="ab-tag">Спектакль</span><h2 class="ab-title">Фрида</h2><div class="ab-venue">МХАТ им. Горького · Основная сцена</div></div>
+    </div>
+    <div class="ab-body">
+      <div class="ab-meta"><div><div class="k">Дата</div><div class="v">21 ноября</div></div><div><div class="k">Время</div><div class="v">19:00</div></div><div><div class="k">Сеансы</div><div class="v">1</div></div></div>
+      <div class="ab-cta">Выбрать места</div>
+      <p class="ab-lead">Здесь описание события. При прокрутке афиша сверху уменьшается и встаёт слева от названия, шапка становится компактной и остаётся наверху, пока человек читает и выбирает сеанс.</p>
+      <p class="ab-lead">Второй абзац описания нужен, чтобы экран можно было прокрутить: на настоящей странице здесь полный текст, состав, продолжительность и возраст.</p>
+      <div class="ab-cap">Сеансы</div>
+      <div class="ab-sess"><span class="t">19:00</span><span><span class="h">21 ноября, суббота</span><br><span class="h">Основная сцена</span></span><span class="pr">›</span></div>
+      <p class="ab-lead">Ещё немного текста, чтобы прокрутка дошла до конца и шапка осталась в сложенном виде.</p>
+      <p class="ab-lead">Площадка, адрес и «Маршрут» — ниже, как сейчас на странице события.</p>
+    </div>
+  </div>
+  <div class="ab-hint">Прокрутите вниз</div>
+</div>
+    </div>
+
   </div>
 </div>
+<script>
+(function () {
+  // A → B: прогресс складывания — первые 300 px прокрутки
+  var RANGE = 300, W = 390, BAR = 52;
+  var A = { px: 0, py: 0, pw: W, ph: 440, tx: 20, ty: 300, tw: W - 40, fs: 34, hh: 470 };
+  var B = { px: 20, py: BAR + 16, pw: 112, ph: 150, tx: 148, ty: BAR + 40, tw: W - 168, fs: 28, hh: BAR + 16 + 150 + 16 };
+  var ease = function (t) { return t * t * (3 - 2 * t); };
+  document.querySelectorAll('[data-ab]').forEach(function (ph) {
+    var sc = ph.querySelector('.ab-scroll'), head = ph.querySelector('.ab-head');
+    var start = +(ph.getAttribute('data-p') || 0);
+    function set(p) {
+      var e = ease(p), L = function (k) { return A[k] + (B[k] - A[k]) * e; };
+      ph.style.setProperty('--p', e.toFixed(3));
+      ['px', 'py', 'pw', 'ph', 'tx', 'ty', 'tw'].forEach(function (k) { head.style.setProperty('--' + k, L(k).toFixed(1) + 'px'); });
+      head.style.setProperty('--fs', L('fs').toFixed(1) + 'px');
+      head.style.setProperty('--hh', L('hh').toFixed(1) + 'px');
+      // высота шапки уменьшается вместе с прокруткой — компенсируем, чтобы текст ниже не прыгал
+      head.style.marginBottom = (A.hh - L('hh')).toFixed(1) + 'px';
+    }
+    sc.addEventListener('scroll', function () { set(Math.min(1, Math.max(0, sc.scrollTop / RANGE))); }, { passive: true });
+    if (start) { sc.scrollTop = start * RANGE; }
+    set(Math.min(1, Math.max(0, sc.scrollTop / RANGE)));
+  });
+})();
+</script>
 </body>
 </html>
