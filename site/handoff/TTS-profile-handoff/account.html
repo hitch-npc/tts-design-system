@@ -983,7 +983,7 @@ function renderHist() {
   const list = [...orders].sort((a, b) => b.bought.localeCompare(a.bought) || b.no.localeCompare(a.no));
   el.innerHTML = list.map(o => `<div class="order-group">
       <div class="order-head"><span class="order-pill">${full(o.bought)}</span><span class="ord-no">Заказ № ${o.no}</span><span class="order-sum">${rub(sumOf(o))}</span></div>
-      ${showCard(o.show, [o], { arch: isPast(o.show) || o.status === 'pending' || o.status === 'done', readonly: true, status: statusTag(o, true), prefix: 'h' + o.no, noDownload: o.status === 'done' })}
+      ${showCard(o.show, [o], { arch: isPast(o.show) || o.status === 'done', readonly: true, status: statusTag(o, true), prefix: 'h' + o.no, noDownload: o.status === 'done' })}
     </div>`).join('');
 }
 
