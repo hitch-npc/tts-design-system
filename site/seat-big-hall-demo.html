@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Большой зал — много цен</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+  :root { --ink:#0D0D0D; --n100:#D6D6D2; --n300:#A6A6A2; --n400:#8A8A88; --n500:#7A7A78; --n600:#626260; --n800:#262930; --n900:#191C22; --n950:#111318;
+    --accent:#0047FF; --accent-ghost:#0B142A; --seat-sel:#22C55E; --seat-sold:#2C2F36; --seat-check:#FFFFFF; --r-sm:2px;
+    --font:'Manrope',system-ui,sans-serif; --f-num:'Oranienbaum',Georgia,serif; --f-head:'Forum',Georgia,serif; --f-thin:'Cormorant Garamond',Georgia,serif; }
+  *, *::before, *::after { box-sizing:border-box; }
+  body { margin:0; padding:32px 20px 64px; background:var(--ink); color:var(--n100); font-family:var(--font); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+  button { font:inherit; color:inherit; }
+  .wrap { max-width:1240px; margin:0 auto; display:grid; gap:20px; }
+  h1 { font-family:var(--f-thin); font-weight:400; font-size:2.2rem; margin:8px 0 0; }
+  .eyebrow { font-size:10px; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:var(--n300); }
+  .cap { font-size:10px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--n500); }
+  .note { font-size:12px; line-height:1.6; color:var(--n300); max-width:80ch; margin:0; }
+  .panel { border:1px solid var(--n800); background:var(--n950); border-radius:2px; padding:20px; min-width:0; }
+  .opts { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+  .opt { font:500 12px var(--font); color:var(--n300); background:transparent; border:1px solid var(--n800); border-radius:9999px; padding:8px 14px; cursor:pointer; }
+  .opt[aria-pressed=true] { background:var(--accent-ghost); border-color:var(--accent); color:var(--n100); }
+  .dE { font-size:12px; color:var(--n300); margin-top:12px; }
+  .dE b { color:var(--n100); }
+  .grid { display:grid; grid-template-columns:minmax(0,1fr) 320px; gap:20px; align-items:start; }
+  @media (max-width:900px) { .grid { grid-template-columns:1fr; } }
+
+  .stage { text-align:center; font-size:10px; letter-spacing:.3em; text-transform:uppercase; color:var(--n500); border-bottom:2px solid var(--n800); padding-bottom:6px; margin:0 18% 14px; }
+  .hall { --s:12px; --g:3px; display:flex; flex-direction:column; gap:var(--g); align-items:center; }
+  .zone { font-size:9px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--n500); margin:10px 0 2px; }
+  .row { display:flex; align-items:center; gap:var(--g); }
+  .rl { width:16px; font-size:8px; color:var(--n600); text-align:center; flex:none; }
+  .aisle { width:var(--s); flex:none; }
+  .seat { width:var(--s); height:var(--s); flex:none; border:0; padding:0; border-radius:calc(var(--s) / 6); cursor:pointer; position:relative; transition:opacity .2s, filter .15s; }
+  .seat:hover:not(.sold) { filter:brightness(1.3); }
+  .seat:focus-visible { outline:2px solid var(--n100); outline-offset:1px; }
+  .seat.sold { background:var(--seat-sold) !important; cursor:default; opacity:.7; }
+  .seat.dim { opacity:.1; }
+  .seat.sold.dim { opacity:.05; }
+  .seat.sel { background:var(--seat-sel) !important; opacity:1; box-shadow:0 0 0 1px var(--ink), 0 0 0 2px var(--seat-sel); }
+  .seat.sel::after { content:''; position:absolute; left:30%; top:16%; width:26%; height:46%; border:solid var(--seat-check); border-width:0 1.5px 1.5px 0; transform:rotate(45deg); }
+
+  .leg { display:flex; flex-direction:column; gap:6px; margin-top:12px; }
+  .band { border:1px solid var(--n800); border-radius:2px; }
+  .band-h, .pr { display:grid; grid-template-columns:14px 1fr auto; gap:10px; align-items:center; width:100%; text-align:left; background:transparent; border:0; cursor:pointer; padding:9px 10px; }
+  .band-h { border-bottom:1px solid var(--n900); }
+  .band-h .lab { font-size:11px; font-weight:600; letter-spacing:.06em; }
+  .pr .p { font-family:var(--f-num); font-size:16px; }
+  .n { font-size:10px; color:var(--n500); letter-spacing:.06em; white-space:nowrap; }
+  .sw { width:14px; height:14px; border-radius:var(--r-sm); display:block; }
+  .band-h[aria-pressed=true], .pr[aria-pressed=true] { background:var(--accent-ghost); box-shadow:inset 0 0 0 1px var(--accent); }
+  .band-h:hover, .pr:hover { background:var(--n900); }
+  .sum { display:flex; justify-content:space-between; align-items:baseline; margin-top:14px; padding-top:14px; border-top:1px solid var(--n800); }
+  .sum b { font-family:var(--f-num); font-size:22px; font-weight:400; }
+  .reset { background:none; border:0; color:var(--n300); font:500 11px var(--font); letter-spacing:.14em; text-transform:uppercase; cursor:pointer; text-decoration:underline; text-decoration-color:var(--accent); text-underline-offset:3px; padding:0; margin-top:12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div>
+    <div class="eyebrow">Выбор мест · большой зал</div>
+    <h1>Пятнадцать цен в одном зале</h1>
+  </div>
+  <p class="note">Условный пример большого театра: партер, амфитеатр, бельэтаж с ложами, два яруса и балкон — 6 зон, 15 цен, 1 104 места. Цена зависит и от зоны, и от ряда. Нажатие на диапазон или цену в легенде гасит остальные места; несколько можно включить вместе.</p>
+
+  <div class="panel">
+    <div class="cap">Цвета цен</div>
+    <div class="opts" id="modeOpts"></div>
+    <div class="dE" id="dEout"></div>
+  </div>
+
+  <div class="grid">
+    <div class="panel" style="overflow:hidden">
+      <div class="stage">Сцена</div>
+      <div class="hall" id="hall"></div>
+    </div>
+    <div class="panel">
+      <div class="cap">Цена · свободно мест</div>
+      <div class="leg" id="leg"></div>
+      <div class="sum"><div><div class="cap">Выбрано</div><span id="selN" class="note"></span></div><b id="selSum">0 ₽</b></div>
+      <button class="reset" id="reset" type="button">Сбросить фильтр</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const fmt=n=>n.toLocaleString('ru-RU').replace(/ /g,' ')+' ₽';
+/* Диапазоны и цены (по убыванию) */
+const BANDS=[
+  {lab:'от 20 000 ₽', prices:[25000,21000]},
+  {lab:'12 000 – 19 999 ₽', prices:[17500,14000,12000]},
+  {lab:'8 000 – 11 999 ₽', prices:[11000,10000,9000,8500]},
+  {lab:'4 000 – 7 999 ₽', prices:[6500,5500,4500]},
+  {lab:'до 4 000 ₽', prices:[3500,2500,1500]},
+];
+const PRICES=BANDS.flatMap(b=>b.prices);
+const bandOf=p=>BANDS.findIndex(b=>b.prices.includes(p));
+/* Семьи цветов: оттенок — диапазон, светлота — цена внутри него (дороже — глубже) */
+const FAMILY={25000:'#B28143',21000:'#E0AD6E',17500:'#106DCE',14000:'#388CF0',12000:'#6EADFE',
+  11000:'#098392',10000:'#1C9DAE',9000:'#42B7C8',8500:'#5FD0E2',6500:'#7758BB',5500:'#9477DD',4500:'#B296FF',
+  3500:'#C1587D',2500:'#E3769B',1500:'#FD9CBA'};
+/* Только диапазоны: пять цветов варианта B */
+const BAND_COL=['#C9975A','#3F73E3','#2BA7B8','#9C95FE','#DC7095'];
+function oklch(L,C,H){const a=C*Math.cos(H*Math.PI/180),b=C*Math.sin(H*Math.PI/180);
+  const l=(L+.3963377774*a+.2158037573*b)**3,m=(L-.1055613458*a-.0638541728*b)**3,s=(L-.0894841775*a-1.291485548*b)**3;
+  const f=x=>{x=Math.min(1,Math.max(0,x));return x<=.0031308?12.92*x:1.055*x**(1/2.4)-.055};
+  return '#'+[4.0767416621*l-3.3077115913*m+.2309699292*s,-1.2684380046*l+2.6097574011*m-.3413193965*s,-.0041960863*l-.7034186147*m+1.707614701*s].map(v=>Math.round(f(v)*255).toString(16).padStart(2,'0')).join('');}
+function lab(h){const [r,g,b]=[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);
+  const l=Math.cbrt(.4122214708*r+.5363325363*g+.0514459929*b),m=Math.cbrt(.2119034982*r+.6806995451*g+.1073969566*b),s=Math.cbrt(.0883024619*r+.2817188376*g+.6299787005*b);
+  return [.2104542553*l+.793617785*m-.0040720468*s,1.9779984951*l-2.428592205*m+.4505937099*s,.0259040371*l+.7827717662*m-.808675766*s];}
+const dE=(a,b)=>{const x=lab(a),y=lab(b);return Math.hypot(x[0]-y[0],x[1]-y[1],x[2]-y[2])*100};
+/* Как на стенде: градиент одного цвета, от дорогого к дешёвому */
+const GRAD=Object.fromEntries(PRICES.map((p,i)=>[p,oklch(.62-.2*i/14,.15,(250+20*i/14)%360)]));
+const MODES={
+  grad:{name:'Градиент, как на стенде', col:p=>GRAD[p]},
+  fam:{name:'Семьи цветов', col:p=>FAMILY[p]},
+  band:{name:'Только диапазоны', col:p=>BAND_COL[bandOf(p)]},
+};
+const qs=new URLSearchParams(location.search);
+let mode=MODES[qs.get('mode')]?qs.get('mode'):'fam';
+const active=new Set((qs.get('f')||'').split(',').filter(Boolean).map(Number));
+const selected=new Set();
+
+/* ---- зал ---- */
+let seed=11; const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+const seats=[]; const rows=[];
+function addRow(zone,rowNo,blocks){ /* blocks: [[count, price], 'aisle', ...] */
+  const r={zone,rowNo,items:[]}; let n=0;
+  blocks.forEach(b=>{ if(b==='aisle'){r.items.push('aisle');return;}
+    for(let i=0;i<b[0];i++){ n++; const s={zone,row:rowNo,place:n,price:b[1],sold:rnd()<.3,id:seats.length}; seats.push(s); r.items.push(s);} });
+  rows.push(r);
+}
+const ZONES=[];
+function zone(name,fn){ZONES.push({name,start:rows.length});fn();ZONES[ZONES.length-1].end=rows.length;}
+zone('Партер',()=>{ for(let r=1;r<=18;r++){ const p=r<=3?25000:r<=7?21000:r<=11?17500:r<=15?14000:12000; addRow('Партер',r,[[14,p],'aisle',[14,p]]); } });
+zone('Амфитеатр',()=>{ for(let r=1;r<=6;r++){ const p=r<=3?10000:8500; addRow('Амфитеатр',r,[[16,p],'aisle',[16,p]]); } });
+zone('Бельэтаж · ложи по бокам',()=>{ for(let r=1;r<=3;r++) addRow('Бельэтаж',r,[[4,11000],'aisle',[12,9000],'aisle',[12,9000],'aisle',[4,11000]]); });
+zone('1 ярус',()=>{ for(let r=1;r<=3;r++) addRow('1 ярус',r,[[4,5500],'aisle',[13,6500],[13,6500],'aisle',[4,5500]]); });
+zone('2 ярус',()=>{ for(let r=1;r<=3;r++) addRow('2 ярус',r,[[4,3500],'aisle',[13,4500],[13,4500],'aisle',[4,3500]]); });
+zone('Балкон',()=>{ for(let r=1;r<=3;r++) addRow('Балкон',r,[[5,1500],'aisle',[13,2500],[13,2500],'aisle',[5,1500]]); });
+
+const hall=document.getElementById('hall');
+ZONES.forEach(z=>{
+  hall.insertAdjacentHTML('beforeend',`<div class="zone">${z.name}</div>`);
+  for(let i=z.start;i<z.end;i++){
+    const r=rows[i]; const el=document.createElement('div'); el.className='row';
+    el.innerHTML=`<span class="rl">${r.rowNo}</span>`;
+    r.items.forEach(s=>{
+      if(s==='aisle'){el.insertAdjacentHTML('beforeend','<span class="aisle"></span>');return;}
+      const b=document.createElement('button'); b.type='button'; b.className='seat'+(s.sold?' sold':'');
+      const t=`${s.zone} · ряд ${s.row}, место ${s.place} · ${fmt(s.price)}${s.sold?' · продано':''}`;
+      b.title=t; b.setAttribute('aria-label',t);
+      if(!s.sold) b.onclick=()=>{selected.has(s.id)?selected.delete(s.id):selected.add(s.id);paint();};
+      s.el=b; el.appendChild(b);
+    });
+    el.insertAdjacentHTML('beforeend',`<span class="rl">${r.rowNo}</span>`);
+    hall.appendChild(el);
+  }
+});
+function fit(){ /* размер места — по ширине панели: 36 мест, 3 прохода, подписи рядов */
+  const W=hall.clientWidth; const g=W<520?2:3; const s=Math.max(5,Math.min(16,Math.floor((W-2*16-44*g)/39)));
+  hall.style.setProperty('--s',s+'px'); hall.style.setProperty('--g',g+'px');
+}
+new ResizeObserver(fit).observe(hall); fit();
+
+/* ---- управление ---- */
+function minPair(){const c=PRICES.map(MODES[mode].col);let m=Infinity;for(let i=0;i<c.length;i++)for(let j=i+1;j<c.length;j++)m=Math.min(m,dE(c[i],c[j]));return m;}
+function paint(){
+  modeOpts.innerHTML=Object.entries(MODES).map(([k,v])=>`<button class="opt" type="button" data-mode="${k}" aria-pressed="${mode===k}">${v.name}</button>`).join('');
+  const md=minPair();
+  dEout.innerHTML=mode==='band'
+    ?`Пять цветов на пять диапазонов; точную цену показывают легенда, фильтр и подсказка у места.`
+    :`Самая похожая пара из 15 цен: <b>${md.toFixed(1)} ΔE</b>${md<5?' — на глаз не различить':''}`;
+  const col=MODES[mode].col, useF=active.size>0;
+  seats.forEach(s=>{ s.el.style.background=col(s.price); s.el.classList.toggle('dim',useF&&!active.has(s.price)); s.el.classList.toggle('sel',selected.has(s.id)); });
+  leg.innerHTML=BANDS.map((b,bi)=>{
+    const free=p=>seats.filter(s=>s.price===p&&!s.sold).length;
+    const bandFree=b.prices.reduce((a,p)=>a+free(p),0);
+    const bandOn=b.prices.every(p=>active.has(p));
+    return `<div class="band"><button class="band-h" type="button" data-band="${bi}" aria-pressed="${bandOn}"><i class="sw" style="background:${mode==='band'?BAND_COL[bi]:col(b.prices[0])}"></i><span class="lab">${b.lab}</span><span class="n">${bandFree} свободно</span></button>${
+      b.prices.map(p=>`<button class="pr" type="button" data-price="${p}" aria-pressed="${active.has(p)}"><i class="sw" style="background:${col(p)}"></i><span class="p">${fmt(p)}</span><span class="n">${free(p)} свободно</span></button>`).join('')}</div>`;
+  }).join('');
+  const arr=[...selected];
+  selN.textContent=arr.length?`${arr.length} ${arr.length%10===1&&arr.length%100!==11?'место':'мест(а)'}`:'нет';
+  selSum.textContent=fmt(arr.reduce((a,id)=>a+seats[id].price,0));
+}
+document.addEventListener('click',e=>{
+  const m=e.target.closest('[data-mode]'); if(m){mode=m.dataset.mode;paint();return;}
+  const bh=e.target.closest('[data-band]'); if(bh){const ps=BANDS[+bh.dataset.band].prices;const on=ps.every(p=>active.has(p));ps.forEach(p=>on?active.delete(p):active.add(p));paint();return;}
+  const pr=e.target.closest('[data-price]'); if(pr){const p=+pr.dataset.price;active.has(p)?active.delete(p):active.add(p);paint();}
+});
+reset.onclick=()=>{active.clear();selected.clear();paint();};
+/* для кадров: ?sel=1 выбирает пару мест */
+if(qs.get('sel')==='1'){ seats.filter(s=>!s.sold&&s.zone==='Партер'&&s.row===5).slice(10,12).forEach(s=>selected.add(s.id)); seats.filter(s=>!s.sold&&s.zone==='Балкон').slice(14,15).forEach(s=>selected.add(s.id)); }
+paint();
+</script>
+</body>
+</html>
