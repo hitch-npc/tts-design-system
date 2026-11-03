@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Заставка главной — TTS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Oranienbaum&family=Forum&family=Manrope:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<script>/* Страница открыта вне репозитория — ядро берём с GitHub Pages */
+var CORE_PAGES='https://hitch-npc.github.io/tts-design-system/';
+function coreFallback(l){if(l.dataset.fb)return;l.dataset.fb=1;l.href=CORE_PAGES+'ds-core-r14.css'}</script>
+<link rel="stylesheet" href="../../../ds-core-r14.css" onerror="coreFallback(this)">
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--ink); color: var(--n100); font-family: var(--font); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+.page { max-width: 1120px; margin: 0 auto; padding: var(--sp-10) var(--page-pad) var(--sp-16); display: flex; flex-direction: column; gap: var(--sp-12); }
+h1 { margin: 0; font-family: var(--f-thin); font-weight: 500; font-size: clamp(32px, 5vw, 52px); line-height: 1.05; }
+h2 { margin: 0 0 var(--sp-4); font-family: var(--f-thin); font-weight: 500; font-size: clamp(26px, 3.4vw, 34px); line-height: 1.1; }
+h3 { margin: var(--sp-6) 0 var(--sp-2); font-size: 10px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--n500); }
+.lead { margin: 0; max-width: 720px; font-size: 15px; line-height: 1.75; color: var(--n300); }
+p, li { font-size: 14px; line-height: 1.75; color: var(--n300); }
+p { margin: 0 0 var(--sp-3); max-width: 760px; }
+ul, ol { margin: 0; padding-left: 18px; max-width: 760px; }
+strong { color: var(--n100); font-weight: 600; }
+code { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 12px; color: var(--n200); background: var(--n900); padding: 1px 6px; border-radius: var(--r-sm); }
+pre { margin: 0 0 var(--sp-4); padding: var(--sp-4); max-width: 820px; overflow-x: auto; background: var(--n950); border: 1px solid var(--n800); border-radius: var(--r-sm); font: 12px/1.7 ui-monospace, 'SF Mono', Menlo, monospace; color: var(--n200); }
+pre code { background: none; padding: 0; }
+section { border-top: 1px solid var(--n850); padding-top: var(--sp-8); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { text-align: left; font-size: 10px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--n500); padding: 0 16px 10px 0; border-bottom: 1px solid var(--n800); }
+td { padding: 12px 16px 12px 0; border-bottom: 1px solid var(--n850); color: var(--n300); vertical-align: top; }
+td:first-child { color: var(--n100); white-space: nowrap; }
+.tbl { overflow-x: auto; }
+
+/* пример первого экрана: постер — цель перелёта верхней афиши */
+.demo { display: grid; grid-template-columns: 1.4fr 1fr; gap: var(--sp-10); align-items: center; padding: var(--sp-8); border: 1px solid var(--n800); border-radius: var(--r-sm); background: var(--n950); }
+.demo .t-display { font-size: clamp(36px, 5vw, 56px); margin: var(--sp-3) 0 var(--sp-5); }
+.demo-poster { width: min(100%, 320px); aspect-ratio: 3 / 4; justify-self: end; overflow: hidden; border: 1px solid var(--accent); border-radius: var(--r-sm); opacity: 0; transition: opacity 400ms var(--ease-out); }
+.demo-poster img { display: block; width: 100%; height: 100%; object-fit: cover; }
+html.demo-poster-in .demo-poster { opacity: 1; }
+.ctrl { display: flex; flex-wrap: wrap; gap: 8px; margin-top: var(--sp-5); }
+.state { margin-top: var(--sp-3); font-size: 12px; color: var(--n500); }
+@media (max-width: 760px) {
+  .demo { grid-template-columns: 1fr; padding: var(--sp-6); }
+  .demo-poster { display: none; }
+}
+</style>
+</head>
+<body>
+<!-- заставка подключается сразу после <body> -->
+<script src="tts-intro.js"></script>
+<script>
+var IMG = ['../../home-new/stage-bokeh.webp', '../../home-new/stage-rays.webp', '../../home-new/stage-spotlight.webp', '../../home-new/stage-curtain.webp'];
+function playIntro(mode) {
+  document.documentElement.classList.remove('demo-poster-in');
+  TTSIntro.start({
+    mode: mode,
+    images: IMG,
+    poster: '.demo-poster',
+    tickets: '#api',
+    meta: 'Москва · сезон 2026/27',
+    onPoster: function () { document.documentElement.classList.add('demo-poster-in'); },
+    onDone: function () { var s = document.getElementById('state'); if (s) s.textContent = stateText(); }
+  });
+}
+function stateText() {
+  var d = TTSIntro.decide();
+  return 'Следующая загрузка этой вкладки: ' + (d === 'skip' ? 'без заставки' : d === 'long' ? 'длинная версия' : 'обычная версия') + '.';
+}
+playIntro();
+</script>
+
+<div class="page">
+  <header>
+    <span class="t-eyebrow">Пакет для фронтенда · DS TTS R14</span>
+    <h1>Заставка главной</h1>
+    <p class="lead">Чёрный кадр в кинорамке, свет «Рампа» снизу. Под надписью «Ticket to Show — билеты без кассовых сборов» ложатся афиши. Отсчёт и колода идут вслед за реальной загрузкой страницы. В конце верхняя афиша перелетает в постер первого экрана.</p>
+  </header>
+
+  <div class="demo">
+    <div>
+      <span class="t-eyebrow">Пример первого экрана</span>
+      <div class="t-display">Дракула</div>
+      <p>Нажмите, чтобы проиграть заставку ещё раз. На этой странице кадры колоды — атмосферные кадры сцены, на сайте вместо них афиши событий.</p>
+      <div class="ctrl">
+        <button class="btn btn-primary btn-sm" type="button" onclick="playIntro('long')">Длинная версия</button>
+        <button class="btn btn-ghost btn-sm" type="button" onclick="playIntro('short')">Обычная версия</button>
+        <button class="btn btn-ghost btn-sm" type="button" onclick="TTSIntro.reset(); document.getElementById('state').textContent = stateText();">Сбросить отметки</button>
+      </div>
+      <div class="state" id="state"></div>
+    </div>
+    <div class="demo-poster"><img src="../../home-new/stage-curtain.webp" alt=""></div>
+  </div>
+
+  <section>
+    <h2>Файлы</h2>
+    <ul>
+      <li><code>tts-intro.js</code> — заставка целиком: стили, разметка, логика. Внешних зависимостей нет.</li>
+      <li><code>index.html</code> — эта страница: пример и документация.</li>
+      <li>Пример на главной — <code>site/home-new.html</code>, кадры сцены для запасного варианта — <code>site/home-new/</code>.</li>
+    </ul>
+  </section>
+
+  <section id="api">
+    <h2>Подключение</h2>
+    <p>Скрипт ставится <strong>сразу после открывающего <code>&lt;body&gt;</code></strong>, до остальной разметки: заставка закрывает первый кадр, и страница под ней не мелькает.</p>
+<pre><code>&lt;body&gt;
+&lt;script src="/assets/tts-intro.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  TTSIntro.start({
+    images: [ /* 3–4 афиши, 3:4; последняя — событие первого экрана */ ],
+    fallbacks: [ /* запасные кадры на случай, если афиша не загрузилась */ ],
+    poster: '.hero-poster',      // постер первого экрана — туда перелетает верхняя афиша
+    tickets: '#afisha',          // куда ведёт «К билетам»
+    meta: 'Москва · сезон 2026/27',
+    onReveal: () =&gt; document.documentElement.classList.add('page-in'),    // проявить первый экран
+    onPoster: () =&gt; document.documentElement.classList.add('poster-in'),  // показать постер под прилетевшей афишей
+  });
+&lt;/script&gt;
+…</code></pre>
+
+    <h3>Параметры</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>Параметр</th><th>Что это</th><th>По умолчанию</th></tr></thead>
+      <tbody>
+        <tr><td><code>images</code></td><td>Адреса афиш, до 6; лучше 3–4. Формат 3:4, от 900 px по высоте. Последняя ложится сверху и перелетает в постер.</td><td>—</td></tr>
+        <tr><td><code>fallbacks</code></td><td>Запасные картинки по тем же номерам: подставляются, если афиша не загрузилась.</td><td>—</td></tr>
+        <tr><td><code>poster</code></td><td>Селектор постера первого экрана. Если его нет на экране (на телефоне постер скрыт), афиша просто гаснет.</td><td>—</td></tr>
+        <tr><td><code>tickets</code></td><td>Селектор блока, к которому прокручивает кнопка «К билетам».</td><td>—</td></tr>
+        <tr><td><code>meta</code></td><td>Подпись справа в нижней рамке. На телефоне скрыта.</td><td>пусто</td></tr>
+        <tr><td><code>goLabel</code></td><td>Текст кнопки в нижней рамке.</td><td>«К билетам»</td></tr>
+        <tr><td><code>mode</code></td><td><code>'long'</code>, <code>'short'</code> или <code>'skip'</code> — сыграть именно так, без правил ниже.</td><td>по правилам</td></tr>
+        <tr><td><code>onReveal</code></td><td>Вызывается, когда рамка раскрывается: пора проявлять первый экран.</td><td>—</td></tr>
+        <tr><td><code>onPoster</code></td><td>Вызывается, когда афиша долетела до постера: показать постер под ней.</td><td>—</td></tr>
+        <tr><td><code>onDone</code></td><td>Заставка убрана, прокрутка разблокирована.</td><td>—</td></tr>
+      </tbody>
+    </table></div>
+    <p style="margin-top: var(--sp-4)">Если заставка не играет, <code>onReveal</code>, <code>onPoster</code> и <code>onDone</code> вызываются сразу, поэтому первый экран проявляется так же, без задержки.</p>
+  </section>
+
+  <section>
+    <h2>Когда играет</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Ситуация</th><th>Что видит человек</th></tr></thead>
+      <tbody>
+        <tr><td>Первый визит в этом браузере</td><td><strong>Длинная версия.</strong> Колода раскладывается не быстрее 2,2 с, даже если страница загрузилась мгновенно. Всего около 5–5,5 с вместе с переходом.</td></tr>
+        <tr><td>Новый визит позже</td><td><strong>Обычная версия.</strong> Отсчёт и колода идут вслед за реальной загрузкой. На быстром соединении около 3 с вместе с переходом.</td></tr>
+        <tr><td>Повторные загрузки в той же вкладке</td><td><strong>Не играет.</strong> Страница показывается сразу.</td></tr>
+        <tr><td>Включено «Уменьшение движения»</td><td>Без движения: готовый кадр примерно на 1,2 с, затем он плавно гаснет.</td></tr>
+      </tbody>
+    </table></div>
+    <p style="margin-top: var(--sp-4)">«Визит» — это сессия вкладки: <code>sessionStorage</code>, ключ <code>tts-intro-shown</code>. Отметка ставится в начале, поэтому перезагрузка посреди заставки её не повторит. «Видел хоть раз» — <code>localStorage</code>, ключ <code>tts-intro-seen</code>. Если хранилище недоступно (приватный режим), заставка играет как при первом визите.</p>
+    <p>Для проверки: <code>?intro=0</code> — без заставки, <code>?intro=long</code> или <code>?intro=short</code> — нужная версия, <code>TTSIntro.reset()</code> в консоли — забыть отметки.</p>
+  </section>
+
+  <section>
+    <h2>Ход</h2>
+    <ol>
+      <li><strong>Рамка и свет.</strong> Сверху логотип: глаз открывается, черта вырастает, строки поднимаются. Снизу разгорается «Рампа», внизу слева отсчёт 000 → 100.</li>
+      <li><strong>Колода и надпись — одновременно.</strong> Каждая загруженная часть (шрифты, страница, каждая афиша) кладёт следующую афишу. Новая поднимается снизу на верхнее место, предыдущие мягко переезжают глубже и темнеют. Надпись выдвигается построчно, как только готовы шрифты; около пятой части букв коротко перебирают латиницу и кириллицу.</li>
+      <li><strong>Пауза.</strong> Всё загружено и надпись встала — кадр держится 0,9 с в длинной версии и 0,25 с в обычной. В обычной строки и поднимаются быстрее.</li>
+      <li><strong>Переход.</strong> Надпись гаснет вверх, нижние афиши гаснут, верхняя перелетает в постер. Рамка раскрывается, фон становится прозрачным, первый экран проявляется. Страница при этом всегда стоит в самом верху.</li>
+    </ol>
+    <p style="margin-top: var(--sp-4)">Кадр можно пропустить: клик по нему, Esc, Enter или пробел. Кнопка «К билетам» пропускает и прокручивает к блоку <code>tickets</code>.</p>
+  </section>
+
+  <section>
+    <h2>Что нужно от страницы</h2>
+    <ul>
+      <li><strong>Ядро R14</strong> (<code>ds-core-r14.css</code>): цвета и шрифты берутся из токенов <code>--ink</code>, <code>--n100…--n950</code>, <code>--accent</code>, <code>--rampa-violet</code>, <code>--font</code>, <code>--f-thin</code>, <code>--f-num</code>, <code>--page-pad</code>.</li>
+      <li><strong>Шрифты:</strong> Cormorant Garamond italic 400 и Manrope 200. Строка Google Fonts:<br><code>family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&amp;family=Oranienbaum&amp;family=Forum&amp;family=Manrope:wght@200;300;400;500;600;700</code></li>
+      <li><strong>Постер первого экрана — 3:4</strong>, иначе перелетевшая афиша не совпадёт с ним по форме.</li>
+      <li><strong>Картинки с другого домена:</strong> если на сайте задан Content-Security-Policy, домен с афишами должен быть в <code>img-src</code>. Иначе встанут запасные кадры.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Размер надписи</h2>
+    <p>Размер надписи считает браузер, без скрипта: от ширины колонки и высоты окна между рамками. Самая длинная строка занимает всю ширину, все строки помещаются по высоте. Наборов строк два: три строки на широком экране и пять на узком (до 767 px). Какой показать, тоже решает CSS. Так надпись верная, даже если окно поменяло размер уже после запуска — например, во встроенном просмотрщике на телефоне.</p>
+    <p>Если меняется текст надписи, нужно перемерить две константы в правиле <code>.ti-head</code>: ширину самой длинной строки в em (сейчас 9.36, на узком экране 5.62) и высоту набора строк в em (3.3 и 5.55). Колонка задана отступами слева и справа, а не шириной через переменную: Safari такую ширину не применял, и надпись уезжала вправо.</p>
+    <p>Проверено на экранах 360×740, 375×560, 390×664, 390×844, 768×1024, 844×390, 1280×640, 1440×900 и 1920×1080: надпись везде в колонке и между рамками.</p>
+  </section>
+
+  <section>
+    <h2>Доступность</h2>
+    <ul>
+      <li>Заставка — <code>role="dialog"</code> с подписью «Ticket to Show — билеты без кассовых сборов». Надпись и колода скрыты от читалок, чтобы перебор букв не зачитывался.</li>
+      <li>Пропуск — клик, Esc, Enter, пробел или кнопка «К билетам».</li>
+      <li>«Уменьшение движения» в системе — без анимации.</li>
+      <li>Пока заставка на экране, страница под ней не прокручивается, в том числе жестами на iPhone.</li>
+    </ul>
+  </section>
+</div>
+<script>document.getElementById('state').textContent = stateText();</script>
+</body>
+</html>
