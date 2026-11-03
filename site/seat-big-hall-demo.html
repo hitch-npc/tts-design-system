@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@400;500;600;700&display=swap">
 <style>
   :root { --ink:#0D0D0D; --n100:#D6D6D2; --n300:#A6A6A2; --n400:#8A8A88; --n500:#7A7A78; --n600:#626260; --n800:#262930; --n900:#191C22; --n950:#111318;
-    --accent:#0047FF; --accent-ghost:#0B142A; --seat-sel:#22C55E; --seat-sold:#2C2F36; --seat-check:#FFFFFF; --r-sm:2px;
+    --accent:#0047FF; --accent-ghost:#0B142A; --seat-sel:#22C55E; --seat-sold:#2C2F36; --seat-check:#FFFFFF; --r-sm:2px; --scrim:#000000;
     --font:'Manrope',system-ui,sans-serif; --f-num:'Oranienbaum',Georgia,serif; --f-head:'Forum',Georgia,serif; --f-thin:'Cormorant Garamond',Georgia,serif; }
   *, *::before, *::after { box-sizing:border-box; }
   body { margin:0; padding:32px 20px 64px; background:var(--ink); color:var(--n100); font-family:var(--font); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
@@ -53,6 +53,14 @@
   .band-h:hover, .pr:hover { background:var(--n900); }
   .sum { display:flex; justify-content:space-between; align-items:baseline; margin-top:14px; padding-top:14px; border-top:1px solid var(--n800); }
   .sum b { font-family:var(--f-num); font-size:22px; font-weight:400; }
+  .tip { position:absolute; z-index:5; min-width:176px; padding:10px 12px 11px; background:var(--n900); border:1px solid var(--n800); border-radius:var(--r-sm);
+    box-shadow:0 14px 30px -12px var(--scrim); pointer-events:none; opacity:0; transform:translateY(4px); transition:opacity .16s, transform .16s; }
+  .tip.on { opacity:1; transform:none; }
+  .tip-where { font-size:10px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--n500); white-space:nowrap; }
+  .tip-price { display:flex; align-items:center; gap:8px; margin-top:6px; font-family:var(--f-num); font-size:26px; line-height:1; color:var(--n100); }
+  .tip-price .sw { width:16px; height:16px; }
+  .tip-hint { margin-top:7px; font-size:11px; color:var(--n400); }
+  @media (prefers-reduced-motion: reduce) { .tip { transition:none; } }
   .reset { background:none; border:0; color:var(--n300); font:500 11px var(--font); letter-spacing:.14em; text-transform:uppercase; cursor:pointer; text-decoration:underline; text-decoration-color:var(--accent); text-underline-offset:3px; padding:0; margin-top:12px; }
 </style>
 </head>
@@ -62,7 +70,7 @@
     <div class="eyebrow">Выбор мест · большой зал</div>
     <h1>Пятнадцать цен в одном зале</h1>
   </div>
-  <p class="note">Условный пример большого театра: партер, амфитеатр, бельэтаж с ложами, два яруса и балкон — 6 зон, 15 цен, 1 104 места. Цена зависит и от зоны, и от ряда. Нажатие на диапазон или цену в легенде гасит остальные места; несколько можно включить вместе.</p>
+  <p class="note">Условный пример большого театра: партер, амфитеатр, бельэтаж с ложами, два яруса и балкон — 6 зон, 15 цен, 1 104 места. Цена зависит и от зоны, и от ряда. Наведите на место — подсказка покажет зону, ряд, место и цену; на телефоне — нажмите. Нажатие на диапазон или цену в легенде гасит остальные места, наведение на них подсвечивает места заранее.</p>
 
   <div class="panel">
     <div class="cap">Цвета цен</div>
@@ -71,9 +79,10 @@
   </div>
 
   <div class="grid">
-    <div class="panel" style="overflow:hidden">
+    <div class="panel" id="hallPanel" style="overflow:hidden;position:relative">
       <div class="stage">Сцена</div>
       <div class="hall" id="hall"></div>
+      <div class="tip" id="tip" role="status" aria-live="polite"></div>
     </div>
     <div class="panel">
       <div class="cap">Цена · свободно мест</div>
@@ -98,7 +107,7 @@ const PRICES=BANDS.flatMap(b=>b.prices);
 const bandOf=p=>BANDS.findIndex(b=>b.prices.includes(p));
 /* Семьи цветов: оттенок — диапазон, светлота — цена внутри него (дороже — глубже) */
 const FAMILY={25000:'#B28143',21000:'#E0AD6E',17500:'#106DCE',14000:'#388CF0',12000:'#6EADFE',
-  11000:'#098392',10000:'#1C9DAE',9000:'#42B7C8',8500:'#5FD0E2',6500:'#7758BB',5500:'#9477DD',4500:'#B296FF',
+  11000:'#02717A',10000:'#1794A0',9000:'#36B8C5',8500:'#61DCE9',6500:'#7758BB',5500:'#9477DD',4500:'#B296FF',
   3500:'#C1587D',2500:'#E3769B',1500:'#FD9CBA'};
 /* Только диапазоны: пять цветов варианта B */
 const BAND_COL=['#C9975A','#3F73E3','#2BA7B8','#9C95FE','#DC7095'];
@@ -151,7 +160,10 @@ ZONES.forEach(z=>{
       const b=document.createElement('button'); b.type='button'; b.className='seat'+(s.sold?' sold':'');
       const t=`${s.zone} · ряд ${s.row}, место ${s.place} · ${fmt(s.price)}${s.sold?' · продано':''}`;
       b.title=t; b.setAttribute('aria-label',t);
-      if(!s.sold) b.onclick=()=>{selected.has(s.id)?selected.delete(s.id):selected.add(s.id);paint();};
+      if(!s.sold) b.onclick=()=>{selected.has(s.id)?selected.delete(s.id):selected.add(s.id);paint();showTip(s);};
+      else b.onclick=()=>showTip(s);
+      b.addEventListener('pointerenter',e=>{ if(e.pointerType==='mouse') showTip(s); });
+      b.addEventListener('focus',()=>showTip(s));
       s.el=b; el.appendChild(b);
     });
     el.insertAdjacentHTML('beforeend',`<span class="rl">${r.rowNo}</span>`);
@@ -164,6 +176,37 @@ function fit(){ /* размер места — по ширине панели: 3
 }
 new ResizeObserver(fit).observe(hall); fit();
 
+/* ---- подсказка у места ---- */
+let tipSeat=null;
+function showTip(s){
+  tipSeat=s;
+  const col=MODES[mode].col(s.price);
+  tip.innerHTML=`<div class="tip-where">${s.zone} · ряд ${s.row} · место ${s.place}</div>`+
+    (s.sold?`<div class="tip-price" style="color:var(--n500)">Продано</div>`:
+    `<div class="tip-price"><i class="sw" style="background:${col}"></i>${fmt(s.price)}</div><div class="tip-hint">${selected.has(s.id)?'Выбрано · нажмите, чтобы снять':'Нажмите, чтобы выбрать'}</div>`);
+  const P=hallPanel.getBoundingClientRect(), R=s.el.getBoundingClientRect();
+  tip.classList.add('on');
+  const tw=tip.offsetWidth, th=tip.offsetHeight;
+  let x=R.left-P.left+R.width/2-tw/2; x=Math.max(8,Math.min(P.width-tw-8,x));
+  let y=R.top-P.top-th-8; if(y<8) y=R.bottom-P.top+8;
+  tip.style.left=x+'px'; tip.style.top=y+'px';
+}
+function hideTip(){ tipSeat=null; tip.classList.remove('on'); }
+hall.addEventListener('pointerleave',e=>{ if(e.pointerType==='mouse') hideTip(); });
+document.addEventListener('pointerdown',e=>{ if(!e.target.closest('.seat')) hideTip(); });
+/* наведение на цену или диапазон в легенде — подсветка без нажатия */
+let preview=null;
+function dim(){
+  const set=preview||active, useF=set.size>0;
+  seats.forEach(s=>s.el.classList.toggle('dim',useF&&!set.has(s.price)));
+}
+document.addEventListener('mouseover',e=>{
+  const pr=e.target.closest('[data-price]'), bh=e.target.closest('[data-band]');
+  const next=pr?new Set([+pr.dataset.price]):bh?new Set(BANDS[+bh.dataset.band].prices):null;
+  const same=(a,b)=>a===b||(a&&b&&a.size===b.size&&[...a].every(x=>b.has(x)));
+  if(!same(next,preview)){ preview=next; dim(); }
+});
+
 /* ---- управление ---- */
 function minPair(){const c=PRICES.map(MODES[mode].col);let m=Infinity;for(let i=0;i<c.length;i++)for(let j=i+1;j<c.length;j++)m=Math.min(m,dE(c[i],c[j]));return m;}
 function paint(){
@@ -172,8 +215,9 @@ function paint(){
   dEout.innerHTML=mode==='band'
     ?`Пять цветов на пять диапазонов; точную цену показывают легенда, фильтр и подсказка у места.`
     :`Самая похожая пара из 15 цен: <b>${md.toFixed(1)} ΔE</b>${md<5?' — на глаз не различить':''}`;
-  const col=MODES[mode].col, useF=active.size>0;
-  seats.forEach(s=>{ s.el.style.background=col(s.price); s.el.classList.toggle('dim',useF&&!active.has(s.price)); s.el.classList.toggle('sel',selected.has(s.id)); });
+  const col=MODES[mode].col;
+  seats.forEach(s=>{ s.el.style.background=col(s.price); s.el.classList.toggle('sel',selected.has(s.id)); });
+  dim();
   leg.innerHTML=BANDS.map((b,bi)=>{
     const free=p=>seats.filter(s=>s.price===p&&!s.sold).length;
     const bandFree=b.prices.reduce((a,p)=>a+free(p),0);
@@ -194,6 +238,8 @@ reset.onclick=()=>{active.clear();selected.clear();paint();};
 /* для кадров: ?sel=1 выбирает пару мест */
 if(qs.get('sel')==='1'){ seats.filter(s=>!s.sold&&s.zone==='Партер'&&s.row===5).slice(10,12).forEach(s=>selected.add(s.id)); seats.filter(s=>!s.sold&&s.zone==='Балкон').slice(14,15).forEach(s=>selected.add(s.id)); }
 paint();
+/* для кадров: ?tip=amph показывает подсказку у места в амфитеатре */
+if(qs.get('tip')==='amph'){ const s=seats.find(x=>!x.sold&&x.zone==='Амфитеатр'&&x.row===4&&x.place>=8); requestAnimationFrame(()=>showTip(s)); }
 </script>
 </body>
 </html>
