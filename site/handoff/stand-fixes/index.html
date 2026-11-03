@@ -286,6 +286,8 @@
         <tr class="grp"><td colspan="5">Низкий приоритет</td></tr>
         <tr><td class="sid"><a href="#r5">Р6</a></td><td>Партнёрам</td><td class="sw">«Как это работает?»</td><td>наведение и нажатие заметнее</td><td><span class="st st-low">Низкий</span></td></tr>
         <tr><td class="sid"><a href="#r6">Р7</a></td><td>Шапка</td><td class="sw">Отзывы</td><td>отзывы на сайте вместо перехода в Яндекс Карты</td><td><span class="st st-low">Низкий</span></td></tr>
+        <tr class="grp"><td colspan="5">Предложение</td></tr>
+        <tr><td class="sid"><a href="#p1">П1</a></td><td>Главная</td><td class="sw">Новая главная и заставка</td><td>заставка-прелоадер с колодой афиш, новый первый экран, календарь</td><td><span class="st st-pick">Предложение</span></td></tr>
       </table>
     </div>
   </section>
@@ -669,6 +671,31 @@
       </table>
     </article>
 
+  </section>
+
+  <section class="part" aria-labelledby="prop-h">
+    <div class="part-h"><div class="meta-cap">Предложение</div><h2 id="prop-h">Новая главная и заставка</h2><p>Не правка стенда, а следующий шаг: новая главная с заставкой-прелоадером. Календарь из неё — пункт <a href="#r1">Р1</a>.</p></div>
+
+    <article class="chg" id="p1">
+      <div class="chg-h"><div class="chg-id">П1</div><div class="chg-t"><h3>Новая главная с заставкой</h3><div class="where">Главная — десктоп и телефон · демо <code>site/home-new.html</code>, заставка <code>site/handoff/intro/</code></div></div><span class="st st-pick">Предложение</span></div>
+      <div class="live"><a href="../../home-new.html">Макет с заставкой ↗</a><a href="../../home-new.html?intro=0">Без заставки ↗</a><a href="../../handoff/intro/index.html">Заставка: пример и документация ↗</a><a class="gh" href="https://github.com/hitch-npc/tts-design-system/issues/13">Обсудить и проголосовать · #13 ↗</a></div>
+      <table class="spec">
+        <tr><th>Что</th><th>Сейчас</th><th>Предложение</th></tr>
+        <tr><td class="p">Заставка</td><td class="o" data-h="Сейчас">нет</td><td class="n" data-h="Предложение">колода афиш в кобальтовой рамке, свет «Рампа», крупно «Ticket to Show — билеты без кассовых сборов»; верхняя афиша перелетает в постер первого экрана</td></tr>
+        <tr><td class="p">Когда играет</td><td class="o" data-h="Сейчас">—</td><td class="n" data-h="Предложение">первый визит — длинная версия, около 5 с; новый визит — около 3 с, идёт за реальной загрузкой; повторные загрузки в той же вкладке — без заставки. После заставки страница стоит в самом верху</td></tr>
+        <tr><td class="p">Первый экран</td><td class="o" data-h="Сейчас">—</td><td class="n" data-h="Предложение">постер события, название, площадка и дата, «Купить — от … ₽» и «Все даты»; ниже — чипы категорий и календарь</td></tr>
+        <tr><td class="p">Для фронтенда</td><td class="o" data-h="Сейчас">—</td><td class="n" data-h="Предложение">заставка — один файл <code>tts-intro.js</code> без зависимостей, запуск <code>TTSIntro.start({…})</code>; проверка — <code>?intro=0</code>, <code>?intro=long</code>, <code>?intro=short</code></td></tr>
+        <tr><td class="p">Кадры колоды</td><td class="o" data-h="Сейчас">—</td><td class="n" data-h="Предложение">в макете — нарисованные кадры сцены, не афиши; настоящие афиши (3:4, от 900 px по высоте) перечисляются в <code>INTRO_IMAGES</code></td></tr>
+      </table>
+      <div class="shots">
+        <div class="col"><span class="lbl lbl-new">Заставка · колода и надпись</span><figure class="shot"><img src="img/intro-deck.webp" width="1200" height="750" alt="Заставка: крупная надпись «Ticket to Show — билеты без кассовых сборов» поверх колоды кадров" loading="lazy"></figure></div>
+        <div class="col"><span class="lbl lbl-new">Заставка · верхняя афиша</span><figure class="shot"><img src="img/intro-top.webp" width="1200" height="750" alt="Заставка: верхняя афиша колоды в кобальтовой рамке, внизу счётчик загрузки и «К билетам»" loading="lazy"></figure></div>
+        <div class="col"><span class="lbl lbl-new">Первый экран после заставки</span><figure class="shot"><img src="img/intro-hero.webp" width="1200" height="750" alt="Первый экран: «Дракула», кнопки «Купить» и «Все даты», постер справа, ниже чипы категорий и календарь" loading="lazy"></figure></div>
+      </div>
+      <div class="shots phones">
+        <div class="col"><span class="lbl lbl-new">Заставка · телефон</span><figure class="shot"><img src="img/intro-mob.webp" width="390" height="844" alt="Заставка на телефоне" loading="lazy"></figure></div>
+      </div>
+    </article>
   </section>
 
   <div class="foot">Ticket to Show · дизайн-система R14 · 14.9.0. Исходники — github.com/hitch-npc/tts-design-system</div>
