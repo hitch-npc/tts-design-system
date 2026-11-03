@@ -42,6 +42,14 @@ html.page-in .rv, .no-js .rv { opacity: 1; transform: none; transition: opacity 
 /* iOS увеличивает страницу при фокусе на поле мельче 16px — на сенсорных экранах поле 16px (разбор — site/handoff/ios-input-zoom.html) */
 @media (max-width: 1080px), (pointer: coarse) { .hdr-search input { font-size: 16px; } }
 .hdr-search input::placeholder { color: var(--n600); }
+/* Крестик очистки — как .search-clear в ядре: браузерный скрыт, свой тонкий */
+input[type="search"]::-webkit-search-cancel-button, input[type="search"]::-webkit-search-decoration { -webkit-appearance:none; appearance:none; display:none; }
+.search-clear { flex:none; display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; padding:0; background:none; border:0; border-radius:2px; color:var(--n500); cursor:pointer; transition:color 120ms; }
+.search-clear:hover, .search-clear:focus-visible { color:var(--n100); }
+.search-clear svg { width:14px; height:14px; }
+input:placeholder-shown + .search-clear { display:none; }
+@media (pointer: coarse) { .search-clear { width:36px; height:36px; } }
+
 .hdr-filter { display: flex; align-items: center; height: 28px; padding: 0 8px; border: 1px solid var(--n800); border-radius: var(--r-sm); color: var(--n100); font-size: 12px; font-weight: 500; }
 .hdr-filter-l { max-width: 0; overflow: hidden; white-space: nowrap; opacity: 0; transition: max-width 420ms var(--ease-in), opacity 252ms, margin 252ms; }
 .hdr-filter:hover .hdr-filter-l, .hdr-filter:focus-visible .hdr-filter-l { max-width: 72px; opacity: 1; margin-right: 6px; }
@@ -299,7 +307,7 @@ html.page-in .hw > span, .no-js .hw > span { transform: none; transition: transf
   </nav>
   <div class="hdr-search" role="search">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-    <input type="search" placeholder="Театр, спектакль, артист…" aria-label="Поиск по афише" autocomplete="off">
+    <input type="search" placeholder="Театр, спектакль, артист…" aria-label="Поиск по афише" autocomplete="off"><button class="search-clear" type="button" aria-label="Очистить поиск"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     <button class="hdr-filter" type="button" aria-label="Фильтры"><span class="hdr-filter-l">Фильтры</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg></button>
   </div>
   <button class="theme-toggle" id="themeBtn" type="button" data-mode="dark" aria-label="Включить светлую тему" title="Включить светлую тему">
@@ -325,7 +333,7 @@ html.page-in .hw > span, .no-js .hw > span { transform: none; transition: transf
 <div class="m-search">
   <div class="hdr-search" role="search">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-    <input type="search" placeholder="Театр, спектакль, артист…" aria-label="Поиск по афише" autocomplete="off">
+    <input type="search" placeholder="Театр, спектакль, артист…" aria-label="Поиск по афише" autocomplete="off"><button class="search-clear" type="button" aria-label="Очистить поиск"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   </div>
   <button class="m-filter" type="button" aria-label="Фильтры"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg></button>
 </div>
@@ -784,6 +792,7 @@ themeBtn.addEventListener('click', () => {
 
 renderStrip();
 renderAfisha();
+document.addEventListener('click', e => { const b = e.target.closest('.search-clear'); if (!b) return; const i = b.previousElementSibling; i.value = ''; i.dispatchEvent(new Event('input', { bubbles: true })); i.focus(); });
 </script>
 </body>
 </html>
