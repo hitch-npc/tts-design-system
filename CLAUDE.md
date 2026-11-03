@@ -359,7 +359,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 | `--font` | Manrope | UI-элементы, кнопки, метки |
 | `--f-head` | Forum | Названия мельче 22px: карточки афиши, плитки, подзаголовки (`.t-h3`) |
 | `--f-thin` | Cormorant Garamond 400/500 | Display и заголовки **от 22px** (до 25pt — 500, крупнее — 400/500) |
-| `--f-num` | Oranienbaum | Числа (цены, даты) |
+| `--f-num` | Oranienbaum (+ Source Serif 4 для ₽) | Числа (цены, даты); знак ₽ — из Source Serif 4, ядро подгружает его само (решение №40) |
 
 ### Классы типографики
 ```
@@ -743,7 +743,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 - Blob только через `.cover-blob-1/.cover-blob-2` или radial-gradient с blur
 - Шрифт Cormorant — только названия событий и display. Для UI — Manrope
 - Минимальная высота кнопки `.btn-sm` — 36px
-- Подключаемые шрифты (R14): `https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap`
+- Подключаемые шрифты (R14): `https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap`. Знак ₽ (Source Serif 4, только этот символ) ядро подключает само; странице без ядра — второй строкой: `https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400&text=%E2%82%BD&display=swap`
 
 ---
 
