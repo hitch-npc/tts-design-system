@@ -94,10 +94,10 @@ function gradient(stepL, stepH, C){
   return names.map((_,i)=>oklch(0.42 + (stepL/100)*i/4*1.0 + 0.0, C/100, (250 + stepH*i/4) % 360));
 }
 const contrast = ['#C9975A','#3F73E3','#2BA7B8','#7E6FD0','#33B978']; /* текущие --zone-1…5 */
-/* Малиновый вместо зелёного балкона: OKLCH 0.62 / 0.18 / 0° */
-const crimson  = ['#C9975A','#3F73E3','#2BA7B8','#7E6FD0','#D74C82'];
+/* Малиновый вместо зелёного балкона: OKLCH 0.68 / 0.14 / 0°, пастельный */
+const crimson  = ['#C9975A','#3F73E3','#2BA7B8','#7E6FD0','#DC7095'];
 /* То же, бельэтаж светлее: OKLCH 0.72 / 0.15 / 285° */
-const crimsonLight = ['#C9975A','#3F73E3','#2BA7B8','#9C95FE','#D74C82'];
+const crimsonLight = ['#C9975A','#3F73E3','#2BA7B8','#9C95FE','#DC7095'];
 
 function row(title, note, cols){
   const md = minDelta(cols), cw = cvdWorst(cols);
