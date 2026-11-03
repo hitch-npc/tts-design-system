@@ -29,6 +29,15 @@
   .search input { width:100%; height:40px; padding:0 14px 0 38px; background:var(--n950); border:1px solid var(--n800); border-radius:2px; font-size:14px; color:var(--n100); }
   .search input::placeholder { color:var(--n600); }
   .search input:focus { outline:none; border-color:var(--accent); }
+  /* Крестик очистки — как .search-clear в ядре: браузерный скрыт, свой тонкий */
+  input[type="search"]::-webkit-search-cancel-button, input[type="search"]::-webkit-search-decoration { -webkit-appearance:none; appearance:none; display:none; }
+  .search-clear { flex:none; display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; padding:0; background:none; border:0; border-radius:2px; color:var(--n500); cursor:pointer; transition:color 120ms; }
+  .search-clear:hover, .search-clear:focus-visible { color:var(--n100); }
+  .search-clear svg { width:14px; height:14px; }
+  input:placeholder-shown + .search-clear { display:none; }
+  @media (pointer: coarse) { .search-clear { width:36px; height:36px; } }
+  .search .search-clear { position:absolute; right:6px; top:50%; transform:translateY(-50%); }
+  .search input { padding-right:40px; }
   @media (max-width:1080px), (pointer:coarse) { .search input { font-size:16px; } }
   .chips { display:flex; gap:8px; flex-wrap:wrap; }
   .chip { appearance:none; height:34px; padding:0 14px; display:inline-flex; align-items:center; gap:6px; background:transparent; border:1px solid var(--n800); border-radius:9999px; font-size:12px; font-weight:500; color:var(--n300); cursor:pointer; white-space:nowrap; }
@@ -160,7 +169,7 @@ function chips(){
     return `<button class="chip" type="button" data-type="${t}" aria-pressed="${st.type===t}">${lab}<b>${n}</b></button>`}).join('')}</div>`;
 }
 function tools(){
-  return `<div class="tools"><label class="search">${ICON_S}<input id="q" type="search" placeholder="Найти площадку или адрес" value="${esc(st.q)}" aria-label="Поиск площадки"></label>${chips()}</div>`;
+  return `<div class="tools"><label class="search">${ICON_S}<input id="q" type="search" placeholder="Найти площадку или адрес" value="${esc(st.q)}" aria-label="Поиск площадки"><button class="search-clear" type="button" aria-label="Очистить поиск"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></label>${chips()}</div>`;
 }
 function right(v){
   return v.c?`<div class="right"><div class="cnt">${ev(v.c)}</div><div class="cnt-sub">ближайшее ${v.next}</div></div>`:`<div class="right none">Шоу ещё не анонсированы</div>`;
@@ -203,6 +212,7 @@ function render(){
   bar.innerHTML='<span class="cap">Вариант</span>'+Object.entries(VARS).map(([k,l])=>`<button class="chip" type="button" data-v="${k}" aria-pressed="${st.v===k}">${l}</button>`).join('');
   app.innerHTML=st.v==='a'?viewA():st.v==='b'?viewB():st.v==='c'?viewC():viewD();
 }
+document.addEventListener('click',e=>{ if(e.target.closest('.search-clear')){ e.preventDefault(); st.q=''; render(); document.getElementById('q').focus(); return; } });
 document.addEventListener('click',e=>{
   const t=e.target.closest('[data-v],[data-type],[data-m],#more,a');
   if(!t) return;
