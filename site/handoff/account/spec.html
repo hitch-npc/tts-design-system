@@ -1,0 +1,243 @@
+<!doctype html>
+<!-- Собрано из README.md скриптом tooling/build-specs.mjs. Руками не править: правка README → npm run build. -->
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TTS — личный кабинет (профиль): пакет для фронтенда и бэкенда — спецификация</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../ds-core-r14.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--ink); color: var(--n100); font-family: var(--font); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+.wrap { max-width: var(--content-max); margin: 0 auto; padding: var(--sp-12) var(--page-pad) var(--sp-20); }
+.sp-top h1 { margin: var(--sp-2) 0 var(--sp-4); }
+.sp-sub { margin: 0; font-size: 15px; line-height: 1.6; color: var(--n300); }
+.sp-links { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: var(--sp-6) 0 0; }
+.sp-dl { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; margin-left: 4px; }
+.sp-dl svg { flex: none; }
+.sp-grid { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: var(--sp-12); margin-top: var(--sp-12); align-items: start; }
+.sp-toc { position: sticky; top: var(--sp-6); display: flex; flex-direction: column; gap: 2px; padding-left: 0; border-left: 1px solid var(--n850); }
+.sp-toc .t-caption { padding: 0 0 var(--sp-3) var(--sp-4); }
+.sp-toc a { display: block; padding: 6px var(--sp-4); margin-left: -1px; border-left: 1px solid transparent; font-size: 13px; line-height: 1.45; color: var(--n300); text-decoration: none; transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out); }
+.sp-toc a:hover { color: var(--n100); }
+.sp-toc a.is-act { color: var(--n100); border-left-color: var(--accent); }
+.sp-toc-m { display: none; }
+.sp { max-width: 820px; min-width: 0; font-size: 15px; line-height: 1.75; color: var(--n200); }
+.sp h2 { margin: var(--sp-16) 0 var(--sp-4); padding-bottom: var(--sp-3); border-bottom: 1px solid var(--n850); color: var(--n100); scroll-margin-top: var(--sp-6); }
+.sp > :first-child { margin-top: 0; }
+.sp-anchor { color: inherit; text-decoration: none; }
+.sp p { margin: 0 0 var(--sp-4); }
+.sp ul { margin: 0 0 var(--sp-5); padding-left: 20px; display: flex; flex-direction: column; gap: var(--sp-2); }
+.sp li::marker { color: var(--n600); }
+.sp strong { font-weight: 600; color: var(--n100); }
+.sp code { padding: 1px 5px; border-radius: var(--r-sm); background: var(--n900); border: 1px solid var(--n850); color: var(--n100); font-size: .86em; word-break: break-word; }
+.sp-table { margin: var(--sp-2) 0 var(--sp-6); overflow-x: auto; border: 1px solid var(--n800); border-radius: var(--r-sm); background: var(--n950); }
+.sp table { width: 100%; border-collapse: collapse; font-size: 13px; line-height: 1.6; }
+.sp th { text-align: left; padding: 12px 16px; font-size: 10px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--n500); border-bottom: 1px solid var(--n800); white-space: nowrap; }
+.sp td { padding: 12px 16px; vertical-align: top; color: var(--n200); border-top: 1px solid var(--n850); min-width: 140px; }
+.sp tr:first-child td { border-top: 0; }
+.sp td:first-child { color: var(--n100); }
+@media (max-width: 1023px) {
+  .sp-grid { grid-template-columns: minmax(0, 1fr); gap: 0; margin-top: var(--sp-8); }
+  .sp-toc { display: none; }
+  .sp-toc-m { display: block; margin-bottom: var(--sp-8); border: 1px solid var(--n800); border-radius: var(--r-sm); background: var(--n950); }
+  .sp-toc-m summary { padding: 14px var(--sp-4); cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+  .sp-toc-m summary::-webkit-details-marker { display: none; }
+  .sp-toc-m summary svg { transition: transform var(--dur-base) var(--ease-out); }
+  .sp-toc-m[open] summary svg { transform: rotate(180deg); }
+  .sp-toc-m nav { display: flex; flex-direction: column; padding: 0 var(--sp-4) var(--sp-3); }
+  .sp-toc-m a { padding: 8px 0; font-size: 14px; color: var(--n200); text-decoration: none; border-top: 1px solid var(--n850); }
+  .sp { font-size: 14px; }
+  .sp h2 { margin-top: var(--sp-12); }
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="sp-top">
+    <div class="t-eyebrow">Handoff · спецификация</div>
+    <h1 class="t-display">Личный кабинет (профиль)</h1>
+    <p class="sp-sub">Пакет для фронтенда и бэкенда</p>
+    <div class="sp-links">
+      <a class="btn btn-ghost btn-md" href="index.html">← Кадры и сценарии</a>
+      <a class="btn btn-primary btn-md" href="../../account.html">Открыть живой макет</a>
+      <a class="t-link sp-dl" href="README.md" download><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>Скачать README.md</a>
+    </div>
+  </header>
+  <div class="sp-grid">
+    <nav class="sp-toc" aria-label="Разделы спецификации">
+      <span class="t-caption">Разделы</span>
+      <a href="#s-0">0. Покрытие задачи из трекера</a>
+      <a href="#s-1">1. Вход</a>
+      <a href="#s-2">2. Шапка профиля</a>
+      <a href="#s-3">3. Предстоящие</a>
+      <a href="#s-4">4. Избранное</a>
+      <a href="#s-5">5. История покупок</a>
+      <a href="#s-6">6. Возврат</a>
+      <a href="#s-7">7. Поиск в шапке</a>
+      <a href="#s-8">8. Данные для бэкенда</a>
+      <a href="#s-9">9. Открытые вопросы</a>
+    </nav>
+    <article class="sp">
+      <details class="sp-toc-m">
+        <summary><span class="t-caption">Разделы</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+        <nav aria-label="Разделы спецификации">
+          <a href="#s-0">0. Покрытие задачи из трекера</a>
+          <a href="#s-1">1. Вход</a>
+          <a href="#s-2">2. Шапка профиля</a>
+          <a href="#s-3">3. Предстоящие</a>
+          <a href="#s-4">4. Избранное</a>
+          <a href="#s-5">5. История покупок</a>
+          <a href="#s-6">6. Возврат</a>
+          <a href="#s-7">7. Поиск в шапке</a>
+          <a href="#s-8">8. Данные для бэкенда</a>
+          <a href="#s-9">9. Открытые вопросы</a>
+        </nav>
+      </details>
+<p>Основа — DS TTS R14. Состояние на 26 октября 2026. Задача из трекера: вход по коду или паролю, профиль, история покупок, избранное, смена данных по именным билетам, возврат заказа.</p>
+<ul>
+<li><strong>Живой макет:</strong> <code>site/account.html</code> — кнопка «Открыть живой макет» на витрине пакета и в спецификации. Внизу экрана — переключатель состояний макета: «Обычное», «Много событий», «Пусто», «Не вошёл». Кнопка темы в шапке переключает тёмную и светлую.</li>
+<li><strong>Презентация с кадрами:</strong> <code>index.html</code> в этой папке.</li>
+<li><strong>Спецификация:</strong> <code>spec.html</code> — этот README в оформленном виде; собирается из него (<code>npm run build</code>).</li>
+<li><strong>Кадры:</strong> <code>screens/</code> — десктоп 1440, телефон 390, обе темы, ретина 2×.</li>
+</ul>
+<p>Компоненты ядра (<code>ds-core-r14.css</code>, <code>ds-core-r14-light.css</code>, <code>tokens.json</code>) этим пакетом <strong>не менялись</strong>: новое живёт в <code>&lt;style&gt;</code> макета. В ядро и редизайн v2 переносится после утверждения макета.</p>
+<h2 class="t-h2" id="s-0"><a class="sp-anchor" href="#s-0">0. Покрытие задачи из трекера</a></h2>
+<div class="sp-table"><table>
+<thead><tr><th>Требование</th><th>Где в макете</th><th>Кадры</th></tr></thead>
+<tbody><tr><td>Вход по коду на почту или по паролю</td><td>Состояние «Не вошёл»: почта → код из письма; ссылка «Войти по паролю»</td><td>13, 14, 15</td></tr>
+<tr><td>Пароль хранится только хешем</td><td>Бэкенд. В интерфейсе пароль нигде не показывается и не отправляется письмом</td><td>—</td></tr>
+<tr><td>История покупок</td><td>Вкладка «История покупок»</td><td>07, 21, m03</td></tr>
+<tr><td>Избранное, связь с <code>shows</code> (<code>user_performance.is_favorite</code> удалить)</td><td>Вкладка «Избранное», полка «Мероприятия»</td><td>06, 20, m02</td></tr>
+<tr><td>Смена ФИО, пола, даты рождения; пол и дата по умолчанию пустые</td><td>«Редактировать профиль» в шапке профиля; в меню под именем — «Редактировать профиль» с карандашом; пустые — «Не указан» / «Не указана»</td><td>04</td></tr>
+<tr><td>Смена почты — только с паролем</td><td>Поле «Почта» в «Редактировать профиль»; при новой почте появляется поле «Пароль»</td><td>04</td></tr>
+<tr><td>Просмотр купленных билетов</td><td>Вкладка «Предстоящие»: карточка показа, внутри заказы и билеты</td><td>01, 03</td></tr>
+<tr><td>Смена ФИО и документа — только будущие события с <code>named_tickets = True</code></td><td>Кнопка «Изменить данные» есть только у именных билетов</td><td>03</td></tr>
+<tr><td>Кнопка возврата</td><td>«Вернуть заказ» у каждого заказа до начала события; в последние 72 часа — предупреждение; форма возврата и «Мои возвраты»</td><td>08, 09, 23</td></tr>
+<tr><td>Без входа — как раньше</td><td>Решение владельца: у всех покупателей есть профиль (почта и данные оставлены при покупке), гостя просят войти</td><td>16</td></tr></tbody>
+</table></div>
+<p><strong>Сверх задачи (решение владельца):</strong> избранные площадки — полка «Площадки» с логотипами. Нужна новая связь «пользователь — площадка».</p>
+<p><strong>Кнопка «В избранное»</strong> (решение №30, пересмотрено 26.10.2026): на странице события — под «Выбрать места», на странице площадки — в шапке рядом с адресом (на телефоне — иконка). Повторное нажатие убирает из избранного. Макеты: редизайн v2 (страница события) и стенд <code>site/handoff/redesign-2026-10/lab-venues.html</code>.</p>
+<h2 class="t-h2" id="s-1"><a class="sp-anchor" href="#s-1">1. Вход</a></h2>
+<ul>
+<li>Шаг 1 — почта, кнопка «Получить код». Шаг 2 — «Код отправлен на …», поле на 6 цифр (<code>autocomplete=&quot;one-time-code&quot;</code>), «Отправить ещё раз через 0:59», «Изменить почту». Код действует 10 минут.</li>
+<li>По паролю: почта + пароль, ссылки «Войти по коду» и «Забыли пароль?». «Забыли пароль?» ведёт на вход по коду — отдельного сброса не нужно.</li>
+<li>Профиль создаётся при первой покупке; пароль не обязателен. Если пароля нет, вход только по коду.</li>
+<li>Переход по ссылке «Возврат билетов» из футера без входа — экран входа с текстом про возврат (кадр 16).</li>
+<li>В шапке без входа — «Войти», после входа — «Профиль».</li>
+</ul>
+<h2 class="t-h2" id="s-2"><a class="sp-anchor" href="#s-2">2. Шапка профиля</a></h2>
+<ul>
+<li>Надзаголовок «Профиль», имя <code>.t-h1</code> (Имя Фамилия из ФИО), данные: почта, телефон, пол, дата рождения.</li>
+<li>Кнопки: «Редактировать профиль», «Сменить пароль», «Мои возвраты N» (N — заявки на рассмотрении).</li>
+</ul>
+<p><strong>Меню профиля в шапке</strong> (кадры 24, 25, m07). Кнопка «Профиль» (на телефоне — иконка) открывает меню: имя без почты и телефона; «Предстоящие N», «Избранное N», «История покупок», «Мои возвраты N»; под именем — «Редактировать профиль» с карандашом (серое, без подчёркивания); под линией — «Выйти». «Выйти» завершает сессию и ведёт на экран входа с уведомлением «Вы вышли из профиля». Гость нажимает «Войти» — меню нет, сразу экран входа.</p>
+<ul>
+<li><strong>Иконка, «Туман»</strong> — только при наведении и при открытом меню. За иконкой проявляется мягкое пятно: конический градиент из жанровых цветов <code>--blob-core</code> (синий) и <code>--blob-purple</code> (фиолетовый) с серебром, всё разбавлено бело-серым (<code>color-mix</code> с <code>--n100</code>; в светлой теме — пастель, чуть насыщенная <code>--accent</code> / <code>--n400</code>, серебро <code>--n800</code>). Размытие 8px, прозрачность .5, перелив по кругу — оборот 3,2 с, «дыхание» масштабом .92–1.06 за 2,4 с. Появление 600 мс. В покое иконки без эффекта.</li>
+<li><strong>Раскрытие:</strong> как окно фильтров — из-под кнопки в 10px, по правому краю, ширина 248px; появление 420 мс <code>cubic-bezier(.16,1,.3,1)</code> (сдвиг сверху, лёгкий масштаб, шторка <code>clip-path</code> сверху вниз), уход 252 мс; строки проявляются по очереди с шагом 30 мс.</li>
+<li>Закрывается кликом мимо, <code>Esc</code> (фокус возвращается на кнопку), выбором пункта. Стрелки ↑↓ ходят по пунктам.</li>
+<li>При <code>prefers-reduced-motion</code> — без анимации и вращения.</li>
+<li>«Редактировать профиль»: ФИО, почта, пол (Не указан / Мужской / Женский), дата рождения <code>ДД.ММ.ГГГГ</code>. Если почта изменена — обязательное поле «Пароль»; без него форма не сохраняется (поле с ошибкой).</li>
+<li>«Сменить пароль»: текущий, новый (не меньше 8 символов), повтор.</li>
+<li>Аватара нет — отложен до загрузки фото на бэкенде.</li>
+<li>Вкладки «Предстоящие», «Избранное», «История покупок»: если не помещаются (телефон) — лента с прокруткой; край, за которым есть ещё вкладки, растворяется, выбранная вкладка прокручивается в видимую часть.</li>
+</ul>
+<h2 class="t-h2" id="s-3"><a class="sp-anchor" href="#s-3">3. Предстоящие</a></h2>
+<ul>
+<li><strong>Показ = событие + площадка + зал + дата и время.</strong> Заказы на один показ — в одной карточке («3 билета · 2 заказа»). Если отличается хоть зал — отдельные карточки, даже при одинаковом названии.</li>
+<li>Карточка: афиша 16:10, надзаголовком дата «СБ · 7 НОЯБРЯ · 19:00» (стиль <code>.t-caption</code>), название Cormorant, площадка полужирным <code>--n200</code> и зал <code>--n400</code>, число билетов. Справа «Скачать» (билеты PDF) и шеврон раскрытия.</li>
+<li>Раскрытая карточка: блок на каждый заказ — номер, дата покупки, число билетов, сумма, «Вернуть заказ»; под ним билеты: ряд и место, зона, «На кого билет» (ФИО, документ маской «•••• 5678»), цена.</li>
+<li><strong>Именной билет</strong> (<code>named_tickets</code>): кнопка «Изменить данные» → ФИО, тип документа, номер. Меняется только этот билет.</li>
+<li><strong>Обычный билет</strong>: строка «На кого билет» не показывается — ФИО есть только у именных. Это же в форме возврата. У обычных билетов кнопки нет.</li>
+<li>Заказ с заявкой на возврат «На рассмотрении» — тег вместо «Вернуть заказ», данные не меняются.</li>
+<li>Сортировка — по дате мероприятия. Первые 5 показов, дальше «Показать ещё N».</li>
+<li>Пусто: «Предстоящих мероприятий нет» + «Перейти к афише» (кадр 17).</li>
+</ul>
+<h2 class="t-h2" id="s-4"><a class="sp-anchor" href="#s-4">4. Избранное</a></h2>
+<ul>
+<li>Две полки подряд: «Мероприятия N» и «Площадки N», без фильтра.</li>
+<li>Десктоп: на полке один ряд из трёх, «Все N» раскрывает остальное. Ниже 1080px — лента со свайпом, все карточки сразу, следующая выглядывает справа. Кнопка «Все N» есть и здесь: раскрывает ленту в столбец, «Свернуть» возвращает ленту; страница плавно прокручивается так, что вкладки оказываются у верха экрана, — так видно, что карточек больше.</li>
+<li>Карточка мероприятия: афиша, сердце (убрать; в уведомлении — «Вернуть»), дата надзаголовком, название, площадка, «от N ₽», «Билеты».</li>
+<li>Карточка площадки: логотип на плашке (логотипы с tickettoshow.ru — белые SVG, в светлой теме инвертируются), название, «N событий в афише», «Афиша площадки».</li>
+</ul>
+<h2 class="t-h2" id="s-5"><a class="sp-anchor" href="#s-5">5. История покупок</a></h2>
+<ul>
+<li>Все заказы по дате покупки, новые сверху: дата покупки, номер заказа, сумма; ниже карточка показа (свёрнута).</li>
+<li>Только просмотр: билеты и ФИО видны, менять нельзя (см. открытые вопросы, п. 9).</li>
+<li><strong>Архивный вид</strong> — у прошедших событий и заказов с завершённым возвратом: афиша ч/б и приглушена, рамка пунктиром, текст серый. Будущие заказы, заказ с возвратом на рассмотрении и с отклонённым возвратом — обычные.</li>
+<li>Заказ с возвратом на рассмотрении — обычный вид, оранжевый тег, «Скачать» остаётся: пока заявку не одобрили, билеты действуют.</li>
+<li>Статусы тегами: «Прошло», «Возврат на рассмотрении» (оранжевый), «Возврат отклонён» (красный), «Возврат завершён» (зелёный).</li>
+</ul>
+<h2 class="t-h2" id="s-6"><a class="sp-anchor" href="#s-6">6. Возврат</a></h2>
+<p>Модалка возврата на текущем сайте заменяется профилем. Ссылка «Возврат билетов» в футере ведёт в «Предстоящие» с подсказкой: «Возврат теперь оформляется в профиле… — номера билетов и почту вводить не нужно»; в подсказке ссылка «Условия возврата» раскрывает условия на месте.</p>
+<ul>
+<li>Возврат — <strong>заказом целиком</strong>, не по билету. В заказе — билеты только на один показ.</li>
+<li>Форма «Оформление возврата»: показ, билеты заказа (только просмотр), «Стоимость заказа», причина возврата, «К возврату», комментарий до 500 символов, условия возврата (свёрнуты), «Отмена» / «Отправить запрос →».</li>
+<li>После отправки — заявка в «Мои возвраты» со статусом «На рассмотрении», в заказе вместо кнопки — тег.</li>
+<li>Повторная заявка после отказа заменяет прежнюю в списке.</li>
+<li>«Мои возвраты»: две группы. <strong>«На рассмотрении N»</strong> — живые заявки, обычный вид. <strong>«Закрытые N»</strong> — отклонённые и завершённые, ниже, с отступом: как архив в истории — без подложки, рамка пунктиром, афиша ч/б, текст серый; цвет тега итога остаётся. Строка раскрывается: номер заявки, заказ, билеты, дата, сумма, статус; у отклонённой — ответ поддержки, а если показ ещё впереди — кнопка «Подать повторно» (новая заявка заменит отклонённую).</li>
+<li>Счётчик «Мои возвраты N» в профиле и меню — только заявки на рассмотрении; закрытых нет — числа нет.</li>
+<li>Сроки рассмотрения в тексте формы: до 3 рабочих дней.</li>
+</ul>
+<p><strong>Сроки возврата (решение владельца, 26.10.2026).</strong></p>
+<ul>
+<li><strong>Время до начала считается точно, в часах:</strong> <code>starts_at − now</code>, время сервера, Москва. Не календарными днями: показ 27 октября в 19:00, сейчас 25 октября в 12:00 — осталось 55 часов, это уже «меньше 3 суток».</li>
+<li><strong>«Вернуть заказ» есть до начала события.</strong> После начала кнопки нет, показ уходит в историю.</li>
+<li><strong>Последние 72 часа</strong> — кнопка остаётся. В шапке заказа серая подпись «Меньше 3 суток до начала», в форме — оранжевое предупреждение: «осталось 2 суток 7 ч» (меньше 48 часов — только часы: «осталось 30 ч»), по общим условиям возврат не делается, при болезни или смерти близкого нужны документы (до 7 дней после мероприятия).</li>
+<li><strong>Причина возврата</strong> — обязательный выбор: «Передумал(а)» (по умолчанию), «Болезнь», «Смерть близкого». Для двух последних появляется «Прикрепить документы» (можно прислать позже).</li>
+<li><strong>«К возврату»</strong> — оценка по общим условиям, только для «Передумал(а)»:</li>
+</ul>
+<div class="sp-table"><table>
+<thead><tr><th>До начала</th><th>Возврат</th><th>Пример, заказ 5 000 ₽</th></tr></thead>
+<tbody><tr><td>240 ч и больше (10 суток)</td><td>100 % − сбор 10 %</td><td>4 500 ₽</td></tr>
+<tr><td>120–240 ч (5–10 суток)</td><td>50 % − сбор 10 %</td><td>2 000 ₽</td></tr>
+<tr><td>72–120 ч (3–5 суток)</td><td>30 % − сбор 10 %</td><td>1 000 ₽</td></tr>
+<tr><td>меньше 72 ч</td><td>0</td><td>0 ₽</td></tr></tbody>
+</table></div>
+<p>Для болезни и смерти близкого вместо суммы — «по документам»: сумму определит поддержка. Заявку с суммой 0 ₽ отправить можно — её рассматривает поддержка.</p>
+<h2 class="t-h2" id="s-7"><a class="sp-anchor" href="#s-7">7. Поиск в шапке</a></h2>
+<p>По образцу раздела «Поиск по афише — подсказки» редизайна v2. Пустое поле — «Часто ищут»; при вводе — группы «События» (превью 56, название Forum, дата и место, «от N ₽») и «Площадки» (логотип, число событий). Совпадение подсвечено цветом. Латиница исправляется по раскладке («nt» → «те», строка «Показаны результаты для …»). ↑↓ / Enter / Esc.</p>
+<h2 class="t-h2" id="s-8"><a class="sp-anchor" href="#s-8">8. Данные для бэкенда</a></h2>
+<div class="sp-table"><table>
+<thead><tr><th>Сущность</th><th>Поля</th><th>Заметки</th></tr></thead>
+<tbody><tr><td>Пользователь</td><td><code>email</code>, <code>password_hash</code> (null, если пароля нет), <code>full_name</code>, <code>phone</code>, <code>sex</code> (null), <code>birth_date</code> (null)</td><td>Смена <code>email</code> — с проверкой пароля. Если пароля нет — нужен вариант с кодом на старую почту (вопрос п. 9)</td></tr>
+<tr><td>Код входа</td><td><code>email</code>, <code>code</code> (6 цифр), <code>expires_at</code> (+10 мин), попытки</td><td>Повторная отправка — не раньше чем через 60 с</td></tr>
+<tr><td>Избранное мероприятий</td><td><code>user_id</code>, <code>show_id</code></td><td>Вместо <code>user_performance.is_favorite</code></td></tr>
+<tr><td>Избранное площадок</td><td><code>user_id</code>, <code>venue_id</code></td><td>Новое. Для карточки: название, логотип, число событий в афише</td></tr>
+<tr><td>Заказ</td><td><code>id</code>, <code>created_at</code>, <code>show_id</code>, <code>total</code>, <code>tickets[]</code></td><td>Один показ на заказ</td></tr>
+<tr><td>Билет</td><td><code>place</code>, <code>zone</code>, <code>price</code>, <code>holder_name</code>, <code>doc_type</code>, <code>doc_number</code></td><td>Менять <code>holder_name</code> / документ — только если показ в будущем и <code>named_tickets = true</code>, и нет заявки «на рассмотрении»</td></tr>
+<tr><td>Показ</td><td><code>title</code>, <code>venue</code>, <code>hall</code>, <code>starts_at</code>, <code>poster</code>, <code>named_tickets</code></td><td>Ключ группировки карточек в профиле</td></tr>
+<tr><td>Заявка на возврат</td><td><code>id</code> («В-1077»), <code>order_id</code>, <code>status</code> (<code>pending</code> / <code>declined</code> / <code>done</code>), <code>reason</code> (<code>mind</code> / <code>ill</code> / <code>death</code>), <code>documents[]</code>, <code>comment</code> (≤ 500), <code>answer</code>, <code>created_at</code></td><td>Одна активная заявка на заказ. Оценка суммы — от <code>starts_at − created_at</code> в часах</td></tr></tbody>
+</table></div>
+<h2 class="t-h2" id="s-9"><a class="sp-anchor" href="#s-9">9. Открытые вопросы</a></h2>
+<ul>
+<li><strong>Правка из истории покупок.</strong> Сейчас история — только просмотр. Разрешать ли менять ФИО и документ у будущих именных билетов прямо из истории, или достаточно вкладки «Предстоящие»?</li>
+<li><strong>Покупатель без пароля.</strong> Профиль создаётся при покупке без пароля. Сейчас в профиле есть только «Сменить пароль» с обязательным текущим паролем, а смена почты требует пароль. Нужно: «Задать пароль» без текущего (с подтверждением кодом на почту) и вариант смены почты по коду на старую почту.</li>
+<li><strong>Номер документа в форме «Изменить данные».</strong> В билете номер скрыт маской «•••• 5678», а в форме подставлен целиком — значит, полный номер паспорта приходит в браузер. Варианты: поле пустое, номер вводится заново целиком, текущий показан маской в подсказке; или полный номер отдаётся отдельным запросом только при открытии формы. Решение — за бэкендом и ответственным за персональные данные.</li>
+<li><strong>Телефон.</strong> Показан в шапке профиля, но изменить его нельзя — ни в «Редактировать профиль», ни в другом месте. Нужна ли смена телефона и с подтверждением ли по СМС?</li>
+</ul>
+<p><strong>Заметка вне задачи.</strong> В футере — «Билеты без кассового сбора», а при возврате удерживается сбор дистрибьютора 10 %. Покупатель может принять это за противоречие. Формулировки — на стороне владельца оферты.</p>
+    </article>
+  </div>
+</main>
+<script>
+/* оглавление: подсветка текущего раздела, на телефоне — свернуть после выбора */
+(() => {
+  const links = [...document.querySelectorAll('.sp-toc a')];
+  const heads = links.map(a => document.getElementById(a.hash.slice(1)));
+  const mark = () => {
+    let k = 0;
+    heads.forEach((h, i) => { if (h.getBoundingClientRect().top < 120) k = i; });
+    links.forEach((a, i) => a.classList.toggle('is-act', i === k));
+  };
+  addEventListener('scroll', mark, { passive: true }); mark();
+  document.querySelectorAll('.sp-toc-m a').forEach(a => a.addEventListener('click', () => a.closest('details').open = false));
+})();
+</script>
+</body>
+</html>

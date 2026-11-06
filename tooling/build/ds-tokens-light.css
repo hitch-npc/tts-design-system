@@ -95,7 +95,7 @@
   --font:            'Manrope', system-ui, sans-serif;
   --f-head:          'Forum', serif;
   --f-thin:          'Cormorant Garamond', serif;
-  --f-num:           'Oranienbaum', serif;
+  --f-num:           'Oranienbaum', 'Source Serif 4', serif;
 
   /* Отступы */
   --sp-1:            4px;

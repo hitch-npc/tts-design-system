@@ -108,6 +108,10 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* ── вкладки ── */
 .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--n800); margin-bottom: var(--sp-8); overflow-x: auto; scrollbar-width: none; }
 .tabs::-webkit-scrollbar { display: none; }
+/* вкладки не помещаются (телефон): край, за которым есть ещё вкладки, растворяется — видно, что ленту можно листать */
+.tabs.fade-r { -webkit-mask-image: linear-gradient(to right, var(--ink) calc(100% - 48px), transparent); mask-image: linear-gradient(to right, var(--ink) calc(100% - 48px), transparent); }
+.tabs.fade-l { -webkit-mask-image: linear-gradient(to left, var(--ink) calc(100% - 48px), transparent); mask-image: linear-gradient(to left, var(--ink) calc(100% - 48px), transparent); }
+.tabs.fade-l.fade-r { -webkit-mask-image: linear-gradient(to right, transparent, var(--ink) 48px, var(--ink) calc(100% - 48px), transparent); mask-image: linear-gradient(to right, transparent, var(--ink) 48px, var(--ink) calc(100% - 48px), transparent); }
 .tab { display: inline-flex; align-items: center; gap: 8px; padding: 14px 16px; font-size: 11px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--n300); white-space: nowrap; position: relative; transition: color var(--dur-fast) var(--ease-out); }
 .tab { color: var(--n500); transition: color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out); }
 .tab:hover { color: var(--n200); }
@@ -305,6 +309,20 @@ textarea.form-input { min-height: 112px; resize: vertical; line-height: 1.5; }
 .req-sum { font-family: var(--f-num); font-size: 1.1rem; color: var(--n100); white-space: nowrap; }
 .req-body { padding: 0 var(--sp-5) var(--sp-5) calc(96px + var(--sp-5) * 2); display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--n300); line-height: 1.6; }
 .req-body .t-caption { margin-top: 6px; }
+/* мои возвраты: группы «На рассмотрении» и «Закрытые» */
+.rt-group + .rt-group { margin-top: var(--sp-10); }
+.rt-group-h { display: flex; align-items: baseline; gap: 8px; margin-bottom: var(--sp-3); font-size: 10px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--n500); }
+.rt-group-h span { color: var(--n600); letter-spacing: .06em; }
+/* закрытые заявки — как архив в истории: без подложки, рамка пунктиром, афиша ч/б, текст серый; цвет тега-итога остаётся */
+.rt-group.closed .rt-card { background: transparent; border-style: dashed; }
+.rt-group.closed .req { border-top-style: dashed; }
+.rt-group.closed .req:first-child { border-top: 0; }
+.rt-group.closed .req .poster img { filter: grayscale(1) contrast(.9); opacity: .55; }
+.rt-group.closed .req .poster::before { display: none; }
+.rt-group.closed .req-title { color: var(--n300); }
+.rt-group.closed .req-sum { color: var(--n400); }
+:root[data-theme="light"] .rt-group.closed .req .poster img { opacity: .45; filter: grayscale(1) contrast(.8) brightness(1.15); }
+.req-again { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; margin-top: 8px; }
 
 /* ── уведомление ── */
 .note { position: fixed; left: 50%; bottom: 80px; transform: translate(-50%, 16px); z-index: 60; display: flex; align-items: center; gap: 16px; padding: 12px 12px 12px 18px; background: var(--n900); border: 1px solid var(--n700); border-radius: var(--r-sm); box-shadow: 0 12px 40px var(--shadow-color); font-size: 13px; color: var(--n100); opacity: 0; pointer-events: none; transition: opacity var(--dur-base) var(--ease-out), transform var(--dur-slow) var(--ease-out); }
@@ -412,6 +430,7 @@ textarea.form-input { min-height: 112px; resize: vertical; line-height: 1.5; }
   <div class="hdr-search" role="search">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
     <input type="search" id="sgIn" placeholder="Театр, спектакль, артист…" aria-label="Поиск по афише" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="sgBox">
+    <button class="search-clear" type="button" aria-label="Очистить поиск"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     <div class="sg" id="sgBox" role="listbox"></div>
     <button class="hdr-filter" type="button" aria-label="Фильтры"><span class="hdr-filter-l">Фильтры</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg></button>
   </div>
@@ -642,7 +661,7 @@ textarea.form-input { min-height: 112px; resize: vertical; line-height: 1.5; }
 
     <div class="footer-bottom">
       <span class="footer-copy">© 2026 Ticket To Show</span>
-      <span class="footer-disclaimer">Instagram признан экстремистской организацией на территории РФ.</span>
+      <span class="footer-disclaimer">Instagram&nbsp;— продукт компании Meta, признанной экстремистской организацией и&nbsp;запрещённой в&nbsp;России.</span>
     </div>
   </div>
 </footer>
@@ -656,7 +675,7 @@ const SHOWS = {
   s0: { title: 'Квартетник', venue: 'Театр эстрады', hall: 'Большой зал', date: '2026-10-27T19:00', img: IMG('3d9/rh8c4v29ptak6t0fiq5l991898661fla/kvartetnik_.jpg') },
   s1: { title: 'Опасные игры', venue: 'Театр Ленком', hall: 'Основная сцена', date: '2026-11-07T19:00', img: IMG('06d/ptrweq48do15fc7pka9h0r25h8mhev98/opasnye_igry1.jpg') },
   s2: { title: 'Эйнштейн и Маргарита', venue: 'Театр эстрады', hall: 'Большой зал', date: '2026-11-14T19:00', img: IMG('40f/xk8jj9k4o0ozlw47j22ys3tdaf4g13et/einstein_i_margarita_.jpg') },
-  s3: { title: 'Фрида', venue: 'МХАТ им. Горького', hall: 'Основная сцена', date: '2026-11-21T19:00', img: IMG('356/kqkkzqpzk8rh4oaifiy0lrqlesvz3f8f/frida_.jpg') },
+  s3: { title: 'Фрида', venue: 'МХАТ им. Горького', hall: 'Основная сцена', date: '2026-11-21T19:00', img: 'img/posters/frida.webp', pos: '50% 22%' },
   s4: { title: 'Предновогодний джаз', venue: 'Дом музыки', hall: 'Светлановский зал', date: '2026-12-19T19:00', img: IMG('d1e/gibof3e48g1dtlo1cw2bqwaqo0vlvqa4/p_dzhaz.jpg') },
   s5: { title: 'Любимый Щелкунчик', venue: 'Кремлёвский дворец', hall: 'Основной зал', date: '2026-12-27T12:00', img: IMG('e02/onz3az5djbwotj13vpopw1vowtcek85x/shchelkunchik__2.jpg') },
   s6: { title: 'Любимый Щелкунчик', venue: 'Дом музыки', hall: 'Камерный зал', date: '2026-12-27T12:00', img: IMG('e02/onz3az5djbwotj13vpopw1vowtcek85x/shchelkunchik__2.jpg') },
@@ -725,7 +744,8 @@ function seed() {
       const base = SHOWS[keys[i % keys.length]];
       const d = new Date('2027-01-05T19:00'); d.setDate(d.getDate() + i * 4);
       const sid = 'm' + i;
-      SHOWS[sid] = { ...base, date: d.toISOString().slice(0, 16) };
+      const pad = x => String(x).padStart(2, '0');
+      SHOWS[sid] = { ...base, date: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T19:00` };
       orders.push({ no: String(49000 + i), bought: '2026-10-2' + (i % 4), show: sid, tickets:
         Array.from({ length: 1 + (i % 3) }, (_, k) => ({ id: sid + 't' + k, zone: 'Партер', place: `Ряд ${4 + i % 6}, место ${10 + k}`, name: 'Иванов Иван Иванович', price: 2400 + i * 100 })) });
     }
@@ -747,7 +767,7 @@ const NOW_T = new Date(NOW + 'T12:00');
 // часы до начала показа — считаются точно, не по календарным дням
 const hoursLeft = sid => (new Date(SHOWS[sid].date) - NOW_T) / 36e5;
 const isPast = sid => hoursLeft(sid) <= 0;
-// условия возврата при «передумал»: от 240 ч — 100 %, от 120 ч — 50 %, от 72 ч — 30 %, меньше 72 ч — 0; сбор распространителя 10 % не возвращается
+// условия возврата при «передумал»: от 240 ч — 100 %, от 120 ч — 50 %, от 72 ч — 30 %, меньше 72 ч — 0; сбор дистрибьютора 10 % не возвращается
 const LATE_H = 72;
 const refundPct = h => h >= 240 ? 100 : h >= 120 ? 50 : h >= 72 ? 30 : 0;
 const refundSum = (o, h) => Math.max(0, Math.round(sumOf(o) * (refundPct(h) - 10) / 100));
@@ -755,7 +775,8 @@ const leftText = h => h >= 48 ? `${Math.floor(h / 24)} ${plural(Math.floor(h / 2
 const mask = n => '•••• ' + n.replace(/\s/g, '').slice(-4);
 const sumOf = o => o.tickets.reduce((a, t) => a + t.price, 0);
 const orderBy = no => orders.find(o => o.no === no);
-const poster = s => `<div class="poster"><img src="${s.img}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"></div>`;
+// pos — кадрирование вертикальной афиши в окне 16:10 (object-position), иначе по центру
+const poster = s => `<div class="poster"><img src="${s.img}" alt="" loading="lazy" referrerpolicy="no-referrer"${s.pos ? ` style="object-position: ${s.pos}"` : ''} onerror="this.remove()"></div>`;
 
 const ICON = {
   chev: '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>',
@@ -946,7 +967,7 @@ function renderFav() {
         </div>
         <div class="fav-body">
           <div class="vn-title">${esc(v.title)}</div>
-          <div class="fav-meta">${v.events} ${plural(v.events, 'мероприятие', 'мероприятия', 'мероприятий')} в афише</div>
+          <div class="fav-meta">${v.events} ${plural(v.events, 'событие', 'события', 'событий')} в афише</div>
           <div class="fav-foot">
             <span class="fav-meta">Москва</span>
             <a class="btn btn-ghost btn-sm" href="#">Афиша площадки</a>
@@ -967,7 +988,7 @@ function renderHist() {
   const list = [...orders].sort((a, b) => b.bought.localeCompare(a.bought) || b.no.localeCompare(a.no));
   el.innerHTML = list.map(o => `<div class="order-group">
       <div class="order-head"><span class="order-pill">${full(o.bought)}</span><span class="ord-no">Заказ № ${o.no}</span><span class="order-sum">${rub(sumOf(o))}</span></div>
-      ${showCard(o.show, [o], { arch: isPast(o.show) || o.status === 'pending' || o.status === 'done', readonly: true, status: statusTag(o, true), prefix: 'h' + o.no, noDownload: o.status === 'done' })}
+      ${showCard(o.show, [o], { arch: isPast(o.show) || o.status === 'done', readonly: true, status: statusTag(o, true), prefix: 'h' + o.no, noDownload: o.status === 'done' })}
     </div>`).join('');
 }
 
@@ -976,7 +997,7 @@ const RET_REASONS = [['mind', 'Передумал(а)'], ['ill', 'Болезнь
 function estHTML(o, h, reason) {
   if (reason !== 'mind') return `<span class="t-caption">К возврату</span><span class="rt-est-v">по документам</span><div class="form-helper">Сумму определит поддержка после проверки документов.</div>`;
   const p = refundPct(h);
-  return `<span class="t-caption">К возврату</span><b>${rub(refundSum(o, h))}</b><div class="form-helper">${p ? `${p} % стоимости по общим условиям, за вычетом сбора распространителя 10 %. До начала — ${leftText(h)}.` : `Меньше 3 суток до начала: по общим условиям возврат не делается. Запрос можно отправить — поддержка рассмотрит его.`}</div>`;
+  return `<span class="t-caption">К возврату</span><b>${rub(refundSum(o, h))}</b><div class="form-helper">${p ? `${p} % стоимости по общим условиям, за вычетом сбора дистрибьютора 10 %. До начала — ${leftText(h)}.` : `Меньше 3 суток до начала: по общим условиям возврат не делается. Запрос можно отправить — поддержка рассмотрит его.`}</div>`;
 }
 /* ════════ возврат: форма ════════ */
 function renderRet(freshNo) {
@@ -1029,7 +1050,7 @@ function renderRet(freshNo) {
       </div>
     </section>`;
   }
-  const list = reqs.length ? `<div class="rt-card">${reqs.map(r => {
+  const reqHTML = r => {
     const o = orderBy(r.order), s = SHOWS[o.show], st = REQ_STATUS[r.status];
     return `<details class="req${r.no === freshNo ? ' fresh' : ''}"${r.no === freshNo ? ' open' : ''}>
       <summary>
@@ -1046,9 +1067,14 @@ function renderRet(freshNo) {
         ${r.comment ? `<span class="t-caption">Комментарий</span><div>${esc(r.comment)}</div>` : ''}
         ${r.answer ? `<span class="t-caption">Ответ</span><div>${esc(r.answer)}</div>` : ''}
         ${r.status === 'pending' ? '<div class="form-helper">Рассмотрение обычно занимает до 3 рабочих дней. Решение придёт на почту.</div>' : ''}
+        ${r.status === 'declined' && !isPast(o.show) ? `<div class="req-again"><button class="btn btn-ghost btn-sm" data-act="ret-order" data-o="${o.no}">Подать повторно</button><span class="form-helper">До начала показа заявку можно подать ещё раз — она заменит эту.</span></div>` : ''}
       </div>
     </details>`;
-  }).join('')}</div>` : `<div class="empty-state"><div class="empty-title">Заявок на возврат нет</div><div class="empty-sub">Вернуть заказ можно на вкладке «Предстоящие».</div></div>`;
+  };
+  // на рассмотрении — живые заявки сверху; отклонённые и завершённые — закрытые, приглушены, как архив в истории
+  const open = reqs.filter(r => r.status === 'pending'), closed = reqs.filter(r => r.status !== 'pending');
+  const group = (title, arr, cls) => arr.length ? `<div class="rt-group${cls}"><div class="rt-group-h">${title}<span>${arr.length}</span></div><div class="rt-card">${arr.map(reqHTML).join('')}</div></div>` : '';
+  const list = reqs.length ? group('На рассмотрении', open, '') + group('Закрытые', closed, ' closed') : `<div class="empty-state"><div class="empty-title">Заявок на возврат нет</div><div class="empty-sub">Вернуть заказ можно на вкладке «Предстоящие».</div></div>`;
   el.innerHTML = `
     <button class="back" data-act="home">${ICON.back} Профиль</button>
     <div class="rt-head">
@@ -1057,7 +1083,7 @@ function renderRet(freshNo) {
     </div>
     ${form}
     <section class="rt-sec" id="rt-list">
-      ${draft ? '<span class="t-eyebrow">Мои заявки</span>' : ''}
+      ${draft ? '<span class="t-eyebrow">Мои возвраты</span>' : ''}
       ${list}
     </section>`;
 }
@@ -1092,7 +1118,9 @@ $('#pm').addEventListener('keydown', e => {
 });
 
 /* ════════ навигация ════════ */
-function renderAll() { renderUp(); renderFav(); renderHist(); $('#n-req').textContent = reqs.length || ''; }
+// «Мои возвраты N»: N — заявки на рассмотрении
+const reqPending = () => reqs.filter(r => r.status === 'pending').length || '';
+function renderAll() { renderUp(); renderFav(); renderHist(); $('#n-req').textContent = reqPending(); tabsFade(); }
 function go(view, freshNo) {
   const ret = view === 'returns', guest = state === 'guest';
   $('#v-login').hidden = !guest;
@@ -1107,6 +1135,9 @@ function go(view, freshNo) {
 }
 function tab(name) {
   $$('.tab').forEach(x => x.setAttribute('aria-selected', x.dataset.tab === name));
+  // выбранная вкладка целиком в видимой части ленты
+  const t = $(`.tab[data-tab="${name}"]`), bar = $('.tabs');
+  if (t && bar.scrollWidth > bar.clientWidth) bar.scrollTo({ left: Math.max(0, t.offsetLeft - bar.offsetLeft - (bar.clientWidth - t.offsetWidth) / 2), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
   $$('.panel').forEach(p => p.hidden = p.id !== 'p-' + name);
 }
 function note(text, undo) {
@@ -1146,7 +1177,7 @@ document.addEventListener('click', e => {
       const to = b.dataset.to; pmClose(false); draft = null;
       if (to === 'returns') { go('returns'); break; }
       go('main');
-      if (to === 'data') $('[data-act=me][data-p=data]').click(); else tab(to);
+      if (to === 'data') { $$('.me-panel').forEach(x => x.hidden = x.id !== 'me-data'); $('#f-name').focus(); } else tab(to);
       if (to !== 'data' && to !== 'up') $('.tabs')?.scrollIntoView({ behavior: 'instant', block: 'start' });
       break;
     }
@@ -1198,7 +1229,7 @@ document.addEventListener('click', e => {
       reqs = reqs.filter((r, i) => i === 0 || r.order !== o.no);
       draft = null;
       go('returns', no);
-      $('#n-req').textContent = reqs.length;
+      $('#n-req').textContent = reqPending();
       note('Запрос на возврат отправлен');
       break;
     }
@@ -1240,6 +1271,15 @@ document.addEventListener('input', e => {
 });
 
 $$('.tab').forEach(t => t.addEventListener('click', () => tab(t.dataset.tab)));
+// растворение края ленты вкладок, пока за ним есть ещё вкладки
+function tabsFade() {
+  const bar = $('.tabs'); if (!bar) return;
+  const max = bar.scrollWidth - bar.clientWidth;
+  bar.classList.toggle('fade-l', max > 1 && bar.scrollLeft > 1);
+  bar.classList.toggle('fade-r', max > 1 && bar.scrollLeft < max - 1);
+}
+$('.tabs').addEventListener('scroll', tabsFade, { passive: true });
+addEventListener('resize', tabsFade);
 
 $$('.states [data-state]').forEach(b => b.addEventListener('click', () => {
   state = b.dataset.state; shown = PAGE; draft = null;
@@ -1298,6 +1338,8 @@ function sgInit() {
     } else if (e.key === 'Enter' && i >= 0) { e.preventDefault(); sgOpen(false); }
   });
   document.addEventListener('pointerdown', e => { if (!e.target.closest('.hdr-search')) sgOpen(false); });
+  const clr = inp.nextElementSibling;
+  if (clr && clr.classList.contains('search-clear')) clr.addEventListener('click', () => { inp.value = ''; inp.dispatchEvent(new Event('input')); inp.focus(); });
 }
 sgInit();
 /* ════════ вход: код на почту или пароль ════════ */

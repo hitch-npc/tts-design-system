@@ -20,6 +20,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 /* [источник, копия] — копия всегда равна источнику байт в байт */
 export const COPIES = [
   ['site/partner-program/partner-program-r14.html', 'site/partner-program/handoff/partner-program.html'],
+  ['site/handoff/account/README.md', 'site/handoff/TTS-profile-handoff/README.md'],
 ];
 
 function main() {

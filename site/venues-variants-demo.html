@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Площадки — варианты списка</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+  :root { --ink:#0D0D0D; --n100:#D6D6D2; --n200:#C0C0BC; --n300:#A6A6A2; --n400:#8A8A88; --n500:#7A7A78; --n600:#626260; --n700:#4A4A48;
+    --n800:#262930; --n850:#1F222A; --n900:#191C22; --n950:#111318; --accent:#0047FF; --accent-ghost:#0B142A;
+    --blob-core:#06277F; --blob-mid:#15092A; --blob-purple:#200840;
+    --font:'Manrope',system-ui,sans-serif; --f-head:'Forum',Georgia,serif; --f-thin:'Cormorant Garamond',Georgia,serif; --f-num:'Oranienbaum',Georgia,serif;
+    --ease:cubic-bezier(.16,1,.3,1); --ease-std:cubic-bezier(.4,0,.2,1); }
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin:0; background:var(--ink); color:var(--n100); font-family:var(--font); font-size:14px; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+  button, input { font: inherit; color: inherit; }
+  .demo-bar { display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:14px 20px; border-bottom:1px solid var(--n800); }
+  .demo-bar .cap { margin-right:8px; }
+  .page { max-width:1200px; margin:0 auto; padding:40px 56px 72px; display:flex; flex-direction:column; gap:24px; }
+  @media (max-width:760px) { .page { padding:24px 20px 56px; gap:18px; } }
+
+  .cap { font-size:10px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--n500); }
+  .head { display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  h1 { margin:0; font-family:var(--f-thin); font-weight:400; font-size:clamp(30px,4vw,40px); line-height:1.1; }
+
+  .tools { display:flex; flex-wrap:wrap; gap:12px; align-items:center; }
+  .search { position:relative; flex:1 1 320px; max-width:440px; }
+  .search svg { position:absolute; left:14px; top:50%; transform:translateY(-50%); width:14px; height:14px; color:var(--n500); }
+  .search input { width:100%; height:40px; padding:0 14px 0 38px; background:var(--n950); border:1px solid var(--n800); border-radius:2px; font-size:14px; color:var(--n100); }
+  .search input::placeholder { color:var(--n600); }
+  .search input:focus { outline:none; border-color:var(--accent); }
+  /* Крестик очистки — как .search-clear в ядре: браузерный скрыт, свой тонкий */
+  input[type="search"]::-webkit-search-cancel-button, input[type="search"]::-webkit-search-decoration { -webkit-appearance:none; appearance:none; display:none; }
+  .search-clear { flex:none; display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; padding:0; background:none; border:0; border-radius:2px; color:var(--n500); cursor:pointer; transition:color 120ms; }
+  .search-clear:hover, .search-clear:focus-visible { color:var(--n100); }
+  .search-clear svg { width:14px; height:14px; }
+  input:placeholder-shown + .search-clear { display:none; }
+  @media (pointer: coarse) { .search-clear { width:36px; height:36px; } }
+  .search .search-clear { position:absolute; right:6px; top:50%; transform:translateY(-50%); }
+  .search input { padding-right:40px; }
+  @media (max-width:1080px), (pointer:coarse) { .search input { font-size:16px; } }
+  .chips { display:flex; gap:8px; flex-wrap:wrap; }
+  .chip { appearance:none; height:34px; padding:0 14px; display:inline-flex; align-items:center; gap:6px; background:transparent; border:1px solid var(--n800); border-radius:9999px; font-size:12px; font-weight:500; color:var(--n300); cursor:pointer; white-space:nowrap; }
+  .chip b { font-weight:500; color:var(--n500); }
+  .chip[aria-pressed="true"] { background:var(--accent-ghost); border-color:var(--accent); color:var(--n100); }
+  .chip[aria-pressed="true"] b { color:var(--n300); }
+  @media (max-width:760px) { .chips { flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; margin:0 -20px; padding:0 20px; } .chips::-webkit-scrollbar { display:none; } }
+
+  .mono { flex:none; width:40px; height:40px; display:grid; place-items:center; border:1px solid var(--n800); border-radius:2px; background:var(--n950); font-family:var(--f-head); font-size:15px; color:var(--n300); }
+  .name { font-family:var(--f-head); font-size:19px; line-height:1.25; color:var(--n100); }
+  .meta { font-size:12px; color:var(--n400); line-height:1.5; }
+  .cnt { font-family:var(--f-num); font-size:17px; color:var(--n100); white-space:nowrap; }
+  .cnt-sub { font-size:11px; color:var(--n500); white-space:nowrap; }
+  .none { font-size:12px; color:var(--n500); }
+  .chev { color:var(--n500); font-size:18px; transition:transform 320ms var(--ease), color 320ms var(--ease); }
+
+  /* A · компактный список */
+  .rows { display:flex; flex-direction:column; border-top:1px solid var(--n800); }
+  .row { display:grid; grid-template-columns:40px minmax(0,1fr) auto 16px; gap:16px; align-items:center; padding:14px 8px; border-bottom:1px solid var(--n800); text-decoration:none; color:inherit; cursor:pointer; transition:background 320ms var(--ease); }
+  .row:hover { background:var(--n950); }
+  .row:hover .chev { color:var(--n100); transform:translateX(3px); }
+  .row .right { text-align:right; }
+  .row.is-hl { background:var(--accent-ghost); }
+  @media (max-width:760px) { .row { grid-template-columns:minmax(0,1fr) auto; gap:10px; padding:12px 0; } .row .mono, .row .chev { display:none; } .name { font-size:17px; } }
+  .more { appearance:none; align-self:flex-start; background:none; border:0; padding:4px 0; color:var(--n300); font-size:11px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; text-decoration:underline; text-decoration-color:var(--accent); text-underline-offset:3px; cursor:pointer; }
+
+  /* B · группы по типу */
+  .groups { display:flex; flex-direction:column; gap:32px; }
+  .group-h { display:flex; align-items:baseline; gap:10px; padding-bottom:10px; border-bottom:1px solid var(--n800); margin-bottom:14px; }
+  .group-h h2 { margin:0; font-family:var(--f-head); font-weight:400; font-size:19px; }
+  .cards { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px; }
+  @media (max-width:1000px) { .cards { grid-template-columns:repeat(2, minmax(0,1fr)); } }
+  @media (max-width:560px) { .cards { grid-template-columns:1fr; gap:8px; } }
+  .card { display:flex; flex-direction:column; gap:6px; padding:16px; background:var(--n950); border:1px solid var(--n800); border-radius:2px; min-width:0; cursor:pointer; text-decoration:none; color:inherit; transition:border-color 320ms var(--ease); }
+  .card:hover { border-color:var(--n600); }
+  .card .foot { display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-top:6px; padding-top:10px; border-top:1px solid var(--n900); }
+  .card .name { font-size:17px; }
+
+  /* C · список и карта */
+  .split { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.15fr); gap:24px; align-items:start; }
+  .split .rows { max-height:620px; overflow:auto; }
+  .split .row { grid-template-columns:minmax(0,1fr) auto; padding:12px 6px; }
+  .split .row .mono, .split .row .chev { display:none; }
+  .split .name { font-size:17px; }
+  .map { position:sticky; top:16px; height:620px; border:1px solid var(--n800); border-radius:2px; overflow:hidden; background:var(--n950); display:grid; place-items:center; text-align:center; }
+  .map::before { content:""; position:absolute; inset:0; background:
+      linear-gradient(var(--n900) 1px, transparent 1px) 0 0 / 48px 48px,
+      linear-gradient(90deg, var(--n900) 1px, transparent 1px) 0 0 / 48px 48px; opacity:.7; }
+  .map-c { position:relative; display:flex; flex-direction:column; gap:8px; align-items:center; padding:24px; max-width:340px; }
+  .map-c svg { width:28px; height:28px; color:var(--n400); }
+  .map-c .t { font-family:var(--f-head); font-size:19px; }
+  .map-c .d { font-size:12px; color:var(--n400); line-height:1.6; }
+  .seg { display:none; }
+  @media (max-width:860px) {
+    .split { grid-template-columns:1fr; }
+    .split .rows { max-height:none; }
+    .seg { display:inline-flex; border:1px solid var(--n800); border-radius:2px; overflow:hidden; align-self:flex-start; }
+    .seg button { appearance:none; background:transparent; border:0; padding:9px 16px; font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--n300); cursor:pointer; }
+    .seg button[aria-pressed="true"] { background:var(--accent-ghost); color:var(--n100); box-shadow:inset 0 0 0 1px var(--accent); }
+    .split[data-m="list"] .map { display:none; }
+    .split[data-m="map"] .rows { display:none; }
+    .map { position:relative; top:0; height:440px; }
+  }
+  /* D · крупные плитки: только фильтр по типу */
+  .tiles { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:16px; }
+  @media (max-width:1000px) { .tiles { grid-template-columns:repeat(2, minmax(0,1fr)); } }
+  @media (max-width:600px) { .tiles { grid-template-columns:1fr; gap:10px; } }
+  .vt { position:relative; isolation:isolate; overflow:hidden; display:flex; flex-direction:column; gap:10px; min-height:208px; padding:24px;
+    background:var(--n950); border:1px solid var(--n800); border-radius:2px; text-decoration:none; color:inherit; cursor:pointer; transition:border-color 120ms var(--ease-std); }
+  .vt::before { content:""; position:absolute; inset:-30%; z-index:-1; pointer-events:none; opacity:0;
+    background:radial-gradient(ellipse 70% 60% at 72% 100%, var(--blob-core) 0%, var(--blob-mid) 45%, transparent 78%); filter:blur(40px);
+    /* движение — как на стенде площадок: блоб растёт из 85 % и проявляется, 320 мс */
+    transform:scale(.85); transform-origin:72% 100%; transition:opacity 320ms var(--ease-std), transform 320ms var(--ease-std); }
+  .vt:hover, .vt.is-hover { border-color:var(--n600); }
+  .vt:hover::before, .vt.is-hover::before { opacity:.7; transform:scale(1); }
+  .vt .mono { width:48px; height:48px; font-size:18px; }
+  .vt .name { font-size:22px; line-height:1.2; }
+  .vt .addr { font-size:12px; color:var(--n400); }
+  .vt .vt-foot { margin-top:auto; display:flex; align-items:baseline; justify-content:space-between; gap:10px; padding-top:14px; border-top:1px solid var(--n900); }
+  .vt .vt-arr { display:inline-block; color:var(--n500); transition:transform 200ms var(--ease-std), color 200ms var(--ease-std); }
+  .vt:hover .vt-arr, .vt.is-hover .vt-arr { color:var(--n100); transform:translateX(2px) scale(1.25); }
+  .vt.off .name { color:var(--n300); }
+  @media (max-width:600px) { .vt { min-height:0; padding:20px; } .vt .name { font-size:20px; } }
+  .empty { padding:32px 0; color:var(--n400); font-size:13px; }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; } .vt::before { transform:none !important; } .vt .vt-arr { transform:none !important; } }
+</style>
+</head>
+<body>
+<div class="demo-bar" id="bar"><span class="cap">Вариант</span></div>
+<main class="page" id="app"></main>
+<script>
+/* Данные — из стенда пакета redesign-2026-10 (lab-venues.html), как в карусели прода */
+const V=[
+ {n:'Московский международный Дом музыки',t:'Концертный зал',a:'Космодамианская наб., 52, стр. 8',c:13,next:'31 октября'},
+ {n:'Государственный Кремлёвский Дворец',t:'Концертный зал',a:'ул. Воздвиженка, 1/13',c:6,next:'12 ноября'},
+ {n:'Театр «Русская песня» п/р Н. Бабкиной',t:'Театр',a:'Олимпийский пр-т, 14',c:6,next:'25 октября'},
+ {n:'Театр на Таганке',t:'Театр',a:'ул. Земляной Вал, 76/21, стр. 1',c:5,next:'27 октября'},
+ {n:'Театр им. Гоголя',t:'Театр',a:'ул. Казакова, 8',c:4,next:'20 октября'},
+ {n:'Концертный зал «Москва»',t:'Концертный зал',a:'пр-т Андропова, 1',c:3,next:'26 ноября'},
+ {n:'Мастерская «12» Никиты Михалкова',t:'Театр',a:'ул. Поварская, 33',c:2,next:'23 октября'},
+ {n:'Театриум на Серпуховке',t:'Театр',a:'ул. Павловская, 6',c:3,next:'26 октября'},
+ {n:'Театр им. Вл. Маяковского',t:'Театр',a:'ул. Большая Никитская, 19/13',c:1,next:'23 ноября'},
+ {n:'Барвиха Luxury Village',t:'Концертный зал',a:'Рублёво-Успенское ш., 8-й км',c:2,next:'25 декабря'},
+ {n:'Концертный зал «Зарядье»',t:'Концертный зал',a:'ул. Варварка, 6, стр. 4',c:0},
+ {n:'Театр им. Евг. Вахтангова',t:'Театр',a:'ул. Арбат, 26',c:0},
+];
+const GROUPS=[['Театры','Театр'],['Концертные залы','Концертный зал']];
+const pl=(n,a,b,c)=>n%10===1&&n%100!==11?a:(n%10>=2&&n%10<=4&&(n%100<12||n%100>14)?b:c);
+const ev=n=>`${n} ${pl(n,'событие','события','событий')}`;
+const mono=n=>{const w=n.replace(/[«»"]/g,'').split(/\s+/).filter(x=>/^[А-ЯЁA-Z]/.test(x)&&!/^(Театр|Концертный|Московский|Государственный|Зал)$/.test(x));return (w[0]||n)[0]+(w[1]?w[1][0]:'')};
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ICON_S='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5"/></svg>';
+const ICON_PIN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
+
+const VARS={a:'A · Компактный список',b:'B · Группы по типу',c:'C · Список и карта',d:'D · Крупные плитки'};
+const qs=new URLSearchParams(location.search);
+const st={v:VARS[qs.get('v')]?qs.get('v'):'d', type:'Все', q:qs.get('q')||'', more:qs.get('more')==='1', m:qs.get('m')==='map'?'map':'list', hl:qs.get('hl')!==null?+qs.get('hl'):-1, type0:0};
+if(qs.get('type')) st.type=qs.get('type');
+
+function match(v){
+  const q=st.q.trim().toLowerCase();
+  const typeOk=st.type==='Все'||v.t===st.type;
+  return typeOk&&(!q||v.n.toLowerCase().includes(q)||v.a.toLowerCase().includes(q));
+}
+const sorted=()=>V.map((v,i)=>({...v,i})).sort((x,y)=>y.c-x.c);
+
+function chips(){
+  const all=[['Все','Все']].concat(GROUPS);
+  return `<div class="chips" role="group" aria-label="Тип площадки">${all.map(([lab,t])=>{
+    const n=t==='Все'?V.length:V.filter(v=>v.t===t).length;
+    return `<button class="chip" type="button" data-type="${t}" aria-pressed="${st.type===t}">${lab}<b>${n}</b></button>`}).join('')}</div>`;
+}
+function tools(){
+  return `<div class="tools"><label class="search">${ICON_S}<input id="q" type="search" placeholder="Найти площадку или адрес" value="${esc(st.q)}" aria-label="Поиск площадки"><button class="search-clear" type="button" aria-label="Очистить поиск"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></label>${chips()}</div>`;
+}
+function right(v){
+  return v.c?`<div class="right"><div class="cnt">${ev(v.c)}</div></div>`:`<div class="right none">Шоу ещё не анонсированы</div>`;
+}
+function row(v){
+  return `<a class="row${st.hl===v.i?' is-hl':''}" href="#" data-i="${v.i}"><span class="mono" aria-hidden="true">${mono(v.n)}</span><span style="min-width:0"><div class="name">${v.n}</div><div class="meta">${v.t} · ${v.a}</div></span>${right(v)}<span class="chev" aria-hidden="true">›</span></a>`;
+}
+function head(){
+  const total=V.reduce((s,v)=>s+v.c,0);
+  return `<div class="head"><h1>Площадки</h1><span class="cap">${V.length} площадок · ${ev(total)}</span></div>`;
+}
+function viewA(){
+  const list=sorted().filter(match);
+  const withEv=list.filter(v=>v.c), noEv=list.filter(v=>!v.c);
+  const searching=st.q.trim()!=='';
+  const shown=searching||st.more?list:withEv;
+  const body=list.length?`<div class="rows">${shown.map(row).join('')}</div>${!searching&&noEv.length?`<button class="more" type="button" id="more">${st.more?'Скрыть площадки без анонсов':`Ещё ${noEv.length} ${pl(noEv.length,'площадка','площадки','площадок')} без анонсов`}</button>`:''}`:`<div class="empty">Ничего не нашлось. Попробуйте название площадки или улицу.</div>`;
+  return head()+tools()+body;
+}
+function viewB(){
+  const groups=GROUPS.filter(([,t])=>st.type==='Все'||st.type===t).map(([lab,t])=>{
+    const vs=sorted().filter(v=>v.t===t&&match(v));
+    if(!vs.length) return '';
+    return `<section><div class="group-h"><h2>${lab}</h2><span class="cap">${vs.length}</span></div><div class="cards">${vs.map(v=>`<a class="card" href="#"><span class="cap">${v.t}</span><span class="name">${v.n}</span><span class="meta">${v.a}</span><span class="foot">${v.c?`<span class="cnt">${ev(v.c)}</span>`:'<span class="none">Шоу ещё не анонсированы</span>'}</span></a>`).join('')}</div></section>`;
+  }).join('');
+  return head()+tools()+(groups?`<div class="groups">${groups}</div>`:`<div class="empty">Ничего не нашлось. Попробуйте название площадки или улицу.</div>`);
+}
+function viewC(){
+  const list=sorted().filter(match);
+  const seg=`<div class="seg" role="group" aria-label="Вид"><button type="button" data-m="list" aria-pressed="${st.m==='list'}">Список</button><button type="button" data-m="map" aria-pressed="${st.m==='map'}">Карта</button></div>`;
+  const map=`<div class="map" role="img" aria-label="Место для карты"><div class="map-c">${ICON_PIN}<div class="t">Карта площадок</div><div class="d">Яндекс Карты с метками всех площадок из списка. Наведение на строку подсвечивает метку, нажатие на метку — карточку площадки. В макете вместо карты — заглушка.</div></div></div>`;
+  return head()+tools()+seg+`<div class="split" data-m="${st.m}"><div class="rows">${list.map(row).join('')||'<div class="empty">Ничего не нашлось.</div>'}</div>${map}</div>`;
+}
+function viewD(){
+  const list=sorted().filter(v=>st.type==='Все'||v.t===st.type);
+  const tile=v=>`<a class="vt${v.c?'':' off'}${st.hl===v.i?' is-hover':''}" href="#"><span class="mono" aria-hidden="true">${mono(v.n)}</span><span class="name">${v.n}</span><span class="addr">${v.a}</span><span class="vt-foot">${v.c?`<span class="cnt">${ev(v.c)}</span>`:'<span class="none">Шоу ещё не анонсированы</span>'}<span class="vt-arr" aria-hidden="true">→</span></span></a>`;
+  return head()+chips()+`<div class="tiles">${list.map(tile).join('')}</div>`;
+}
+function render(){
+  bar.innerHTML='<span class="cap">Вариант</span>'+Object.entries(VARS).map(([k,l])=>`<button class="chip" type="button" data-v="${k}" aria-pressed="${st.v===k}">${l}</button>`).join('');
+  app.innerHTML=st.v==='a'?viewA():st.v==='b'?viewB():st.v==='c'?viewC():viewD();
+}
+document.addEventListener('click',e=>{ if(e.target.closest('.search-clear')){ e.preventDefault(); st.q=''; render(); document.getElementById('q').focus(); return; } });
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-v],[data-type],[data-m],#more,a');
+  if(!t) return;
+  if(t.tagName==='A'){e.preventDefault();return;}
+  if(t.dataset.v){st.v=t.dataset.v;}
+  else if(t.dataset.type){st.type=t.dataset.type;}
+  else if(t.dataset.m){st.m=t.dataset.m;}
+  else if(t.id==='more'){st.more=!st.more;}
+  render();
+});
+document.addEventListener('input',e=>{ if(e.target.id!=='q') return; st.q=e.target.value; const pos=e.target.selectionStart; render(); const q=document.getElementById('q'); q.focus(); q.setSelectionRange(pos,pos); });
+document.addEventListener('mouseover',e=>{ const r=e.target.closest('.split .row'); const i=r?+r.dataset.i:-1; if(i!==st.hl){ document.querySelectorAll('.row.is-hl').forEach(x=>x.classList.remove('is-hl')); if(r) r.classList.add('is-hl'); st.hl=i; } });
+render();
+</script>
+</body>
+</html>
