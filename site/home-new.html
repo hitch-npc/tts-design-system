@@ -223,6 +223,18 @@ html.page-in .hw > span, .no-js .hw > span { transform: none; transition: transf
 @media (max-width: 900px) and (hover: hover) {
   .hero2:hover .hero2-cover { transform: scale(1.08); filter: brightness(.75) saturate(1); }
 }
+/* светлая тема: фото под текстом не затемняется, а высветляется — тёмный текст читается на любом кадре.
+   Правило для всех фото под текстом в светлой теме: обесцветить, высветлить, приглушить контраст, сверху — светлая подложка. */
+@media (max-width: 900px) {
+  html[data-theme="light"] .hero2-cover { filter: grayscale(1) brightness(1.45) contrast(.55); }
+  html[data-theme="light"].poster-in .hero2-cover, html[data-theme="light"].no-js .hero2-cover { opacity: .6; }
+  html[data-theme="light"] .hero2:active .hero2-cover { filter: grayscale(.7) brightness(1.4) contrast(.65); }
+  html[data-theme="light"] .hero2-shade { background: linear-gradient(180deg, var(--ink) 0%, color-mix(in srgb, var(--ink) 55%, transparent) 22%,
+    color-mix(in srgb, var(--ink) 62%, transparent) 42%, color-mix(in srgb, var(--ink) 92%, transparent) 70%, var(--ink) 100%); }
+}
+@media (max-width: 900px) and (hover: hover) {
+  html[data-theme="light"] .hero2:hover .hero2-cover { filter: grayscale(.7) brightness(1.4) contrast(.65); }
+}
 @media (max-width: 767px) {
   .home { padding-top: var(--sp-8); }
   .cal-nav { display: none; }
@@ -527,19 +539,19 @@ const rub = n => n.toLocaleString('ru-RU').replace(/ |,/g, ' ') + ' ₽';
 const CATS = [['all','Все'],['spect','Спектакли'],['conc','Концерты'],['classic','Классика'],['musical','Мюзиклы'],['kids','Детям']];
 /* dows: 0 — вс … 6 — сб */
 const EVENTS = [
-  { t:'Одни во вселенной',          g:'Спектакль', c:'spect',   v:'Театр «Современник»',     b:'cool',  p:1500, dows:[2,4,6],   time:'19:00', to:'2026-12-26' },
-  { t:'Вишнёвый сад',               g:'Спектакль', c:'spect',   v:'Театр Вахтангова',        b:'warm',  p:2200, dows:[3,5,0],   time:'19:00', to:'2027-01-31', tag:['tag-orange','Мало мест'] },
-  { t:'Лебединое озеро',            g:'Балет',     c:'classic', v:'Большой театр',           b:'cool',  p:3500, dows:[6,0],     time:'18:00', to:'2026-11-29' },
-  { t:'Алые паруса',                g:'Мюзикл',    c:'musical', v:'МДМ',                     b:'green', p:1800, dows:[5,6,0],   time:'20:00', to:'2027-01-31' },
-  { t:'Щелкунчик',                  g:'Балет',     c:'classic', v:'Кремлёвский дворец',      b:'warm',  p:2500, dows:[0,2,3,4,5,6], time:'12:00', from:'2026-12-19', to:'2027-01-10', tag:['tag-green','Новинка'] },
-  { t:'Вечер русского романса',     g:'Концерт',   c:'conc',    v:'Дом музыки',              b:'warm',  p:1200, dows:[4],       time:'19:30', to:'2026-12-24' },
-  { t:'Чайковский. Пятая симфония', g:'Концерт',   c:'classic', v:'Зал «Зарядье»',           b:'cool',  p:2000, dates:['2026-11-07','2026-11-15','2026-11-28','2026-12-13'], time:'19:00' },
-  { t:'Маленький принц',            g:'Детям',     c:'kids',    v:'РАМТ',                    b:'green', p:900,  dows:[6,0],     time:'12:00', to:'2027-01-31' },
-  { t:'Мастер и Маргарита',         g:'Спектакль', c:'spect',   v:'Театр на Таганке',        b:'cool',  p:2800, dows:[3,6],     time:'19:00', to:'2027-01-31' },
-  { t:'Джаз на крыше',              g:'Концерт',   c:'conc',    v:'Клуб «Алексеевский»',     b:'warm',  p:1500, dows:[5],       time:'21:00', to:'2026-12-25' },
-  { t:'Ревизор',                    g:'Спектакль', c:'spect',   v:'Малый театр',             b:'warm',  p:1700, dows:[2,5],     time:'19:00', to:'2027-01-31' },
-  { t:'Морозко',                    g:'Детям',     c:'kids',    v:'Театр кукол Образцова',   b:'green', p:800,  dows:[6,0],     time:'11:00', from:'2026-12-05', to:'2027-01-11' },
-  { t:'Большой сольный стендап',    g:'Концерт',   c:'conc',    v:'Крокус Сити Холл',        b:'cool',  p:2500, dates:['2026-11-09','2026-11-23','2026-12-07'], time:'20:00' },
+  { t:'Одни во вселенной', a:'16+',          g:'Спектакль', c:'spect',   v:'Театр «Современник»',     b:'cool',  p:1500, dows:[2,4,6],   time:'19:00', to:'2026-12-26' },
+  { t:'Вишнёвый сад', a:'12+',               g:'Спектакль', c:'spect',   v:'Театр Вахтангова',        b:'warm',  p:2200, dows:[3,5,0],   time:'19:00', to:'2027-01-31', tag:['tag-orange','Мало мест'] },
+  { t:'Лебединое озеро', a:'6+',            g:'Балет',     c:'classic', v:'Большой театр',           b:'cool',  p:3500, dows:[6,0],     time:'18:00', to:'2026-11-29' },
+  { t:'Алые паруса', a:'12+',                g:'Мюзикл',    c:'musical', v:'МДМ',                     b:'green', p:1800, dows:[5,6,0],   time:'20:00', to:'2027-01-31' },
+  { t:'Щелкунчик', a:'6+',                  g:'Балет',     c:'classic', v:'Кремлёвский дворец',      b:'warm',  p:2500, dows:[0,2,3,4,5,6], time:'12:00', from:'2026-12-19', to:'2027-01-10', tag:['tag-green','Новинка'] },
+  { t:'Вечер русского романса', a:'12+',     g:'Концерт',   c:'conc',    v:'Дом музыки',              b:'warm',  p:1200, dows:[4],       time:'19:30', to:'2026-12-24' },
+  { t:'Чайковский. Пятая симфония', a:'6+', g:'Концерт',   c:'classic', v:'Зал «Зарядье»',           b:'cool',  p:2000, dates:['2026-11-07','2026-11-15','2026-11-28','2026-12-13'], time:'19:00' },
+  { t:'Маленький принц', a:'6+',            g:'Детям',     c:'kids',    v:'РАМТ',                    b:'green', p:900,  dows:[6,0],     time:'12:00', to:'2027-01-31' },
+  { t:'Мастер и Маргарита', a:'16+',         g:'Спектакль', c:'spect',   v:'Театр на Таганке',        b:'cool',  p:2800, dows:[3,6],     time:'19:00', to:'2027-01-31' },
+  { t:'Джаз на крыше', a:'12+',              g:'Концерт',   c:'conc',    v:'Клуб «Алексеевский»',     b:'warm',  p:1500, dows:[5],       time:'21:00', to:'2026-12-25' },
+  { t:'Ревизор', a:'12+',                    g:'Спектакль', c:'spect',   v:'Малый театр',             b:'warm',  p:1700, dows:[2,5],     time:'19:00', to:'2027-01-31' },
+  { t:'Морозко', a:'0+',                    g:'Детям',     c:'kids',    v:'Театр кукол Образцова',   b:'green', p:800,  dows:[6,0],     time:'11:00', from:'2026-12-05', to:'2027-01-11' },
+  { t:'Большой сольный стендап', a:'18+',    g:'Концерт',   c:'conc',    v:'Крокус Сити Холл',        b:'cool',  p:2500, dates:['2026-11-09','2026-11-23','2026-12-07'], time:'20:00' },
 ];
 /* дни, когда показов нет совсем: понедельники (кроме стендапа) и пара будней */
 const DARK = new Set(['2026-11-12','2026-11-18','2026-12-02','2026-12-10','2026-12-31','2027-01-01','2027-01-02']);
@@ -747,7 +759,7 @@ function card(e, i) {
       ${e.tag ? `<div class="cover-tag"><span class="tag ${e.tag[0]}">${e.tag[1]}</span></div>` : ''}
       <div class="cover-date"><div class="t-caption">${chip(e)}</div></div></div>
     <div class="event-card-body">
-      <div class="t-caption">${e.g} · Москва</div>
+      <div class="event-card-meta">${e.g}<span class="event-card-age">${e.a}</span></div>
       <div class="event-card-title">${e.t}</div>
       <div class="event-card-sub">${e.v}</div>
       <div class="event-card-footer"><div><span class="event-card-price-label">от</span><span class="event-card-price">${rub(e.p)}</span></div><span class="btn btn-primary btn-sm">Билеты</span></div>

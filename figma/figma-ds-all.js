@@ -346,7 +346,7 @@ body.appendChild(titleT);
 
 // Площадка
 const subT=figma.createText();
-subT.name='venue'; subT.characters='Большой театр · Москва';
+subT.name='venue'; subT.characters='Большой театр';
 subT.fontName={family:'Manrope',style:'Regular'};
 subT.fontSize=11; subT.lineHeight={unit:'PERCENT',value:150};
 subT.fills=[fill(gv(D,'n500'),'#7A7A78')];

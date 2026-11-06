@@ -462,7 +462,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
     <div class="cover-date"><div class="t-caption">14 июня</div></div>
   </div>
   <div class="event-card-body">
-    <div class="event-card-meta">Театр · Москва</div>
+    <div class="event-card-meta">Театр<span class="event-card-age">16+</span></div>   <!-- ценз вместо города, тусклее жанра (решение №41) -->
     <div class="event-card-title">Название</div>           <!-- Forum 400 (мельче 22px), обычный регистр — никогда капсом -->
     <div class="event-card-sub">Площадка</div>
     <div class="event-card-footer">
@@ -476,7 +476,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 
 **Правило для multi-venue / multi-show событий:** одно событие = одна карточка, без дублирования на афише.
 - `cover-date` (smart-chip): подбирается агрегатом — `14 июня` (один сеанс) / `14–20 июня` (диапазон) / `5 дат` (разрозненные даты) / `2 площадки` (multi-venue) / `С 14 мая` (открытая серия).
-- `event-card-meta`: расширяется хвостом `· N площадок` когда площадок >1. Пример: `Театр · Москва · 2 площадки`.
+- `event-card-meta`: жанр и возрастной ценз `.event-card-age` (`--n600`, точка-разделитель рисуется сама). Города на карточке нет (решение №41). Когда площадок >1, перед цензом — `· N площадок`: `Театр · 2 площадки · 16+`.
 - Никогда не выводить одно и то же событие несколько раз в афише — все площадки и сеансы раскрываются только на странице события через `session-list`.
 
 ### Event Card Horizontal

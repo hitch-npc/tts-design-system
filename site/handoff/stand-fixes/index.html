@@ -266,11 +266,11 @@
       <div><span class="lbl lbl-after">Макет</span>макет или демо, где решение уже есть</div>
       <div><span class="lbl lbl-new">Предложение</span>вариант на выбор, ещё не утверждён</div>
     </div>
-    <div class="files">Обсуждение и голосование — в <a class="t-link-x" href="https://github.com/hitch-npc/tts-design-system/issues">issues репозитория</a>: у каждого пункта своя issue, за вариант голосуют 👍 под комментарием с ним. Живые макеты открываются кнопками в карточках Р1–Р5. Файлы в репозитории: <code>site/home-new.html</code> — новая главная с календарём; <code>site/seat-price-filter-demo.html</code> и <code>site/zone-palette-demo.html</code> — схема зала, цвета цен и фильтр по цене. Правила — <code>CLAUDE.md</code>, решения — <code>DECISIONS.md</code>.</div>
+    <div class="files">Обсуждение и голосование — в <a class="t-link-x" href="https://github.com/hitch-npc/tts-design-system/issues">issues репозитория</a>: у каждого пункта своя issue, за вариант голосуют 👍 под комментарием с ним. Живые макеты открываются кнопками в карточках Р1–Р5. Файлы в репозитории: <code>site/home-new.html</code> — новая главная с календарём; <code>site/home-new-tiles.html</code> — три варианта категорий и первого экрана; <code>site/event-card-fav-demo.html</code> — карточка с «В избранное»; <code>site/seat-price-filter-demo.html</code> и <code>site/zone-palette-demo.html</code> — схема зала, цвета цен и фильтр по цене. Правила — <code>CLAUDE.md</code>, решения — <code>DECISIONS.md</code>.</div>
   </header>
 
   <section class="part" aria-labelledby="sum-h">
-    <div class="part-h"><div class="meta-cap">Сводка</div><h2 id="sum-h">7 багов и 7 правок</h2></div>
+    <div class="part-h"><div class="meta-cap">Сводка</div><h2 id="sum-h">7 багов, 8 правок и 4 предложения</h2></div>
     <div class="scroll">
       <table class="sum">
         <tr><th></th><th>Где</th><th>Что</th><th>Суть</th><th>Статус</th></tr>
@@ -288,11 +288,15 @@
         <tr><td class="sid"><a href="#r3">Р3</a></td><td>Главная · десктоп</td><td class="sw">Плитки категорий</td><td>цвет виден всегда; подъём плитки или движение стрелки</td><td><span class="st st-pick">На выбор</span></td></tr>
         <tr><td class="sid"><a href="#r4">Р4</a></td><td>Площадки</td><td class="sw">Список площадок</td><td>крупные плитки и фильтр по типу; запасные — список, группы, список с картой</td><td><span class="st st-pick">На выбор</span></td></tr>
         <tr><td class="sid"><a href="#r7">Р5</a></td><td>Событие</td><td class="sw">Афиша события</td><td>во всю ширину и складывается в миниатюру при прокрутке (D); запасной — A</td><td><span class="st st-pick">На выбор</span></td></tr>
+        <tr><td class="sid"><a href="#r8">Р8</a></td><td>Карточка афиши · везде</td><td class="sw">Ценз вместо города</td><td>строка над названием — «Спектакль · 16+», ценз тише жанра; города на карточке нет</td><td><span class="st st-ok">Макет готов</span></td></tr>
         <tr class="grp"><td colspan="5">Низкий приоритет</td></tr>
         <tr><td class="sid"><a href="#r5">Р6</a></td><td>Партнёрам</td><td class="sw">«Как это работает?»</td><td>наведение и нажатие заметнее</td><td><span class="st st-low">Низкий</span></td></tr>
         <tr><td class="sid"><a href="#r6">Р7</a></td><td>Шапка</td><td class="sw">Отзывы</td><td>отзывы на сайте вместо перехода в Яндекс Карты</td><td><span class="st st-low">Низкий</span></td></tr>
         <tr class="grp"><td colspan="5">Предложение</td></tr>
         <tr><td class="sid"><a href="#p1">П1</a></td><td>Главная</td><td class="sw">Новая главная и заставка</td><td>заставка-прелоадер с колодой афиш, новый первый экран, календарь</td><td><span class="st st-pick">Предложение</span></td></tr>
+        <tr><td class="sid"><a href="#p2">П2</a></td><td>Главная</td><td class="sw">Категории и первый экран</td><td>чипы, пять плиток или первый экран на всю высоту с плитками после него</td><td><span class="st st-pick">На выбор</span></td></tr>
+        <tr><td class="sid"><a href="#p3">П3</a></td><td>Карточка афиши</td><td class="sw">«В избранное»</td><td>сердечко на обложке — сохранить событие прямо из афиши</td><td><span class="st st-pick">На выбор</span></td></tr>
+        <tr><td class="sid"><a href="#p4">П4</a></td><td>Главная · телефон</td><td class="sw">Светлая тема первого экрана</td><td>фото под текстом высветляется, а не темнеет — текст читается</td><td><span class="st st-ok">Макет готов</span></td></tr>
       </table>
     </div>
   </section>
@@ -712,6 +716,21 @@
 
     <div class="part-h" style="border:0;padding:8px 0 0"><div class="meta-cap">Низкий приоритет</div><p>Делаются после остальных правок.</p></div>
 
+    <article class="chg" id="r8">
+      <div class="chg-h"><div class="chg-id">Р8</div><div class="chg-t"><h3>Карточка афиши: возрастной ценз вместо города</h3><div class="where">Все карточки афиши · ядро <code>.event-card-meta</code> + <code>.event-card-age</code> · решение №41</div></div><span class="st st-ok">Макет готов</span></div>
+      <table class="spec">
+        <tr><th>Что</th><th>Сейчас</th><th>Нужно</th></tr>
+        <tr><td class="p">Строка над названием</td><td class="o" data-h="Сейчас">«Спектакль · Москва»</td><td class="n" data-h="Нужно">«Спектакль · 16+»: жанр и возрастной ценз; города нет — афиша и так открыта в выбранном городе</td></tr>
+        <tr><td class="p">Вид ценза</td><td class="o" data-h="Сейчас">—</td><td class="n" data-h="Нужно">на ступень тусклее жанра: <code>--n600</code> (жанр — <code>--n500</code>), тот же кегль 10 px, капс и разрядка; точка-разделитель рисуется сама</td></tr>
+        <tr><td class="p">Несколько площадок</td><td class="o" data-h="Сейчас">«Театр · Москва · 2 площадки»</td><td class="n" data-h="Нужно">«Театр · 2 площадки · 16+»</td></tr>
+        <tr><td class="p">Разметка</td><td class="o" data-h="Сейчас">—</td><td class="n" data-h="Нужно"><code>&lt;div class="event-card-meta"&gt;Спектакль&lt;span class="event-card-age"&gt;16+&lt;/span&gt;&lt;/div&gt;</code></td></tr>
+      </table>
+      <div class="shots">
+        <div class="col"><span class="lbl lbl-after">Тёмная тема</span><figure class="shot"><img src="img/card-age.webp" width="928" height="160" alt="Строка над названием: «Спектакль · 16+», ценз тусклее жанра; тёмная тема" loading="lazy"></figure></div>
+        <div class="col"><span class="lbl lbl-after">Светлая тема</span><figure class="shot"><img src="img/card-age-light.webp" width="928" height="160" alt="То же в светлой теме" loading="lazy"></figure></div>
+      </div>
+    </article>
+
     <article class="chg" id="r5">
       <div class="chg-h"><div class="chg-id">Р6</div><div class="chg-t"><h3>«Партнёрам»: кнопка «Как это работает?»</h3><div class="where">Партнёрам — первый экран · <code>.btn.btn-ghost.btn-md</code></div></div><span class="st st-low">Низкий приоритет</span></div>
       <div class="live"><a class="gh" href="https://github.com/hitch-npc/tts-design-system/issues/11">Обсудить и проголосовать · #11 ↗</a></div>
@@ -757,6 +776,60 @@
       </div>
       <div class="shots phones">
         <div class="col"><span class="lbl lbl-new">Заставка · телефон</span><figure class="shot"><img src="img/intro-mob.webp" width="390" height="844" alt="Заставка на телефоне" loading="lazy"></figure></div>
+      </div>
+    </article>
+
+    <article class="chg" id="p2">
+      <div class="chg-h"><div class="chg-id">П2</div><div class="chg-t"><h3>Главная: категории и первый экран</h3><div class="where">Главная — десктоп и телефон · демо <code>site/home-new-tiles.html</code></div></div><span class="st st-pick">На выбор</span></div>
+      <div class="live"><a href="../../home-new-tiles.html?v=old&amp;intro=0">A · Было ↗</a><a href="../../home-new-tiles.html?v=tiles&amp;intro=0">B · Плитки ↗</a><a href="../../home-new-tiles.html?v=full&amp;intro=0">C · Полный экран ↗</a><a class="gh" href="https://github.com/hitch-npc/tts-design-system/issues/14">Обсудить и проголосовать · #14 ↗</a></div>
+      <p class="note">Три варианта на одной странице, переключаются кнопками в углу. Плитки — те же, что в <a href="#r3">Р3</a>: цвет жанра из системы, «Детям» — зелёная. Заставка работает во всех трёх: афиша перелетает в постер первого экрана.</p>
+      <table class="spec">
+        <tr><th>Что</th><th>Сейчас</th><th>Предложение</th></tr>
+        <tr><td class="p">A · Было</td><td class="o" data-h="Сейчас">чипы категорий под первым экраном</td><td class="n" data-h="Предложение">без изменений: «Все / Спектакли / Концерты / Классика / Детям», дальше календарь</td></tr>
+        <tr><td class="p">B · Плитки</td><td class="o" data-h="Сейчас">чипы</td><td class="n" data-h="Предложение">пять крупных плиток вместо чипов: название, описание, число событий, стрелка; выбранная — фон <code>--accent-ghost</code> и рамка <code>--accent</code>. На телефоне листаются свайпом, описание скрыто</td></tr>
+        <tr><td class="p">C · Полный экран</td><td class="o" data-h="Сейчас">первый экран обычной высоты</td><td class="n" data-h="Предложение">первый экран на всю высоту окна под шапкой, внизу стрелка «Афиша ↓» (нажатие прокручивает к плиткам). Плитки — мини-кнопка «Все» с числом и четыре жанра; при первой прокрутке проявляются по очереди, шаг 70 мс. Дальше календарь и афиша. При <code>prefers-reduced-motion</code> — без движения</td></tr>
+      </table>
+      <div class="shots">
+        <div class="col"><span class="lbl lbl-new">A · Было</span><figure class="shot"><img src="img/home-v-old.webp" width="1100" height="688" alt="Под первым экраном — чипы категорий, календарь и афиша" loading="lazy"></figure></div>
+        <div class="col"><span class="lbl lbl-new">B · Плитки</span><figure class="shot"><img src="img/home-v-tiles.webp" width="1100" height="688" alt="Под первым экраном — пять плиток категорий в цвете жанра" loading="lazy"></figure></div>
+      </div>
+      <div class="shots">
+        <div class="col"><span class="lbl lbl-new">C · Полный экран — первый экран</span><figure class="shot"><img src="img/home-v-full.webp" width="1100" height="688" alt="Первый экран на всю высоту окна, внизу стрелка «Афиша»" loading="lazy"></figure></div>
+        <div class="col"><span class="lbl lbl-new">C · после первой прокрутки</span><figure class="shot"><img src="img/home-v-full-scroll.webp" width="1100" height="688" alt="Снизу проявились мини-кнопка «Все» и четыре плитки жанров" loading="lazy"></figure></div>
+      </div>
+      <div class="shots phones">
+        <div class="col"><span class="lbl lbl-new">B · телефон</span><figure class="shot"><img src="img/home-v-tiles-mob.webp" width="390" height="844" alt="Плитки категорий лентой со свайпом на телефоне" loading="lazy"></figure></div>
+        <div class="col"><span class="lbl lbl-new">C · телефон</span><figure class="shot"><img src="img/home-v-full-mob.webp" width="390" height="844" alt="Первый экран на всю высоту телефона" loading="lazy"></figure></div>
+        <div class="col"><span class="lbl lbl-new">C · телефон, прокрутка</span><figure class="shot"><img src="img/home-v-full-mob-scroll.webp" width="390" height="844" alt="Мини-кнопка «Все» и плитки жанров после прокрутки на телефоне" loading="lazy"></figure></div>
+      </div>
+    </article>
+
+    <article class="chg" id="p3">
+      <div class="chg-h"><div class="chg-id">П3</div><div class="chg-t"><h3>Карточка афиши: «В избранное»</h3><div class="where">Карточка афиши — главная, все события · демо <code>site/event-card-fav-demo.html</code></div></div><span class="st st-pick">На выбор</span></div>
+      <div class="live"><a href="../../event-card-fav-demo.html">Живой макет ↗</a><a class="gh" href="https://github.com/hitch-npc/tts-design-system/issues/15">Обсудить и проголосовать · #15 ↗</a></div>
+      <table class="spec">
+        <tr><th>Что</th><th>Сейчас</th><th>Предложение</th></tr>
+        <tr><td class="p">Избранное</td><td class="o" data-h="Сейчас">только со страницы события</td><td class="n" data-h="Предложение">сердечко в правом верхнем углу обложки — сохранить, не уходя из афиши</td></tr>
+        <tr><td class="p">Вид</td><td class="o" data-h="Сейчас">—</td><td class="n" data-h="Предложение">36×36, подложка как у даты на обложке (<code>--n950</code> 72 %, размытие 8 px), иконка <code>--n100</code>. Контур — не в избранном, заливка — в избранном; при добавлении сердечко «отскакивает» (520 мс, <code>--ease-bounce</code>) и выходит тост «Добавлено в избранное». Кобальт не нужен — это не главное действие карточки</td></tr>
+        <tr><td class="p">Гость</td><td class="o" data-h="Сейчас">—</td><td class="n" data-h="Предложение">нажатие открывает вход; после входа событие сохраняется само, без второго нажатия</td></tr>
+        <tr><td class="p">Разметка</td><td class="o" data-h="Сейчас">карточка — ссылка <code>&lt;a&gt;</code></td><td class="n" data-h="Предложение">карточка — <code>article</code>, ссылка на событие растянута на всю карточку, кнопка лежит поверх: кнопку нельзя класть внутрь <code>&lt;a&gt;</code>. <code>aria-pressed</code> и подпись «Добавить / Убрать „…“ из избранного» меняются вместе с состоянием</td></tr>
+      </table>
+      <div class="shots wide">
+        <div class="col"><span class="lbl lbl-new">Слева — как сейчас, справа — с сердечком (не в избранном и в избранном)</span><figure class="shot"><img src="img/card-fav.webp" width="1100" height="451" alt="Две карточки без сердечка и две с сердечком: контурным и залитым" loading="lazy"></figure></div>
+        <div class="col"><span class="lbl lbl-new">Светлая тема</span><figure class="shot"><img src="img/card-fav-light.webp" width="1100" height="451" alt="То же в светлой теме" loading="lazy"></figure></div>
+      </div>
+    </article>
+
+    <article class="chg" id="p4">
+      <div class="chg-h"><div class="chg-id">П4</div><div class="chg-t"><h3>Светлая тема первого экрана на телефоне</h3><div class="where">Главная — телефон, первый экран с фото · <code>site/home-new.html</code>, <code>site/home-new-tiles.html</code></div></div><span class="st st-ok">Макет готов</span></div>
+      <table class="spec">
+        <tr><th>Что</th><th>Было</th><th>Стало</th></tr>
+        <tr><td class="p">Фото под текстом</td><td class="o" data-h="Было">затемнено (<code>brightness(.55)</code>) и уходит в белый фон — серая каша, тёмный текст на сером, дата и площадка не читаются</td><td class="n" data-h="Стало">в светлой теме фото обесцвечено и высветлено (<code>grayscale(1) brightness(1.45) contrast(.55)</code>, прозрачность 0,6), сверху светлая подложка — тёмный текст читается на любом кадре</td></tr>
+        <tr><td class="p">Правило</td><td class="o" data-h="Было">—</td><td class="n" data-h="Стало">в светлой теме фото под текстом не затемняется, а высветляется; тёмная тема без изменений</td></tr>
+      </table>
+      <div class="shots phones">
+        <div class="col"><span class="lbl lbl-before">Было</span><figure class="shot"><img src="img/hero-light-before.webp" width="390" height="844" alt="Светлая тема: серое затемнённое фото, тёмный текст плохо читается" loading="lazy"></figure></div>
+        <div class="col"><span class="lbl lbl-after">Стало</span><figure class="shot"><img src="img/hero-light-after.webp" width="390" height="844" alt="Светлая тема: высветленное фото, текст читается" loading="lazy"></figure></div>
       </div>
     </article>
   </section>

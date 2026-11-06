@@ -844,6 +844,9 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   color: var(--n500);
   margin-bottom: var(--sp-1);
 }
+/* Возрастной ценз в строке жанра вместо города — на ступень тусклее жанра (06.11.2026) */
+.event-card-age { color: var(--n600); }
+.event-card-age::before { content: "·"; margin: 0 .5em; }
 
 /* Бейдж категории на обложке — только на странице «Все события» (решение №33) */
 .cat-badge {
