@@ -270,7 +270,7 @@
   </header>
 
   <section class="part" aria-labelledby="sum-h">
-    <div class="part-h"><div class="meta-cap">Сводка</div><h2 id="sum-h">4 бага и 7 правок</h2></div>
+    <div class="part-h"><div class="meta-cap">Сводка</div><h2 id="sum-h">7 багов и 7 правок</h2></div>
     <div class="scroll">
       <table class="sum">
         <tr><th></th><th>Где</th><th>Что</th><th>Суть</th><th>Статус</th></tr>
@@ -279,6 +279,9 @@
         <tr><td class="sid"><a href="#b2">Б2</a></td><td>Событие · телефон</td><td class="sw">Описание</td><td>«Читать полностью» раскрывает текст не до конца</td><td><span class="st st-bug">Баг</span></td></tr>
         <tr><td class="sid"><a href="#b3">Б3</a></td><td>Главная · телефон</td><td class="sw">Шторка фильтров</td><td>не закрывается смахиванием, в крестик трудно попасть</td><td><span class="st st-bug">Баг</span></td></tr>
         <tr><td class="sid"><a href="#b4">Б4</a></td><td>Все страницы · iPhone</td><td class="sw">Поля ввода</td><td>касание поиска увеличивает страницу; поля — 16 px на сенсорных экранах</td><td><span class="st st-bug">Баг</span></td></tr>
+        <tr><td class="sid"><a href="#b5">Б5</a></td><td>Выбор мест · десктоп</td><td class="sw">«Назад» к событию</td><td>над схемой нет полосы со стрелкой и названием показа, как в макете</td><td><span class="st st-bug">Баг</span></td></tr>
+        <tr><td class="sid"><a href="#b6">Б6</a></td><td>Выбор мест · телефон</td><td class="sw">«Назад» по кругу</td><td>«Назад» ходит между схемой и событием, до афиши не дойти</td><td><span class="st st-bug">Баг</span></td></tr>
+        <tr><td class="sid"><a href="#b7">Б7</a></td><td>Афиша · поиск</td><td class="sw">Пустой поиск</td><td>стёртый запрос и Enter с пустым полем не сбрасывают результаты</td><td><span class="st st-bug">Баг</span></td></tr>
         <tr class="grp"><td colspan="5">Правки дизайна</td></tr>
         <tr><td class="sid"><a href="#r1">Р1</a></td><td>Главная</td><td class="sw">Календарь</td><td>дни без событий не выбираются, неделя листается свайпом, кнопка месяца открывает весь месяц</td><td><span class="st st-ok">Макет готов</span></td></tr>
         <tr><td class="sid"><a href="#r2">Р2</a></td><td>Выбор мест</td><td class="sw">Цвета цен и фильтр</td><td>балкон розово-малиновый вместо зелёного; фильтр по цене; большой зал — семьи цветов по диапазонам</td><td><span class="st st-pick">На выбор</span></td></tr>
@@ -349,6 +352,39 @@
         <div class="col"><span class="lbl lbl-before">До · поле 12 px</span><figure class="shot"><img src="img/ios-before.webp" width="780" height="1688" alt="iPhone после касания поиска: страница увеличена, кнопки справа за краем экрана" loading="lazy"></figure></div>
         <div class="col"><span class="lbl lbl-after">После · поле 16 px</span><figure class="shot"><img src="img/ios-after.webp" width="780" height="1688" alt="iPhone после касания поиска: масштаб не изменился, вся шапка на экране" loading="lazy"></figure></div>
       </div>
+    </article>
+    <article class="chg" id="b5">
+      <div class="chg-h"><div class="chg-id">Б5</div><div class="chg-t"><h3>Схема зала: нет «Назад» к событию</h3><div class="where">Выбор мест — десктоп · полоса над схемой</div></div><span class="st st-bug">Баг</span></div>
+      <table class="spec">
+        <tr><th>Что</th><th>Сейчас на стенде</th><th>Нужно</th></tr>
+        <tr><td class="p">Путь обратно</td><td class="o" data-h="Сейчас на стенде">только кнопка браузера; над схемой — «Выбор мест / Схема зала»</td><td class="n" data-h="Нужно">полоса над схемой: стрелка «‹», надзаголовок «Выбор мест», под ним название, дата и время показа; справа площадка</td></tr>
+        <tr><td class="p">Стрелка</td><td class="o" data-h="Сейчас на стенде">—</td><td class="n" data-h="Нужно">ведёт на страницу события; кнопка с подписью для экранного диктора «Назад к мероприятию»; название показа в полосе тоже ведёт на событие</td></tr>
+        <tr><td class="p">Где в макете</td><td class="o" data-h="Сейчас на стенде">—</td><td class="n" data-h="Нужно">редизайн v2, экран 03 «Схема зала — desktop»; на телефоне та же стрелка в шапке — экран «Моб 03»</td></tr>
+      </table>
+      <p class="note">Схема зала — шаг внутри события, а не отдельная страница: к событию часто возвращаются, чтобы сменить сеанс. Название показа над схемой ещё и подтверждает, что места выбираются на нужную дату.</p>
+    </article>
+
+    <article class="chg" id="b6">
+      <div class="chg-h"><div class="chg-id">Б6</div><div class="chg-t"><h3>«Назад» со схемы зала ходит по кругу</h3><div class="where">Выбор мест → событие — телефон · история браузера</div></div><span class="st st-bug">Баг</span></div>
+      <table class="spec">
+        <tr><th>Что</th><th>Сейчас на стенде</th><th>Нужно</th></tr>
+        <tr><td class="p">«Назад» со схемы</td><td class="o" data-h="Сейчас на стенде">ведёт на событие, но следующее «Назад» снова открывает схему — до афиши не дойти</td><td class="n" data-h="Нужно">афиша → событие → схема и обратно тем же путём: схема → событие → афиша</td></tr>
+        <tr><td class="p">Вероятная причина</td><td class="o" data-h="Сейчас на стенде">кнопка открывает событие как новый переход; история копится по кругу «событие → схема → событие → схема»</td><td class="n" data-h="Нужно">кнопка повторяет «Назад» браузера: пришли с события — шаг назад по истории; пришли по прямой ссылке — открыть событие с заменой текущей записи (<code>history.replaceState</code> / <code>router.replace</code>)</td></tr>
+        <tr><td class="p">Действия на схеме</td><td class="o" data-h="Сейчас на стенде">—</td><td class="n" data-h="Нужно">сектор, масштаб и выбор мест не создают записей в истории; одна запись на экран</td></tr>
+        <tr><td class="p">Как проверить</td><td class="o" data-h="Сейчас на стенде">—</td><td class="n" data-h="Нужно">телефон: афиша → событие → «Выбрать места» → «Назад» несколько раз — открывается событие, затем афиша</td></tr>
+      </table>
+    </article>
+
+    <article class="chg" id="b7">
+      <div class="chg-h"><div class="chg-id">Б7</div><div class="chg-t"><h3>Пустой поиск не сбрасывает результаты</h3><div class="where">Афиша — все экраны · строка поиска</div></div><span class="st st-bug">Баг</span></div>
+      <table class="spec">
+        <tr><th>Что</th><th>Сейчас на стенде</th><th>Нужно</th></tr>
+        <tr><td class="p">Стёрли запрос</td><td class="o" data-h="Сейчас на стенде">искали «Кыся», стёрли текст — в результатах по-прежнему «Кыся»</td><td class="n" data-h="Нужно">пустое поле = запроса нет: результаты сбрасываются, афиша показывает всё с учётом остальных выбранных фильтров</td></tr>
+        <tr><td class="p">Enter с пустым полем</td><td class="o" data-h="Сейчас на стенде">ничего не меняет</td><td class="n" data-h="Нужно">сбрасывает результаты так же</td></tr>
+        <tr><td class="p">Крестик очистки</td><td class="o" data-h="Сейчас на стенде">—</td><td class="n" data-h="Нужно">очищает поле и сбрасывает результаты; сам крестик — <a href="#b4">Б4</a></td></tr>
+        <tr><td class="p">Адресная строка</td><td class="o" data-h="Сейчас на стенде">—</td><td class="n" data-h="Нужно">параметр запроса убирается</td></tr>
+        <tr><td class="p">Где в макете</td><td class="o" data-h="Сейчас на стенде">—</td><td class="n" data-h="Нужно">редизайн v2, раздел «Поиск по афише — подсказки», экран «Поиск 02 · поле пустое»: пустое поле — состояние без запроса, с подсказками «Часто ищут»</td></tr>
+      </table>
     </article>
   </section>
 
