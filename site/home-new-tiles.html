@@ -78,10 +78,15 @@ input:placeholder-shown + .search-clear { display:none; }
 .hero2-beam { position: absolute; inset: 0; filter: blur(24px); opacity: .7;
   background: conic-gradient(from 112deg at -6% -30%, transparent 0deg, color-mix(in srgb, var(--accent-soft) 9%, transparent) 6deg, color-mix(in srgb, var(--n100) 10%, transparent) 11deg, color-mix(in srgb, var(--accent) 6%, transparent) 18deg, transparent 24deg); }
 .hero2-grain { position: absolute; inset: 0; opacity: .045; }
-.hero2-poster { position: relative; justify-self: end; display: block; width: min(100%, 400px); aspect-ratio: 3 / 4; overflow: hidden; border: 1px solid var(--accent); border-radius: var(--r-sm); background: var(--n950); box-shadow: 0 50px 90px -30px var(--shadow-color); opacity: 0; }
+.hero2-poster { position: relative; justify-self: end; display: block; width: min(100%, var(--poster-w, 400px)); aspect-ratio: var(--poster-ar, 3 / 4); overflow: hidden; border: 1px solid var(--accent); border-radius: var(--r-sm); background: var(--n950); box-shadow: 0 50px 90px -30px var(--shadow-color); opacity: 0; }
 html.poster-in .hero2-poster, .no-js .hero2-poster { opacity: 1; }
-.hero2-poster img { display: block; width: 100%; height: 100%; object-fit: cover; transform: scale(1.04); transition: transform 1400ms var(--ease-in); }
-.hero2-poster:hover img { transform: scale(1.09); }
+.hero2-poster img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--poster-pos, 50% 50%); transform: scale(var(--poster-zoom, 1.04)); transition: transform 1400ms var(--ease-in); }
+.hero2-poster:hover img { transform: scale(calc(var(--poster-zoom, 1.04) + .05)); }
+/* горизонтальная афиша: постер шире, колонка текста уже */
+@media (min-width: 901px) { .hero2--wide .hero2-in { grid-template-columns: 1fr 1.15fr; } }
+/* заставка: у афиши «Психопатов» по краям картинки бумага — верхняя карточка колоды (она перелетает в постер)
+   кадрируется так же, как постер первого экрана */
+.tts-intro .ti-card:last-child img { object-position: 52% 50%; transform: scale(1.045); }
 .hp-cap { position: absolute; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; gap: 8px; padding: 64px 22px 22px; background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--ink) 88%, transparent)); opacity: 0; transform: translateY(12px); transition: opacity 700ms var(--ease-out) 200ms, transform 900ms var(--ease-in) 200ms; }
 html.poster-in .hp-cap, .no-js .hp-cap { opacity: 1; transform: none; }
 .hp-date { font-family: var(--f-num); font-size: 18px; color: var(--n100); }
@@ -254,34 +259,27 @@ html.page-in .hw > span, .no-js .hw > span { transform: none; transition: transf
   .cm { min-height: 0; }
   .cm-n { font-size: 17px; }
 }
-/* обложка фоном первого экрана — только ниже 900 px, где постера рядом нет */
+/* Телефон и планшет: афиша — целиком, карточкой над заголовком, а не фоном под текстом.
+   Афиши почти всегда горизонтальные (группа артистов, сцена): растянутая на весь экран, такая афиша
+   режется до одного лица, мылится, а текст ложится на лица. Поэтому кадр стоит целиком — в своих пропорциях
+   (--poster-ar), не выше половины экрана; фон — та же афиша, сильно размытая: свет и цвет кадра без деталей. */
 .hero2-cover, .hero2-shade { display: none; }
 @media (max-width: 900px) {
-  .hero2-in { grid-template-columns: 1fr; min-height: 0; padding: var(--sp-16) var(--page-pad) var(--sp-12); }
-  .hero2-poster { display: none; }
+  .hero2-in { grid-template-columns: 1fr; gap: var(--sp-8); min-height: 0; padding: var(--sp-6) var(--page-pad) var(--sp-12); }
+  .hero2-poster { order: -1; justify-self: stretch; width: 100%; max-width: none; max-height: 50svh; box-shadow: 0 30px 60px -28px var(--shadow-color); }
+  .hero2-poster:active img { transform: scale(calc(var(--poster-zoom, 1.04) + .05)); }
   .hero2-b1, .hero2-b2 { display: none; }
-  .hero2-cover { display: block; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 25%; opacity: 0; filter: brightness(.55) saturate(.9); transform: scale(1.02);
-    transition: opacity 900ms var(--ease-out), transform 1400ms cubic-bezier(.16,1,.3,1), filter 900ms var(--ease-out); }
-  html.poster-in .hero2-cover, .no-js .hero2-cover { opacity: 1; }
-  /* затемнение: сверху — под шапку, снизу — под текст и кнопки */
+  .hero2-cover { display: block; position: absolute; left: -10%; top: -10%; width: 120%; height: 120%; object-fit: cover; opacity: 0;
+    filter: blur(44px) brightness(.55) saturate(1.1); transition: opacity 900ms var(--ease-out); }
+  html.poster-in .hero2-cover, .no-js .hero2-cover { opacity: .9; }
   .hero2-shade { display: block; position: absolute; inset: 0;
-    background: linear-gradient(180deg, var(--ink) 0%, color-mix(in srgb, var(--ink) 30%, transparent) 22%, color-mix(in srgb, var(--ink) 35%, transparent) 42%, color-mix(in srgb, var(--ink) 88%, transparent) 72%, var(--ink) 100%); }
-  .hero2:active .hero2-cover { transform: scale(1.08); filter: brightness(.75) saturate(1); }
+    background: linear-gradient(180deg, color-mix(in srgb, var(--ink) 25%, transparent) 0%, color-mix(in srgb, var(--ink) 60%, transparent) 50%, var(--ink) 100%); }
 }
-@media (max-width: 900px) and (hover: hover) {
-  .hero2:hover .hero2-cover { transform: scale(1.08); filter: brightness(.75) saturate(1); }
-}
-/* светлая тема: фото под текстом не затемняется, а высветляется — тёмный текст читается на любом кадре.
-   Правило для всех фото под текстом в светлой теме: обесцветить, высветлить, приглушить контраст, сверху — светлая подложка. */
+/* светлая тема: размытый фон не затемняется, а высветляется — тёмный текст читается на любом кадре; сама афиша — без фильтров */
 @media (max-width: 900px) {
-  html[data-theme="light"] .hero2-cover { filter: grayscale(1) brightness(1.45) contrast(.55); }
+  html[data-theme="light"] .hero2-cover { filter: blur(44px) grayscale(.3) brightness(1.2); }
   html[data-theme="light"].poster-in .hero2-cover, html[data-theme="light"].no-js .hero2-cover { opacity: .6; }
-  html[data-theme="light"] .hero2:active .hero2-cover { filter: grayscale(.7) brightness(1.4) contrast(.65); }
-  html[data-theme="light"] .hero2-shade { background: linear-gradient(180deg, var(--ink) 0%, color-mix(in srgb, var(--ink) 55%, transparent) 22%,
-    color-mix(in srgb, var(--ink) 62%, transparent) 42%, color-mix(in srgb, var(--ink) 92%, transparent) 70%, var(--ink) 100%); }
-}
-@media (max-width: 900px) and (hover: hover) {
-  html[data-theme="light"] .hero2:hover .hero2-cover { filter: grayscale(.7) brightness(1.4) contrast(.65); }
+  html[data-theme="light"] .hero2-shade { background: linear-gradient(180deg, color-mix(in srgb, var(--ink) 35%, transparent) 0%, color-mix(in srgb, var(--ink) 70%, transparent) 50%, var(--ink) 100%); }
 }
 @media (max-width: 767px) {
   .home { padding-top: var(--sp-8); }
@@ -402,7 +400,7 @@ html.tts-intro-lock .vsw { display: none; }
       MS + '85a/fndnxz2eojab1nki8b3ikufmvaywsadl/lavr2_.jpg',
       MS + '356/kqkkzqpzk8rh4oaifiy0lrqlesvz3f8f/frida_.jpg',
       MS + '40f/xk8jj9k4o0ozlw47j22ys3tdaf4g13et/einstein_i_margarita_.jpg',
-      MS + '511/8dx8lcsr659f8oh338abwf80tfulp5y9/drakula_.jpg'
+      MS + 'df2/sim93ywv2d0mgp0tg7bjhdrbuvn7oq7v/psikhopaty__.jpg'
     ],
     fallbacks: ['home-new/stage-bokeh.webp', 'home-new/stage-rays.webp', 'home-new/stage-spotlight.webp', 'home-new/stage-curtain.webp'],
     poster: '.hero2-poster',
@@ -458,23 +456,24 @@ html.tts-intro-lock .vsw { display: none; }
 
 <main>
 <!-- ════════ hero ════════ -->
-<section class="hero2" aria-labelledby="heroT">
-  <div class="hero2-bg" aria-hidden="true"><span class="hero2-b1"></span><span class="hero2-b2"></span><img class="hero2-cover" src="https://moscowshow.com/upload/iblock/511/8dx8lcsr659f8oh338abwf80tfulp5y9/drakula_.jpg" alt="" decoding="async" referrerpolicy="no-referrer" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='home-new/stage-curtain.webp'}"><i class="hero2-shade"></i><i class="hero2-beam"></i><i class="hero2-grain grain-tex"></i></div>
+<!-- Психопаты: на картинке сайта фото по центру, по краям — мятая бумага; кадр 3:2, сдвиг к центру фото и приближение 1.045 оставляют только фото -->
+<section class="hero2 hero2--wide" aria-labelledby="heroT" style="--poster-ar: 3 / 2; --poster-pos: 52% 50%; --poster-zoom: 1.045; --poster-w: 600px">
+  <div class="hero2-bg" aria-hidden="true"><span class="hero2-b1"></span><span class="hero2-b2"></span><img class="hero2-cover" src="https://moscowshow.com/upload/iblock/df2/sim93ywv2d0mgp0tg7bjhdrbuvn7oq7v/psikhopaty__.jpg" alt="" decoding="async" referrerpolicy="no-referrer" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='home-new/stage-curtain.webp'}"><i class="hero2-shade"></i><i class="hero2-beam"></i><i class="hero2-grain grain-tex"></i></div>
   <div class="hero2-in">
     <div>
-      <div class="hero2-meta rv" style="--i:0"><span class="tag tag-default">Спектакль</span><span class="t-eyebrow">16 ноября</span></div>
-      <h1 class="hero2-title rv" style="--i:1" id="heroT">Дракула</h1>
-      <p class="hero2-sub rv" style="--i:2">Театр им. Ермоловой, 16 ноября.</p>
+      <div class="hero2-meta rv" style="--i:0"><span class="tag tag-default">Спектакль</span><span class="t-eyebrow">5 декабря</span></div>
+      <h1 class="hero2-title rv" style="--i:1" id="heroT">Психопаты</h1>
+      <p class="hero2-sub rv" style="--i:2">Театр эстрады, 5 декабря.</p>
       <div class="hero2-cta rv" style="--i:3">
-        <a class="btn btn-primary btn-lg" href="#">Купить — от 3 000 ₽</a>
+        <a class="btn btn-primary btn-lg" href="#">Купить — от 2 200 ₽</a>
         <a class="btn btn-ghost btn-lg" href="#">Все даты</a>
       </div>
       <div class="hero2-usp rv" style="--i:4">
         <span class="t-caption"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Без кассовых сборов</span>
       </div>
     </div>
-    <a class="hero2-poster" href="#" aria-label="Дракула, 16 ноября, Театр им. Ермоловой">
-      <img src="https://moscowshow.com/upload/iblock/511/8dx8lcsr659f8oh338abwf80tfulp5y9/drakula_.jpg" alt="" decoding="async" referrerpolicy="no-referrer" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='home-new/stage-curtain.webp'}">
+    <a class="hero2-poster" href="#" aria-label="Психопаты, 5 декабря, Театр эстрады">
+      <img src="https://moscowshow.com/upload/iblock/df2/sim93ywv2d0mgp0tg7bjhdrbuvn7oq7v/psikhopaty__.jpg" alt="" decoding="async" referrerpolicy="no-referrer" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='home-new/stage-curtain.webp'}">
     </a>
   </div>
   <button class="hero2-cue" type="button" aria-label="К афише"><span class="t-caption">Афиша</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>

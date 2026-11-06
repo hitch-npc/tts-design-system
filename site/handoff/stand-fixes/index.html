@@ -302,7 +302,7 @@
         <tr><td class="sid"><a href="#p1">П1</a></td><td>Главная</td><td class="sw">Новая главная и заставка</td><td>заставка-прелоадер с колодой афиш, новый первый экран, календарь</td><td><span class="st st-pick">Предложение</span></td></tr>
         <tr><td class="sid"><a href="#p2">П2</a></td><td>Главная</td><td class="sw">Категории и первый экран<span class="new">New</span></td><td>чипы, пять плиток или первый экран на всю высоту с плитками после него</td><td><span class="st st-pick">На выбор</span></td></tr>
         <tr><td class="sid"><a href="#p3">П3</a></td><td>Карточка афиши</td><td class="sw">«В избранное»<span class="new">New</span></td><td>сердечко на обложке — сохранить событие прямо из афиши</td><td><span class="st st-pick">На выбор</span></td></tr>
-        <tr><td class="sid"><a href="#p4">П4</a></td><td>Главная · телефон</td><td class="sw">Светлая тема первого экрана<span class="new">New</span></td><td>фото под текстом высветляется, а не темнеет — текст читается</td><td><span class="st st-ok">Макет готов</span></td></tr>
+        <tr><td class="sid"><a href="#p4">П4</a></td><td>Главная · телефон</td><td class="sw">Афиша на первом экране<span class="new">New</span></td><td>афиша целиком, карточкой над заголовком, а не фоном под текстом — видна в обеих темах</td><td><span class="st st-ok">Макет готов</span></td></tr>
       </table>
     </div>
   </section>
@@ -790,14 +790,14 @@
         <tr><th>Что</th><th>Сейчас</th><th>Предложение</th></tr>
         <tr><td class="p">Заставка</td><td class="o" data-h="Сейчас">нет</td><td class="n" data-h="Предложение">колода афиш в кобальтовой рамке, свет «Рампа», крупно «Ticket to Show — билеты без кассовых сборов»; верхняя афиша перелетает в постер первого экрана</td></tr>
         <tr><td class="p">Когда играет</td><td class="o" data-h="Сейчас">—</td><td class="n" data-h="Предложение">первый визит — длинная версия, около 5 с; новый визит — около 3 с, идёт за реальной загрузкой; повторные загрузки в той же вкладке — без заставки. После заставки страница стоит в самом верху</td></tr>
-        <tr><td class="p">Первый экран</td><td class="o" data-h="Сейчас">—</td><td class="n" data-h="Предложение">постер события, название, площадка и дата, «Купить — от … ₽» и «Все даты»; ниже — чипы категорий и календарь</td></tr>
+        <tr><td class="p">Первый экран</td><td class="o" data-h="Сейчас">—</td><td class="n" data-h="Предложение">постер события, название, площадка и дата, «Купить — от … ₽» и «Все даты»; ниже — чипы категорий и календарь. Постер — в пропорциях афиши (чаще горизонтальной), подробно — <a href="#p4">П4</a></td></tr>
         <tr><td class="p">Для фронтенда</td><td class="o" data-h="Сейчас">—</td><td class="n" data-h="Предложение">заставка — один файл <code>tts-intro.js</code> без зависимостей, запуск <code>TTSIntro.start({…})</code>; проверка — <code>?intro=0</code>, <code>?intro=long</code>, <code>?intro=short</code></td></tr>
-        <tr><td class="p">Кадры колоды</td><td class="o" data-h="Сейчас">—</td><td class="n" data-h="Предложение">в макете — нарисованные кадры сцены, не афиши; настоящие афиши (3:4, от 900 px по высоте) перечисляются в <code>INTRO_IMAGES</code></td></tr>
+        <tr><td class="p">Кадры колоды</td><td class="o" data-h="Сейчас">—</td><td class="n" data-h="Предложение">в макете — нарисованные кадры сцены, не афиши; настоящие афиши (от 900 px по высоте) перечисляются в <code>INTRO_IMAGES</code>. Верхняя карточка по пути к постеру принимает его пропорции — горизонтальная афиша не обрезается до вертикали</td></tr>
       </table>
       <div class="shots">
         <div class="col"><span class="lbl lbl-new">Заставка · колода и надпись</span><figure class="shot"><img src="img/intro-deck.webp" width="1200" height="750" alt="Заставка: крупная надпись «Ticket to Show — билеты без кассовых сборов» поверх колоды кадров" loading="lazy"></figure></div>
         <div class="col"><span class="lbl lbl-new">Заставка · верхняя афиша</span><figure class="shot"><img src="img/intro-top.webp" width="1200" height="750" alt="Заставка: верхняя афиша колоды в кобальтовой рамке, внизу счётчик загрузки и «К билетам»" loading="lazy"></figure></div>
-        <div class="col"><span class="lbl lbl-new">Первый экран после заставки</span><figure class="shot"><img src="img/intro-hero.webp" width="1200" height="750" alt="Первый экран: «Дракула», кнопки «Купить» и «Все даты», постер справа, ниже чипы категорий и календарь" loading="lazy"></figure></div>
+        <div class="col"><span class="lbl lbl-new">Первый экран после заставки</span><figure class="shot"><img src="img/intro-hero.webp" width="1200" height="750" alt="Первый экран: «Психопаты», кнопки «Купить» и «Все даты», горизонтальная афиша справа, ниже плитки категорий" loading="lazy"></figure></div>
       </div>
       <div class="shots phones">
         <div class="col"><span class="lbl lbl-new">Заставка · телефон</span><figure class="shot"><img src="img/intro-mob.webp" width="390" height="844" alt="Заставка на телефоне" loading="lazy"></figure></div>
@@ -812,7 +812,7 @@
         <tr><th>Что</th><th>Сейчас</th><th>Предложение</th></tr>
         <tr><td class="p">A · Было</td><td class="o" data-h="Сейчас">чипы категорий под первым экраном</td><td class="n" data-h="Предложение">без изменений: «Все / Спектакли / Концерты / Классика / Детям», дальше календарь</td></tr>
         <tr><td class="p">B · Плитки</td><td class="o" data-h="Сейчас">чипы</td><td class="n" data-h="Предложение">пять крупных плиток вместо чипов: название, описание, число событий, стрелка; выбранная — фон <code>--accent-ghost</code> и рамка <code>--accent</code>. На телефоне листаются свайпом, описание скрыто</td></tr>
-        <tr><td class="p">C · Полный экран</td><td class="o" data-h="Сейчас">первый экран обычной высоты</td><td class="n" data-h="Предложение">первый экран на всю высоту окна под шапкой, внизу стрелка «Афиша ↓» (нажатие прокручивает к плиткам). На телефоне и планшете текст и кнопки прижаты к низу, в 40 px над стрелкой: сверху остаётся кадр, пустоты между кнопками и стрелкой нет. Плитки — мини-кнопка «Все» с числом и четыре жанра; при первой прокрутке проявляются по очереди, шаг 70 мс. Дальше календарь и афиша. При <code>prefers-reduced-motion</code> — без движения</td></tr>
+        <tr><td class="p">C · Полный экран</td><td class="o" data-h="Сейчас">первый экран обычной высоты</td><td class="n" data-h="Предложение">первый экран на всю высоту окна под шапкой, внизу стрелка «Афиша ↓» (нажатие прокручивает к плиткам). На телефоне и планшете текст и кнопки прижаты к низу, в 40 px над стрелкой, над ними — афиша целиком (<a href="#p4">П4</a>); пустоты между кнопками и стрелкой нет. Плитки — мини-кнопка «Все» с числом и четыре жанра; при первой прокрутке проявляются по очереди, шаг 70 мс. Дальше календарь и афиша. При <code>prefers-reduced-motion</code> — без движения</td></tr>
       </table>
       <div class="shots">
         <div class="col"><span class="lbl lbl-new">A · Было</span><figure class="shot"><img src="img/home-v-old.webp" width="1100" height="688" alt="Под первым экраном — чипы категорий, календарь и афиша" loading="lazy"></figure></div>
@@ -824,7 +824,7 @@
       </div>
       <div class="shots phones">
         <div class="col"><span class="lbl lbl-new">B · телефон</span><figure class="shot"><img src="img/home-v-tiles-mob.webp" width="390" height="844" alt="Плитки категорий лентой со свайпом на телефоне" loading="lazy"></figure></div>
-        <div class="col"><span class="lbl lbl-new">C · телефон</span><figure class="shot"><img src="img/home-v-full-mob.webp" width="390" height="844" alt="Первый экран на всю высоту телефона: кадр сверху, текст и кнопки у нижнего края, под ними «Без кассовых сборов» и стрелка «Афиша»" loading="lazy"></figure></div>
+        <div class="col"><span class="lbl lbl-new">C · телефон</span><figure class="shot"><img src="img/home-v-full-mob.webp" width="390" height="844" alt="Первый экран на всю высоту телефона: афиша целиком сверху, текст и кнопки у нижнего края, под ними «Без кассовых сборов» и стрелка «Афиша»" loading="lazy"></figure></div>
         <div class="col"><span class="lbl lbl-new">C · телефон, прокрутка</span><figure class="shot"><img src="img/home-v-full-mob-scroll.webp" width="390" height="844" alt="Мини-кнопка «Все» и плитки жанров после прокрутки на телефоне" loading="lazy"></figure></div>
       </div>
     </article>
@@ -847,15 +847,21 @@
     </article>
 
     <article class="chg" id="p4">
-      <div class="chg-h"><div class="chg-id">П4</div><div class="chg-t"><h3>Светлая тема первого экрана на телефоне<span class="new">New</span></h3><div class="where">Главная — телефон, первый экран с фото · <code>site/home-new.html</code>, <code>site/home-new-tiles.html</code></div></div><span class="st st-ok">Макет готов</span></div>
+      <div class="chg-h"><div class="chg-id">П4</div><div class="chg-t"><h3>Афиша на первом экране телефона<span class="new">New</span></h3><div class="where">Главная — телефон и планшет, первый экран · <code>site/home-new.html</code>, <code>site/home-new-tiles.html</code>, заставка <code>site/handoff/intro/tts-intro.js</code></div></div><span class="st st-ok">Макет готов</span></div>
+      <div class="live"><a href="../../home-new-tiles.html?v=tiles&amp;intro=0">Живой макет ↗</a><a href="../../home-new-tiles.html?v=full&amp;intro=0">Полный экран ↗</a></div>
+      <p class="note">Афиши почти всегда горизонтальные: группа артистов, сцена. Растянутая фоном на весь экран телефона, такая афиша режется до одного-двух лиц, мылится, а текст ложится на лица; в светлой теме её ещё и приходится высветлять — афишу почти не видно. Поэтому на телефоне афиша не фон, а сам постер, как на десктопе.</p>
       <table class="spec">
         <tr><th>Что</th><th>Было</th><th>Стало</th></tr>
-        <tr><td class="p">Фото под текстом</td><td class="o" data-h="Было">затемнено (<code>brightness(.55)</code>) и уходит в белый фон — серая каша, тёмный текст на сером, дата и площадка не читаются</td><td class="n" data-h="Стало">в светлой теме фото обесцвечено и высветлено (<code>grayscale(1) brightness(1.45) contrast(.55)</code>, прозрачность 0,6), сверху светлая подложка — тёмный текст читается на любом кадре</td></tr>
-        <tr><td class="p">Правило</td><td class="o" data-h="Было">—</td><td class="n" data-h="Стало">в светлой теме фото под текстом не затемняется, а высветляется; тёмная тема без изменений</td></tr>
+        <tr><td class="p">Афиша</td><td class="o" data-h="Было">фоном под текстом на весь первый экран: от горизонтальной афиши виден кусок, в светлой теме — блёклая (<code>grayscale(1) brightness(1.45) contrast(.55)</code>, прозрачность 0,6)</td><td class="n" data-h="Стало">целиком, карточкой над заголовком — во всю ширину колонки, в пропорциях афиши (<code>--poster-ar</code>), не выше половины экрана; рамка и тень как у постера на десктопе. Без фильтров — одинаково видна в обеих темах</td></tr>
+        <tr><td class="p">Фон</td><td class="o" data-h="Было">то же фото, затемнённое или высветленное</td><td class="n" data-h="Стало">та же афиша, сильно размытая (44 px): свет и цвет кадра без деталей, книзу уходит в цвет страницы. В тёмной теме притемнена, в светлой высветлена — текст читается на любом кадре</td></tr>
+        <tr><td class="p">Десктоп</td><td class="o" data-h="Было">постер 3:4</td><td class="n" data-h="Стало">постер в пропорциях афиши; горизонтальный — шире (до 600 px), колонка текста уже</td></tr>
+        <tr><td class="p">Заставка</td><td class="o" data-h="Было">верхняя карточка 3:4 летит в постер 3:4</td><td class="n" data-h="Стало">по пути карточка принимает пропорции постера — горизонтальная афиша встаёт на место без скачка</td></tr>
+        <tr><td class="p">Картинка</td><td class="o" data-h="Было">—</td><td class="n" data-h="Стало">нужен кадр без полей: у «Психопатов» на сайте фото с бумагой по краям, в макете поля срезаны кадрированием (<code>--poster-pos</code>, <code>--poster-zoom</code>). Ширина — от 1200 px, иначе на телефоне кадр мылится</td></tr>
       </table>
       <div class="shots phones">
-        <div class="col"><span class="lbl lbl-before">Было</span><figure class="shot"><img src="img/hero-light-before.webp" width="390" height="844" alt="Светлая тема: серое затемнённое фото, тёмный текст плохо читается" loading="lazy"></figure></div>
-        <div class="col"><span class="lbl lbl-after">Стало</span><figure class="shot"><img src="img/hero-light-after.webp" width="390" height="844" alt="Светлая тема: высветленное фото, текст читается" loading="lazy"></figure></div>
+        <div class="col"><span class="lbl lbl-before">Было</span><figure class="shot"><img src="img/hero-light-before.webp" width="390" height="844" alt="Светлая тема: афиша высветлена фоном под текстом и почти не видна" loading="lazy"></figure></div>
+        <div class="col"><span class="lbl lbl-after">Стало · светлая</span><figure class="shot"><img src="img/hero-light-after.webp" width="390" height="844" alt="Светлая тема: афиша «Психопатов» целиком над заголовком, фон — её размытая копия" loading="lazy"></figure></div>
+        <div class="col"><span class="lbl lbl-after">Стало · тёмная</span><figure class="shot"><img src="img/hero-dark-after.webp" width="390" height="844" alt="Тёмная тема: та же раскладка" loading="lazy"></figure></div>
       </div>
     </article>
   </section>

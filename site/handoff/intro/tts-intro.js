@@ -57,7 +57,7 @@ html.tts-intro-lock, html.tts-intro-lock body { overflow: hidden; }
 .ti-card[data-d="2"] { opacity: 1; transform: translate(-50%, -50%) translate3d(-3.6vw, -2%, 0) rotate(-4deg) scale(.94); filter: brightness(.28); }
 .ti-card[data-d="3"] { opacity: 0; transform: translate(-50%, -50%) translate3d(0, -3%, 0) scale(.9); filter: brightness(.2); }
 .tts-intro.is-out .ti-card:not(.is-hero) { opacity: 0; transition: opacity 700ms var(--ease-out); }
-.ti-card.is-hero { transition: transform 1300ms var(--ti-io), filter 700ms var(--ease-out); }
+.ti-card.is-hero { transition: transform 1300ms var(--ti-io), height 1300ms var(--ti-io), filter 700ms var(--ease-out); }
 
 /* фон под надписью тише: затемнение между колодой и текстом, уходит, когда афиша летит в постер */
 .ti-dim { position: absolute; inset: 0; pointer-events: none; transition: opacity 700ms var(--ease-out);
@@ -315,7 +315,10 @@ html.tts-intro-lock, html.tts-intro-lock body { overflow: hidden; }
       var fly = !RM && !toTickets && topCard && topCard.dataset.d === '0' && pr && pr.width > 0 && pr.bottom > 0 && pr.top < innerHeight;
       if (fly) {
         topCard.classList.add('is-hero');
-        var s = pr.width / topCard.offsetWidth;
+        /* постер бывает горизонтальным: карточка по пути принимает его пропорции, картинка внутри кадрируется сама */
+        var w0 = topCard.offsetWidth, h1 = w0 * pr.height / pr.width;
+        if (Math.abs(h1 - topCard.offsetHeight) > 2) { topCard.style.width = w0 + 'px'; topCard.style.aspectRatio = 'auto'; topCard.style.height = topCard.offsetHeight + 'px'; void topCard.offsetHeight; topCard.style.height = h1 + 'px'; }
+        var s = pr.width / w0;
         topCard.style.transform = 'translate(-50%, -50%) translate3d(' + (pr.left + pr.width / 2 - innerWidth / 2) + 'px, ' + (pr.top + pr.height / 2 - innerHeight / 2) + 'px, 0) rotate(0deg) scale(' + s + ')';
       }
       setTimeout(function () { box.classList.add('is-out'); }, RM ? 0 : 250);
