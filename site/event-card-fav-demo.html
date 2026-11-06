@@ -32,16 +32,32 @@ body { margin: 0; background: var(--ink); color: var(--n100); font-family: var(-
 .ec .event-card-footer .btn { position: relative; z-index: 2; }
 .fav { position: absolute; top: 12px; right: 12px; z-index: 3; width: 36px; height: 36px; padding: 0;
   display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
-  color: var(--n100); border: 1px solid transparent; border-radius: var(--r-sm);
-  /* та же подложка, что у даты на обложке */
+  color: var(--n100); border: 0; border-radius: var(--r-sm); background: none;
+  transition: opacity var(--dur-slow) var(--ease-out); }
+/* подложка отдельным слоем — её можно гасить, не трогая сердечко;
+   та же, что у даты на обложке */
+.fav::before { content: ""; position: absolute; inset: 0; z-index: -1; border: 1px solid transparent; border-radius: inherit;
   background: color-mix(in srgb, var(--n950) 72%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-  transition: border-color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out); }
-.fav:hover { border-color: var(--n700); }
+  transition: opacity var(--dur-slow) var(--ease-out), border-color var(--dur-fast) var(--ease-out); }
+.fav:hover::before { border-color: var(--n700); }
 .fav:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
-.fav svg { width: 18px; height: 18px; fill: transparent; transition: fill var(--dur-fast) var(--ease-out); }
+.fav svg { width: 18px; height: 18px; fill: transparent; transition: fill var(--dur-fast) var(--ease-out), filter var(--dur-slow) var(--ease-out); }
 .fav[aria-pressed="true"] svg { fill: currentColor; animation: fav-pop 520ms var(--ease-bounce); }
 @keyframes fav-pop { 0% { transform: scale(.6); } 60% { transform: scale(1.18); } 100% { transform: scale(1); } }
-@media (prefers-reduced-motion: reduce) { .fav svg { animation: none !important; transition: none; } }
+
+/* Десктоп с мышью: не в избранном — сердечко видно только при наведении на карточку.
+   В избранном — сердечко остаётся всегда, подложка только под курсором:
+   после нажатия она гаснет, как только курсор уходит с иконки.
+   На тач-экранах наведения нет — там кнопка видна всегда, с подложкой. */
+@media (hover: hover) and (pointer: fine) {
+  .fav[aria-pressed="false"] { opacity: 0; }
+  .ec:hover .fav, .fav:focus-visible { opacity: 1; }
+  .fav[aria-pressed="true"]::before { opacity: 0; }
+  .fav[aria-pressed="true"]:hover::before, .fav[aria-pressed="true"]:focus-visible::before { opacity: 1; }
+  /* без подложки сердечку нужна лёгкая тень, чтобы читаться на светлом пятне обложки */
+  .fav[aria-pressed="true"]:not(:hover):not(:focus-visible) svg { filter: drop-shadow(0 1px 3px color-mix(in srgb, var(--scrim) 45%, transparent)); }
+}
+@media (prefers-reduced-motion: reduce) { .fav, .fav::before { transition: none; } .fav svg { animation: none !important; transition: none; } }
 
 .toast-slot { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 50; pointer-events: none; opacity: 0; transition: opacity var(--dur-slow) var(--ease-out); }
 .toast-slot.on { opacity: 1; }
@@ -53,7 +69,7 @@ body { margin: 0; background: var(--ink); color: var(--n100); font-family: var(-
     <div>
       <div class="t-eyebrow">Карточка афиши</div>
       <h1 class="t-h1" style="margin:8px 0 0">Избранное на карточке</h1>
-      <p>Слева — карточка как сейчас. Справа — с кнопкой «В избранное» в правом верхнем углу обложки: событие сохраняется прямо из афиши, без перехода на страницу. Сердечко нажимается — попробуйте.</p>
+      <p>Слева — карточка как сейчас. Справа — с кнопкой «В избранное» в правом верхнем углу обложки: событие сохраняется прямо из афиши, без перехода на страницу. Сердечко нажимается — попробуйте. На десктопе оно появляется при наведении на карточку; добавленное в избранное остаётся видно всегда, а подложка под ним гаснет, когда курсор уходит с иконки.</p>
     </div>
     <button class="theme-toggle" id="tt" type="button" data-mode="dark" aria-label="Включить светлую тему" title="Включить светлую тему">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
@@ -127,7 +143,7 @@ body { margin: 0; background: var(--ink); color: var(--n100); font-family: var(-
   </div>
 
   <div class="note">
-    <div><h3>Два состояния</h3><p>Контур — не в избранном, заливка — в избранном. Подложка та же, что у даты на обложке; кобальт не нужен — это не главное действие карточки.</p></div>
+    <div><h3>Два состояния</h3><p>Контур — не в избранном, заливка — в избранном. Подложка та же, что у даты на обложке; кобальт не нужен — это не главное действие карточки. На десктопе контур виден только при наведении на карточку, заливка — всегда, без подложки; подложка возвращается под курсором. На телефоне кнопка видна всегда.</p></div>
     <div><h3>Гость</h3><p>Нажатие без входа открывает экран входа; после входа событие сохраняется само, без второго нажатия.</p></div>
     <div><h3>Разметка</h3><p>Карточка — <code>article</code>, ссылка на событие растянута на всю карточку, кнопка лежит поверх: кнопку нельзя класть внутрь <code>&lt;a&gt;</code>. Подпись для скринридера меняется вместе с состоянием.</p></div>
   </div>

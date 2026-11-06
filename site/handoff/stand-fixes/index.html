@@ -836,12 +836,13 @@
         <tr><th>Что</th><th>Сейчас</th><th>Предложение</th></tr>
         <tr><td class="p">Избранное</td><td class="o" data-h="Сейчас">только со страницы события</td><td class="n" data-h="Предложение">сердечко в правом верхнем углу обложки — сохранить, не уходя из афиши</td></tr>
         <tr><td class="p">Вид</td><td class="o" data-h="Сейчас">—</td><td class="n" data-h="Предложение">36×36, подложка как у даты на обложке (<code>--n950</code> 72 %, размытие 8 px), иконка <code>--n100</code>. Контур — не в избранном, заливка — в избранном; при добавлении сердечко «отскакивает» (520 мс, <code>--ease-bounce</code>) и выходит тост «Добавлено в избранное». Кобальт не нужен — это не главное действие карточки</td></tr>
+        <tr><td class="p">Десктоп</td><td class="o" data-h="Сейчас">—</td><td class="n" data-h="Предложение">не в избранном — сердечко видно только при наведении на карточку (проявляется за 320 мс). В избранном — заливка видна всегда, без подложки, с лёгкой тенью; подложка возвращается под курсором и гаснет, как только курсор уходит с иконки. На телефоне и планшете наведения нет — кнопка видна всегда, с подложкой</td></tr>
         <tr><td class="p">Гость</td><td class="o" data-h="Сейчас">—</td><td class="n" data-h="Предложение">нажатие открывает вход; после входа событие сохраняется само, без второго нажатия</td></tr>
         <tr><td class="p">Разметка</td><td class="o" data-h="Сейчас">карточка — ссылка <code>&lt;a&gt;</code></td><td class="n" data-h="Предложение">карточка — <code>article</code>, ссылка на событие растянута на всю карточку, кнопка лежит поверх: кнопку нельзя класть внутрь <code>&lt;a&gt;</code>. <code>aria-pressed</code> и подпись «Добавить / Убрать „…“ из избранного» меняются вместе с состоянием</td></tr>
       </table>
       <div class="shots wide">
-        <div class="col"><span class="lbl lbl-new">Слева — как сейчас, справа — с сердечком (не в избранном и в избранном)</span><figure class="shot"><img src="img/card-fav.webp" width="1100" height="451" alt="Две карточки без сердечка и две с сердечком: контурным и залитым" loading="lazy"></figure></div>
-        <div class="col"><span class="lbl lbl-new">Светлая тема</span><figure class="shot"><img src="img/card-fav-light.webp" width="1100" height="451" alt="То же в светлой теме" loading="lazy"></figure></div>
+        <div class="col"><span class="lbl lbl-new">Слева — как сейчас, справа — с сердечком: под курсором (не в избранном) и в избранном без наведения</span><figure class="shot"><img src="img/card-fav.webp" width="1952" height="822" alt="Две карточки без сердечка и две с сердечком: контурным на подложке под курсором и залитым без подложки" loading="lazy"></figure></div>
+        <div class="col"><span class="lbl lbl-new">Светлая тема</span><figure class="shot"><img src="img/card-fav-light.webp" width="1952" height="822" alt="То же в светлой теме" loading="lazy"></figure></div>
       </div>
     </article>
 
