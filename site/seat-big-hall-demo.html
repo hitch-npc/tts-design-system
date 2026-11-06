@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400&text=%E2%82%BD&display=swap">
 <style>
   :root { --ink:#0D0D0D; --n100:#D6D6D2; --n300:#A6A6A2; --n400:#8A8A88; --n500:#7A7A78; --n600:#626260; --n800:#262930; --n900:#191C22; --n950:#111318;
-    --accent:#0047FF; --accent-ghost:#0B142A; --seat-sel:#22C55E; --seat-sold:#2C2F36; --seat-check:#FFFFFF; --r-sm:2px; --scrim:#000000;
+    --accent:#0047FF; --accent-ghost:#0B142A; --on-accent:#FFFFFF; --seat-sel:#22C55E; --seat-sold:#2C2F36; --seat-check:#FFFFFF; --r-sm:2px; --scrim:#000000;
     --font:'Manrope',system-ui,sans-serif; --f-num:'Oranienbaum','Source Serif 4',Georgia,serif; /* в Oranienbaum нет ₽ — знак берётся из Source Serif 4, как .rub на странице партнёров */ --f-head:'Forum',Georgia,serif; --f-thin:'Cormorant Garamond',Georgia,serif; }
   *, *::before, *::after { box-sizing:border-box; }
   body { margin:0; padding:32px 20px 64px; background:var(--ink); color:var(--n100); font-family:var(--font); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
@@ -42,27 +42,80 @@
   .seat.sel { background:var(--seat-sel) !important; opacity:1; box-shadow:0 0 0 1px var(--ink), 0 0 0 2px var(--seat-sel); }
   .seat.sel::after { content:'✓'; position:absolute; inset:0; display:grid; place-items:center; font:700 calc(var(--s) * .72)/1 var(--font); color:var(--seat-check); } /* как .smap-dot-selected в ядре */
 
-  .leg { display:flex; flex-direction:column; gap:6px; margin-top:12px; }
+  /* ---- боковая панель: легенда листается, итог закреплён внизу ---- */
+  .side { position:sticky; top:16px; display:flex; flex-direction:column; max-height:calc(100vh - 32px); }
+  .leg-top { display:flex; justify-content:space-between; align-items:baseline; gap:12px; }
+  .leg-hint { font-size:11px; line-height:1.5; color:var(--n400); margin-top:6px; }
+  .leg-scroll { flex:1 1 auto; min-height:0; overflow:auto; overscroll-behavior:contain; margin:12px -20px 0; padding:0 20px 2px; scrollbar-width:thin; scrollbar-color:var(--n800) transparent; }
+  .leg { display:flex; flex-direction:column; gap:6px; }
   .band { border:1px solid var(--n800); border-radius:2px; }
-  .band-h, .pr { display:grid; grid-template-columns:14px 1fr auto; gap:10px; align-items:center; width:100%; text-align:left; background:transparent; border:0; cursor:pointer; padding:9px 10px; }
-  .band-h { border-bottom:1px solid var(--n900); }
-  .band-h .lab { font-size:11px; font-weight:600; letter-spacing:.06em; }
-  .pr .p { font-family:var(--f-num); font-size:16px; }
+  .band-h, .pr { display:grid; grid-template-columns:14px 1fr auto; gap:10px; align-items:center; width:100%; text-align:left; background:transparent; border:0; cursor:pointer; padding:9px 10px; transition:background .15s, box-shadow .15s; }
+  .band-h .lab { font-size:12px; font-weight:500; letter-spacing:.02em; }
+  /* цены в легенде — Manrope с моноширинными цифрами: мелкий Oranienbaum в столбце читается тяжело */
+  .pr .p, .chip .p { font-size:13px; font-weight:500; letter-spacing:.01em; font-variant-numeric:tabular-nums; }
   .n { font-size:10px; color:var(--n500); letter-spacing:.06em; white-space:nowrap; }
+  /* диапазон — квадрат с градиентом его цен; цена — круглая точка */
   .sw { width:14px; height:14px; border-radius:var(--r-sm); display:block; }
-  .band-h[aria-pressed=true], .pr[aria-pressed=true] { background:var(--accent-ghost); box-shadow:inset 0 0 0 1px var(--accent); }
+  .pr .sw, .chip .sw { width:10px; height:10px; border-radius:5px; flex:none; justify-self:center; }
+  /* выбор в легенде: кобальт — только у диапазона, выбранного целиком; цены — нейтральная рамка и фон --n900 */
   .band-h:hover, .pr:hover { background:var(--n900); }
-  .sum { display:flex; justify-content:space-between; align-items:baseline; margin-top:14px; padding-top:14px; border-top:1px solid var(--n800); }
+  .band-h[aria-pressed=true] { background:var(--accent-ghost); box-shadow:inset 0 0 0 1px var(--accent); }
+  .pr[aria-pressed=true] { background:var(--n900); box-shadow:inset 0 0 0 1px var(--n500); }
+  /* заголовок диапазона тише цен: серый, белеет при наведении и выборе */
+  .band-h .lab { color:var(--n300); transition:color .15s; }
+  .band-h:hover .lab, .band-h[aria-pressed=true] .lab, .band-h[aria-pressed=mixed] .lab { color:var(--n100); }
+
+  /* Полный список */
+  .leg-list .band-h { border-bottom:1px solid var(--n900); }
+
+  /* B · Цены чипами */
+  .leg-chips { gap:0; }
+  .leg-chips .grp + .grp { border-top:1px solid var(--n900); }
+  .leg-chips .grp + .grp { padding-top:4px; }
+  .leg-chips .band-h { padding:9px 6px; margin-bottom:2px; } /* ровные отступы: в рамке выбранного диапазона строка по центру */
+  /* чипы без рамки: рамка и фон появляются только у выбранной цены */
+  .chips { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:2px 4px; padding:0 0 8px; }
+  .chip { display:flex; align-items:center; gap:6px; min-width:0; min-height:36px; padding:0 6px 0 8px; border:1px solid transparent; border-radius:var(--r-sm); background:transparent; color:var(--n100); cursor:pointer; transition:background .15s, border-color .15s; }
+  .chip .p { line-height:1; letter-spacing:0; white-space:nowrap; overflow:hidden; }
+  .chip:hover { background:var(--n900); }
+  .chip[aria-pressed=true] { background:var(--n900); border-color:var(--n500); }
+
+  /* C · Раскрытие по фильтру: цены диапазона появляются после нажатия на него */
+  .leg-reveal .band-h { border-bottom:1px solid transparent; transition:background .15s, box-shadow .15s, border-color 252ms; }
+  .leg-reveal .band.open .band-h { border-bottom-color:var(--n900); }
+  .band-body { display:grid; grid-template-rows:0fr; overflow:hidden; transition:grid-template-rows 252ms cubic-bezier(.4,0,.2,1); }
+  .band.open .band-body { grid-template-rows:1fr; transition-duration:420ms; transition-timing-function:cubic-bezier(.16,1,.3,1); }
+  .band-in { min-height:0; }
+  .band-in .pr { opacity:0; transform:translateY(-4px); transition:background .15s, box-shadow .15s, opacity 120ms, transform 120ms; }
+  .band.open .band-in .pr { opacity:1; transform:none; transition:background .15s, box-shadow .15s, opacity 260ms calc(80ms + var(--i) * 30ms), transform 420ms cubic-bezier(.16,1,.3,1) calc(80ms + var(--i) * 30ms); }
+
+  .sum-box { flex:none; display:grid; gap:12px; margin-top:14px; padding-top:14px; border-top:1px solid var(--n800); }
+  .sum { display:flex; justify-content:space-between; align-items:baseline; gap:12px; }
   .sum b { font-family:var(--f-num); font-size:22px; font-weight:400; }
+  .buy { min-height:44px; width:100%; padding:0 18px; border:0; border-radius:var(--r-sm); background:var(--accent); color:var(--on-accent); font:700 11px var(--font); letter-spacing:.16em; text-transform:uppercase; cursor:pointer; }
+  .buy:disabled { background:var(--n800); color:var(--n600); cursor:default; }
+  .reset { background:none; border:0; color:var(--n300); font:500 11px var(--font); letter-spacing:.14em; text-transform:uppercase; cursor:pointer; text-decoration:underline; text-decoration-color:var(--accent); text-underline-offset:3px; padding:0; white-space:nowrap; }
+  /* телефон: панель под схемой, итог и кнопка — полосой внизу экрана, как .sticky-buy */
+  @media (max-width:900px) {
+    body { padding-bottom:112px; }
+    .side { position:static; max-height:none; }
+    .leg-scroll { overflow:visible; }
+    .sum-box { position:fixed; left:0; right:0; bottom:0; z-index:10; margin:0; padding:12px 20px calc(12px + env(safe-area-inset-bottom)); background:var(--n950); grid-template-columns:1fr auto; align-items:center; }
+    .buy { width:auto; padding:0 16px; white-space:nowrap; }
+    /* сумма над числом мест, подпись «Выбрано» на узком экране не помещается */
+    .sum { flex-direction:column-reverse; align-items:flex-start; gap:2px; min-width:0; }
+    .sum .cap { display:none; }
+    .sum b { font-size:20px; line-height:1.1; white-space:nowrap; }
+  }
+
   .tip { position:absolute; z-index:5; min-width:176px; padding:10px 12px 11px; background:var(--n900); border:1px solid var(--n800); border-radius:var(--r-sm);
     box-shadow:0 14px 30px -12px var(--scrim); pointer-events:none; opacity:0; transform:translateY(4px); transition:opacity .16s, transform .16s; }
   .tip.on { opacity:1; transform:none; }
   .tip-where { font-size:10px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--n500); white-space:nowrap; }
   .tip-price { display:flex; align-items:center; gap:8px; margin-top:6px; font-family:var(--f-num); font-size:26px; line-height:1; color:var(--n100); }
-  .tip-price .sw { width:16px; height:16px; }
+  .tip-price .sw { width:14px; height:14px; border-radius:7px; }
   .tip-hint { margin-top:7px; font-size:11px; color:var(--n400); }
-  @media (prefers-reduced-motion: reduce) { .tip { transition:none; } }
-  .reset { background:none; border:0; color:var(--n300); font:500 11px var(--font); letter-spacing:.14em; text-transform:uppercase; cursor:pointer; text-decoration:underline; text-decoration-color:var(--accent); text-underline-offset:3px; padding:0; margin-top:12px; }
+  @media (prefers-reduced-motion: reduce) { .tip, .band-body, .band-in .pr, .band-h .lab { transition:none !important; } }
 </style>
 </head>
 <body>
@@ -71,12 +124,12 @@
     <div class="eyebrow">Выбор мест · большой зал</div>
     <h1>Пятнадцать цен в одном зале</h1>
   </div>
-  <p class="note">Условный пример большого театра: партер, амфитеатр, бельэтаж с ложами, два яруса и балкон — 6 зон, 15 цен, 1 104 места. Цена зависит и от зоны, и от ряда. Наведите на место — подсказка покажет зону, ряд, место и цену; на телефоне — нажмите. Нажатие на диапазон или цену в легенде гасит остальные места, наведение на них подсвечивает места заранее.</p>
+  <p class="note">Условный пример большого театра: партер, амфитеатр, бельэтаж с ложами, два яруса и балкон — 6 зон, 15 цен, 1 104 места. Цена зависит и от зоны, и от ряда. Цвета — семьи: оттенок — диапазон, светлота — цена внутри него. Наведите на место — подсказка покажет зону, ряд, место и цену; на телефоне — нажмите. Нажатие на диапазон или цену в легенде гасит остальные места, наведение на них подсвечивает места заранее. Итог и кнопка оформления закреплены внизу панели, на телефоне — внизу экрана.</p>
 
   <div class="panel">
-    <div class="cap">Цвета цен</div>
-    <div class="opts" id="modeOpts"></div>
-    <div class="dE" id="dEout"></div>
+    <div class="cap">Легенда</div>
+    <div class="opts" id="legOpts"></div>
+    <div class="dE" id="legNote"></div>
   </div>
 
   <div class="grid">
@@ -85,17 +138,20 @@
       <div class="hall" id="hall"></div>
       <div class="tip" id="tip" role="status" aria-live="polite"></div>
     </div>
-    <div class="panel">
-      <div class="cap">Цена · свободно мест</div>
-      <div class="leg" id="leg"></div>
-      <div class="sum"><div><div class="cap">Выбрано</div><span id="selN" class="note"></span></div><b id="selSum">0 ₽</b></div>
-      <button class="reset" id="reset" type="button">Сбросить фильтр</button>
+    <div class="panel side">
+      <div class="leg-top"><div class="cap">Цена · свободно мест</div><button class="reset" id="reset" type="button" aria-label="Сбросить фильтр" hidden>Сбросить</button></div>
+      <div class="leg-hint" id="legHint" hidden>Нажмите на диапазон — раскроются его цены</div>
+      <div class="leg-scroll"><div class="leg" id="leg"></div></div>
+      <div class="sum-box">
+        <div class="sum"><div><div class="cap">Выбрано</div><span id="selN" class="note"></span></div><b id="selSum">0 ₽</b></div>
+        <button class="buy" id="buy" type="button" disabled>Перейти к оформлению</button>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
-const fmt=n=>n.toLocaleString('ru-RU').replace(/ /g,' ')+' ₽';
+const fmt=n=>n.toLocaleString('ru-RU').replace(/ /g,' ')+' ₽';
 /* Диапазоны и цены (по убыванию) */
 const BANDS=[
   {lab:'от 20 000 ₽', prices:[25000,21000]},
@@ -105,32 +161,23 @@ const BANDS=[
   {lab:'до 4 000 ₽', prices:[3500,2500,1500]},
 ];
 const PRICES=BANDS.flatMap(b=>b.prices);
-const bandOf=p=>BANDS.findIndex(b=>b.prices.includes(p));
 /* Семьи цветов: оттенок — диапазон, светлота — цена внутри него (дороже — глубже) */
 const FAMILY={25000:'#B28143',21000:'#E0AD6E',17500:'#106DCE',14000:'#388CF0',12000:'#6EADFE',
   11000:'#02717A',10000:'#1794A0',9000:'#36B8C5',8500:'#61DCE9',6500:'#7758BB',5500:'#9477DD',4500:'#B296FF',
   3500:'#C1587D',2500:'#E3769B',1500:'#FD9CBA'};
-/* Только диапазоны: пять цветов варианта B */
-const BAND_COL=['#C9975A','#3F73E3','#2BA7B8','#9C95FE','#DC7095'];
-function oklch(L,C,H){const a=C*Math.cos(H*Math.PI/180),b=C*Math.sin(H*Math.PI/180);
-  const l=(L+.3963377774*a+.2158037573*b)**3,m=(L-.1055613458*a-.0638541728*b)**3,s=(L-.0894841775*a-1.291485548*b)**3;
-  const f=x=>{x=Math.min(1,Math.max(0,x));return x<=.0031308?12.92*x:1.055*x**(1/2.4)-.055};
-  return '#'+[4.0767416621*l-3.3077115913*m+.2309699292*s,-1.2684380046*l+2.6097574011*m-.3413193965*s,-.0041960863*l-.7034186147*m+1.707614701*s].map(v=>Math.round(f(v)*255).toString(16).padStart(2,'0')).join('');}
-function lab(h){const [r,g,b]=[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);
-  const l=Math.cbrt(.4122214708*r+.5363325363*g+.0514459929*b),m=Math.cbrt(.2119034982*r+.6806995451*g+.1073969566*b),s=Math.cbrt(.0883024619*r+.2817188376*g+.6299787005*b);
-  return [.2104542553*l+.793617785*m-.0040720468*s,1.9779984951*l-2.428592205*m+.4505937099*s,.0259040371*l+.7827717662*m-.808675766*s];}
-const dE=(a,b)=>{const x=lab(a),y=lab(b);return Math.hypot(x[0]-y[0],x[1]-y[1],x[2]-y[2])*100};
-/* Как на стенде: градиент одного цвета, от дорогого к дешёвому */
-const GRAD=Object.fromEntries(PRICES.map((p,i)=>[p,oklch(.62-.2*i/14,.15,(250+20*i/14)%360)]));
-const MODES={
-  grad:{name:'Градиент, как на стенде', col:p=>GRAD[p]},
-  fam:{name:'Семьи цветов', col:p=>FAMILY[p]},
-  band:{name:'Только диапазоны', col:p=>BAND_COL[bandOf(p)]},
+const col=p=>FAMILY[p];
+/* Варианты легенды */
+const LEGS={
+  list:{name:'Полный список', note:'Все 15 цен строками, у каждой — число свободных мест. Список длиннее экрана и листается внутри панели.'},
+  chips:{name:'B · Цены чипами', note:'Всё видно сразу: диапазон строкой, его цены — чипами по три. Число свободных мест у цены — в подсказке при наведении.'},
+  reveal:{name:'C · Раскрытие по фильтру', note:'В покое только 5 диапазонов. Нажатие на диапазон включает фильтр и раскрывает его цены, повторное — снимает и сворачивает.'},
 };
 const qs=new URLSearchParams(location.search);
-let mode=MODES[qs.get('mode')]?qs.get('mode'):'fam';
+let legMode=LEGS[qs.get('leg')]?qs.get('leg'):'chips';
 const active=new Set((qs.get('f')||'').split(',').filter(Boolean).map(Number));
+const openB=new Set(); /* раскрытые диапазоны в варианте C */
 const selected=new Set();
+const legEl=document.getElementById('leg');
 
 /* ---- зал ---- */
 let seed=11; const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
@@ -149,6 +196,8 @@ zone('Бельэтаж · ложи по бокам',()=>{ for(let r=1;r<=3;r++) 
 zone('1 ярус',()=>{ for(let r=1;r<=3;r++) addRow('1 ярус',r,[[4,5500],'aisle',[13,6500],[13,6500],'aisle',[4,5500]]); });
 zone('2 ярус',()=>{ for(let r=1;r<=3;r++) addRow('2 ярус',r,[[4,3500],'aisle',[13,4500],[13,4500],'aisle',[4,3500]]); });
 zone('Балкон',()=>{ for(let r=1;r<=3;r++) addRow('Балкон',r,[[5,1500],'aisle',[13,2500],[13,2500],'aisle',[5,1500]]); });
+const FREE=Object.fromEntries(PRICES.map(p=>[p,seats.filter(s=>s.price===p&&!s.sold).length]));
+const bandFree=bi=>BANDS[bi].prices.reduce((a,p)=>a+FREE[p],0);
 
 const hall=document.getElementById('hall');
 ZONES.forEach(z=>{
@@ -160,8 +209,8 @@ ZONES.forEach(z=>{
       if(s==='aisle'){el.insertAdjacentHTML('beforeend','<span class="aisle"></span>');return;}
       const b=document.createElement('button'); b.type='button'; b.className='seat'+(s.sold?' sold':'');
       const t=`${s.zone} · ряд ${s.row}, место ${s.place} · ${fmt(s.price)}${s.sold?' · продано':''}`;
-      b.title=t; b.setAttribute('aria-label',t);
-      if(!s.sold) b.onclick=()=>{selected.has(s.id)?selected.delete(s.id):selected.add(s.id);paint();showTip(s);};
+      b.title=t; b.setAttribute('aria-label',t); b.style.background=col(s.price);
+      if(!s.sold) b.onclick=()=>{selected.has(s.id)?selected.delete(s.id):selected.add(s.id);refresh();showTip(s);};
       else b.onclick=()=>showTip(s);
       b.addEventListener('pointerenter',e=>{ if(e.pointerType==='mouse') showTip(s); });
       b.addEventListener('focus',()=>showTip(s));
@@ -181,10 +230,9 @@ new ResizeObserver(fit).observe(hall); fit();
 let tipSeat=null;
 function showTip(s){
   tipSeat=s;
-  const col=MODES[mode].col(s.price);
   tip.innerHTML=`<div class="tip-where">${s.zone} · ряд ${s.row} · место ${s.place}</div>`+
     (s.sold?`<div class="tip-price" style="color:var(--n500)">Продано</div>`:
-    `<div class="tip-price"><i class="sw" style="background:${col}"></i>${fmt(s.price)}</div><div class="tip-hint">${selected.has(s.id)?'Выбрано · нажмите, чтобы снять':'Нажмите, чтобы выбрать'}</div>`);
+    `<div class="tip-price"><i class="sw" style="background:${col(s.price)}"></i>${fmt(s.price)}</div><div class="tip-hint">${selected.has(s.id)?'Выбрано · нажмите, чтобы снять':'Нажмите, чтобы выбрать'}</div>`);
   const P=hallPanel.getBoundingClientRect(), R=s.el.getBoundingClientRect();
   tip.classList.add('on');
   const tw=tip.offsetWidth, th=tip.offsetHeight;
@@ -208,37 +256,67 @@ document.addEventListener('mouseover',e=>{
   if(!same(next,preview)){ preview=next; dim(); }
 });
 
-/* ---- управление ---- */
-function minPair(){const c=PRICES.map(MODES[mode].col);let m=Infinity;for(let i=0;i<c.length;i++)for(let j=i+1;j<c.length;j++)m=Math.min(m,dE(c[i],c[j]));return m;}
-function paint(){
-  modeOpts.innerHTML=Object.entries(MODES).map(([k,v])=>`<button class="opt" type="button" data-mode="${k}" aria-pressed="${mode===k}">${v.name}</button>`).join('');
-  const md=minPair();
-  dEout.innerHTML=mode==='band'
-    ?`Пять цветов на пять диапазонов; точную цену показывают легенда, фильтр и подсказка у места.`
-    :`Самая похожая пара из 15 цен: <b>${md.toFixed(1)} ΔE</b>${md<5?' — на глаз не различить':''}`;
-  const col=MODES[mode].col;
-  seats.forEach(s=>{ s.el.style.background=col(s.price); s.el.classList.toggle('sel',selected.has(s.id)); });
-  dim();
-  leg.innerHTML=BANDS.map((b,bi)=>{
-    const free=p=>seats.filter(s=>s.price===p&&!s.sold).length;
-    const bandFree=b.prices.reduce((a,p)=>a+free(p),0);
-    const bandOn=b.prices.every(p=>active.has(p));
-    return `<div class="band"><button class="band-h" type="button" data-band="${bi}" aria-pressed="${bandOn}"><i class="sw" style="background:${mode==='band'?BAND_COL[bi]:col(b.prices[0])}"></i><span class="lab">${b.lab}</span><span class="n">${bandFree} свободно</span></button>${
-      b.prices.map(p=>`<button class="pr" type="button" data-price="${p}" aria-pressed="${active.has(p)}"><i class="sw" style="background:${col(p)}"></i><span class="p">${fmt(p)}</span><span class="n">${free(p)} свободно</span></button>`).join('')}</div>`;
+/* ---- легенда ---- */
+function bandHead(b,bi){
+  const exp=legMode==='reveal'?` aria-expanded="false" aria-controls="bb${bi}"`:'';
+  return `<button class="band-h" type="button" data-band="${bi}"${exp}><i class="sw" style="background:linear-gradient(135deg, ${b.prices.map(col).join(', ')})"></i><span class="lab">${b.lab}</span><span class="n">${bandFree(bi)} свободно</span></button>`;
+}
+const prRow=(p,i)=>`<button class="pr" type="button" data-price="${p}" style="--i:${i}"><i class="sw" style="background:${col(p)}"></i><span class="p">${fmt(p)}</span><span class="n">${FREE[p]} свободно</span></button>`;
+const chip=p=>{ const t=`${fmt(p)} · ${FREE[p]} свободно`;
+  return `<button class="chip" type="button" data-price="${p}" title="${t}" aria-label="${t}"><i class="sw" style="background:${col(p)}"></i><span class="p">${fmt(p)}</span></button>`; };
+function buildLegend(){ /* разметка пересобирается только при смене варианта — иначе раскрытие не анимируется */
+  legEl.className='leg leg-'+legMode;
+  legEl.innerHTML=BANDS.map((b,bi)=>{
+    if(legMode==='chips') return `<div class="grp">${bandHead(b,bi)}<div class="chips">${b.prices.map(chip).join('')}</div></div>`;
+    if(legMode==='reveal') return `<div class="band" data-bi="${bi}">${bandHead(b,bi)}<div class="band-body" id="bb${bi}" inert><div class="band-in">${b.prices.map(prRow).join('')}</div></div></div>`;
+    return `<div class="band">${bandHead(b,bi)}${b.prices.map(prRow).join('')}</div>`;
   }).join('');
+  legHint.hidden=legMode!=='reveal';
+}
+function syncLegend(){
+  legEl.querySelectorAll('[data-price]').forEach(b=>b.setAttribute('aria-pressed',active.has(+b.dataset.price)));
+  legEl.querySelectorAll('[data-band]').forEach(b=>{
+    const ps=BANDS[+b.dataset.band].prices, k=ps.filter(p=>active.has(p)).length;
+    b.setAttribute('aria-pressed',k===ps.length?'true':k?'mixed':'false');  });
+  legEl.querySelectorAll('.band[data-bi]').forEach(el=>{
+    const on=openB.has(+el.dataset.bi);
+    el.classList.toggle('open',on); el.querySelector('.band-body').inert=!on; el.querySelector('.band-h').setAttribute('aria-expanded',on);
+  });
+  reset.hidden=!active.size;
+}
+const plural=n=>{const a=n%10,b=n%100;return a===1&&b!==11?'место':a>=2&&a<=4&&(b<12||b>14)?'места':'мест';};
+function refresh(){ /* после выбора места или фильтра */
+  seats.forEach(s=>s.el.classList.toggle('sel',selected.has(s.id)));
+  dim(); syncLegend();
   const arr=[...selected];
-  selN.textContent=arr.length?`${arr.length} ${arr.length%10===1&&arr.length%100!==11?'место':'мест(а)'}`:'нет';
+  selN.textContent=arr.length?`${arr.length} ${plural(arr.length)}`:'нет';
   selSum.textContent=fmt(arr.reduce((a,id)=>a+seats[id].price,0));
+  buy.disabled=!arr.length;
+}
+function paint(){ /* после смены варианта легенды */
+  legOpts.innerHTML=Object.entries(LEGS).map(([k,v])=>`<button class="opt" type="button" data-leg="${k}" aria-pressed="${legMode===k}">${v.name}</button>`).join('');
+  buildLegend(); refresh();
+  legNote.textContent=LEGS[legMode].note+` Высота легенды — ${legEl.offsetHeight} px.`;
 }
 document.addEventListener('click',e=>{
-  const m=e.target.closest('[data-mode]'); if(m){mode=m.dataset.mode;paint();return;}
-  const bh=e.target.closest('[data-band]'); if(bh){const ps=BANDS[+bh.dataset.band].prices;const on=ps.every(p=>active.has(p));ps.forEach(p=>on?active.delete(p):active.add(p));paint();return;}
-  const pr=e.target.closest('[data-price]'); if(pr){const p=+pr.dataset.price;active.has(p)?active.delete(p):active.add(p);paint();}
+  const l=e.target.closest('[data-leg]');
+  if(l){ legMode=l.dataset.leg; openB.clear();
+    if(legMode==='reveal') BANDS.forEach((b,bi)=>{ if(b.prices.some(p=>active.has(p))) openB.add(bi); });
+    paint(); return; }
+  const bh=e.target.closest('[data-band]');
+  if(bh){ const bi=+bh.dataset.band, ps=BANDS[bi].prices;
+    if(legMode==='reveal'){ if(openB.has(bi)){ openB.delete(bi); ps.forEach(p=>active.delete(p)); } else { openB.add(bi); ps.forEach(p=>active.add(p)); } }
+    else { const on=ps.every(p=>active.has(p)); ps.forEach(p=>on?active.delete(p):active.add(p)); }
+    refresh(); return; }
+  const pr=e.target.closest('[data-price]');
+  if(pr){ const p=+pr.dataset.price; active.has(p)?active.delete(p):active.add(p); refresh(); }
 });
-reset.onclick=()=>{active.clear();selected.clear();paint();};
+reset.onclick=()=>{ active.clear(); openB.clear(); refresh(); };
 /* для кадров: ?sel=1 выбирает пару мест */
 if(qs.get('sel')==='1'){ seats.filter(s=>!s.sold&&s.zone==='Партер'&&s.row===5).slice(10,12).forEach(s=>selected.add(s.id)); seats.filter(s=>!s.sold&&s.zone==='Балкон').slice(14,15).forEach(s=>selected.add(s.id)); }
+if(legMode==='reveal') BANDS.forEach((b,bi)=>{ if(b.prices.some(p=>active.has(p))) openB.add(bi); });
 paint();
+if(document.fonts) document.fonts.ready.then(()=>{ legNote.textContent=LEGS[legMode].note+` Высота легенды — ${legEl.offsetHeight} px.`; });
 /* для кадров: ?tip=amph показывает подсказку у места в амфитеатре */
 if(qs.get('tip')==='amph'){ const s=seats.find(x=>!x.sold&&x.zone==='Амфитеатр'&&x.row===4&&x.place>=8); requestAnimationFrame(()=>showTip(s)); }
 </script>

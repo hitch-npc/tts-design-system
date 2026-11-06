@@ -153,11 +153,16 @@
   .shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 20px 16px; align-items: start; }
   .shots.wide { grid-template-columns: 1fr; }
   .shots.phones { grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 260px)); }
+  .shots.legs { grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); }
   .col { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
   .lbl { align-self: flex-start; font-size: 9px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; padding: 4px 8px; border-radius: 2px; }
   .lbl-before { color: var(--n400); border: 1px solid var(--n700); }
   .lbl-after { color: var(--ink); background: var(--n100); border: 1px solid var(--n100); }
   .lbl-new { color: var(--on-accent); background: var(--accent); border: 1px solid var(--accent); }
+  /* New — что добавлено в последний раунд */
+  .new { display: inline-block; vertical-align: .3em; margin-left: 10px; padding: 3px 6px 2px; font-family: var(--f-ui); font-size: 9px; font-weight: 600; line-height: 1.2; letter-spacing: .14em; text-transform: uppercase; color: var(--ok-fg); background: var(--ok-bg); border: 1px solid var(--ok-bd); border-radius: 2px; white-space: nowrap; }
+  .sum .new { vertical-align: 1px; margin-left: 6px; }
+  .legend .new { margin: 0; vertical-align: 0; }
   .shot { margin: 0; max-width: 100%; border: 1px solid var(--line); border-radius: 2px; overflow: hidden; line-height: 0; background: var(--ink); }
   .shot img { display: block; width: 100%; height: auto; }
   /* Афиша A → B: при прокрутке афиша во всю ширину складывается в миниатюру рядом с названием */
@@ -257,7 +262,7 @@
 <g mask="url(#mask0_14_6)">
 <path d="M120.717 33.877C187.382 33.8789 241.427 95.3157 241.427 95.3157C240.957 95.8482 187.094 156.746 120.717 156.748C54.2542 156.748 0.333887 95.6944 0 95.3157C0 95.3157 54.0501 33.877 120.717 33.877ZM120.633 49.6928C95.4466 49.6928 75.0306 70.1087 75.0306 95.2949C75.0306 120.481 95.4459 140.897 120.633 140.897C145.818 140.896 166.234 120.481 166.234 95.2949C166.234 70.109 145.818 49.6933 120.633 49.6928ZM120.639 68.0628C135.682 68.0646 147.879 80.2592 147.879 95.3021C147.878 110.344 135.681 122.539 120.639 122.541C105.596 122.541 93.3945 110.345 93.393 95.3021C93.393 80.2577 105.596 68.0628 120.639 68.0628Z" fill="currentColor"></path>
 </g>
-</svg><div class="meta-cap">Дизайн-система TTS · R14 · 3 ноября 2026</div></div>
+</svg><div class="meta-cap">Дизайн-система TTS · R14 · 6 ноября 2026</div></div>
     <div class="meta-cap">Передача фронтенду · стенд редизайна</div>
     <h1>Баги стенда и правки редизайна</h1>
     <p class="lead">Замечания к стенду редизайна с 30 октября. Сначала баги: что на стенде работает не так, как задумано. Затем правки дизайна: что меняется в самом макете и в каком оно состоянии. В каждом пункте: что сейчас, что нужно и где решение уже есть в макете.</p>
@@ -265,8 +270,9 @@
       <div><span class="lbl lbl-before">Стенд</span>кадр со стенда, 30–31 октября</div>
       <div><span class="lbl lbl-after">Макет</span>макет или демо, где решение уже есть</div>
       <div><span class="lbl lbl-new">Предложение</span>вариант на выбор, ещё не утверждён</div>
+      <div><span class="new">New</span>добавлено 6 ноября</div>
     </div>
-    <div class="files">Обсуждение и голосование — в <a class="t-link-x" href="https://github.com/hitch-npc/tts-design-system/issues">issues репозитория</a>: у каждого пункта своя issue, за вариант голосуют 👍 под комментарием с ним. Живые макеты открываются кнопками в карточках Р1–Р5. Файлы в репозитории: <code>site/home-new.html</code> — новая главная с календарём; <code>site/home-new-tiles.html</code> — три варианта категорий и первого экрана; <code>site/event-card-fav-demo.html</code> — карточка с «В избранное»; <code>site/seat-price-filter-demo.html</code> и <code>site/zone-palette-demo.html</code> — схема зала, цвета цен и фильтр по цене. Правила — <code>CLAUDE.md</code>, решения — <code>DECISIONS.md</code>.</div>
+    <div class="files">Обсуждение и голосование — в <a class="t-link-x" href="https://github.com/hitch-npc/tts-design-system/issues">issues репозитория</a>: у каждого пункта своя issue, за вариант голосуют 👍 под комментарием с ним. Живые макеты открываются кнопками в карточках Р1–Р5. Файлы в репозитории: <code>site/home-new.html</code> — новая главная с календарём; <code>site/home-new-tiles.html</code> — три варианта категорий и первого экрана; <code>site/event-card-fav-demo.html</code> — карточка с «В избранное»; <code>site/seat-price-filter-demo.html</code>, <code>site/zone-palette-demo.html</code> и <code>site/seat-big-hall-demo.html</code> — схема зала, цвета цен, фильтр по цене и легенда большого зала. Правила — <code>CLAUDE.md</code>, решения — <code>DECISIONS.md</code>.</div>
   </header>
 
   <section class="part" aria-labelledby="sum-h">
@@ -279,24 +285,24 @@
         <tr><td class="sid"><a href="#b2">Б2</a></td><td>Событие · телефон</td><td class="sw">Описание</td><td>«Читать полностью» раскрывает текст не до конца</td><td><span class="st st-bug">Баг</span></td></tr>
         <tr><td class="sid"><a href="#b3">Б3</a></td><td>Главная · телефон</td><td class="sw">Шторка фильтров</td><td>не закрывается смахиванием, в крестик трудно попасть</td><td><span class="st st-bug">Баг</span></td></tr>
         <tr><td class="sid"><a href="#b4">Б4</a></td><td>Все страницы · iPhone</td><td class="sw">Поля ввода</td><td>касание поиска увеличивает страницу; поля — 16 px на сенсорных экранах</td><td><span class="st st-bug">Баг</span></td></tr>
-        <tr><td class="sid"><a href="#b5">Б5</a></td><td>Выбор мест · десктоп</td><td class="sw">«Назад» к событию</td><td>над схемой нет полосы со стрелкой и названием показа, как в макете</td><td><span class="st st-bug">Баг</span></td></tr>
-        <tr><td class="sid"><a href="#b6">Б6</a></td><td>Выбор мест · телефон</td><td class="sw">«Назад» по кругу</td><td>«Назад» ходит между схемой и событием, до афиши не дойти</td><td><span class="st st-bug">Баг</span></td></tr>
-        <tr><td class="sid"><a href="#b7">Б7</a></td><td>Афиша · поиск</td><td class="sw">Пустой поиск</td><td>стёртый запрос и Enter с пустым полем не сбрасывают результаты</td><td><span class="st st-bug">Баг</span></td></tr>
+        <tr><td class="sid"><a href="#b5">Б5</a></td><td>Выбор мест · десктоп</td><td class="sw">«Назад» к событию<span class="new">New</span></td><td>над схемой нет полосы со стрелкой и названием показа, как в макете</td><td><span class="st st-bug">Баг</span></td></tr>
+        <tr><td class="sid"><a href="#b6">Б6</a></td><td>Выбор мест · телефон</td><td class="sw">«Назад» по кругу<span class="new">New</span></td><td>«Назад» ходит между схемой и событием, до афиши не дойти</td><td><span class="st st-bug">Баг</span></td></tr>
+        <tr><td class="sid"><a href="#b7">Б7</a></td><td>Афиша · поиск</td><td class="sw">Пустой поиск<span class="new">New</span></td><td>стёртый запрос и Enter с пустым полем не сбрасывают результаты</td><td><span class="st st-bug">Баг</span></td></tr>
         <tr class="grp"><td colspan="5">Правки дизайна</td></tr>
         <tr><td class="sid"><a href="#r1">Р1</a></td><td>Главная</td><td class="sw">Календарь</td><td>дни без событий не выбираются, неделя листается свайпом, кнопка месяца открывает весь месяц</td><td><span class="st st-ok">Макет готов</span></td></tr>
-        <tr><td class="sid"><a href="#r2">Р2</a></td><td>Выбор мест</td><td class="sw">Цвета цен и фильтр</td><td>балкон розово-малиновый вместо зелёного; фильтр по цене; большой зал — семьи цветов по диапазонам</td><td><span class="st st-pick">На выбор</span></td></tr>
+        <tr><td class="sid"><a href="#r2">Р2</a></td><td>Выбор мест</td><td class="sw">Цвета цен и фильтр<span class="new">New</span></td><td>балкон розово-малиновый вместо зелёного; фильтр по цене; большой зал — семьи цветов (выбраны), легенда — три варианта на выбор</td><td><span class="st st-pick">На выбор</span></td></tr>
         <tr><td class="sid"><a href="#r3">Р3</a></td><td>Главная · десктоп</td><td class="sw">Плитки категорий</td><td>цвет виден всегда; подъём плитки или движение стрелки</td><td><span class="st st-pick">На выбор</span></td></tr>
         <tr><td class="sid"><a href="#r4">Р4</a></td><td>Площадки</td><td class="sw">Список площадок</td><td>крупные плитки и фильтр по типу; запасные — список, группы, список с картой</td><td><span class="st st-pick">На выбор</span></td></tr>
         <tr><td class="sid"><a href="#r7">Р5</a></td><td>Событие</td><td class="sw">Афиша события</td><td>во всю ширину и складывается в миниатюру при прокрутке (D); запасной — A</td><td><span class="st st-pick">На выбор</span></td></tr>
-        <tr><td class="sid"><a href="#r8">Р8</a></td><td>Карточка афиши · везде</td><td class="sw">Ценз вместо города</td><td>строка над названием — «Спектакль · 16+», ценз тише жанра; города на карточке нет</td><td><span class="st st-ok">Макет готов</span></td></tr>
+        <tr><td class="sid"><a href="#r8">Р8</a></td><td>Карточка афиши · везде</td><td class="sw">Ценз вместо города<span class="new">New</span></td><td>строка над названием — «Спектакль · 16+», ценз тише жанра; города на карточке нет</td><td><span class="st st-ok">Макет готов</span></td></tr>
         <tr class="grp"><td colspan="5">Низкий приоритет</td></tr>
         <tr><td class="sid"><a href="#r5">Р6</a></td><td>Партнёрам</td><td class="sw">«Как это работает?»</td><td>наведение и нажатие заметнее</td><td><span class="st st-low">Низкий</span></td></tr>
         <tr><td class="sid"><a href="#r6">Р7</a></td><td>Шапка</td><td class="sw">Отзывы</td><td>отзывы на сайте вместо перехода в Яндекс Карты</td><td><span class="st st-low">Низкий</span></td></tr>
         <tr class="grp"><td colspan="5">Предложение</td></tr>
         <tr><td class="sid"><a href="#p1">П1</a></td><td>Главная</td><td class="sw">Новая главная и заставка</td><td>заставка-прелоадер с колодой афиш, новый первый экран, календарь</td><td><span class="st st-pick">Предложение</span></td></tr>
-        <tr><td class="sid"><a href="#p2">П2</a></td><td>Главная</td><td class="sw">Категории и первый экран</td><td>чипы, пять плиток или первый экран на всю высоту с плитками после него</td><td><span class="st st-pick">На выбор</span></td></tr>
-        <tr><td class="sid"><a href="#p3">П3</a></td><td>Карточка афиши</td><td class="sw">«В избранное»</td><td>сердечко на обложке — сохранить событие прямо из афиши</td><td><span class="st st-pick">На выбор</span></td></tr>
-        <tr><td class="sid"><a href="#p4">П4</a></td><td>Главная · телефон</td><td class="sw">Светлая тема первого экрана</td><td>фото под текстом высветляется, а не темнеет — текст читается</td><td><span class="st st-ok">Макет готов</span></td></tr>
+        <tr><td class="sid"><a href="#p2">П2</a></td><td>Главная</td><td class="sw">Категории и первый экран<span class="new">New</span></td><td>чипы, пять плиток или первый экран на всю высоту с плитками после него</td><td><span class="st st-pick">На выбор</span></td></tr>
+        <tr><td class="sid"><a href="#p3">П3</a></td><td>Карточка афиши</td><td class="sw">«В избранное»<span class="new">New</span></td><td>сердечко на обложке — сохранить событие прямо из афиши</td><td><span class="st st-pick">На выбор</span></td></tr>
+        <tr><td class="sid"><a href="#p4">П4</a></td><td>Главная · телефон</td><td class="sw">Светлая тема первого экрана<span class="new">New</span></td><td>фото под текстом высветляется, а не темнеет — текст читается</td><td><span class="st st-ok">Макет готов</span></td></tr>
       </table>
     </div>
   </section>
@@ -358,7 +364,7 @@
       </div>
     </article>
     <article class="chg" id="b5">
-      <div class="chg-h"><div class="chg-id">Б5</div><div class="chg-t"><h3>Схема зала: нет «Назад» к событию</h3><div class="where">Выбор мест — десктоп · полоса над схемой</div></div><span class="st st-bug">Баг</span></div>
+      <div class="chg-h"><div class="chg-id">Б5</div><div class="chg-t"><h3>Схема зала: нет «Назад» к событию<span class="new">New</span></h3><div class="where">Выбор мест — десктоп · полоса над схемой</div></div><span class="st st-bug">Баг</span></div>
       <table class="spec">
         <tr><th>Что</th><th>Сейчас на стенде</th><th>Нужно</th></tr>
         <tr><td class="p">Путь обратно</td><td class="o" data-h="Сейчас на стенде">только кнопка браузера; над схемой — «Выбор мест / Схема зала»</td><td class="n" data-h="Нужно">полоса над схемой: стрелка «‹», надзаголовок «Выбор мест», под ним название, дата и время показа; справа площадка</td></tr>
@@ -369,7 +375,7 @@
     </article>
 
     <article class="chg" id="b6">
-      <div class="chg-h"><div class="chg-id">Б6</div><div class="chg-t"><h3>«Назад» со схемы зала ходит по кругу</h3><div class="where">Выбор мест → событие — телефон · история браузера</div></div><span class="st st-bug">Баг</span></div>
+      <div class="chg-h"><div class="chg-id">Б6</div><div class="chg-t"><h3>«Назад» со схемы зала ходит по кругу<span class="new">New</span></h3><div class="where">Выбор мест → событие — телефон · история браузера</div></div><span class="st st-bug">Баг</span></div>
       <table class="spec">
         <tr><th>Что</th><th>Сейчас на стенде</th><th>Нужно</th></tr>
         <tr><td class="p">«Назад» со схемы</td><td class="o" data-h="Сейчас на стенде">ведёт на событие, но следующее «Назад» снова открывает схему — до афиши не дойти</td><td class="n" data-h="Нужно">афиша → событие → схема и обратно тем же путём: схема → событие → афиша</td></tr>
@@ -380,7 +386,7 @@
     </article>
 
     <article class="chg" id="b7">
-      <div class="chg-h"><div class="chg-id">Б7</div><div class="chg-t"><h3>Пустой поиск не сбрасывает результаты</h3><div class="where">Афиша — все экраны · строка поиска</div></div><span class="st st-bug">Баг</span></div>
+      <div class="chg-h"><div class="chg-id">Б7</div><div class="chg-t"><h3>Пустой поиск не сбрасывает результаты<span class="new">New</span></h3><div class="where">Афиша — все экраны · строка поиска</div></div><span class="st st-bug">Баг</span></div>
       <table class="spec">
         <tr><th>Что</th><th>Сейчас на стенде</th><th>Нужно</th></tr>
         <tr><td class="p">Стёрли запрос</td><td class="o" data-h="Сейчас на стенде">искали «Кыся», стёрли текст — в результатах по-прежнему «Кыся»</td><td class="n" data-h="Нужно">пустое поле = запроса нет: результаты сбрасываются, афиша показывает всё с учётом остальных выбранных фильтров</td></tr>
@@ -445,27 +451,46 @@
         <div class="col"><span class="lbl lbl-new">Фильтр по цене · включён балкон</span><figure class="shot"><img src="img/seat-crimson-filter.webp" width="1100" height="516" alt="Демо схемы зала с фильтром: светятся только места балкона, остальные погашены" loading="lazy"></figure></div>
       </div>
     
-      <div class="part-h" style="border:0;padding:12px 0 0"><div class="meta-cap">Большой зал · демо <code>site/seat-big-hall-demo.html</code></div><h3 class="sub-h">15 цен и 6 зон</h3><p>Условный пример большого театра: партер, амфитеатр, бельэтаж с ложами, два яруса и балкон, 1 104 места. Цена зависит и от зоны, и от ряда. Пяти цветов на 15 цен не хватает, поэтому цвет кодирует диапазон цен, а светлота — цену внутри диапазона.</p></div>
+      <div class="part-h" style="border:0;padding:12px 0 0"><div class="meta-cap">Большой зал · демо <code>site/seat-big-hall-demo.html</code></div><h3 class="sub-h">15 цен и 6 зон</h3><p>Условный пример большого театра: партер, амфитеатр, бельэтаж с ложами, два яруса и балкон, 1 104 места. Цена зависит и от зоны, и от ряда. Пяти цветов на 15 цен не хватает, поэтому цвета — семьи: оттенок кодирует диапазон цен, светлота — цену внутри диапазона. Семьи цветов выбраны; градиент и вариант «только диапазоны» сняты.</p></div>
       <table class="spec">
-        <tr><th>Что</th><th>Сейчас</th><th>Предложение</th></tr>
-        <tr><td class="p">Цвета 15 цен</td><td class="o num" data-h="Сейчас">градиент одного цвета: самая похожая пара — 0,4 ΔE, на глаз не различить</td><td class="n num" data-h="Предложение">семьи цветов: 5 оттенков на 5 диапазонов (жёлтый, синий, бирюзовый, фиолетовый, малиновый), внутри — 2–4 ступени светлоты, дороже — глубже. Самая похожая пара — 9,7 ΔE, соседние ступени — от 11 ΔE</td></tr>
-        <tr><td class="p">Диапазоны</td><td class="o" data-h="Сейчас">—</td><td class="n num" data-h="Предложение">от 20 000 ₽ · 12 000–19 999 · 8 000–11 999 · 4 000–7 999 · до 4 000 ₽; границы — по ценам конкретного зала</td></tr>
-        <tr><td class="p">Легенда</td><td class="o" data-h="Сейчас">шкала «от … до …»</td><td class="n" data-h="Предложение">список, сгруппированный по диапазонам: у диапазона и у каждой цены — число свободных мест</td></tr>
-        <tr><td class="p">Фильтр</td><td class="o" data-h="Сейчас">нет</td><td class="n" data-h="Предложение">нажатие на диапазон включает все его цены, на цену — только её; остальные места гаснут до 0,1. Наведение на цену или диапазон подсвечивает их места без нажатия</td></tr>
-        <tr><td class="p">Подсказка у места</td><td class="o" data-h="Сейчас">—</td><td class="n" data-h="Предложение">наведение, на телефоне — нажатие: зона, ряд и место капсом 10 px, цена крупно (Oranienbaum 26 px) с цветом цены, ниже «Нажмите, чтобы выбрать» или «Выбрано · нажмите, чтобы снять»; у проданного — «Продано». Окошко над местом, у края зала — под ним</td></tr>
-        <tr><td class="p">Если оттенки не различаются</td><td class="o" data-h="Сейчас">—</td><td class="n" data-h="Предложение">цвет только помогает ориентироваться, цену всегда называют подсказка и легенда (WCAG 1.4.1: информацию нельзя передавать одним цветом). Быстрее всего найти места нужной цены — фильтр</td></tr>
-        <tr><td class="p">Запасной вариант</td><td class="o" data-h="Сейчас">—</td><td class="n" data-h="Предложение">«только диапазоны»: 5 цветов варианта B, точная цена — в легенде, фильтре и подсказке у места</td></tr>
+        <tr><th>Что</th><th>Сейчас</th><th>Решение</th></tr>
+        <tr><td class="p">Цвета 15 цен</td><td class="o num" data-h="Сейчас">градиент одного цвета: самая похожая пара — 0,4 ΔE, на глаз не различить</td><td class="n num" data-h="Решение">семьи цветов: 5 оттенков на 5 диапазонов (жёлтый, синий, бирюзовый, фиолетовый, малиновый), внутри — 2–4 ступени светлоты, дороже — глубже. Самая похожая пара — 9,7 ΔE, соседние ступени — от 11 ΔE</td></tr>
+        <tr><td class="p">Диапазоны</td><td class="o" data-h="Сейчас">—</td><td class="n num" data-h="Решение">от 20 000 ₽ · 12 000–19 999 · 8 000–11 999 · 4 000–7 999 · до 4 000 ₽; границы — по ценам конкретного зала</td></tr>
+        <tr><td class="p">Фильтр</td><td class="o" data-h="Сейчас">нет</td><td class="n" data-h="Решение">нажатие на диапазон включает все его цены, на цену — только её; остальные места гаснут до 0,1. Наведение на цену или диапазон подсвечивает их места без нажатия. «Сбросить» над легендой возвращает всё</td></tr>
+        <tr><td class="p">Подсказка у места</td><td class="o" data-h="Сейчас">—</td><td class="n" data-h="Решение">наведение, на телефоне — нажатие: зона, ряд и место капсом 10 px, цена крупно (Oranienbaum 26 px) с цветом цены, ниже «Нажмите, чтобы выбрать» или «Выбрано · нажмите, чтобы снять»; у проданного — «Продано». Окошко над местом, у края зала — под ним</td></tr>
+        <tr><td class="p">Если оттенки не различаются</td><td class="o" data-h="Сейчас">—</td><td class="n" data-h="Решение">цвет только помогает ориентироваться, цену всегда называют подсказка и легенда (WCAG 1.4.1: информацию нельзя передавать одним цветом). Быстрее всего найти места нужной цены — фильтр</td></tr>
+        <tr><td class="p">Итог и кнопка</td><td class="o" data-h="Сейчас">под легендой — после длинного списка цен уезжают за край экрана</td><td class="n" data-h="Решение">закреплены внизу панели: легенда листается сама по себе, «Выбрано», сумма и «Перейти к оформлению» видны всегда. На телефоне — полосой внизу экрана, как <code>.sticky-buy</code>: сумма, под ней число мест, справа кнопка</td></tr>
       </table>
       <div class="shots wide">
         <div class="col"><span class="lbl lbl-before">Как на стенде · градиент на 15 цен</span><figure class="shot"><img src="img/big-grad.webp" width="1240" height="947" alt="Большой зал: все 15 цен оттенками одного синего, зоны сливаются" loading="lazy"></figure></div>
-        <div class="col"><span class="lbl lbl-new">Семьи цветов</span><figure class="shot"><img src="img/big-fam.webp" width="1240" height="947" alt="Большой зал: партер жёлтый и синий по рядам, амфитеатр и бельэтаж бирюзовые, ярусы фиолетовые, балкон малиновый; легенда по диапазонам" loading="lazy"></figure></div>
-        <div class="col"><span class="lbl lbl-new">Фильтр · диапазон 12 000 – 19 999 ₽</span><figure class="shot"><img src="img/big-fam-filter.webp" width="1240" height="947" alt="Включён диапазон 12 000–19 999 ₽: светятся ряды 8–18 партера, остальное погашено" loading="lazy"></figure></div>
-        <div class="col"><span class="lbl lbl-new">Подсказка · наведение на место</span><figure class="shot" style="max-width:900px"><img src="img/big-tip.webp" width="900" height="330" alt="Окошко над местом: «Амфитеатр · ряд 4 · место 1», цена 8 500 ₽ крупно, «Нажмите, чтобы выбрать»" loading="lazy"></figure></div>
-        <div class="col"><span class="lbl lbl-new">Только диапазоны</span><figure class="shot"><img src="img/big-band.webp" width="1240" height="947" alt="Большой зал пятью цветами: по одному на диапазон" loading="lazy"></figure></div>
+        <div class="col"><span class="lbl lbl-after">Демо · семьи цветов, итог закреплён</span><figure class="shot"><img src="img/big-hall-chips.webp" width="1240" height="927" alt="Большой зал: партер жёлтый и синий по рядам, амфитеатр и бельэтаж бирюзовые, ярусы фиолетовые, балкон малиновый; справа легенда, внизу панели сумма 44 500 ₽ и кнопка «Перейти к оформлению»" loading="lazy"></figure></div>
+        <div class="col"><span class="lbl lbl-after">Фильтр · диапазон 12 000 – 19 999 ₽</span><figure class="shot"><img src="img/big-hall-filter.webp" width="1240" height="927" alt="Включён диапазон 12 000–19 999 ₽: светятся ряды 8–18 партера, остальное погашено; диапазон в легенде в кобальтовой рамке, его цены — в серых" loading="lazy"></figure></div>
+        <div class="col"><span class="lbl lbl-after">Подсказка · наведение на место</span><figure class="shot" style="max-width:972px"><img src="img/big-tip.webp" width="972" height="402" alt="Окошко над местом: «Амфитеатр · ряд 4 · место 8», цена 8 500 ₽ крупно с круглым значком цвета, «Нажмите, чтобы выбрать»" loading="lazy"></figure></div>
       </div>
       <div class="shots phones">
-        <div class="col"><span class="lbl lbl-new">Подсказка · телефон, нажатие</span><figure class="shot"><img src="img/big-tip-phone.webp" width="520" height="446" alt="На телефоне после нажатия на место: окошко «Амфитеатр · ряд 4 · место 1», цена 8 500 ₽ крупно, «Выбрано · нажмите, чтобы снять»" loading="lazy"></figure></div>
-        <div class="col"><span class="lbl lbl-new">Семьи цветов · телефон</span><figure class="shot"><img src="img/big-fam-phone.webp" width="520" height="1050" alt="Большой зал целиком на экране телефона" loading="lazy"></figure></div>
+        <div class="col"><span class="lbl lbl-after">Подсказка · телефон, нажатие</span><figure class="shot"><img src="img/big-tip-phone.webp" width="520" height="446" alt="На телефоне после нажатия на место: окошко «Амфитеатр · ряд 4 · место 1», цена 8 500 ₽ крупно, «Выбрано · нажмите, чтобы снять»" loading="lazy"></figure></div>
+        <div class="col"><span class="lbl lbl-after">Семьи цветов · телефон</span><figure class="shot"><img src="img/big-fam-phone.webp" width="520" height="1050" alt="Большой зал целиком на экране телефона" loading="lazy"></figure></div>
+      </div>
+
+      <div class="part-h" style="border:0;padding:12px 0 0"><div class="meta-cap">Большой зал · легенда цен</div><h3 class="sub-h">Три варианта легенды<span class="new">New</span></h3><p>Список из 15 цен с числом свободных мест занимал около 1 230 px — длиннее экрана. Три варианта на выбор, в демо переключаются кнопками «Легенда». Общее для всех: цифры Manrope, значок диапазона — квадрат с градиентом его цен, значок цены — круг её цвета, итог и кнопка закреплены.</p></div>
+      <table class="spec">
+        <tr><th>Что</th><th>Сейчас</th><th>Предложение</th></tr>
+        <tr><td class="p">Полный список</td><td class="o" data-h="Сейчас">все 15 цен строками, около 1 230 px; итог и кнопка уезжают под экран</td><td class="n" data-h="Предложение">список остаётся целиком и листается внутри панели; у каждой цены — число свободных мест</td></tr>
+        <tr><td class="p">B · Цены чипами</td><td class="o" data-h="Сейчас">—</td><td class="n num" data-h="Предложение">диапазон строкой с числом мест, его цены — чипами по три; число мест у цены — в подсказке при наведении. Около 450 px — легенда видна целиком, без прокрутки</td></tr>
+        <tr><td class="p">C · Раскрытие по фильтру</td><td class="o" data-h="Сейчас">—</td><td class="n num" data-h="Предложение">в покое только 5 диапазонов, около 200 px. Нажатие на диапазон включает фильтр и раскрывает его цены строками с числом мест, повторное — снимает фильтр и сворачивает; с раскрытым диапазоном — около 320 px</td></tr>
+        <tr><td class="p">Цифры</td><td class="o" data-h="Сейчас">Oranienbaum — 15 цен подряд мелким кеглем читаются тяжело</td><td class="n num" data-h="Предложение">Manrope 13 px 500, табличные цифры; диапазон — 12 px 500, серый, в выбранном — светлый. Oranienbaum остаётся у суммы и в подсказке у места</td></tr>
+        <tr><td class="p">Выбор</td><td class="o" data-h="Сейчас">кобальтовая рамка у каждой выбранной строки</td><td class="n" data-h="Предложение">диапазон целиком — рамка <code>--accent</code> и фон <code>--accent-ghost</code>, частично — <code>aria-pressed="mixed"</code> без рамки; отдельная цена — рамка <code>--n500</code> и фон <code>--n900</code>. Кобальт только у диапазона: при нескольких выбранных ценах легенда не превращается в синюю сетку</td></tr>
+        <tr><td class="p">Раскрытие в C</td><td class="o" data-h="Сейчас">—</td><td class="n num" data-h="Предложение">420 мс <code>cubic-bezier(.16,1,.3,1)</code>, свёртывание 252 мс, строки проявляются по очереди с шагом 30 мс — как меню профиля и окно фильтров; свёрнутые цены недоступны с клавиатуры (<code>inert</code>); при <code>prefers-reduced-motion</code> без движения</td></tr>
+        <tr><td class="p">После выбора</td><td class="o" data-h="Сейчас">—</td><td class="n" data-h="Предложение">Manrope в ценах легенды и серая рамка выбранной цены — отход от общих правил (числа — Oranienbaum, выбор — кобальтом); записать в <code>DECISIONS.md</code> вместе с выбранным вариантом</td></tr>
+      </table>
+      <div class="shots legs">
+        <div class="col"><span class="lbl lbl-new">Полный список</span><figure class="shot"><img src="img/big-leg-list.webp" width="640" height="1736" alt="Полный список: 15 цен строками с числом свободных мест, список листается внутри панели, внизу закреплены сумма и кнопка" loading="lazy"></figure></div>
+        <div class="col"><span class="lbl lbl-new">B · Цены чипами</span><figure class="shot"><img src="img/big-leg-chips.webp" width="640" height="1336" alt="Цены чипами: пять диапазонов строками, под каждым — цены по три в ряд с круглыми значками; выбрана цена 14 000 ₽ — серая рамка" loading="lazy"></figure></div>
+        <div class="col"><span class="lbl lbl-new">C · В покое</span><figure class="shot"><img src="img/big-leg-reveal.webp" width="640" height="880" alt="Раскрытие по фильтру: только пять диапазонов с квадратами-градиентами и числом свободных мест" loading="lazy"></figure></div>
+        <div class="col"><span class="lbl lbl-new">C · Диапазон раскрыт</span><figure class="shot"><img src="img/big-leg-reveal-open.webp" width="640" height="1170" alt="Нажат диапазон 8 000 – 11 999 ₽: он в кобальтовой рамке, под ним раскрыты четыре цены с числом свободных мест в серых рамках" loading="lazy"></figure></div>
+      </div>
+      <div class="shots phones">
+        <div class="col"><span class="lbl lbl-new">B · телефон, итог полосой внизу</span><figure class="shot"><img src="img/big-leg-phone.webp" width="780" height="1688" alt="Телефон: легенда под схемой, цены чипами; внизу экрана полоса с суммой 44 500 ₽, «3 места» и кнопкой «Перейти к оформлению»" loading="lazy"></figure></div>
       </div>
     </article>
 
@@ -717,7 +742,7 @@
     <div class="part-h" style="border:0;padding:8px 0 0"><div class="meta-cap">Низкий приоритет</div><p>Делаются после остальных правок.</p></div>
 
     <article class="chg" id="r8">
-      <div class="chg-h"><div class="chg-id">Р8</div><div class="chg-t"><h3>Карточка афиши: возрастной ценз вместо города</h3><div class="where">Все карточки афиши · ядро <code>.event-card-meta</code> + <code>.event-card-age</code> · решение №41</div></div><span class="st st-ok">Макет готов</span></div>
+      <div class="chg-h"><div class="chg-id">Р8</div><div class="chg-t"><h3>Карточка афиши: возрастной ценз вместо города<span class="new">New</span></h3><div class="where">Все карточки афиши · ядро <code>.event-card-meta</code> + <code>.event-card-age</code> · решение №41</div></div><span class="st st-ok">Макет готов</span></div>
       <table class="spec">
         <tr><th>Что</th><th>Сейчас</th><th>Нужно</th></tr>
         <tr><td class="p">Строка над названием</td><td class="o" data-h="Сейчас">«Спектакль · Москва»</td><td class="n" data-h="Нужно">«Спектакль · 16+»: жанр и возрастной ценз; города нет — афиша и так открыта в выбранном городе</td></tr>
@@ -780,7 +805,7 @@
     </article>
 
     <article class="chg" id="p2">
-      <div class="chg-h"><div class="chg-id">П2</div><div class="chg-t"><h3>Главная: категории и первый экран</h3><div class="where">Главная — десктоп и телефон · демо <code>site/home-new-tiles.html</code></div></div><span class="st st-pick">На выбор</span></div>
+      <div class="chg-h"><div class="chg-id">П2</div><div class="chg-t"><h3>Главная: категории и первый экран<span class="new">New</span></h3><div class="where">Главная — десктоп и телефон · демо <code>site/home-new-tiles.html</code></div></div><span class="st st-pick">На выбор</span></div>
       <div class="live"><a href="../../home-new-tiles.html?v=old&amp;intro=0">A · Было ↗</a><a href="../../home-new-tiles.html?v=tiles&amp;intro=0">B · Плитки ↗</a><a href="../../home-new-tiles.html?v=full&amp;intro=0">C · Полный экран ↗</a><a class="gh" href="https://github.com/hitch-npc/tts-design-system/issues/14">Обсудить и проголосовать · #14 ↗</a></div>
       <p class="note">Три варианта на одной странице, переключаются кнопками в углу. Плитки — те же, что в <a href="#r3">Р3</a>: цвет жанра из системы, «Детям» — зелёная. Заставка работает во всех трёх: афиша перелетает в постер первого экрана.</p>
       <table class="spec">
@@ -805,7 +830,7 @@
     </article>
 
     <article class="chg" id="p3">
-      <div class="chg-h"><div class="chg-id">П3</div><div class="chg-t"><h3>Карточка афиши: «В избранное»</h3><div class="where">Карточка афиши — главная, все события · демо <code>site/event-card-fav-demo.html</code></div></div><span class="st st-pick">На выбор</span></div>
+      <div class="chg-h"><div class="chg-id">П3</div><div class="chg-t"><h3>Карточка афиши: «В избранное»<span class="new">New</span></h3><div class="where">Карточка афиши — главная, все события · демо <code>site/event-card-fav-demo.html</code></div></div><span class="st st-pick">На выбор</span></div>
       <div class="live"><a href="../../event-card-fav-demo.html">Живой макет ↗</a><a class="gh" href="https://github.com/hitch-npc/tts-design-system/issues/15">Обсудить и проголосовать · #15 ↗</a></div>
       <table class="spec">
         <tr><th>Что</th><th>Сейчас</th><th>Предложение</th></tr>
@@ -821,7 +846,7 @@
     </article>
 
     <article class="chg" id="p4">
-      <div class="chg-h"><div class="chg-id">П4</div><div class="chg-t"><h3>Светлая тема первого экрана на телефоне</h3><div class="where">Главная — телефон, первый экран с фото · <code>site/home-new.html</code>, <code>site/home-new-tiles.html</code></div></div><span class="st st-ok">Макет готов</span></div>
+      <div class="chg-h"><div class="chg-id">П4</div><div class="chg-t"><h3>Светлая тема первого экрана на телефоне<span class="new">New</span></h3><div class="where">Главная — телефон, первый экран с фото · <code>site/home-new.html</code>, <code>site/home-new-tiles.html</code></div></div><span class="st st-ok">Макет готов</span></div>
       <table class="spec">
         <tr><th>Что</th><th>Было</th><th>Стало</th></tr>
         <tr><td class="p">Фото под текстом</td><td class="o" data-h="Было">затемнено (<code>brightness(.55)</code>) и уходит в белый фон — серая каша, тёмный текст на сером, дата и площадка не читаются</td><td class="n" data-h="Стало">в светлой теме фото обесцвечено и высветлено (<code>grayscale(1) brightness(1.45) contrast(.55)</code>, прозрачность 0,6), сверху светлая подложка — тёмный текст читается на любом кадре</td></tr>
