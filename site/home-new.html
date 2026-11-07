@@ -82,9 +82,6 @@ html.poster-in .hero2-poster, .no-js .hero2-poster { opacity: 1; }
 .hero2-poster:hover img { transform: scale(calc(var(--poster-zoom, 1.04) + .05)); }
 /* горизонтальная афиша: постер шире, колонка текста уже */
 @media (min-width: 901px) { .hero2--wide .hero2-in { grid-template-columns: 1fr 1.15fr; } }
-/* заставка: у афиши «Психопатов» по краям картинки бумага — верхняя карточка колоды (она перелетает в постер)
-   кадрируется так же, как постер первого экрана */
-.tts-intro .ti-card:last-child img { object-position: 52% 50%; transform: scale(1.045); }
 .hp-cap { position: absolute; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; gap: 8px; padding: 64px 22px 22px; background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--ink) 88%, transparent)); opacity: 0; transform: translateY(12px); transition: opacity 700ms var(--ease-out) 200ms, transform 900ms var(--ease-in) 200ms; }
 html.poster-in .hp-cap, .no-js .hp-cap { opacity: 1; transform: none; }
 .hp-date { font-family: var(--f-num); font-size: 18px; color: var(--n100); }
@@ -294,7 +291,7 @@ html.page-in .hw > span, .no-js .hw > span { transform: none; transition: transf
       MS + '85a/fndnxz2eojab1nki8b3ikufmvaywsadl/lavr2_.jpg',
       MS + '356/kqkkzqpzk8rh4oaifiy0lrqlesvz3f8f/frida_.jpg',
       MS + '40f/xk8jj9k4o0ozlw47j22ys3tdaf4g13et/einstein_i_margarita_.jpg',
-      MS + 'df2/sim93ywv2d0mgp0tg7bjhdrbuvn7oq7v/psikhopaty__.jpg'
+      'home-new/psikhopaty.webp'
     ],
     fallbacks: ['home-new/stage-bokeh.webp', 'home-new/stage-rays.webp', 'home-new/stage-spotlight.webp', 'home-new/stage-curtain.webp'],
     poster: '.hero2-poster',
@@ -350,9 +347,9 @@ html.page-in .hw > span, .no-js .hw > span { transform: none; transition: transf
 
 <main>
 <!-- ════════ hero ════════ -->
-<!-- Психопаты: на картинке сайта фото по центру, по краям — мятая бумага; кадр 3:2, сдвиг к центру фото и приближение 1.045 оставляют только фото -->
-<section class="hero2 hero2--wide" aria-labelledby="heroT" style="--poster-ar: 3 / 2; --poster-pos: 52% 50%; --poster-zoom: 1.045; --poster-w: 600px">
-  <div class="hero2-bg" aria-hidden="true"><span class="hero2-b1"></span><span class="hero2-b2"></span><img class="hero2-cover" src="https://moscowshow.com/upload/iblock/df2/sim93ywv2d0mgp0tg7bjhdrbuvn7oq7v/psikhopaty__.jpg" alt="" decoding="async" referrerpolicy="no-referrer" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='home-new/stage-curtain.webp'}"><i class="hero2-shade"></i><i class="hero2-beam"></i><i class="hero2-grain grain-tex"></i></div>
+<!-- Психопаты — горизонтальная афиша 25:18: постер на десктопе и карточка на телефоне берут её пропорции -->
+<section class="hero2 hero2--wide" aria-labelledby="heroT" style="--poster-ar: 25 / 18; --poster-w: 600px">
+  <div class="hero2-bg" aria-hidden="true"><span class="hero2-b1"></span><span class="hero2-b2"></span><img class="hero2-cover" src="home-new/psikhopaty.webp" alt="" decoding="async" referrerpolicy="no-referrer" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='home-new/stage-curtain.webp'}"><i class="hero2-shade"></i><i class="hero2-beam"></i><i class="hero2-grain grain-tex"></i></div>
   <div class="hero2-in">
     <div>
       <div class="hero2-meta rv" style="--i:0"><span class="tag tag-default">Спектакль</span><span class="t-eyebrow">5 декабря</span></div>
@@ -367,7 +364,7 @@ html.page-in .hw > span, .no-js .hw > span { transform: none; transition: transf
       </div>
     </div>
     <a class="hero2-poster" href="#" aria-label="Психопаты, 5 декабря, Театр эстрады">
-      <img src="https://moscowshow.com/upload/iblock/df2/sim93ywv2d0mgp0tg7bjhdrbuvn7oq7v/psikhopaty__.jpg" alt="" decoding="async" referrerpolicy="no-referrer" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='home-new/stage-curtain.webp'}">
+      <img src="home-new/psikhopaty.webp" alt="" decoding="async" referrerpolicy="no-referrer" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='home-new/stage-curtain.webp'}">
     </a>
   </div>
 </section>

@@ -9,8 +9,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Oranienbaum&family=Forum&family=Manrope:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
 <link id="ds-theme" rel="stylesheet" href="../ds-core-r14.css">
-<script>/* вариант главной: ?v=old — было (чипы) · tiles — плитки на месте чипов · full — hero на весь экран, 4 плитки + «Все» */
-document.documentElement.dataset.v = (/[?&]v=(old|tiles|full)/.exec(location.search) || [, 'tiles'])[1];</script>
+<script>/* вариант главной: ?v=old — было (чипы) · tiles — плитки на месте чипов · full — hero на весь экран, 4 плитки + «Все» ·
+   names — 4 плитки без подписей (название и стрелка) + «Все ↓» в конце */
+document.documentElement.dataset.v = (/[?&]v=(old|tiles|full|names)/.exec(location.search) || [, 'tiles'])[1];</script>
 <style>
 /* ════════ основа страницы ════════ */
 :root { --logo: var(--n100); --ease-io: cubic-bezier(.76,0,.24,1); --ease-in: cubic-bezier(.16,1,.3,1); }
@@ -84,9 +85,6 @@ html.poster-in .hero2-poster, .no-js .hero2-poster { opacity: 1; }
 .hero2-poster:hover img { transform: scale(calc(var(--poster-zoom, 1.04) + .05)); }
 /* горизонтальная афиша: постер шире, колонка текста уже */
 @media (min-width: 901px) { .hero2--wide .hero2-in { grid-template-columns: 1fr 1.15fr; } }
-/* заставка: у афиши «Психопатов» по краям картинки бумага — верхняя карточка колоды (она перелетает в постер)
-   кадрируется так же, как постер первого экрана */
-.tts-intro .ti-card:last-child img { object-position: 52% 50%; transform: scale(1.045); }
 .hp-cap { position: absolute; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; gap: 8px; padding: 64px 22px 22px; background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--ink) 88%, transparent)); opacity: 0; transform: translateY(12px); transition: opacity 700ms var(--ease-out) 200ms, transform 900ms var(--ease-in) 200ms; }
 html.poster-in .hp-cap, .no-js .hp-cap { opacity: 1; transform: none; }
 .hp-date { font-family: var(--f-num); font-size: 18px; color: var(--n100); }
@@ -350,6 +348,20 @@ html[data-v="full"].cats-in .home-cats .ct:hover { transform: translateY(-4px); 
   html[data-v="full"] .hero2-cue svg { animation: none; }
 }
 
+/* ── вариант «Без подписей»: 4 плитки — только название жанра и стрелка, как в Р3; в конце — светло-серая кнопка «Все ↓» ──
+   «Все» снимает выбор жанра и кобальтом не выделяется: выбор показывает плитка жанра. */
+html[data-v="names"] .home-cats { --cat-h: 80px; }
+html[data-v="names"] .cat-tiles { grid-template-columns: repeat(4, minmax(0, 1fr)) 112px; }
+.ct-plain { flex-direction: row; align-items: center; }
+.ct-end { flex-direction: row; gap: 10px; border-color: var(--n700); }
+.ct-end svg { transition: transform 420ms cubic-bezier(.16,1,.3,1); }
+.ct-end:hover svg { transform: translateY(2px); }
+.ct-end[aria-pressed="true"] { color: var(--n300); background: transparent; border-color: var(--n700); }
+.ct-end[aria-pressed="true"]:hover { color: var(--n100); }
+@media (max-width: 1080px) { html[data-v="names"] .home-cats { --cat-h: 68px; } }
+@media (max-width: 720px) { html[data-v="names"] .home-cats { --cat-h: 56px; } html[data-v="names"] .ct-end { flex: 0 0 88px; scroll-snap-align: end; } }
+@media (prefers-reduced-motion: reduce) { .ct-end svg { transition: none; } .ct-end:hover svg { transform: none; } }
+
 /* переключатель вариантов — служебный, не часть макета */
 /* переключатель — в углу, чтобы не закрывать стрелку «Афиша» внизу hero */
 .vsw { position: fixed; right: 16px; bottom: 16px; z-index: 60; display: flex; align-items: center; gap: 4px; max-width: calc(100vw - 24px);
@@ -358,7 +370,7 @@ html[data-v="full"].cats-in .home-cats .ct:hover { transform: translateY(-4px); 
 .vsw .t-caption { margin-right: 8px; }
 .vsw .filter-chip { flex: none; }
 html.tts-intro-lock .vsw { display: none; }
-@media (max-width: 720px) { .vsw .t-caption { display: none; } .vsw { padding-left: 6px; right: 50%; transform: translateX(50%); transition: opacity 400ms var(--ease-out); }
+@media (max-width: 720px) { .vsw .t-caption { display: none; } .vsw { flex-wrap: wrap; justify-content: center; width: max-content; padding-left: 6px; right: 50%; transform: translateX(50%); transition: opacity 400ms var(--ease-out); }
   html[data-v="full"]:not(.cats-in) .vsw { opacity: 0; pointer-events: none; } }
 </style>
 </head>
@@ -400,7 +412,7 @@ html.tts-intro-lock .vsw { display: none; }
       MS + '85a/fndnxz2eojab1nki8b3ikufmvaywsadl/lavr2_.jpg',
       MS + '356/kqkkzqpzk8rh4oaifiy0lrqlesvz3f8f/frida_.jpg',
       MS + '40f/xk8jj9k4o0ozlw47j22ys3tdaf4g13et/einstein_i_margarita_.jpg',
-      MS + 'df2/sim93ywv2d0mgp0tg7bjhdrbuvn7oq7v/psikhopaty__.jpg'
+      'home-new/psikhopaty.webp'
     ],
     fallbacks: ['home-new/stage-bokeh.webp', 'home-new/stage-rays.webp', 'home-new/stage-spotlight.webp', 'home-new/stage-curtain.webp'],
     poster: '.hero2-poster',
@@ -456,9 +468,9 @@ html.tts-intro-lock .vsw { display: none; }
 
 <main>
 <!-- ════════ hero ════════ -->
-<!-- Психопаты: на картинке сайта фото по центру, по краям — мятая бумага; кадр 3:2, сдвиг к центру фото и приближение 1.045 оставляют только фото -->
-<section class="hero2 hero2--wide" aria-labelledby="heroT" style="--poster-ar: 3 / 2; --poster-pos: 52% 50%; --poster-zoom: 1.045; --poster-w: 600px">
-  <div class="hero2-bg" aria-hidden="true"><span class="hero2-b1"></span><span class="hero2-b2"></span><img class="hero2-cover" src="https://moscowshow.com/upload/iblock/df2/sim93ywv2d0mgp0tg7bjhdrbuvn7oq7v/psikhopaty__.jpg" alt="" decoding="async" referrerpolicy="no-referrer" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='home-new/stage-curtain.webp'}"><i class="hero2-shade"></i><i class="hero2-beam"></i><i class="hero2-grain grain-tex"></i></div>
+<!-- Психопаты — горизонтальная афиша 25:18: постер на десктопе и карточка на телефоне берут её пропорции -->
+<section class="hero2 hero2--wide" aria-labelledby="heroT" style="--poster-ar: 25 / 18; --poster-w: 600px">
+  <div class="hero2-bg" aria-hidden="true"><span class="hero2-b1"></span><span class="hero2-b2"></span><img class="hero2-cover" src="home-new/psikhopaty.webp" alt="" decoding="async" referrerpolicy="no-referrer" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='home-new/stage-curtain.webp'}"><i class="hero2-shade"></i><i class="hero2-beam"></i><i class="hero2-grain grain-tex"></i></div>
   <div class="hero2-in">
     <div>
       <div class="hero2-meta rv" style="--i:0"><span class="tag tag-default">Спектакль</span><span class="t-eyebrow">5 декабря</span></div>
@@ -473,7 +485,7 @@ html.tts-intro-lock .vsw { display: none; }
       </div>
     </div>
     <a class="hero2-poster" href="#" aria-label="Психопаты, 5 декабря, Театр эстрады">
-      <img src="https://moscowshow.com/upload/iblock/df2/sim93ywv2d0mgp0tg7bjhdrbuvn7oq7v/psikhopaty__.jpg" alt="" decoding="async" referrerpolicy="no-referrer" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='home-new/stage-curtain.webp'}">
+      <img src="home-new/psikhopaty.webp" alt="" decoding="async" referrerpolicy="no-referrer" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='home-new/stage-curtain.webp'}">
     </a>
   </div>
   <button class="hero2-cue" type="button" aria-label="К афише"><span class="t-caption">Афиша</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
@@ -536,6 +548,7 @@ html.tts-intro-lock .vsw { display: none; }
   <button class="filter-chip" type="button" data-v="old">Было</button>
   <button class="filter-chip" type="button" data-v="tiles">Плитки</button>
   <button class="filter-chip" type="button" data-v="full">Полный экран</button>
+  <button class="filter-chip" type="button" data-v="names">Без подписей</button>
 </div>
 
 <footer class="site-footer">
@@ -708,13 +721,19 @@ const CAT_D = { all:'Вся афиша города', spect:'Драма, ком�
 const ARW = '<svg class="ct-a" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 const tile = ([v, n]) => `<button class="ct${v === 'all' ? ' ct-all' : ''}" type="button" data-cat="${v}" aria-pressed="${v === st.cat}"${CAT_G[v] ? ` style="--g:${CAT_G[v]}"` : ''}>
   <span class="ct-top"><span class="ct-t">${n}</span><span class="ct-d">${CAT_D[v]}</span></span><span class="ct-f"><span class="ct-n">${catN(v)} ${evWord(catN(v))}</span>${ARW}</span></button>`;
-/* категории: «Было» — чипы; «Плитки» — 5 плиток; «Полный экран» — мини-кнопка «Все» и 4 плитки */
+const plain = ([v, n]) => `<button class="ct ct-plain" type="button" data-cat="${v}" aria-pressed="${v === st.cat}" style="--g:${CAT_G[v]}"><span class="ct-t">${n}</span>${ARW}</button>`;
+const DOWN = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>';
+/* категории: «Было» — чипы; «Плитки» — 5 плиток; «Полный экран» — мини-кнопка «Все» и 4 плитки;
+   «Без подписей» — 4 плитки с названием и стрелкой, «Все ↓» в конце */
 const VAR = () => document.documentElement.dataset.v;
 function renderCats() {
   const v = VAR();
   cats.className = v === 'old' ? 'filter-chips' : 'cat-tiles';
   cats.innerHTML = v === 'old'
     ? CATS.map(([c, n]) => `<button class="filter-chip${c === st.cat ? ' filter-chip-active' : ''}" type="button" data-cat="${c}" aria-pressed="${c === st.cat}">${n}</button>`).join('')
+    : v === 'names'
+      ? CATS.filter(c => c[0] !== 'all').map(plain).join('')
+        + `<button class="ct-mini ct-end" type="button" data-cat="all" aria-pressed="${st.cat === 'all'}" aria-label="Все события, ${catN('all')}">Все${DOWN}</button>`
     : v === 'full'
       ? `<button class="ct-mini" type="button" data-cat="all" aria-pressed="${st.cat === 'all'}" aria-label="Все события, ${catN('all')}" style="--i:0">Все<span class="ct-n">${catN('all')}</span></button>`
         + CATS.filter(c => c[0] !== 'all').map((c, i) => tile(c).replace(/style="/, `style="--i:${i + 1};`)).join('')
