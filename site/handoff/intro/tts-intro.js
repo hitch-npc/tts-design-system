@@ -9,18 +9,15 @@
  *   <script src="tts-intro.js"></script>
  *   <script>TTSIntro.start({ images: [...], poster: '.hero-poster', tickets: '#afisha' })</script>
  *
- * Когда играет (решение принимается при загрузке страницы):
- *   первый визит в браузере          → длинная версия (колода не быстрее 2,2 с);
- *   новый визит (новая сессия вкладки) → обычная: идёт вслед за реальной загрузкой;
- *   повторные загрузки в той же сессии → не играет, страница показывается сразу.
- *   ?intro=0 — не играть, ?intro=long / ?intro=short — сыграть нужную версию (для проверки).
+ * Когда играет: при каждой загрузке страницы, длинная версия. Повтор — TTSIntro.replay().
+ *   ?intro=0 — не играть, ?intro=short — короткая версия (идёт вслед за реальной загрузкой).
+ * Кеширования здесь нет: «показать один раз за визит / короче при повторном» на сайте
+ * делается отдельно — например, отметкой в sessionStorage / localStorage и mode: 'skip' | 'short'.
  *
  * Документация и живой пример: index.html рядом с этим файлом.
  */
 (function () {
   'use strict';
-  var KEY_SESSION = 'tts-intro-shown';   // sessionStorage: заставка уже была в этой сессии
-  var KEY_SEEN = 'tts-intro-seen';       // localStorage: человек хоть раз видел заставку целиком
 
   /* ─────────── стили ─────────── */
   var CSS = `
@@ -49,8 +46,8 @@ html.tts-intro-lock, html.tts-intro-lock body { overflow: hidden; }
 .ti-card { position: absolute; left: 50%; top: 50%; height: min(60vh, 580px, 116vw); aspect-ratio: 3 / 4; margin: 0; overflow: hidden;
   background: var(--n950); border: 1px solid var(--n800); border-radius: var(--r-sm); box-shadow: 0 50px 90px -30px var(--shadow-color);
   opacity: 0; will-change: transform, opacity; transform: translate(-50%, -50%) translate3d(0, 64px, 0) rotate(-1.5deg) scale(.97);
-  transition: transform 1700ms var(--ti-expo), opacity 1000ms var(--ease-out), filter 1500ms var(--ease-out); }
-.ti-card img { display: block; width: 100%; height: 100%; object-fit: cover; transform: scale(1.08); transition: transform 4500ms var(--ti-expo); }
+  transition: transform 2600ms var(--ti-expo), opacity 1400ms var(--ease-out), filter 2000ms var(--ease-out); }
+.ti-card img { display: block; width: 100%; height: 100%; object-fit: cover; transform: scale(1.08); transition: transform 7000ms var(--ti-expo); }
 .ti-card[data-d] img { transform: none; }
 .ti-card[data-d="0"] { opacity: 1; transform: translate(-50%, -50%) rotate(-1.5deg); filter: none; }
 .ti-card[data-d="1"] { opacity: 1; transform: translate(-50%, -50%) translate3d(3.4vw, -1%, 0) rotate(3deg) scale(.97); filter: brightness(.5); }
@@ -58,7 +55,7 @@ html.tts-intro-lock, html.tts-intro-lock body { overflow: hidden; }
 .ti-card[data-d="3"] { opacity: 0; transform: translate(-50%, -50%) translate3d(0, -3%, 0) scale(.9); filter: brightness(.2); }
 .tts-intro.is-out .ti-card:not(.is-hero) { opacity: 0; transition: opacity 700ms var(--ease-out); }
 /* кобальтовая рамка появляется только у афиши, которая летит в постер, — к концу полёта */
-.ti-card.is-hero { border-color: var(--accent); transition: transform 1300ms var(--ti-io), height 1300ms var(--ti-io), filter 700ms var(--ease-out), border-color 900ms var(--ease-out) 450ms; }
+.ti-card.is-hero { border-color: var(--accent); transition: transform 1800ms var(--ti-io), height 1800ms var(--ti-io), filter 900ms var(--ease-out), border-color 1100ms var(--ease-out) 600ms; }
 
 /* фон под надписью тише: затемнение между колодой и текстом, уходит, когда афиша летит в постер */
 .ti-dim { position: absolute; inset: 0; pointer-events: none; transition: opacity 700ms var(--ease-out);
@@ -141,22 +138,20 @@ html.tts-intro-lock, html.tts-intro-lock body { overflow: hidden; }
   };
   var GLYPHS = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZÆŒØАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ');
 
-  function store(kind, k, v) { try { var s = window[kind]; if (v === undefined) return s.getItem(k); s.setItem(k, v); } catch (e) { return null; } }
-
   /* Какую версию играть: 'long' | 'short' | 'skip' */
   function decide() {
     var q = new URLSearchParams(location.search).get('intro');
     if (q === '0') return 'skip';
     if (q === 'long' || q === '1') return 'long';
     if (q === 'short') return 'short';
-    if (store('sessionStorage', KEY_SESSION) === '1') return 'skip';
-    return store('localStorage', KEY_SEEN) === '1' ? 'short' : 'long';
+    return 'long';
   }
 
-  var running = null;
+  var running = null, last = null;
 
   function start(opts) {
     opts = opts || {};
+    last = opts;
     var html = document.documentElement;
     var mode = opts.mode || decide();
     var cb = function (name) { try { if (typeof opts[name] === 'function') opts[name](); } catch (e) { setTimeout(function () { throw e; }); } };
@@ -165,15 +160,14 @@ html.tts-intro-lock, html.tts-intro-lock body { overflow: hidden; }
 
     var RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
     var fine = matchMedia('(pointer: fine)').matches;
-    var images = (opts.images || []).slice(0, 60), fallbacks = opts.fallbacks || [];
+    /* не больше 7 афиш: первые шесть из списка и последняя — херо */
+    var MAXN = 7, images = opts.images || [], fallbacks = opts.fallbacks || [];
+    if (images.length > MAXN) images = images.slice(0, MAXN - 1).concat(images.slice(-1));
     var LONG = mode === 'long';
     /* колода листается за DEAL мс при любом числе афиш: шаг между афишами не больше GAP */
-    var DEAL = LONG ? 3200 : 1500;
-    var MIN = LONG ? 2200 : 0, GAP = Math.min(LONG ? 520 : 220, DEAL / Math.max(1, images.length)), HOLD = LONG ? 900 : 250;
-    var STEP = LONG ? 110 : 70, RISE = LONG ? 1400 : 950;   // шаг между строками и время подъёма строки, мс
-
-    /* сессия отмечается сразу: перезагрузка во время заставки её не повторит */
-    store('sessionStorage', KEY_SESSION, '1');
+    var DEAL = LONG ? 5600 : 1500;
+    var MIN = LONG ? 4200 : 0, GAP = Math.min(LONG ? 900 : 220, DEAL / Math.max(1, images.length)), HOLD = LONG ? 1500 : 250;
+    var STEP = LONG ? 180 : 70, RISE = LONG ? 2000 : 950;   // шаг между строками и время подъёма строки, мс
 
     if (!document.getElementById('tts-intro-css')) {
       var st = document.createElement('style'); st.id = 'tts-intro-css'; st.textContent = CSS; document.head.appendChild(st);
@@ -256,14 +250,15 @@ html.tts-intro-lock, html.tts-intro-lock body { overflow: hidden; }
     function deal() { cards.forEach(function (c, i) { if (i <= n) c.dataset.d = String(Math.min(n - i, 3)); }); n++; lastDeal = performance.now(); }
 
     function decrypt(d, startMs) {
-      var end = startMs + 260 + Math.random() * 300;
+      /* буквы меняются редко и недолго — 2–3 смены, чтобы не рябило */
+      var end = startMs + 360 + Math.random() * 240;
       at(startMs, function () {
         var tEnd = performance.now() + (end - startMs);
         (function tick() {
           if (run.done || performance.now() >= tEnd) { d.classList.remove('on'); return; }
           d.dataset.g = GLYPHS[Math.random() * GLYPHS.length | 0];
           d.classList.add('on');
-          run.timers.push(setTimeout(tick, 55));
+          run.timers.push(setTimeout(tick, 170));
         })();
       });
     }
@@ -307,7 +302,6 @@ html.tts-intro-lock, html.tts-intro-lock body { overflow: hidden; }
       if (run.done) return;
       run.kill();
       removeEventListener('pointermove', onMove);
-      store('localStorage', KEY_SEEN, '1');
       box.style.setProperty('--px', 0); box.style.setProperty('--py', 0);
       box.classList.add('is-ready');
       /* страница под заставкой — всегда с самого верха */
@@ -326,7 +320,7 @@ html.tts-intro-lock, html.tts-intro-lock body { overflow: hidden; }
       }
       setTimeout(function () { box.classList.add('is-out'); }, RM ? 0 : 250);
       setTimeout(function () { cb('onReveal'); }, RM ? 0 : 600);
-      var end = RM ? 300 : fly ? 1550 : 1200;
+      var end = RM ? 300 : fly ? 2050 : 1200;
       setTimeout(function () { cb('onPoster'); }, fly ? end - 150 : 500);
       setTimeout(function () {
         box.remove();
@@ -354,8 +348,12 @@ html.tts-intro-lock, html.tts-intro-lock body { overflow: hidden; }
   window.TTSIntro = {
     start: start,
     decide: decide,
-    /* сбросить отметки (для проверки): следующая загрузка сыграет как первый визит */
-    reset: function () { try { sessionStorage.removeItem(KEY_SESSION); localStorage.removeItem(KEY_SEEN); } catch (e) {} },
-    keys: { session: KEY_SESSION, seen: KEY_SEEN }
+    /* сыграть ещё раз с теми же настройками: страница уходит наверх, onReset прячет первый экран обратно */
+    replay: function (mode) {
+      if (!last) return;
+      scrollTo(0, 0);
+      try { if (typeof last.onReset === 'function') last.onReset(); } catch (e) {}
+      return start(Object.assign({}, last, { mode: mode || 'long' }));
+    }
   };
 })();

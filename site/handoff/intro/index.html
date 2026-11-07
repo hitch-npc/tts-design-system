@@ -40,7 +40,6 @@ td:first-child { color: var(--n100); white-space: nowrap; }
 .demo-poster img { display: block; width: 100%; height: 100%; object-fit: cover; }
 html.demo-poster-in .demo-poster { opacity: 1; }
 .ctrl { display: flex; flex-wrap: wrap; gap: 8px; margin-top: var(--sp-5); }
-.state { margin-top: var(--sp-3); font-size: 12px; color: var(--n500); }
 @media (max-width: 760px) {
   .demo { grid-template-columns: 1fr; padding: var(--sp-6); }
   .demo-poster { display: none; }
@@ -60,13 +59,8 @@ function playIntro(mode) {
     poster: '.demo-poster',
     tickets: '#api',
     meta: 'Москва · сезон 2026/27',
-    onPoster: function () { document.documentElement.classList.add('demo-poster-in'); },
-    onDone: function () { var s = document.getElementById('state'); if (s) s.textContent = stateText(); }
+    onPoster: function () { document.documentElement.classList.add('demo-poster-in'); }
   });
-}
-function stateText() {
-  var d = TTSIntro.decide();
-  return 'Следующая загрузка этой вкладки: ' + (d === 'skip' ? 'без заставки' : d === 'long' ? 'длинная версия' : 'обычная версия') + '.';
 }
 playIntro();
 </script>
@@ -86,9 +80,7 @@ playIntro();
       <div class="ctrl">
         <button class="btn btn-primary btn-sm" type="button" onclick="playIntro('long')">Длинная версия</button>
         <button class="btn btn-ghost btn-sm" type="button" onclick="playIntro('short')">Обычная версия</button>
-        <button class="btn btn-ghost btn-sm" type="button" onclick="TTSIntro.reset(); document.getElementById('state').textContent = stateText();">Сбросить отметки</button>
       </div>
-      <div class="state" id="state"></div>
     </div>
     <div class="demo-poster"><img src="../../home-new/stage-curtain.webp" alt=""></div>
   </div>
@@ -124,13 +116,14 @@ playIntro();
     <div class="tbl"><table>
       <thead><tr><th>Параметр</th><th>Что это</th><th>По умолчанию</th></tr></thead>
       <tbody>
-        <tr><td><code>images</code></td><td>Адреса афиш, до 60. Колода пролистывается за одно и то же время при любом числе афиш: около 3 с в длинной версии, 1,5 с в обычной. Карточка 3:4, широкая афиша обрезается по краям. Пока колода листается, рамка карточки серая (<code>--n800</code>); кобальтовая проявляется только у последней афиши, пока та летит в постер.</td><td>—</td></tr>
+        <tr><td><code>images</code></td><td>Адреса афиш. В колоду идут не больше семи: первые шесть из списка и последняя (она станет постером). Медленное движение спокойнее для глаза: в длинной версии афиша ложится раз в 0,9 с, колода — около 5,5 с, буквы надписи меняются 2–3 раза с шагом 170 мс; в обычной колода — 1,5 с. Карточка 3:4, широкая афиша обрезается по краям. Пока колода листается, рамка карточки серая (<code>--n800</code>); кобальтовая проявляется только у последней афиши, пока та летит в постер.</td><td>—</td></tr>
         <tr><td><code>fallbacks</code></td><td>Запасные картинки по тем же номерам: подставляются, если афиша не загрузилась.</td><td>—</td></tr>
         <tr><td><code>poster</code></td><td>Селектор постера первого экрана. Если его нет на экране (на телефоне постер скрыт), афиша просто гаснет.</td><td>—</td></tr>
         <tr><td><code>tickets</code></td><td>Селектор блока, к которому прокручивает кнопка «К билетам».</td><td>—</td></tr>
         <tr><td><code>meta</code></td><td>Подпись справа в нижней рамке. На телефоне скрыта.</td><td>пусто</td></tr>
         <tr><td><code>goLabel</code></td><td>Текст кнопки в нижней рамке.</td><td>«К билетам»</td></tr>
-        <tr><td><code>mode</code></td><td><code>'long'</code>, <code>'short'</code> или <code>'skip'</code> — сыграть именно так, без правил ниже.</td><td>по правилам</td></tr>
+        <tr><td><code>mode</code></td><td><code>'long'</code>, <code>'short'</code> или <code>'skip'</code> — сыграть именно так.</td><td><code>'long'</code></td></tr>
+        <tr><td><code>onReset</code></td><td>Вызывается перед повтором (<code>TTSIntro.replay()</code>): спрятать первый экран обратно, чтобы он проявился заново.</td><td>—</td></tr>
         <tr><td><code>onReveal</code></td><td>Вызывается, когда рамка раскрывается: пора проявлять первый экран.</td><td>—</td></tr>
         <tr><td><code>onPoster</code></td><td>Вызывается, когда афиша долетела до постера: показать постер под ней.</td><td>—</td></tr>
         <tr><td><code>onDone</code></td><td>Заставка убрана, прокрутка разблокирована.</td><td>—</td></tr>
@@ -144,14 +137,14 @@ playIntro();
     <div class="tbl"><table>
       <thead><tr><th>Ситуация</th><th>Что видит человек</th></tr></thead>
       <tbody>
-        <tr><td>Первый визит в этом браузере</td><td><strong>Длинная версия.</strong> Колода раскладывается не быстрее 2,2 с, даже если страница загрузилась мгновенно. Всего около 5–5,5 с вместе с переходом.</td></tr>
-        <tr><td>Новый визит позже</td><td><strong>Обычная версия.</strong> Отсчёт и колода идут вслед за реальной загрузкой. На быстром соединении около 3 с вместе с переходом.</td></tr>
-        <tr><td>Повторные загрузки в той же вкладке</td><td><strong>Не играет.</strong> Страница показывается сразу.</td></tr>
+        <tr><td>Каждая загрузка страницы</td><td><strong>Длинная версия.</strong> Колода из семи афиш, афиша ложится раз в 0,9 с; всего около 9 с вместе с переходом.</td></tr>
+        <tr><td><code>?intro=short</code></td><td><strong>Короткая версия.</strong> Отсчёт и колода идут вслед за реальной загрузкой, около 3 с.</td></tr>
+        <tr><td><code>?intro=0</code></td><td><strong>Не играет.</strong> Страница показывается сразу.</td></tr>
         <tr><td>Включено «Уменьшение движения»</td><td>Без движения: готовый кадр примерно на 1,2 с, затем он плавно гаснет.</td></tr>
       </tbody>
     </table></div>
-    <p style="margin-top: var(--sp-4)">«Визит» — это сессия вкладки: <code>sessionStorage</code>, ключ <code>tts-intro-shown</code>. Отметка ставится в начале, поэтому перезагрузка посреди заставки её не повторит. «Видел хоть раз» — <code>localStorage</code>, ключ <code>tts-intro-seen</code>. Если хранилище недоступно (приватный режим), заставка играет как при первом визите.</p>
-    <p>Для проверки: <code>?intro=0</code> — без заставки, <code>?intro=long</code> или <code>?intro=short</code> — нужная версия, <code>TTSIntro.reset()</code> в консоли — забыть отметки.</p>
+    <p style="margin-top: var(--sp-4)"><strong>Повтор.</strong> <code>TTSIntro.replay()</code> играет заставку ещё раз с теми же настройками: страница уходит наверх, <code>onReset</code> прячет первый экран, дальше — как при загрузке. В макетах главной — кнопка «Повторить заставку» (в варианте с плитками — «Заставка» в панели вариантов).</p>
+    <p><strong>Запоминания показа в скрипте нет.</strong> Заставка играет при каждой загрузке. Если на сайте нужно «один раз за визит» или «короче при повторном визите», это делается на стороне сайта: например, отметка в <code>sessionStorage</code> / <code>localStorage</code> и вызов <code>TTSIntro.start</code> с <code>mode: 'skip'</code> или <code>'short'</code>.</p>
   </section>
 
   <section>
@@ -192,6 +185,5 @@ playIntro();
     </ul>
   </section>
 </div>
-<script>document.getElementById('state').textContent = stateText();</script>
 </body>
 </html>

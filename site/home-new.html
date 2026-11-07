@@ -58,6 +58,9 @@ input:placeholder-shown + .search-clear { display:none; }
 .hdr-city:hover { border-color: var(--n700); }
 .hdr-burger { display: none; }
 .m-search { display: none; }
+/* повтор заставки для показа макета: в углу, прячется, пока заставка идёт */
+.intro-replay { position: fixed; right: 16px; bottom: 16px; z-index: 60; display: inline-flex; align-items: center; gap: 6px; background: var(--ink); box-shadow: 0 8px 24px -8px var(--shadow-color); }
+html.tts-intro-lock .intro-replay { display: none; }
 
 /* ════════ hero ════════ */
 .hero2 { position: relative; overflow: hidden; background: var(--ink); border-bottom: 1px solid var(--n850); }
@@ -283,7 +286,7 @@ html.page-in .hw > span, .no-js .hw > span { transform: none; transition: transf
 <script src="handoff/intro/tts-intro.js"></script>
 <script>
 (function () {
-  /* Афиши колоды — все афиши с сайта, ссылки на картинки, их грузит браузер зрителя. Широкие обрезаются по краям карточки 3:4. Последняя ложится сверху
+  /* Афиши с сайта (в колоду идут первые шесть и последняя — не больше семи), ссылки на картинки, их грузит браузер зрителя. Широкие обрезаются по краям карточки 3:4. Последняя ложится сверху
      и перелетает в постер первого экрана (тот же адрес стоит в .hero2-poster img). Не загрузилась — кадр сцены. */
   var MS = 'https://moscowshow.com/upload/', html = document.documentElement;
   TTSIntro.start({
@@ -338,7 +341,8 @@ html.page-in .hw > span, .no-js .hw > span { transform: none; transition: transf
     tickets: '#cats',
     meta: 'Москва · сезон 2026/27',
     onReveal: function () { html.classList.add('page-in'); },
-    onPoster: function () { html.classList.add('poster-in'); }
+    onPoster: function () { html.classList.add('poster-in'); },
+    onReset: function () { html.classList.remove('page-in', 'poster-in'); }   // для «Повторить заставку»
   });
 })();
 </script>
@@ -461,6 +465,8 @@ html.page-in .hw > span, .no-js .hw > span { transform: none; transition: transf
   </div>
 </section>
 </main>
+
+<button class="filter-chip intro-replay" type="button" onclick="TTSIntro.replay()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Повторить заставку</button>
 
 <footer class="site-footer">
   <div class="footer-top-line"></div>
