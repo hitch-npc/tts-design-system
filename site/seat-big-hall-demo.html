@@ -118,6 +118,8 @@
   .pr[aria-pressed=true] .ck { opacity:1; }
   .reset { background:none; border:0; color:var(--n300); font:500 10px var(--font); letter-spacing:.14em; text-transform:uppercase; cursor:pointer; text-decoration:underline; text-decoration-color:var(--accent); text-underline-offset:3px; padding:0; white-space:nowrap; }
   .reset:hover { color:var(--n100); }
+  .leg-acts { display:flex; gap:10px; }
+  .leg-top .cap { white-space:nowrap; }
 
   .order { flex:1 0 auto; display:flex; flex-direction:column; border-top:1px solid var(--n800); }
   .ord-body { flex:1 0 auto; display:flex; flex-direction:column; }
@@ -217,7 +219,7 @@
 
     <aside class="panel side">
       <div class="leg-block">
-        <div class="leg-top"><div class="cap">Цены · свободно мест</div><button class="reset" id="reset" type="button" hidden>Показать все</button></div>
+        <div class="leg-top"><div class="cap">Цены · свободно мест</div><span class="leg-acts"><button class="reset" id="fold" type="button" hidden>Свернуть</button><button class="reset" id="reset" type="button" hidden>Все цены</button></span></div>
         <div class="leg-scroll"><div id="leg"></div></div>
       </div>
       <div class="order" id="order">
@@ -493,7 +495,7 @@ function syncLegend(){
     g.classList.toggle('open',open); g.classList.toggle('has',k>0);
     g.querySelector('.band-h').setAttribute('aria-expanded',open); g.querySelector('.band-b').inert=!open;
     g.querySelector('.band-h .n').textContent=k?`выбрано ${k} из ${BANDS[bi].prices.length}`:bandFree(bi); });
-  $('reset').hidden=!active.size;
+  $('reset').hidden=!active.size; $('fold').hidden=!openB.size;
 }
 legEl.addEventListener('click',e=>{
   const bh=e.target.closest('[data-band]'), pr=e.target.closest('[data-price]');
@@ -503,6 +505,8 @@ legEl.addEventListener('click',e=>{
   refresh();
 });
 $('reset').onclick=()=>{ active.clear(); refresh(); };
+/* «Свернуть» закрывает все диапазоны, фильтр остаётся */
+$('fold').onclick=()=>{ openB.clear(); syncLegend(); };
 /* фильтр из адреса (?f=) — раскрыть его диапазоны */
 BANDS.forEach((b,bi)=>{ if(b.prices.some(p=>active.has(p))) openB.add(bi); });
 
