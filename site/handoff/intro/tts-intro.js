@@ -160,9 +160,13 @@ html.tts-intro-lock, html.tts-intro-lock body { overflow: hidden; }
 
     var RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
     var fine = matchMedia('(pointer: fine)').matches;
-    /* не больше 4 афиш: первые три из списка и последняя — херо */
-    var MAXN = 4, images = opts.images || [], fallbacks = opts.fallbacks || [];
-    if (images.length > MAXN) images = images.slice(0, MAXN - 1).concat(images.slice(-1));
+    /* не больше 6 афиш: пять случайных из списка при каждом запуске и последняя — херо, она всегда остаётся */
+    var MAXN = 6, images = opts.images || [], fallbacks = opts.fallbacks || [];
+    if (images.length > MAXN) {
+      var pool = images.slice(0, -1);
+      for (var k = pool.length - 1; k > 0; k--) { var r = Math.floor(Math.random() * (k + 1)), tmp = pool[k]; pool[k] = pool[r]; pool[r] = tmp; }
+      images = pool.slice(0, MAXN - 1).concat(images.slice(-1));
+    }
     var LONG = mode === 'long';
     /* темп колоды — афиша раз в 800 мс; длину держит число афиш (не больше четырёх), а не скорость */
     var DEAL = LONG ? 800 * Math.max(1, images.length) : 1000;
