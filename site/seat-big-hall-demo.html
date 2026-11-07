@@ -81,50 +81,64 @@
   .tip-price .sw { width:14px; height:14px; border-radius:7px; flex:none; }
   .tip-hint { margin-top:7px; font-size:11px; color:var(--n400); }
 
-  /* ---- правая колонка: легенда-фильтр сверху, заказ снизу ---- */
-  /* одна прокрутка на легенду и заказ; итог и кнопка прилипают к низу панели */
+  /* ---- правая колонка: цены сверху, заказ снизу ----
+     Иерархия: сумма и кнопка — ярче всего; места в заказе — текст --n100; цены — инструмент, в покое тише (--n300),
+     числа свободных мест и шевроны — фоном (--n600). */
   .side { position:sticky; top:16px; height:max(480px, min(calc(100vh - 136px), 820px)); display:flex; flex-direction:column; overflow:auto; overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:var(--n800) transparent; }
-  .leg-block { flex:none; padding:18px 20px 0; }
+  .leg-block { flex:none; padding:18px 20px 12px; }
   .leg-top, .ord-head { display:flex; justify-content:space-between; align-items:baseline; gap:12px; }
-  .leg-scroll { margin:10px -20px 0; padding:0 20px 6px; }
-  .grp + .grp { border-top:1px solid var(--n900); padding-top:4px; }
-  .band-h { display:grid; grid-template-columns:14px 1fr auto; gap:10px; align-items:center; width:100%; text-align:left; background:transparent; border:0; border-radius:var(--r-sm); cursor:pointer; padding:9px 6px; margin-bottom:2px; transition:background .15s, box-shadow .15s; }
-  .band-h .lab { font-size:12px; font-weight:500; letter-spacing:.02em; color:var(--n300); transition:color .15s; }
-  .band-h:hover .lab, .band-h[aria-pressed=true] .lab, .band-h[aria-pressed=mixed] .lab { color:var(--n100); }
-  .n { font-size:10px; color:var(--n500); letter-spacing:.06em; white-space:nowrap; }
-  /* диапазон — квадрат с градиентом его цен; цена — круглая точка */
-  .sw { width:14px; height:14px; border-radius:var(--r-sm); display:block; }
-  .chip .sw, .tk .sw { width:10px; height:10px; border-radius:5px; flex:none; }
-  /* выбор в легенде: кобальт — только у диапазона, выбранного целиком; цены — нейтральная рамка и фон --n900 */
+  .leg-scroll { margin:8px -8px 0; }
+  /* диапазон — строка-заголовок списка: нажатие раскрывает его цены, шеврон справа показывает, что строка раскрывается */
+  .grp + .grp { border-top:1px solid var(--n900); }
+  .band-h { display:grid; grid-template-columns:12px minmax(0,1fr) auto 14px; gap:12px; align-items:center; width:100%; min-height:44px; padding:0 8px; text-align:left; background:transparent; border:0; border-radius:var(--r-sm); cursor:pointer; transition:background .15s; }
   .band-h:hover { background:var(--n900); }
-  .band-h[aria-pressed=true] { background:var(--accent-ghost); box-shadow:inset 0 0 0 1px var(--accent); }
-  .chips { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:2px 4px; padding:0 0 8px; }
-  .chip { display:flex; align-items:center; gap:6px; min-width:0; min-height:36px; padding:0 6px 0 8px; border:1px solid transparent; border-radius:var(--r-sm); background:transparent; color:var(--n100); cursor:pointer; transition:background .15s, border-color .15s; }
-  /* цены в легенде — Manrope с моноширинными цифрами: мелкий Oranienbaum в столбце читается тяжело */
-  .chip .p { font-size:13px; font-weight:500; line-height:1; letter-spacing:0; font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; }
-  .chip:hover { background:var(--n900); }
-  .chip[aria-pressed=true] { background:var(--n900); border-color:var(--n500); }
-  .reset { background:none; border:0; color:var(--n300); font:500 11px var(--font); letter-spacing:.14em; text-transform:uppercase; cursor:pointer; text-decoration:underline; text-decoration-color:var(--accent); text-underline-offset:3px; padding:0; white-space:nowrap; }
+  .band-h .lab { font-size:13px; font-weight:500; color:var(--n300); font-variant-numeric:tabular-nums; white-space:nowrap; transition:color .15s; }
+  .band-h:hover .lab, .band-h[aria-expanded=true] .lab, .grp.has .lab { color:var(--n100); }
+  .n { font-size:11px; color:var(--n600); font-variant-numeric:tabular-nums; white-space:nowrap; transition:color .15s; }
+  .grp.has .band-h .n { color:var(--n300); }
+  .bchev { width:14px; height:14px; color:var(--n600); transition:transform 252ms cubic-bezier(.4,0,.2,1), color .15s; }
+  .band-h:hover .bchev { color:var(--n100); }
+  .band-h[aria-expanded=true] .bchev { transform:rotate(180deg); transition-duration:420ms; transition-timing-function:cubic-bezier(.16,1,.3,1); }
+  /* диапазон — квадрат с градиентом его цен; цена — круглая точка */
+  .sw { width:12px; height:12px; border-radius:var(--r-sm); display:block; }
+  .pr .sw, .tk .sw { width:10px; height:10px; border-radius:5px; flex:none; }
+  .band-b { display:grid; grid-template-rows:0fr; transition:grid-template-rows 252ms cubic-bezier(.4,0,.2,1); }
+  .grp.open .band-b { grid-template-rows:1fr; transition-duration:420ms; transition-timing-function:cubic-bezier(.16,1,.3,1); }
+  .band-in { overflow:hidden; }
+  .prs { list-style:none; margin:0; padding:2px 0 10px; display:grid; gap:2px; }
+  /* цена — фильтр: нажатие оставляет на схеме только её места; выбранная — фон --n900 и галочка, без рамки: рамки у соседних строк складывались в столбик коробок */
+  .pr { display:grid; grid-template-columns:10px minmax(0,1fr) auto 14px; gap:12px; align-items:center; width:100%; min-height:40px; padding:0 8px 0 9px; background:transparent; border:0; border-radius:var(--r-sm); color:var(--n200); text-align:left; cursor:pointer; transition:background .15s, box-shadow .15s, color .15s; }
+  .pr .p { font-size:13px; font-weight:500; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .pr:hover { background:var(--n900); color:var(--n100); }
+  .pr .ck { width:14px; height:14px; color:var(--n100); opacity:0; transition:opacity .15s; }
+  .pr[aria-pressed=true] { background:var(--n900); color:var(--n100); }
+  .pr[aria-pressed=true] .ck { opacity:1; }
+  .reset { background:none; border:0; color:var(--n300); font:500 10px var(--font); letter-spacing:.14em; text-transform:uppercase; cursor:pointer; text-decoration:underline; text-decoration-color:var(--accent); text-underline-offset:3px; padding:0; white-space:nowrap; }
   .reset:hover { color:var(--n100); }
 
   .order { flex:1 0 auto; display:flex; flex-direction:column; border-top:1px solid var(--n800); }
   .ord-body { flex:1 0 auto; display:flex; flex-direction:column; }
   .ord-in { flex:1 0 auto; display:flex; flex-direction:column; }
-  .ord-head { padding:16px 20px 10px; }
-  .ord-list { flex:1 0 auto; list-style:none; margin:0; padding:0 12px 12px; display:flex; flex-direction:column; gap:4px; }
+  .ord-head { padding:16px 20px 6px; }
+  .ord-list { flex:1 0 auto; list-style:none; margin:0; padding:0 12px 12px; display:flex; flex-direction:column; }
   .ord-empty { margin:auto; max-width:240px; padding:12px 8px; font-size:12px; line-height:1.6; color:var(--n500); text-align:center; }
-  .tk { flex:none; display:flex; align-items:center; border:1px solid var(--n800); border-radius:var(--r-sm); background:var(--ink); transition:border-color .15s; }
-  .tk:hover { border-color:var(--n700); }
-  .tk-go { flex:1; min-width:0; display:grid; grid-template-columns:10px minmax(0,1fr) auto; gap:10px; align-items:center; padding:8px 4px 8px 12px; background:none; border:0; text-align:left; cursor:pointer; }
+  /* место в заказе — строка без рамки, разделитель тонкой линией: рамка у каждой строки шумела */
+  .tk { flex:none; display:flex; align-items:center; border-radius:var(--r-sm); transition:background .15s; }
+  .tk + .tk { box-shadow:inset 0 1px 0 var(--n900); }
+  .tk:hover { background:var(--n900); }
+  .tk-go { flex:1; min-width:0; display:grid; grid-template-columns:10px minmax(0,1fr) auto; gap:12px; align-items:center; padding:10px 4px 10px 8px; background:none; border:0; text-align:left; cursor:pointer; }
   .tk-txt { display:grid; gap:3px; min-width:0; }
   .tk-pl { font-size:13px; font-weight:500; color:var(--n100); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .tk-pr { font-family:var(--f-num); font-size:17px; color:var(--n100); white-space:nowrap; }
-  .tk-rm { flex:none; width:40px; height:40px; margin-right:2px; display:grid; place-items:center; padding:0; background:none; border:0; border-radius:var(--r-sm); color:var(--n500); cursor:pointer; transition:color .15s, background .15s; }
-  .tk-rm:hover { color:var(--danger-text); background:var(--n900); }
-  .ord-foot { position:sticky; bottom:0; z-index:1; flex:none; display:grid; gap:12px; padding:14px 20px 20px; background:var(--n950); border-top:1px solid var(--n800); }
-  .ord-sum { display:flex; justify-content:space-between; align-items:baseline; gap:12px; width:100%; padding:0; background:none; border:0; text-align:left; pointer-events:none; }
-  .ord-sum b { font-family:var(--f-num); font-size:24px; font-weight:400; line-height:1; color:var(--n100); white-space:nowrap; }
+  .tk-rm { flex:none; width:40px; height:40px; display:grid; place-items:center; padding:0; background:none; border:0; border-radius:var(--r-sm); color:var(--n600); cursor:pointer; transition:color .15s; }
+  .tk-rm:hover { color:var(--danger-text); }
+  .ord-foot { position:sticky; bottom:0; z-index:1; flex:none; display:grid; gap:10px; padding:16px 20px 20px; background:var(--n950); border-top:1px solid var(--n800); }
+  .ord-sum { display:flex; justify-content:space-between; align-items:baseline; gap:12px; width:100%; padding:0 0 4px; background:none; border:0; text-align:left; pointer-events:none; }
+  .ord-sum b { font-family:var(--f-num); font-size:28px; font-weight:400; line-height:1; color:var(--n100); white-space:nowrap; }
   .chev { display:none; }
+  /* «Сбросить выбор» — контурная кнопка на всю ширину над главной, как в схеме редизайна */
+  .clr { min-height:44px; width:100%; padding:0 16px; background:transparent; border:1px solid var(--n800); border-radius:var(--r-sm); color:var(--n200); font:600 11px var(--font); letter-spacing:.16em; text-transform:uppercase; cursor:pointer; transition:border-color .15s, color .15s; }
+  .clr:hover { border-color:var(--n600); color:var(--n100); }
   .buy { min-height:44px; width:100%; padding:0 18px; border:0; border-radius:var(--r-sm); background:var(--accent); color:var(--on-accent); font:700 11px var(--font); letter-spacing:.16em; text-transform:uppercase; cursor:pointer; transition:background .15s; }
   .buy:hover:not(:disabled) { background:var(--accent-hover); }
   .buy:disabled { background:var(--n800); color:var(--n600); cursor:default; }
@@ -161,10 +175,13 @@
     .ord-sum:not(:disabled) .chev { display:block; position:absolute; right:0; top:50%; width:16px; height:16px; margin-top:-8px; color:var(--n300); transition:transform 252ms cubic-bezier(.4,0,.2,1); }
     .order.open .chev { transform:rotate(180deg); }
     .buy { width:auto; padding:0 16px; white-space:nowrap; }
+    .clr { display:none; grid-column:1 / -1; }
+    .order.open .clr:not([hidden]) { display:block; }
+    .ord-foot .ord-sum { order:1; } .ord-foot .buy { order:2; }
     .scrim { display:block; position:fixed; inset:0; z-index:19; background:var(--overlay); opacity:0; pointer-events:none; transition:opacity 252ms; }
     .scrim.on { opacity:1; pointer-events:auto; }
   }
-  @media (prefers-reduced-motion: reduce) { .cam.anim, .tip, .ov-top, .mini, .map-hint, .ord-body, .chev, .scrim { transition:none !important; } }
+  @media (prefers-reduced-motion: reduce) { .cam.anim, .tip, .ov-top, .mini, .map-hint, .ord-body, .chev, .scrim, .band-b, .bchev { transition:none !important; } }
 </style>
 </head>
 <body>
@@ -197,16 +214,17 @@
 
     <aside class="panel side">
       <div class="leg-block">
-        <div class="leg-top"><div class="cap">Цена · свободно мест</div><button class="reset" id="reset" type="button" aria-label="Сбросить фильтр" hidden>Сбросить</button></div>
+        <div class="leg-top"><div class="cap">Цены · свободно мест</div><button class="reset" id="reset" type="button" hidden>Показать все</button></div>
         <div class="leg-scroll"><div id="leg"></div></div>
       </div>
       <div class="order" id="order">
         <div class="ord-body"><div class="ord-in">
-          <div class="ord-head"><div class="cap">Ваш выбор</div><button class="reset" id="clearSel" type="button" hidden>Сбросить выбор</button></div>
+          <div class="ord-head"><div class="cap">Ваш выбор</div></div>
           <ul class="ord-list" id="ordList"></ul>
         </div></div>
         <div class="ord-foot">
           <button class="ord-sum" id="ordToggle" type="button" aria-expanded="false" aria-controls="ordList"><span class="cap" id="ordN"></span><b id="selSum">0 ₽</b><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>
+          <button class="clr" id="clearSel" type="button" hidden>Сбросить выбор</button>
           <button class="buy" id="buy" type="button" disabled>Перейти к оформлению</button>
         </div>
       </div>
@@ -439,7 +457,7 @@ hall.addEventListener('pointerleave',e=>{ if(e.pointerType==='mouse') hideTip();
 hall.addEventListener('focusin',e=>{ const b=e.target.closest('.seat'); if(b) showTip(seats[+b.dataset.id]); });
 document.addEventListener('pointerdown',e=>{ if(!e.target.closest('.seat')) hideTip(); });
 
-/* ---- легенда: нажатие на диапазон или цену гасит остальные места, наведение — подсвечивает заранее ---- */
+/* ---- цены: диапазоны раскрываются, цена внутри — фильтр; наведение на диапазон или цену подсвечивает их места заранее ---- */
 let preview=null;
 function dim(){ const set=preview||active, on=set.size>0; seats.forEach(s=>s.el.classList.toggle('dim',on&&!set.has(s.price))); }
 document.addEventListener('mouseover',e=>{
@@ -448,24 +466,29 @@ document.addEventListener('mouseover',e=>{
   const same=(a,b)=>a===b||(a&&b&&a.size===b.size&&[...a].every(x=>b.has(x)));
   if(!same(next,preview)){ preview=next; dim(); }
 });
-const chip=p=>{ const t=`${fmt(p)} · ${FREE[p]} свободно`;
-  return `<button class="chip" type="button" data-price="${p}" title="${t}" aria-label="${t}"><i class="sw" style="background:${col(p)}"></i><span class="p">${fmt(p)}</span></button>`; };
-legEl.innerHTML=BANDS.map((b,bi)=>`<div class="grp"><button class="band-h" type="button" data-band="${bi}"><i class="sw" style="background:linear-gradient(135deg, ${b.prices.map(col).join(', ')})"></i><span class="lab">${b.lab}</span><span class="n">${bandFree(bi)} свободно</span></button><div class="chips">${b.prices.map(chip).join('')}</div></div>`).join('');
+const CHEV='<svg class="bchev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+const CK='<svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+const prRow=p=>`<li><button class="pr" type="button" data-price="${p}" aria-pressed="false" aria-label="${fmt(p)}, свободно ${FREE[p]}"><i class="sw" style="background:${col(p)}"></i><span class="p">${fmt(p)}</span><span class="n">${FREE[p]}</span>${CK}</button></li>`;
+legEl.innerHTML=BANDS.map((b,bi)=>`<div class="grp" data-bi="${bi}"><button class="band-h" type="button" data-band="${bi}" aria-expanded="false" aria-controls="bb${bi}"><i class="sw" style="background:linear-gradient(135deg, ${b.prices.map(col).join(', ')})"></i><span class="lab">${b.lab}</span><span class="n">${bandFree(bi)}</span>${CHEV}</button><div class="band-b" id="bb${bi}" inert><div class="band-in"><ul class="prs">${b.prices.map(prRow).join('')}</ul></div></div></div>`).join('');
+const openB=new Set();
 function syncLegend(){
   legEl.querySelectorAll('[data-price]').forEach(b=>b.setAttribute('aria-pressed',active.has(+b.dataset.price)));
-  legEl.querySelectorAll('[data-band]').forEach(b=>{
-    const ps=BANDS[+b.dataset.band].prices, k=ps.filter(p=>active.has(p)).length;
-    b.setAttribute('aria-pressed',k===ps.length?'true':k?'mixed':'false'); });
+  legEl.querySelectorAll('.grp').forEach(g=>{ const bi=+g.dataset.bi, open=openB.has(bi), k=BANDS[bi].prices.filter(p=>active.has(p)).length;
+    g.classList.toggle('open',open); g.classList.toggle('has',k>0);
+    g.querySelector('.band-h').setAttribute('aria-expanded',open); g.querySelector('.band-b').inert=!open;
+    g.querySelector('.band-h .n').textContent=k?`выбрано ${k} из ${BANDS[bi].prices.length}`:bandFree(bi); });
   $('reset').hidden=!active.size;
 }
 legEl.addEventListener('click',e=>{
   const bh=e.target.closest('[data-band]'), pr=e.target.closest('[data-price]');
-  if(bh){ const ps=BANDS[+bh.dataset.band].prices, on=ps.every(p=>active.has(p)); ps.forEach(p=>on?active.delete(p):active.add(p)); }
-  else if(pr){ const p=+pr.dataset.price; active.has(p)?active.delete(p):active.add(p); }
-  else return;
+  if(bh){ const bi=+bh.dataset.band; openB.has(bi)?openB.delete(bi):openB.add(bi); syncLegend(); return; }
+  if(!pr) return;
+  const p=+pr.dataset.price; active.has(p)?active.delete(p):active.add(p);
   refresh();
 });
 $('reset').onclick=()=>{ active.clear(); refresh(); };
+/* фильтр из адреса (?f=) — раскрыть его диапазоны */
+BANDS.forEach((b,bi)=>{ if(b.prices.some(p=>active.has(p))) openB.add(bi); });
 
 /* ---- заказ ---- */
 const TRASH='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>';

@@ -47,7 +47,7 @@ html.tts-intro-lock, html.tts-intro-lock body { overflow: hidden; }
 /* колода: новая афиша поднимается снизу на верхнее место, предыдущие мягко переезжают глубже */
 .ti-deck { position: absolute; inset: 0; pointer-events: none; transform: translate3d(calc(var(--px, 0) * -5px), calc(var(--py, 0) * -4px), 0); }
 .ti-card { position: absolute; left: 50%; top: 50%; height: min(60vh, 580px, 116vw); aspect-ratio: 3 / 4; margin: 0; overflow: hidden;
-  background: var(--n950); border: 1px solid var(--accent); border-radius: var(--r-sm); box-shadow: 0 50px 90px -30px var(--shadow-color);
+  background: var(--n950); border: 1px solid var(--n800); border-radius: var(--r-sm); box-shadow: 0 50px 90px -30px var(--shadow-color);
   opacity: 0; will-change: transform, opacity; transform: translate(-50%, -50%) translate3d(0, 64px, 0) rotate(-1.5deg) scale(.97);
   transition: transform 1700ms var(--ti-expo), opacity 1000ms var(--ease-out), filter 1500ms var(--ease-out); }
 .ti-card img { display: block; width: 100%; height: 100%; object-fit: cover; transform: scale(1.08); transition: transform 4500ms var(--ti-expo); }
@@ -57,7 +57,8 @@ html.tts-intro-lock, html.tts-intro-lock body { overflow: hidden; }
 .ti-card[data-d="2"] { opacity: 1; transform: translate(-50%, -50%) translate3d(-3.6vw, -2%, 0) rotate(-4deg) scale(.94); filter: brightness(.28); }
 .ti-card[data-d="3"] { opacity: 0; transform: translate(-50%, -50%) translate3d(0, -3%, 0) scale(.9); filter: brightness(.2); }
 .tts-intro.is-out .ti-card:not(.is-hero) { opacity: 0; transition: opacity 700ms var(--ease-out); }
-.ti-card.is-hero { transition: transform 1300ms var(--ti-io), height 1300ms var(--ti-io), filter 700ms var(--ease-out); }
+/* кобальтовая рамка появляется только у афиши, которая летит в постер, — к концу полёта */
+.ti-card.is-hero { border-color: var(--accent); transition: transform 1300ms var(--ti-io), height 1300ms var(--ti-io), filter 700ms var(--ease-out), border-color 900ms var(--ease-out) 450ms; }
 
 /* фон под надписью тише: затемнение между колодой и текстом, уходит, когда афиша летит в постер */
 .ti-dim { position: absolute; inset: 0; pointer-events: none; transition: opacity 700ms var(--ease-out);
@@ -164,9 +165,11 @@ html.tts-intro-lock, html.tts-intro-lock body { overflow: hidden; }
 
     var RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
     var fine = matchMedia('(pointer: fine)').matches;
-    var images = (opts.images || []).slice(0, 6), fallbacks = opts.fallbacks || [];
+    var images = (opts.images || []).slice(0, 60), fallbacks = opts.fallbacks || [];
     var LONG = mode === 'long';
-    var MIN = LONG ? 2200 : 0, GAP = LONG ? 520 : 220, HOLD = LONG ? 900 : 250;
+    /* колода листается за DEAL мс при любом числе афиш: шаг между афишами не больше GAP */
+    var DEAL = LONG ? 3200 : 1500;
+    var MIN = LONG ? 2200 : 0, GAP = Math.min(LONG ? 520 : 220, DEAL / Math.max(1, images.length)), HOLD = LONG ? 900 : 250;
     var STEP = LONG ? 110 : 70, RISE = LONG ? 1400 : 950;   // шаг между строками и время подъёма строки, мс
 
     /* сессия отмечается сразу: перезагрузка во время заставки её не повторит */
@@ -211,7 +214,7 @@ html.tts-intro-lock, html.tts-intro-lock body { overflow: hidden; }
 
     var cards = Array.prototype.slice.call(box.querySelectorAll('.ti-card'));
     cards.forEach(function (c, i) {
-      c.firstChild.addEventListener('error', function (e) { if (!e.target.dataset.fb && fallbacks[i]) { e.target.dataset.fb = 1; e.target.src = fallbacks[i]; } });
+      c.firstChild.addEventListener('error', function (e) { var fb = fallbacks.length && fallbacks[i % fallbacks.length]; if (!e.target.dataset.fb && fb) { e.target.dataset.fb = 1; e.target.src = fb; } });
     });
     var topCard = cards[cards.length - 1];
     var inners = Array.prototype.slice.call(box.querySelectorAll('.ti-in'));

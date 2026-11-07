@@ -404,14 +404,54 @@ html.tts-intro-lock .vsw { display: none; }
 <script src="handoff/intro/tts-intro.js"></script>
 <script>
 (function () {
-  /* Афиши колоды — ссылки на картинки с сайта, их грузит браузер зрителя. Последняя ложится сверху
+  /* Афиши колоды — все афиши с сайта, ссылки на картинки, их грузит браузер зрителя. Широкие обрезаются по краям карточки 3:4. Последняя ложится сверху
      и перелетает в постер первого экрана (тот же адрес стоит в .hero2-poster img). Не загрузилась — кадр сцены. */
-  var MS = 'https://moscowshow.com/upload/iblock/', html = document.documentElement;
+  var MS = 'https://moscowshow.com/upload/', html = document.documentElement;
   TTSIntro.start({
     images: [
-      MS + '85a/fndnxz2eojab1nki8b3ikufmvaywsadl/lavr2_.jpg',
-      MS + '356/kqkkzqpzk8rh4oaifiy0lrqlesvz3f8f/frida_.jpg',
-      MS + '40f/xk8jj9k4o0ozlw47j22ys3tdaf4g13et/einstein_i_margarita_.jpg',
+      MS + 'iblock/85a/fndnxz2eojab1nki8b3ikufmvaywsadl/lavr2_.jpg',
+      MS + 'iblock/a6e/p1s2iu3363lw6xmus1246vpttxptb7p4/galiny_vish.jpg',
+      MS + 'iblock/591/8n51m0a0loa85jq4te9y21b76dxuh5v0/surganova2.jpg',
+      MS + 'iblock/d83/mop7r5kzfc7n4occd6dpq8r1ixkpumot/rajkin.jpg',
+      MS + 'iblock/511/8dx8lcsr659f8oh338abwf80tfulp5y9/drakula_.jpg',
+      MS + 'iblock/1f1/do9tkpl3faputlx8l8a41bzzxtlmwxhc/kysya.png',
+      MS + 'iblock/3f6/k95zjpteebl7bbf0mvvkkmox921lu86f/msp1.jpg',
+      MS + 'iblock/bd2/f5pv8k8ufh9253a7v6o2t6k9bxx5272q/chanel_.jpg',
+      MS + 'iblock/fc9/8yy75wgnv3ejplo2vjei7pgdadflnfog/pisma_muzhchin_.jpg',
+      MS + 'iblock/276/lf9ls6cl0ddisypo2mr12kpjn1aub1f5/muzhskoi_aromat.jpg',
+      MS + 'iblock/a6e/061vhp6wq2xn3glpg3p7rt88kmkipo3t/kogda_prishla.jpg',
+      MS + 'iblock/adf/zirtea4elbgva293zbhe527sb248yp00/papa_alexandrove.jpg',
+      MS + 'iblock/f51/czdv4d2bfvtb3lg6lqs4v82l99fkxesi/naslednik2.jpg',
+      MS + 'iblock/3d9/rh8c4v29ptak6t0fiq5l991898661fla/kvartetnik_.jpg',
+      MS + 'iblock/bed/9o67uz86bdvpd529dhifv8gf21e5ofck/khuligan-ispoved.png',
+      MS + 'dev2fun_opengraph/e4c/lqunc5z2ml3av9onw8k7ayyp379vnddr.jpg',
+      MS + 'iblock/f1a/3t0i55tqnfizzy2uo2271wnmzugbvv85/odin-doma.jpg',
+      MS + 'iblock/6a3/0vgskqt2fyr5hx11325pnmi13ew10beu/4-%D0%BA%D0%B0%D1%80%D1%82%D0%B8%D0%BD%D1%8B_%D0%BC%D0%B0%D0%BB%D0%B5%D0%BD%D1%8C%D0%BA%D0%B0%D1%8F.jpg',
+      MS + 'iblock/88a/5fogswh1afhm1bbgb0g427efyyvg5cqc/vaegna.jpg',
+      MS + 'iblock/287/7zv3gqndxmtzt25tq387t67cwqmlqpm5/nash_novyi_god_sm.jpg',
+      MS + 'iblock/d1e/gibof3e48g1dtlo1cw2bqwaqo0vlvqa4/p_dzhaz.jpg',
+      MS + 'iblock/9c2/h1ocaexznipeyz9fvft1en8rf13yyg9b/russki_krest.jpg',
+      MS + 'iblock/40f/xk8jj9k4o0ozlw47j22ys3tdaf4g13et/einstein_i_margarita_.jpg',
+      MS + 'iblock/e02/onz3az5djbwotj13vpopw1vowtcek85x/shchelkunchik__2.jpg',
+      MS + 'iblock/7ce/v7xck02rgpbf723gnwe8my7bseqadqle/budu_snimatsya_v_kino_.jpg',
+      MS + 'iblock/b79/5yqvbm2x3rvh6xl6eqokravp110dzdj3/poedinok2.jpg',
+      MS + 'iblock/a40/oprlev8kk9m7sjbg3lb7ds6uaz66lepx/rozhdestvensky_.jpg',
+      MS + 'iblock/4c2/mhsqmc51gory2kzfsj7m5e04w929cnxh/shufutinskiy_.jpg',
+      MS + 'iblock/5e4/b17kbkxo792o2hflipz77tgi9hbeft3l/spivakov_ny2.jpg',
+      MS + 'iblock/ddf/79ruzlzjpidh3aqv3ef3hy5b94w9vfp2/skripka_rotshilda2.jpg',
+      MS + 'dev2fun_opengraph/31d/nm13n4ser04jzwy3qn26lne9it9zq10n.jpg',
+      MS + 'iblock/b85/ifgrpf8ljvrfc8fayfmnisb1s4kbopxj/sopernicy1.png',
+      MS + 'iblock/1fa/0ullsuub0233rnn3fumwa7znx5d11ehy/vysotsky.jpg',
+      MS + 'iblock/9b8/zfx39dp7ypxln02rq7yht5pbejop1kjm/zakharov_.jpg',
+      MS + 'iblock/78c/ovxpxftz92fmxc62v0sfxc6lwtelrs6q/sobachye_serdce_.jpg',
+      MS + 'iblock/2e7/6d0k8ka5ii9dy0k2bw8yqp5o8x4gg8wq/den_vlublennykh2_.jpg',
+      MS + 'iblock/aaf/t8q52g4icbi2o6ysu4439k3swkfclxlu/kvartetnik_m.jpg',
+      MS + 'iblock/444/cxn5709qib5cs8iueiygz9u1gyoshxll/bal_orlovskogo2_.jpg',
+      MS + 'iblock/ab1/4og94m7sab7mbp3r3ej9qqmexed77r5p/%D0%BE%D0%BD%D0%B5%D0%B3%D0%B8%D0%BD_%D1%81%D0%BC.jpg',
+      MS + 'iblock/665/9tlbo9ajv3jw708hbeg997x3ndtw6yoj/organ_.jpg',
+      MS + 'dev2fun_opengraph/5ff/falc59q6trr27n6dyoyfv6wz33z7nkxc.png',
+      MS + 'iblock/96c/x7v4i1vpdywxyqe3tlkfy9bklwjy1d9x/paolo_baccianella_.jpg',
+      MS + 'iblock/a12/xahbbtkdy31ij2hb6e52ctsspe0v2oia/mertvye_2.jpg',
       'home-new/psikhopaty.webp'
     ],
     fallbacks: ['home-new/stage-bokeh.webp', 'home-new/stage-rays.webp', 'home-new/stage-spotlight.webp', 'home-new/stage-curtain.webp'],

@@ -54,9 +54,17 @@ body { margin: 0; background: var(--ink); color: var(--n100); font-family: var(-
   .ec:hover .fav, .fav:focus-visible { opacity: 1; }
   .fav[aria-pressed="true"]::before { opacity: 0; }
   .fav[aria-pressed="true"]:hover::before, .fav[aria-pressed="true"]:focus-visible::before { opacity: 1; }
-  /* без подложки сердечку нужна лёгкая тень, чтобы читаться на светлом пятне обложки */
-  .fav[aria-pressed="true"]:not(:hover):not(:focus-visible) svg { filter: drop-shadow(0 1px 3px color-mix(in srgb, var(--scrim) 45%, transparent)); }
+  /* без подложки сердечку нужна мягкая тень, чтобы читаться на светлом пятне обложки */
+  .fav[aria-pressed="true"]:not(:hover):not(:focus-visible) svg { filter: var(--fav-shadow); }
 }
+/* тень сердечка — широкая и размытая, без жёсткого края */
+.fav { --fav-shadow: drop-shadow(0 2px 8px color-mix(in srgb, var(--scrim) 42%, transparent)); }
+/* Светлая тема: сердечко тоже белое (--on-accent — белый в обеих темах) и всегда с тенью;
+   подложка — тёмное стекло, на светлой подложке белое сердечко не читалось бы */
+[data-theme="light"] .fav { color: var(--on-accent); --fav-shadow: drop-shadow(0 2px 10px color-mix(in srgb, var(--scrim) 32%, transparent)); }
+[data-theme="light"] .fav svg { filter: var(--fav-shadow); }
+[data-theme="light"] .fav::before { background: color-mix(in srgb, var(--scrim) 14%, transparent); }
+[data-theme="light"] .fav:hover::before { border-color: transparent; background: color-mix(in srgb, var(--scrim) 22%, transparent); }
 @media (prefers-reduced-motion: reduce) { .fav, .fav::before { transition: none; } .fav svg { animation: none !important; transition: none; } }
 
 .toast-slot { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 50; pointer-events: none; opacity: 0; transition: opacity var(--dur-slow) var(--ease-out); }
@@ -118,7 +126,7 @@ body { margin: 0; background: var(--ink); color: var(--n100); font-family: var(-
         <article class="event-card ec card-cool">
           <div class="event-card-cover"><div class="cover-blob cover-blob-1"></div><div class="cover-blob cover-blob-2"></div>
             <div class="cover-date"><div class="t-caption">31 окт – 26 дек</div></div></div>
-          <button class="fav" type="button" aria-pressed="false" aria-label="Добавить «Мастер и Маргарита» в избранное" title="В избранное"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.5 4.5 0 0 1 12 7.2 4.5 4.5 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/></svg></button>
+          <button class="fav" type="button" aria-pressed="false" aria-label="Добавить «Мастер и Маргарита» в избранное" title="В избранное"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></button>
           <div class="event-card-body">
             <div class="event-card-meta">Спектакль<span class="event-card-age">16+</span></div>
             <a class="event-card-title ec-link" href="#">Мастер и Маргарита</a>
@@ -130,7 +138,7 @@ body { margin: 0; background: var(--ink); color: var(--n100); font-family: var(-
           <div class="event-card-cover"><div class="cover-blob cover-blob-1"></div><div class="cover-blob cover-blob-2"></div>
             <div class="cover-tag"><span class="tag tag-orange">Мало мест</span></div>
             <div class="cover-date"><div class="t-caption">1 ноя – 31 янв</div></div></div>
-          <button class="fav" type="button" aria-pressed="true" aria-label="Убрать «Вишнёвый сад» из избранного" title="Убрать из избранного"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.5 4.5 0 0 1 12 7.2 4.5 4.5 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/></svg></button>
+          <button class="fav" type="button" aria-pressed="true" aria-label="Убрать «Вишнёвый сад» из избранного" title="Убрать из избранного"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></button>
           <div class="event-card-body">
             <div class="event-card-meta">Спектакль<span class="event-card-age">12+</span></div>
             <a class="event-card-title ec-link" href="#">Вишнёвый сад</a>
