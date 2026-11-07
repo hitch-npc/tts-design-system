@@ -55,7 +55,7 @@ html.tts-intro-lock, html.tts-intro-lock body { overflow: hidden; }
 .ti-card[data-d="3"] { opacity: 0; transform: translate(-50%, -50%) translate3d(0, -3%, 0) scale(.9); filter: brightness(.2); }
 .tts-intro.is-out .ti-card:not(.is-hero) { opacity: 0; transition: opacity 700ms var(--ease-out); }
 /* кобальтовая рамка появляется только у афиши, которая летит в постер, — к концу полёта */
-.ti-card.is-hero { border-color: var(--accent); transition: transform 1800ms var(--ti-io), height 1800ms var(--ti-io), filter 900ms var(--ease-out), border-color 1100ms var(--ease-out) 600ms; }
+.ti-card.is-hero { border-color: var(--accent); transition: transform 1200ms var(--ti-io), height 1200ms var(--ti-io), filter 700ms var(--ease-out), border-color 700ms var(--ease-out) 400ms; }
 
 /* фон под надписью тише: затемнение между колодой и текстом, уходит, когда афиша летит в постер */
 .ti-dim { position: absolute; inset: 0; pointer-events: none; transition: opacity 700ms var(--ease-out);
@@ -165,9 +165,9 @@ html.tts-intro-lock, html.tts-intro-lock body { overflow: hidden; }
     if (images.length > MAXN) images = images.slice(0, MAXN - 1).concat(images.slice(-1));
     var LONG = mode === 'long';
     /* колода листается за DEAL мс при любом числе афиш: шаг между афишами не больше GAP */
-    var DEAL = LONG ? 5600 : 1500;
-    var MIN = LONG ? 4200 : 0, GAP = Math.min(LONG ? 900 : 220, DEAL / Math.max(1, images.length)), HOLD = LONG ? 1500 : 250;
-    var STEP = LONG ? 180 : 70, RISE = LONG ? 2000 : 950;   // шаг между строками и время подъёма строки, мс
+    var DEAL = LONG ? 1200 : 1000;
+    var MIN = LONG ? 1000 : 0, GAP = Math.min(LONG ? 190 : 150, DEAL / Math.max(1, images.length)), HOLD = LONG ? 100 : 100;
+    var STEP = LONG ? 90 : 60, RISE = LONG ? 1200 : 900;   // шаг между строками и время подъёма строки, мс
 
     if (!document.getElementById('tts-intro-css')) {
       var st = document.createElement('style'); st.id = 'tts-intro-css'; st.textContent = CSS; document.head.appendChild(st);
@@ -250,15 +250,14 @@ html.tts-intro-lock, html.tts-intro-lock body { overflow: hidden; }
     function deal() { cards.forEach(function (c, i) { if (i <= n) c.dataset.d = String(Math.min(n - i, 3)); }); n++; lastDeal = performance.now(); }
 
     function decrypt(d, startMs) {
-      /* буквы меняются редко и недолго — 2–3 смены, чтобы не рябило */
-      var end = startMs + 360 + Math.random() * 240;
+      var end = startMs + 260 + Math.random() * 300;
       at(startMs, function () {
         var tEnd = performance.now() + (end - startMs);
         (function tick() {
           if (run.done || performance.now() >= tEnd) { d.classList.remove('on'); return; }
           d.dataset.g = GLYPHS[Math.random() * GLYPHS.length | 0];
           d.classList.add('on');
-          run.timers.push(setTimeout(tick, 170));
+          run.timers.push(setTimeout(tick, 45));
         })();
       });
     }
@@ -320,7 +319,7 @@ html.tts-intro-lock, html.tts-intro-lock body { overflow: hidden; }
       }
       setTimeout(function () { box.classList.add('is-out'); }, RM ? 0 : 250);
       setTimeout(function () { cb('onReveal'); }, RM ? 0 : 600);
-      var end = RM ? 300 : fly ? 2050 : 1200;
+      var end = RM ? 300 : fly ? 1400 : 1000;
       setTimeout(function () { cb('onPoster'); }, fly ? end - 150 : 500);
       setTimeout(function () {
         box.remove();
