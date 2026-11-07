@@ -47,6 +47,9 @@
   .seat.sold { background:var(--seat-sold) !important; cursor:default; opacity:.7; }
   .seat.dim { opacity:.1; }
   .seat.sold.dim { opacity:.05; }
+  /* фильтр — фокус, а не стена: ярус под курсором проявляется; приближенный ярус без мест по фильтру проявлен сам (.peek) */
+  @media (hover:hover) { .zn:hover .seat.dim:not(.sold) { opacity:.6; } }
+  .zn.peek .seat.dim:not(.sold) { opacity:.6; }
   .seat.sel { background:var(--seat-sel) !important; opacity:1; box-shadow:0 0 0 .75px var(--ink), 0 0 0 1.5px var(--seat-sel); }
   .seat.sel::after { content:'✓'; position:absolute; inset:0; display:grid; place-items:center; font:700 calc(var(--s) * .72)/1 var(--font); color:var(--seat-check); } /* как .smap-dot-selected в ядре */
   .seat.hl { box-shadow:0 0 0 .75px var(--ink), 0 0 0 2px var(--n100); z-index:1; }
@@ -352,7 +355,7 @@ function state(){
     ZONES.forEach((z,i)=>{ const e=z.el; const dx=Math.max(e.offsetLeft-cx,0,cx-e.offsetLeft-e.offsetWidth), dy=Math.max(e.offsetTop-cy,0,cy-e.offsetTop-e.offsetHeight), d=dx*dx+dy*dy; if(d<bd){bd=d;curZone=i;} });
     const z=ZONES[curZone]; $('crumb').innerHTML=`${z.short}<span class="cr-p"> · ${fmtN(z.min)}${z.min!==z.max?' – '+fmtN(z.max):''} ₽</span>`; }
   $('zout').disabled=!on; $('zin').disabled=view.k>=K_MAX-.01; $('zfit').disabled=!on;
-  miniView();
+  peek(); miniView();
 }
 /* мини-карта: где вы на схеме */
 const mini=$('mini');
@@ -416,7 +419,9 @@ function toggleSeat(s){
   if(!s.sold){
     if(selected.has(s.id)) selected.delete(s.id);
     else if(selected.size>=MAX_SEATS) note='limit';
-    else selected.add(s.id);
+    else { selected.add(s.id);
+      /* место вне фильтра: его цена добавляется в фильтр, сброс не нужен */
+      if(active.size&&!active.has(s.price)){ active.add(s.price); openB.add(BANDS.findIndex(b=>b.prices.includes(s.price))); } }
     refresh();
   }
   showTip(s,note);
@@ -434,7 +439,8 @@ function place(r,below){
 let tipKey=null;
 function showTip(s,note){
   tipKey='s'+s.id;
-  const hint=note==='limit'?`В заказе уже ${MAX_SEATS} мест — это максимум`:selected.has(s.id)?'В заказе · нажмите ещё раз, чтобы убрать':'Нажмите, чтобы добавить в заказ';
+  const out=active.size&&!active.has(s.price);
+  const hint=note==='limit'?`В заказе уже ${MAX_SEATS} мест — это максимум`:selected.has(s.id)?'В заказе · нажмите ещё раз, чтобы убрать':out?'Нажмите — место в заказ, цена в фильтр':'Нажмите, чтобы добавить в заказ';
   tip.innerHTML=`<div class="tip-where">${s.zone} · ряд ${s.row} · место ${s.place}</div>`+
     (s.sold?`<div class="tip-price" style="color:var(--n500)">Продано</div>`:
     `<div class="tip-price"><i class="sw" style="background:${col(s.price)}"></i>${fmt(s.price)}</div><div class="tip-hint">${hint}</div>`);
@@ -459,7 +465,11 @@ document.addEventListener('pointerdown',e=>{ if(!e.target.closest('.seat')) hide
 
 /* ---- цены: диапазоны раскрываются, цена внутри — фильтр; наведение на диапазон или цену подсвечивает их места заранее ---- */
 let preview=null;
-function dim(){ const set=preview||active, on=set.size>0; seats.forEach(s=>s.el.classList.toggle('dim',on&&!set.has(s.price))); }
+function dim(){ const set=preview||active, on=set.size>0; seats.forEach(s=>s.el.classList.toggle('dim',on&&!set.has(s.price))); peek(); }
+/* приближенный ярус, где по фильтру нет свободных мест, проявляется сам — на телефоне наведения нет */
+function peek(){ const on=isOn(), set=preview||active;
+  ZONES.forEach((z,i)=>{ z.seats=z.seats||seats.filter(x=>z.el.contains(x.el));
+    z.el.classList.toggle('peek', on&&i===curZone&&set.size>0&&!z.seats.some(x=>!x.sold&&set.has(x.price))); }); }
 document.addEventListener('mouseover',e=>{
   const pr=e.target.closest('[data-price]'), bh=e.target.closest('[data-band]');
   const next=pr?new Set([+pr.dataset.price]):bh?new Set(BANDS[+bh.dataset.band].prices):null;
