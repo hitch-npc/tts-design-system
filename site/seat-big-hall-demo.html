@@ -38,7 +38,7 @@
   .row { display:flex; align-items:center; gap:var(--g); }
   .rl { width:14px; font-size:7px; color:var(--n600); text-align:center; flex:none; }
   .aisle { width:var(--s); flex:none; }
-  .seat { width:var(--s); height:var(--s); flex:none; border:0; padding:0; border-radius:calc(var(--s) / 5); cursor:pointer; position:relative; transition:opacity .2s, filter .15s, box-shadow .2s; }
+  .seat { width:var(--s); height:var(--s); flex:none; border:0; padding:0; border-radius:calc(var(--s) / 5); cursor:pointer; position:relative; transition:opacity .36s cubic-bezier(.4,0,.2,1), filter .15s, box-shadow .2s; }
   /* до приближения нажатие приходится на зону, после — на место; зона нажатия места — весь шаг сетки, без щелей */
   .map:not(.on) .seat { pointer-events:none; }
   .map.on .seat::before { content:''; position:absolute; inset:calc(var(--g) / -2); }
@@ -470,11 +470,17 @@ function dim(){ const set=preview||active, on=set.size>0; seats.forEach(s=>s.el.
 function peek(){ const on=isOn(), set=preview||active;
   ZONES.forEach((z,i)=>{ z.seats=z.seats||seats.filter(x=>z.el.contains(x.el));
     z.el.classList.toggle('peek', on&&i===curZone&&set.size>0&&!z.seats.some(x=>!x.sold&&set.has(x.price))); }); }
+/* подсветка ждёт, пока курсор остановится (110 мс): при проходе по списку схема не мигает на каждой строке;
+   щели между строками подсветку не снимают, уход из списка снимает её через 220 мс */
+let pvT=0;
 document.addEventListener('mouseover',e=>{
   const pr=e.target.closest('[data-price]'), bh=e.target.closest('[data-band]');
   const next=pr?new Set([+pr.dataset.price]):bh?new Set(BANDS[+bh.dataset.band].prices):null;
+  if(!next&&preview&&legEl.contains(e.target)) { clearTimeout(pvT); return; }
   const same=(a,b)=>a===b||(a&&b&&a.size===b.size&&[...a].every(x=>b.has(x)));
-  if(!same(next,preview)){ preview=next; dim(); }
+  clearTimeout(pvT);
+  if(same(next,preview)) return;
+  pvT=setTimeout(()=>{ preview=next; dim(); }, next?110:220);
 });
 const CHEV='<svg class="bchev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
 const CK='<svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
