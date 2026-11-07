@@ -160,13 +160,13 @@ html.tts-intro-lock, html.tts-intro-lock body { overflow: hidden; }
 
     var RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
     var fine = matchMedia('(pointer: fine)').matches;
-    /* не больше 7 афиш: первые шесть из списка и последняя — херо */
-    var MAXN = 7, images = opts.images || [], fallbacks = opts.fallbacks || [];
+    /* не больше 4 афиш: первые три из списка и последняя — херо */
+    var MAXN = 4, images = opts.images || [], fallbacks = opts.fallbacks || [];
     if (images.length > MAXN) images = images.slice(0, MAXN - 1).concat(images.slice(-1));
     var LONG = mode === 'long';
-    /* колода листается за DEAL мс при любом числе афиш: шаг между афишами не больше GAP */
-    var DEAL = LONG ? 1200 : 1000;
-    var MIN = LONG ? 1000 : 0, GAP = Math.min(LONG ? 190 : 150, DEAL / Math.max(1, images.length)), HOLD = LONG ? 100 : 100;
+    /* темп колоды — афиша раз в 800 мс; длину держит число афиш (не больше четырёх), а не скорость */
+    var DEAL = LONG ? 800 * Math.max(1, images.length) : 1000;
+    var MIN = LONG ? DEAL * 0.8 : 0, GAP = Math.min(LONG ? 800 : 150, DEAL / Math.max(1, images.length)), HOLD = LONG ? 300 : 100;
     var STEP = LONG ? 90 : 60, RISE = LONG ? 1200 : 900;   // шаг между строками и время подъёма строки, мс
 
     if (!document.getElementById('tts-intro-css')) {
