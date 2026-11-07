@@ -356,6 +356,11 @@ html[data-v="names"] .cat-tiles { grid-template-columns: repeat(4, minmax(0, 1fr
 .ct-end { flex-direction: row; gap: 10px; border-color: var(--n700); }
 .ct-end svg { transition: transform 420ms cubic-bezier(.16,1,.3,1); }
 .ct-end:hover svg { transform: translateY(2px); }
+/* выбранная плитка без кобальта: светло-серая рамка, плитка остаётся в верхней точке подъёма, свечение жанра — как при наведении */
+html[data-v="names"] .ct:not(.ct-end)[aria-pressed="true"] { background-color: var(--n950); border-color: var(--n300); transform: translateY(-4px); box-shadow: 0 16px 28px -16px color-mix(in srgb, var(--g) 85%, var(--scrim)); }
+html[data-v="names"] .ct:not(.ct-end)[aria-pressed="true"]::before { transform: scale(1.25); filter: brightness(1.25) saturate(1.15); }
+html[data-v="names"] .ct:not(.ct-end)[aria-pressed="true"] .ct-a { color: var(--n100); }
+html[data-v="names"] .ct:focus-visible { outline-color: var(--n300); }
 .ct-end[aria-pressed="true"] { color: var(--n300); background: transparent; border-color: var(--n700); }
 .ct-end[aria-pressed="true"]:hover { color: var(--n100); }
 @media (max-width: 1080px) { html[data-v="names"] .home-cats { --cat-h: 68px; } }
