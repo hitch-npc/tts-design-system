@@ -39,7 +39,7 @@
 
   /* Логотип площадки; без логотипа — монограмма */
   .logo { flex:none; width:40px; height:40px; display:grid; place-items:center; border:1px solid var(--n800); border-radius:var(--r-sm); background:var(--n950); overflow:hidden; }
-  .logo img { max-width:80%; max-height:80%; object-fit:contain; display:block; }
+  .logo img { width:80%; height:80%; object-fit:contain; display:block; }
   .logo span { font-family:var(--f-head); font-size:15px; color:var(--n300); }
   .name { font-family:var(--f-head); font-size:19px; line-height:1.25; color:var(--n100); }
   .addr { font-size:12px; color:var(--n400); line-height:1.5; }
@@ -102,8 +102,18 @@
   .results { display:flex; flex-direction:column; gap:56px; padding-top:24px; border-top:1px solid var(--n800); scroll-margin-top:16px; }
   .results:empty { display:none; }
   .venue-block { display:flex; flex-direction:column; gap:24px; }
-  .vb-head { display:flex; align-items:center; gap:16px; }
-  .vb-head .logo { width:56px; height:56px; }
+  /* Заголовок площадки: крупный логотип без рамки, за ним — мягкое свечение */
+  .vb-head { display:flex; align-items:center; gap:32px; }
+  .vb-head .logo { position:relative; isolation:isolate; width:200px; height:140px; border:0; background:none; overflow:visible; }
+  .vb-head .logo::before { content:""; position:absolute; inset:-10% 5%; z-index:-1; border-radius:50%; pointer-events:none;
+    background:radial-gradient(ellipse at center, var(--blob-core) 0%, var(--blob-mid) 45%, transparent 72%); filter:blur(36px); opacity:.55; }
+  .vb-head .logo img { width:100%; height:100%; max-width:none; max-height:none; object-fit:contain; }
+  .vb-head .logo span { font-size:64px; color:var(--n200); }
+  @media (max-width:760px) {
+    .vb-head { flex-direction:column; align-items:flex-start; gap:16px; }
+    .vb-head .logo { width:150px; height:104px; }
+    .vb-head .logo span { font-size:48px; }
+  }
   .vb-head h2 { margin:0; font-family:var(--f-thin); font-weight:500; font-size:clamp(24px,3vw,30px); line-height:1.15; }
   .vb-head h2:focus { outline:none; }
   .vb-head .addr { margin-top:4px; }
