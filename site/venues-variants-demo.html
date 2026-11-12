@@ -43,7 +43,7 @@
   .row .logo img { width:32px; height:32px; }
   .vt .logo img { width:45px; height:45px; }
   .logo span { font-family:var(--f-head); font-size:15px; color:var(--n300); }
-  .name { font-family:var(--f-head); font-size:19px; line-height:1.25; color:var(--n100); }
+  .name { font-size:16px; font-weight:500; line-height:1.35; color:var(--n100); }
   .addr { font-size:12px; color:var(--n400); line-height:1.5; }
 
   /* Отметка выбора — квадрат с галочкой */
@@ -57,14 +57,14 @@
   .row { appearance:none; width:100%; text-align:left; background:transparent; border:0; border-bottom:1px solid var(--n800); display:grid; grid-template-columns:40px minmax(0,1fr) 20px; gap:14px; align-items:center; padding:12px 10px; cursor:pointer; transition:background var(--dur-base) var(--ease-std), box-shadow var(--dur-base) var(--ease-std); }
   .row:hover, .row.is-hl { background:var(--n950); }
   .row[aria-pressed="true"] { background:var(--accent-ghost); box-shadow:inset 2px 0 0 var(--accent); }
-  .row .name { font-size:17px; }
+  .row .name { font-size:15px; }
   .map { position:sticky; top:16px; height:620px; border:1px solid var(--n800); border-radius:var(--r-sm); overflow:hidden; background:var(--n950); display:grid; place-items:center; text-align:center; }
   .map::before { content:""; position:absolute; inset:0; background:
       linear-gradient(var(--n900) 1px, transparent 1px) 0 0 / 48px 48px,
       linear-gradient(90deg, var(--n900) 1px, transparent 1px) 0 0 / 48px 48px; opacity:.7; }
   .map-c { position:relative; display:flex; flex-direction:column; gap:8px; align-items:center; padding:24px; max-width:340px; }
   .map-c svg { width:28px; height:28px; color:var(--n400); }
-  .map-c .t { font-family:var(--f-head); font-size:19px; }
+  .map-c .t { font-size:15px; font-weight:500; }
   .map-c .d { font-size:12px; color:var(--n400); line-height:1.6; }
   @media (max-width:860px) {
     .split { grid-template-columns:1fr; }
@@ -87,8 +87,8 @@
   .vt .vt-top { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:6px; }
   .vt .logo { width:56px; height:56px; }
   .vt .logo span { font-size:19px; }
-  .vt .name { font-size:21px; line-height:1.2; margin-top:auto; }
-  @media (max-width:600px) { .vt { min-height:0; padding:20px; } .vt .name { font-size:19px; margin-top:0; } }
+  .vt .name { font-size:17px; line-height:1.3; margin-top:auto; }
+  @media (max-width:600px) { .vt { min-height:0; padding:20px; } .vt .name { font-size:16px; margin-top:0; } }
   .empty { padding:32px 0; color:var(--n400); font-size:13px; }
 
   /* Панель «Применить» — появляется, когда выбор отличается от показанного */
@@ -126,9 +126,11 @@
   .results[data-m="rail"] .vb-body { gap:0; }
   .results[data-m="rail"] .month { display:grid; grid-template-columns:128px minmax(0,1fr); gap:20px; padding:20px 0; border-top:1px solid var(--n800); }
   .results[data-m="rail"] .month:first-child { border-top:0; padding-top:0; }
-  .results[data-m="rail"] .month h3 { display:flex; flex-direction:column; gap:6px; font-family:var(--f-thin); font-weight:500; font-size:24px; line-height:1.1; letter-spacing:0; text-transform:none; color:var(--n300); }
-  .results[data-m="rail"] .month .my { font-family:var(--font); font-size:10px; font-weight:500; letter-spacing:.14em; color:var(--n500); }
-  .results[data-m="rail"] .month .mc { display:block; margin-top:6px; font-size:11px; color:var(--n500); }
+  .results[data-m="rail"] .month h3 { display:flex; flex-wrap:wrap; align-items:baseline; column-gap:6px; row-gap:4px; font-size:15px; font-weight:600; line-height:1.3; letter-spacing:0; text-transform:none; color:var(--n200); }
+  .results[data-m="rail"] .month .mn { flex-basis:100%; }
+  .results[data-m="rail"] .month .my, .results[data-m="rail"] .month .mc { font-size:11px; font-weight:400; color:var(--n600); font-variant-numeric:tabular-nums; }
+  .results[data-m="rail"] .month .mc { display:inline; }
+  .results[data-m="rail"] .month .mc::before { content:"·"; margin-right:6px; }
   /* в колонке карточки уже: цена уходит под название, чтобы название не обрезалось */
   .results[data-m="rail"] .venue-block { grid-template-columns:200px minmax(0,1fr); }
   .results[data-m="rail"] .month { grid-template-columns:104px minmax(0,1fr); gap:16px; }
@@ -138,12 +140,11 @@
   .results[data-m="rail"] .vh-price .event-card-price-label { display:inline; margin:0; }
   @media (max-width:640px) {
     .results[data-m="rail"] .month { grid-template-columns:minmax(0,1fr); gap:12px; padding:16px 0; }
-    .results[data-m="rail"] .month h3 { flex-direction:row; align-items:baseline; gap:10px; font-size:22px; }
-    .results[data-m="rail"] .month-l { display:flex; align-items:baseline; justify-content:space-between; }
-    .results[data-m="rail"] .month .mc { margin:0; }
+    .results[data-m="rail"] .month h3 { flex-wrap:nowrap; }
+    .results[data-m="rail"] .month .mn { flex-basis:auto; margin-right:auto; }
   }
   @media (max-width:860px) {
-    .venue-block { grid-template-columns:minmax(0,1fr); gap:18px; padding:28px 0; }
+    .venue-block, .results[data-m="rail"] .venue-block { grid-template-columns:minmax(0,1fr); gap:18px; padding:28px 0; }
     .vb-head { position:static; flex-direction:row; align-items:center; gap:16px; }
     .vb-head .logo { width:88px; height:62px; flex:none; }
     .vb-head .logo img { width:88px; height:62px; }
@@ -162,10 +163,10 @@
   .vh-mon { position:relative; margin-top:4px; font-size:9px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--n300); }
   .vh-body { min-width:0; display:flex; flex-direction:column; gap:5px; }
   .vh-body .event-card-meta { margin:0; }
-  .vh-title { font-family:var(--f-head); font-size:19px; line-height:1.2; color:var(--n100); display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; line-clamp:2; overflow:hidden; }
+  .vh-title { font-family:var(--f-head); font-size:17px; line-height:1.25; color:var(--n100); display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; line-clamp:2; overflow:hidden; }
   .vh-sub { font-size:11px; color:var(--n500); }
   .vh-price { text-align:right; white-space:nowrap; }
-  .vh-price .event-card-price { font-size:19px; }
+  .vh-price .event-card-price { font-size:18px; }
   @media (max-width:400px) { .vh { grid-template-columns:84px minmax(0,1fr); } .vh-price { grid-column:2; text-align:left; } }
 
   @media (prefers-reduced-motion: reduce) {
@@ -250,7 +251,7 @@ function results(){
     rows.forEach(e=>{ const k=e[2].slice(0,7); if(!months.has(k)) months.set(k,[]); months.get(k).push(e); });
     return `<section class="venue-block" aria-labelledby="vb-${i}"><div class="vb-head">${logo(v)}<div><h2 id="vb-${i}" tabindex="-1">${esc(v.n)}</h2><div class="addr">${esc(v.a)}</div></div></div>
       <div class="vb-body">${[...months].map(([k,list])=>{ const m=+k.slice(5,7)-1, n=new Set(list.map(x=>x[1])).size;
-        return `<div class="month"><div class="month-l"><h3><span class="mn">${MON[m][0].toUpperCase()+MON[m].slice(1)}</span> <span class="my">${k.slice(0,4)}</span></h3><span class="mc">${n} ${pl(n,'событие','события','событий')}</span></div><div class="cards">${cards(list)}</div></div>`; }).join('')}</div></section>`;
+        return `<div class="month"><div class="month-l"><h3><span class="mn">${MON[m][0].toUpperCase()+MON[m].slice(1)}</span> <span class="my">${k.slice(0,4)}</span>${n>1?` <span class="mc">${n} ${pl(n,'событие','события','событий')}</span>`:''}</h3></div><div class="cards">${cards(list)}</div></div>`; }).join('')}</div></section>`;
   }).join('');
 }
 function applyBar(){
