@@ -103,7 +103,7 @@ html, body { background: #161616; -webkit-font-smoothing: antialiased; -moz-osx-
   font-family: "Manrope", sans-serif; font-weight: 600;
   letter-spacing: .16em; text-transform: uppercase;
   border: 1px solid transparent; border-radius: 2px; cursor: pointer;
-  display: inline-flex; align-items: center; justify-content: center;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   text-decoration: none; transition: background .2s, border-color .2s, color .2s;
 }
 .btn-lg { font-size: 12px; padding: 16px 32px; }
@@ -113,7 +113,10 @@ html, body { background: #161616; -webkit-font-smoothing: antialiased; -moz-osx-
 .btn-primary { background: var(--accent); color: #FFFFFF; font-weight: 700; }
 .btn-primary:hover { background: var(--accent-hover); }
 .btn-ghost { background: transparent; border-color: var(--n700); color: var(--n100); }
-.btn-ghost:hover { border-color: var(--n400); color: var(--n100); }
+.btn-ghost:hover { border-color: var(--n300); color: var(--n100); }
+.btn-arr { flex: none; transition: transform .2s; }
+.btn:hover .btn-arr, .btn:focus-visible .btn-arr { transform: translateX(3px); }
+@media (prefers-reduced-motion: reduce) { .btn-arr { transition: none; } .btn:hover .btn-arr, .btn:focus-visible .btn-arr { transform: none; } }
 /* как в ядре: кобальт только в рамке, текст светлый */
 .btn-ghost-accent { background: transparent; border-color: var(--accent); color: var(--n100); }
 .btn-ghost-accent:hover { background: var(--accent-ghost); }
@@ -667,7 +670,8 @@ textarea.input { resize: none; }
 /* 3 · Уточнённые микровзаимодействия кнопок */
 .btn { transition: background .2s, border-color .2s, color .2s, transform .2s, box-shadow .2s; letter-spacing: .16em; }
 .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 10px 26px -10px var(--accent); }
-.btn-ghost:hover { background: var(--n900); }
+.btn-ghost:hover { background: var(--n800); }
+.btn-ghost:active { border-color: var(--n100); background: var(--n700); }
 
 /* 4 · Тоньше hover карточек-секций */
 .step { transition: background .25s, box-shadow .25s; }
@@ -804,7 +808,7 @@ textarea.input { resize: none; }
       <p class="hero-lead">Ticket to Show — официальный продавец билетов на мероприятия Москвы. Размещайте реферальные ссылки и получайте комиссию с каждой продажи.</p>
       <div class="btn-row">
         <a href="#" class="btn btn-primary btn-md">Оставить заявку</a>
-        <a href="#" class="btn btn-ghost btn-md">Как это работает?</a>
+        <a href="#" class="btn btn-ghost btn-md">Как это работает?<svg class="btn-arr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
       </div>
       <div class="hero-stats">
         <div><div class="stat-num" data-count="250" data-suffix="+">0+</div><div class="caption stat-lbl">мероприятий в год</div></div>

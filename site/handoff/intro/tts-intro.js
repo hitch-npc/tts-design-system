@@ -9,10 +9,10 @@
  *   <script src="tts-intro.js"></script>
  *   <script>TTSIntro.start({ images: [...], poster: '.hero-poster', tickets: '#afisha' })</script>
  *
- * Когда играет: при каждой загрузке страницы, длинная версия. Повтор — TTSIntro.replay().
- *   ?intro=0 — не играть, ?intro=short — короткая версия (идёт вслед за реальной загрузкой).
- * Кеширования здесь нет: «показать один раз за визит / короче при повторном» на сайте
- * делается отдельно — например, отметкой в sessionStorage / localStorage и mode: 'skip' | 'short'.
+ * Когда играет: один раз за визит — при первой загрузке во вкладке, длинная версия, около 5 с.
+ *   Отметка показа — sessionStorage['tts-intro']; следующие загрузки в той же вкладке идут без заставки.
+ *   ?intro=0 — не играть, ?intro=long — сыграть в любом случае, ?intro=short — короткая версия
+ *   (идёт вслед за реальной загрузкой). Повтор — TTSIntro.replay(), сброс отметки — TTSIntro.reset().
  *
  * Документация и живой пример: index.html рядом с этим файлом.
  */
@@ -138,13 +138,19 @@ html.tts-intro-lock, html.tts-intro-lock body { overflow: hidden; }
   };
   var GLYPHS = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZÆŒØАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ');
 
-  /* Какую версию играть: 'long' | 'short' | 'skip' */
+  /* Отметка «заставку в этом визите уже показывали». Хранилище может быть закрыто (частный режим) — тогда заставка просто играет. */
+  var KEY = 'tts-intro';
+  function seen() { try { return sessionStorage.getItem(KEY) === '1'; } catch (e) { return false; } }
+  function mark() { try { sessionStorage.setItem(KEY, '1'); } catch (e) {} }
+  function reset() { try { sessionStorage.removeItem(KEY); } catch (e) {} }
+
+  /* Какую версию играть: 'long' | 'short' | 'skip'. Без параметра — один раз за визит. */
   function decide() {
     var q = new URLSearchParams(location.search).get('intro');
     if (q === '0') return 'skip';
     if (q === 'long' || q === '1') return 'long';
     if (q === 'short') return 'short';
-    return 'long';
+    return seen() ? 'skip' : 'long';
   }
 
   var running = null, last = null;
@@ -157,6 +163,7 @@ html.tts-intro-lock, html.tts-intro-lock body { overflow: hidden; }
     var cb = function (name) { try { if (typeof opts[name] === 'function') opts[name](); } catch (e) { setTimeout(function () { throw e; }); } };
     if (running) running.kill();
     if (mode === 'skip') { cb('onReveal'); cb('onPoster'); cb('onDone'); return mode; }
+    mark();
 
     var RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
     var fine = matchMedia('(pointer: fine)').matches;
@@ -168,9 +175,10 @@ html.tts-intro-lock, html.tts-intro-lock body { overflow: hidden; }
       images = pool.slice(0, MAXN - 1).concat(images.slice(-1));
     }
     var LONG = mode === 'long';
-    /* темп колоды — афиша раз в 800 мс; длину держит число афиш (не больше четырёх), а не скорость */
-    var DEAL = LONG ? 800 * Math.max(1, images.length) : 1000;
-    var MIN = LONG ? DEAL * 0.8 : 0, GAP = Math.min(LONG ? 800 : 150, DEAL / Math.max(1, images.length)), HOLD = LONG ? 300 : 100;
+    /* темп колоды — афиша раз в PACE мс; длину держат число афиш (не больше шести) и этот темп */
+    var PACE = 700;
+    var DEAL = LONG ? PACE * Math.max(1, images.length) : 1000;
+    var MIN = LONG ? DEAL * 0.8 : 0, GAP = Math.min(LONG ? PACE : 150, DEAL / Math.max(1, images.length)), HOLD = LONG ? 150 : 100;
     var STEP = LONG ? 90 : 60, RISE = LONG ? 1200 : 900;   // шаг между строками и время подъёма строки, мс
 
     if (!document.getElementById('tts-intro-css')) {
@@ -351,6 +359,8 @@ html.tts-intro-lock, html.tts-intro-lock body { overflow: hidden; }
   window.TTSIntro = {
     start: start,
     decide: decide,
+    /* забыть, что заставку уже показывали: следующая загрузка сыграет её снова */
+    reset: reset,
     /* сыграть ещё раз с теми же настройками: страница уходит наверх, onReset прячет первый экран обратно */
     replay: function (mode) {
       if (!last) return;

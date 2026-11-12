@@ -216,7 +216,6 @@ a{ color:var(--accent); }
 .sm-d .tick{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:0; }
 .sm-d .tick svg{ width:10px; height:10px; }
 .sm-pick{ --pick-bg:var(--seat-sel,var(--success)); --pick-fg:var(--seat-check); }
-.sm-pick-inv{ --pick-bg:var(--n100); --pick-fg:var(--seat-sel,var(--success)); }
 .is-live .sm-pick{ animation:seat-pick 7s var(--ease-out) infinite; }
 .is-live .sm-pick .tick{ animation:seat-tick 7s var(--ease-out) infinite; color:var(--pick-fg); }
 .is-live .sm-pick:nth-of-type(odd){ animation-delay:.5s; }
@@ -623,7 +622,7 @@ a{ color:var(--accent); }
               </div>
               <div class="sm-row">
                 <span class="sm-d z5"></span><span class="sm-d z5"></span>
-                <span class="sm-d z5 sm-pick sm-pick3 sm-pick-inv" style="--start-bg:var(--zone-5)"><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg></span></span>
+                <span class="sm-d z5 sm-pick sm-pick3" style="--start-bg:var(--zone-5)"><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg></span></span>
                 <span class="sm-d z5"></span><span class="sm-d z5"></span><span class="sm-d z5"></span><span class="sm-d z5"></span>
               </div>
             </div>
@@ -632,7 +631,7 @@ a{ color:var(--accent); }
             </div>
           </div>
         </div>
-        <div class="dm-cap"><div class="t-caption">На зелёной зоне выбор — инверсией: светлое место, зелёная галочка</div><div class="t-caption dm-ok">Решение №11</div></div>
+        <div class="dm-cap"><div class="t-caption">Зелёный на схеме — только выбранное место: балкон розово-малиновый, зелёной зоны нет</div><div class="t-caption dm-ok">Решение №11</div></div>
       </article>
 
       <!-- карточка + сеансы -->

@@ -230,8 +230,8 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 --n850:               #1F222A
 --zone-2:             #3F73E3
 --zone-3:             #2BA7B8
---zone-4:             #7E6FD0
---zone-5:             #33B978
+--zone-4:             #9C95FE
+--zone-5:             #DC7095
 --seat-check:         #FFFFFF
 --accent-soft:        #7A9FFF
 --accent-text:        #A3BCFF   /* кобальт текстом: цена выбранного сеанса, .accent-text */
@@ -315,8 +315,8 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 --n850:               #EAE9E2
 --zone-2:             #3F73E3
 --zone-3:             #2BA7B8
---zone-4:             #7E6FD0
---zone-5:             #33B978
+--zone-4:             #9C95FE
+--zone-5:             #DC7095
 --seat-check:         #FFFFFF
 --accent-soft:        #0436B6
 --accent-text:        #0436B6

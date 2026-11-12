@@ -107,8 +107,8 @@
   --zone-1:          #C9975A;
   --zone-2:          #3F73E3;
   --zone-3:          #2BA7B8;
-  --zone-4:          #7E6FD0;
-  --zone-5:          #33B978;
+  --zone-4:          #9C95FE;
+  --zone-5:          #DC7095;
 
   /* Шрифты */
   --font:            'Manrope', system-ui, sans-serif;
@@ -520,7 +520,14 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   color: var(--n100);
   border: 1px solid var(--n700);
 }
-.btn-ghost:hover { border-color: var(--n400); color: var(--n100); background: var(--n900); }
+.btn-ghost:hover { border-color: var(--n300); color: var(--n100); background: var(--n800); }
+/* Нажатие — заливка ещё на ступень и рамка цветом текста: отклик виден и без уменьшения */
+.btn-ghost:active { border-color: var(--n100); background: var(--n700); }
+
+/* Стрелка в кнопке: при наведении сдвигается на 3px — видно, что кнопка ведёт дальше */
+.btn-arr { flex: none; transition: transform var(--dur-base) var(--ease-out); }
+.btn:hover .btn-arr, .btn:focus-visible .btn-arr { transform: translateX(3px); }
+@media (prefers-reduced-motion: reduce) { .btn-arr { transition: none; } .btn:hover .btn-arr, .btn:focus-visible .btn-arr { transform: none; } }
 
 /* Кобальт только в рамке: текст кнопок 9–12px — светлый (решения 2 и 3) */
 .btn-ghost-accent {
@@ -2413,7 +2420,7 @@ input:placeholder-shown + .search-clear { display: none; }
 /* ─ Tier: Балкон ─ */
 .smap-t-balkon { background: var(--zone-5); }
 .smap-t-balkon:hover:not(.smap-dot-sold) { background: var(--zone-5); filter: brightness(1.18); }
-.smap-t-balkon.smap-dot-selected { background: var(--n100);   }
+.smap-t-balkon.smap-dot-selected { background: var(--seat-sel); }
 
 /* ─ Tier: Бельэтаж ─ */
 .smap-t-belet { background: var(--zone-4); }
@@ -3212,8 +3219,6 @@ input:placeholder-shown + .search-clear { display: none; }
 
 /* 14.3 — капс только в коротких промо-надписях (до трёх слов); названия событий — никогда */
 .t-caps { text-transform: uppercase; letter-spacing: .04em; }
-/* На зелёной зоне выбранное место — инверсия: светлое место, зелёная галочка */
-.smap-t-balkon.smap-dot-selected::after { color: var(--seat-sel); }
 
 /* 14.3 — видимый фокус с клавиатуры */
 .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -3428,3 +3433,52 @@ summary:focus-visible, [tabindex]:not([tabindex="-1"]):focus-visible,
   -webkit-mask-image: linear-gradient(to bottom, transparent, black 32px, black calc(100% - 32px), transparent);
   mask-image: linear-gradient(to bottom, transparent, black 32px, black calc(100% - 32px), transparent);
 }
+
+/* ───────── «В избранное» на обложке карточки (12.11.2026, решение №47) ─────────
+   Карточка — article.event-card.ec, ссылка на событие .ec-link растянута на всю карточку через ::after,
+   кнопка .fav лежит поверх ссылки: кнопка внутри <a> недопустима.
+   aria-pressed и подпись «Добавить / Убрать „…“ из избранного» меняет скрипт вместе с состоянием. */
+.ec { position: relative; }
+/* display — с нулевым весом: у названия .event-card-title свой (-webkit-box, две строки) */
+:where(.ec .ec-link) { display: block; }
+.ec .ec-link { color: inherit; text-decoration: none; }
+.ec .ec-link::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+.ec .ec-link:focus-visible { outline: none; }
+.ec:has(.ec-link:focus-visible) { outline: 1px solid var(--accent); outline-offset: 2px; }
+.ec .event-card-footer .btn { position: relative; z-index: 2; }
+.fav { position: absolute; top: 12px; right: 12px; z-index: 3; width: 36px; height: 36px; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+  color: var(--n100); border: 0; border-radius: var(--r-sm); background: none;
+  transition: opacity var(--dur-slow) var(--ease-out); }
+/* подложка отдельным слоем — её можно гасить, не трогая сердечко;
+   та же, что у даты на обложке */
+.fav::before { content: ""; position: absolute; inset: 0; z-index: -1; border: 1px solid transparent; border-radius: inherit;
+  background: color-mix(in srgb, var(--n950) 72%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  transition: opacity var(--dur-slow) var(--ease-out), border-color var(--dur-fast) var(--ease-out); }
+.fav:hover::before { border-color: var(--n700); }
+.fav:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
+.fav svg { width: 18px; height: 18px; fill: transparent; transition: fill var(--dur-fast) var(--ease-out), filter var(--dur-slow) var(--ease-out); }
+.fav[aria-pressed="true"] svg { fill: currentColor; animation: fav-pop 520ms var(--ease-bounce); }
+@keyframes fav-pop { 0% { transform: scale(.6); } 60% { transform: scale(1.18); } 100% { transform: scale(1); } }
+
+/* Десктоп с мышью: не в избранном — сердечко видно только при наведении на карточку.
+   В избранном — сердечко остаётся всегда, подложка только под курсором:
+   после нажатия она гаснет, как только курсор уходит с иконки.
+   На тач-экранах наведения нет — там кнопка видна всегда, с подложкой. */
+@media (hover: hover) and (pointer: fine) {
+  .fav[aria-pressed="false"] { opacity: 0; }
+  .ec:hover .fav, .fav:focus-visible { opacity: 1; }
+  .fav[aria-pressed="true"]::before { opacity: 0; }
+  .fav[aria-pressed="true"]:hover::before, .fav[aria-pressed="true"]:focus-visible::before { opacity: 1; }
+  /* без подложки сердечку нужна мягкая тень, чтобы читаться на светлом пятне обложки */
+  .fav[aria-pressed="true"]:not(:hover):not(:focus-visible) svg { filter: var(--fav-shadow); }
+}
+/* тень сердечка — широкая и размытая, без жёсткого края */
+.fav { --fav-shadow: drop-shadow(0 2px 8px color-mix(in srgb, var(--scrim) 42%, transparent)); }
+/* Светлая тема: сердечко тоже белое (--on-accent — белый в обеих темах) и всегда с тенью;
+   подложка — тёмное стекло, на светлой подложке белое сердечко не читалось бы */
+.fav { color: var(--on-accent); --fav-shadow: drop-shadow(0 2px 10px color-mix(in srgb, var(--scrim) 32%, transparent)); }
+.fav svg { filter: var(--fav-shadow); }
+.fav::before { background: color-mix(in srgb, var(--scrim) 14%, transparent); }
+.fav:hover::before { border-color: transparent; background: color-mix(in srgb, var(--scrim) 22%, transparent); }
+@media (prefers-reduced-motion: reduce) { .fav, .fav::before { transition: none; } .fav svg { animation: none !important; transition: none; } }

@@ -31,7 +31,7 @@ const HEX = { ink:'#0D0D0D', n100:'#D6D6D2', n200:'#C0C0BC', n300:'#A6A6A2', n40
   'success-border':'#1A4428', 'danger-bg':'#2D1010', 'danger-border':'#7A2020', 'danger-text':'#FF8080',
   'error-fg':'#FF6B6B', 'tag-g-bg':'#0A2210', 'tag-g-fg':'#4ADE80', 'tag-g-bd':'#1A4428',
   'tag-r-bg':'#220A0A', 'tag-r-fg':'#F87171', 'tag-r-bd':'#441414', 'tag-o-fg':'#FB923C',
-  'zone-2':'#3F73E3', 'zone-4':'#7E6FD0', 'premium-bg':'#F5F4EE', 'premium-ink':'#0D0D0D', danger:'#E53E3E' };
+  'zone-2':'#3F73E3', 'zone-4':'#9C95FE', 'premium-bg':'#F5F4EE', 'premium-ink':'#0D0D0D', danger:'#E53E3E' };
 function solid(h){ return { type:'SOLID', color:{ r:parseInt(h.slice(1,3),16)/255, g:parseInt(h.slice(3,5),16)/255, b:parseInt(h.slice(5,7),16)/255 } }; }
 function paint(name){
   const v = gv(D, name);
