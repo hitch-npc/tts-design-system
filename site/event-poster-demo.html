@@ -244,7 +244,9 @@
       // затемнение афиши начинается над названием: длинное название не ложится на светлый кадр
       head.style.setProperty('--gs', Math.max(8, Math.min(40, (aTop - 90) / A.ph * 100)).toFixed(1) + '%');
       B.hh = BAR + 16 + Math.max(B.ph, bH) + 16;
+      // миниатюра и текст выравниваются по центру друг друга: кто ниже — встаёт посередине того, кто выше
       tb.style.top = (BAR + 16 + Math.max(0, (B.ph - bH) / 2)) + 'px';
+      B.py = BAR + 16 + Math.max(0, (bH - B.ph) / 2);
       set(Math.min(1, Math.max(0, sc.scrollTop / RANGE)));
     }
     function set(p) {
