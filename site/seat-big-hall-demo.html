@@ -27,7 +27,9 @@
   .map { position:sticky; top:16px; height:max(480px, min(calc(100vh - 136px), 820px)); min-height:480px; overflow:hidden; touch-action:pan-y; user-select:none; -webkit-user-select:none; -webkit-tap-highlight-color:transparent; }
   .map.on { touch-action:none; cursor:grab; }
   .map.drag { cursor:grabbing; }
-  .cam { position:absolute; left:0; top:0; transform-origin:0 0; padding:20px 20px 24px; }
+  /* Схема всегда на своём слое: иначе браузер выносит её на видеокарту только на время анимации мест
+     и меняет сглаживание текста — подписи зон и номера рядов то светлеют, то тускнеют при наведении. */
+  .cam { position:absolute; left:0; top:0; transform-origin:0 0; padding:20px 20px 24px; will-change:transform; backface-visibility:hidden; -webkit-font-smoothing:antialiased; }
   .cam.anim { transition:transform .6s cubic-bezier(.32,.72,.24,1); }
   .stage { width:56%; margin:0 auto 12px; text-align:center; font-size:9px; letter-spacing:.3em; text-transform:uppercase; color:var(--n500); border-bottom:2px solid var(--n800); padding-bottom:5px; }
   .hall { --s:10px; --g:3px; display:flex; flex-direction:column; align-items:center; gap:6px; }
