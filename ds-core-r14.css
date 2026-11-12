@@ -3403,3 +3403,27 @@ summary:focus-visible, [tabindex]:not([tabindex="-1"]):focus-visible,
   cursor: pointer;
 }
 .t-link:hover { text-decoration-color: var(--n100); }
+
+/* ───────── Внутренняя прокрутка без системной полосы (12.11.2026, решение №43) ─────────
+   Список, панель или шторка со своей прокруткой: полоса браузера не рисуется поверх строк
+   (на Mac она ложится на правую колонку — цифры, галочки). Прокрутка колесом, пальцем
+   и с клавиатуры работает как обычно; страница под списком не прокручивается.
+   Что список длиннее, показывает затухание у края: атрибут data-more="start end"
+   ставит скрипт по событию scroll (пример — site/venues-variants-demo.html). */
+.scroll-quiet {
+  scrollbar-width: none;
+  overscroll-behavior: contain;
+}
+.scroll-quiet::-webkit-scrollbar { display: none; }
+.scroll-quiet[data-more~="end"] {
+  -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 32px), transparent);
+  mask-image: linear-gradient(to bottom, black calc(100% - 32px), transparent);
+}
+.scroll-quiet[data-more~="start"] {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 32px);
+  mask-image: linear-gradient(to bottom, transparent, black 32px);
+}
+.scroll-quiet[data-more~="start"][data-more~="end"] {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 32px, black calc(100% - 32px), transparent);
+  mask-image: linear-gradient(to bottom, transparent, black 32px, black calc(100% - 32px), transparent);
+}

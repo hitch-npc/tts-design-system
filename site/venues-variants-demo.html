@@ -177,7 +177,7 @@ function tiles(list){
 }
 function mapView(list){
   const map=`<div class="map" role="img" aria-label="Карта площадок"><div class="map-c">${ICON_PIN}<div class="t">Карта площадок</div><div class="d">Яндекс Карты с метками площадок из списка. Наведение на строку подсвечивает метку; нажатие на метку отмечает площадку так же, как нажатие на строку. В макете вместо карты — заглушка.</div></div></div>`;
-  return `<div class="split"><div class="rows">${list.map(v=>`<button class="row" type="button" data-i="${v.i}" aria-pressed="${st.sel.has(v.i)}">${logo(v)}<span style="min-width:0"><span class="name" style="display:block">${esc(v.n)}</span><span class="addr">${esc(v.a)}</span></span>${tick}</button>`).join('')||'<div class="empty">Ничего не нашлось.</div>'}</div>${map}</div>`;
+  return `<div class="split"><div class="rows scroll-quiet">${list.map(v=>`<button class="row" type="button" data-i="${v.i}" aria-pressed="${st.sel.has(v.i)}">${logo(v)}<span style="min-width:0"><span class="name" style="display:block">${esc(v.n)}</span><span class="addr">${esc(v.a)}</span></span>${tick}</button>`).join('')||'<div class="empty">Ничего не нашлось.</div>'}</div>${map}</div>`;
 }
 
 /* Карточки: одно событие — одна карточка в месяце; даты сворачиваются в «14 ноября» / «19–20 декабря» / «3 даты» */
@@ -221,7 +221,13 @@ function render(){
     + tools() + (st.view==='tiles'?tiles(list):mapView(list))
     + `<div class="results" id="events">${results()}</div>`;
   applyBar();
+  quietScroll(document.querySelector('.rows'));
 }
+/* Внутренняя прокрутка без системной полосы: класс .scroll-quiet из ядра; data-more — затухание у края, где есть ещё */
+function quietScroll(el){ if(!el||el.dataset.qs) return; el.dataset.qs='1';
+  const upd=()=>{ const m=[]; if(el.scrollTop>2) m.push('start'); if(el.scrollTop+el.clientHeight<el.scrollHeight-2) m.push('end'); el.dataset.more=m.join(' '); };
+  el.addEventListener('scroll',upd,{passive:true}); if(window.ResizeObserver) new ResizeObserver(upd).observe(el); upd(); }
+
 function setSel(i){ st.sel.has(i)?st.sel.delete(i):st.sel.add(i); document.querySelectorAll(`[data-i="${i}"]`).forEach(b=>b.setAttribute('aria-pressed', st.sel.has(i))); applyBar(); }
 function doApply(){
   st.shown=ORDER.map(v=>v.i).filter(i=>st.sel.has(i));

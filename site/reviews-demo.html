@@ -226,7 +226,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
             <div class="p-top"><h3 class="t-h2">Отзывы</h3><button class="p-x" type="button" aria-label="Закрыть отзывы"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
             <div class="p-sum"><span class="sum-n">4,9</span><span class="p-sum-r"><span data-frac="4.9"></span><span class="sum-cnt">На основе 128 оценок в Яндекс Картах</span></span></div>
           </div>
-          <div class="p-list" id="plist"></div>
+          <div class="p-list scroll-quiet" id="plist"></div>
           <div class="p-foot"><a class="btn btn-ghost btn-sm" href="#">Оставить отзыв ↗</a><a class="btn btn-primary btn-sm" href="#vB">Все отзывы</a></div>
         </aside>
       </div>
@@ -286,6 +286,11 @@ document.addEventListener('click', e => {
   if (e.target.closest('a[href="#"]')) e.preventDefault();
 });
 addEventListener('resize', clamp);
+/* Внутренняя прокрутка без системной полосы: класс .scroll-quiet из ядра; data-more — затухание у края, где есть ещё */
+function quietScroll(el){ if(!el||el.dataset.qs) return; el.dataset.qs='1';
+  const upd=()=>{ const m=[]; if(el.scrollTop>2) m.push('start'); if(el.scrollTop+el.clientHeight<el.scrollHeight-2) m.push('end'); el.dataset.more=m.join(' '); };
+  el.addEventListener('scroll',upd,{passive:true}); if(window.ResizeObserver) new ResizeObserver(upd).observe(el); upd(); }
+quietScroll(plist);
 /* линия прогресса ленты */
 const setProg = () => { const max = track.scrollWidth - track.clientWidth, w = track.clientWidth / track.scrollWidth * 100; prog.style.width = w + '%'; prog.style.left = (max > 0 ? track.scrollLeft / max * (100 - w) : 0) + '%'; };
 track.addEventListener('scroll', setProg, { passive: true }); addEventListener('resize', setProg); setProg();

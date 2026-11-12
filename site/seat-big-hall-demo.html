@@ -89,7 +89,13 @@
   /* ---- правая колонка: цены сверху, заказ снизу ----
      Иерархия: сумма и кнопка — ярче всего; места в заказе — текст --n100; цены — инструмент, в покое тише (--n300),
      числа свободных мест и шевроны — фоном (--n600). */
-  .side { position:sticky; top:16px; height:max(480px, min(calc(100vh - 136px), 820px)); display:flex; flex-direction:column; overflow:auto; overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:var(--n800) transparent; }
+  .side { position:sticky; top:16px; height:max(480px, min(calc(100vh - 136px), 820px)); display:flex; flex-direction:column; overflow:auto; overscroll-behavior:contain; } /* полосу убирает .scroll-quiet; без затухания — внизу закреплены сумма и кнопка */
+  /* .scroll-quiet — как в ядре (решение №43): без системной полосы; затухание у края по data-more */
+  .scroll-quiet { scrollbar-width:none; overscroll-behavior:contain; }
+  .scroll-quiet::-webkit-scrollbar { display:none; }
+  .scroll-quiet[data-more~="end"] { -webkit-mask-image:linear-gradient(to bottom, black calc(100% - 32px), transparent); mask-image:linear-gradient(to bottom, black calc(100% - 32px), transparent); }
+  .scroll-quiet[data-more~="start"] { -webkit-mask-image:linear-gradient(to bottom, transparent, black 32px); mask-image:linear-gradient(to bottom, transparent, black 32px); }
+  .scroll-quiet[data-more~="start"][data-more~="end"] { -webkit-mask-image:linear-gradient(to bottom, transparent, black 32px, black calc(100% - 32px), transparent); mask-image:linear-gradient(to bottom, transparent, black 32px, black calc(100% - 32px), transparent); }
   .leg-block { flex:none; padding:18px 20px 12px; }
   .leg-top, .ord-head { display:flex; justify-content:space-between; align-items:baseline; gap:12px; }
   .leg-scroll { margin:8px -8px 0; }
@@ -219,7 +225,7 @@
       <div class="tip" id="tip" role="status" aria-live="polite"></div>
     </section>
 
-    <aside class="panel side">
+    <aside class="panel side scroll-quiet">
       <div class="leg-block">
         <div class="leg-top"><div class="cap">Цены · свободно мест</div><span class="leg-acts"><button class="reset" id="fold" type="button" hidden>Свернуть</button><button class="reset" id="reset" type="button" hidden>Все цены</button></span></div>
         <div class="leg-scroll"><div id="leg"></div></div>
@@ -227,7 +233,7 @@
       <div class="order" id="order">
         <div class="ord-body"><div class="ord-in">
           <div class="ord-head"><div class="cap">Ваш выбор</div></div>
-          <ul class="ord-list" id="ordList"></ul>
+          <ul class="ord-list scroll-quiet" id="ordList"></ul>
         </div></div>
         <div class="ord-foot">
           <button class="ord-sum" id="ordToggle" type="button" aria-expanded="false" aria-controls="ordList"><span class="cap" id="ordN"></span><b id="selSum">0 ₽</b><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>
@@ -526,6 +532,11 @@ function renderOrder(){
   $('buy').disabled=!n; $('clearSel').hidden=!n;
   if(!n) sheet(false);
 }
+/* Внутренняя прокрутка без системной полосы: класс .scroll-quiet из ядра; data-more — затухание у края, где есть ещё */
+function quietScroll(el){ if(!el||el.dataset.qs) return; el.dataset.qs='1';
+  const upd=()=>{ const m=[]; if(el.scrollTop>2) m.push('start'); if(el.scrollTop+el.clientHeight<el.scrollHeight-2) m.push('end'); el.dataset.more=m.join(' '); };
+  el.addEventListener('scroll',upd,{passive:true}); if(window.ResizeObserver) new ResizeObserver(upd).observe(el); upd(); }
+quietScroll(ordList);
 ordList.addEventListener('click',e=>{
   const rm=e.target.closest('[data-rm]'), go=e.target.closest('[data-go]');
   if(rm){ selected.delete(+rm.dataset.rm); refresh(); }
