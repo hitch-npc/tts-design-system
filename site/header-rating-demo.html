@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Оценка в шапке</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap">
 <link rel="stylesheet" href="../ds-core-r14.css">
 <style>
 :root { --logo: var(--n100); --fill: .98; } /* --fill = средняя оценка / 5 (4,9 → .98) */
@@ -41,22 +41,20 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 
 /* звезда: контур + заливка по оценке */
 .st { display: block; flex: none; overflow: visible; }
-.st .st-o { fill: none; stroke: currentColor; stroke-width: 1.2; stroke-linejoin: round; }
-.st .st-f { fill: currentColor; }
-.rv-num { font-family: var(--f-num); font-size: 17px; line-height: 1; color: var(--n100); }
+.st .st-o { display: none; }
+.st .st-f { fill: currentColor; clip-path: none; }
+.rv-num { font-family: var(--font); font-size: 12px; font-weight: 600; line-height: 1; letter-spacing: .02em; font-variant-numeric: tabular-nums; color: var(--n100); }
 
 /* A · в меню */
 .rv-a { display: inline-flex; align-items: center; gap: 6px; color: var(--n300); transition: color var(--dur-fast) var(--ease-out); }
 .rv-a-l { font-size: 11px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; margin-right: 4px; }
-.rv-a .st { width: 12px; height: 12px; color: var(--n100); transition: transform var(--dur-base) var(--ease-bounce); }
-.rv-a .rv-num { font-size: 15px; }
+.rv-a .st { width: 11px; height: 11px; color: var(--n100); }
 .rv-a:hover { color: var(--n100); }
-.rv-a:hover .st { transform: scale(1.15) rotate(-12deg); }
 .rv-a-m { height: 36px; padding: 0 6px; }
 
 /* B · кнопка */
 .rv-b { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px 0 12px; border: 1px solid var(--n800); border-radius: var(--r-sm); color: var(--n100); transition: border-color var(--dur-fast) var(--ease-out); }
-.rv-b .st { width: 14px; height: 14px; }
+.rv-b .st { width: 12px; height: 12px; }
 .rv-b-sep { width: 1px; height: 14px; background: var(--n800); margin: 0 2px; }
 .rv-b-l { font-size: 11px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--n300); transition: color var(--dur-fast) var(--ease-out); }
 .rv-b:hover { border-color: var(--n700); }
@@ -66,21 +64,18 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 /* C · звезда сцены */
 .rv-c-div { width: 1px; height: 18px; background: var(--n800); }
 .rv-c { display: inline-flex; align-items: center; gap: 10px; color: var(--n100); }
-.rv-c-ico { position: relative; display: grid; place-items: center; width: 22px; height: 22px; }
+.rv-c-ico { position: relative; display: grid; place-items: center; width: 14px; height: 14px; }
 .rv-c-ico::before { content: ""; position: absolute; inset: -8px; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--blob-core) 80%, var(--n100)) 0%, var(--blob-purple) 45%, transparent 72%); filter: blur(6px); opacity: 0; transform: scale(.7); transition: opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out); }
-.rv-c .st { position: relative; width: 22px; height: 22px; transition: transform 520ms var(--ease-bounce); }
-.rv-c .st .st-o { stroke-width: 1; }
+.rv-c .st { position: relative; width: 14px; height: 14px; }
 .rv-c-t { display: flex; flex-direction: column; gap: 3px; }
-.rv-c-t .rv-num { font-size: 16px; }
 .rv-c-l { font-size: 9px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--n500); transition: color var(--dur-fast) var(--ease-out); }
-.rv-c:hover .rv-c-ico::before { opacity: .9; transform: scale(1); }
-.rv-c:hover .st { transform: rotate(45deg); }
+.rv-c:hover .rv-c-ico::before { opacity: .6; transform: scale(1); }
 .rv-c:hover .rv-c-l { color: var(--n300); }
 .rv-c-m { height: 36px; gap: 6px; padding: 0 6px; }
-.rv-c-m .rv-c-ico, .rv-c-m .st { width: 18px; height: 18px; }
+.rv-c-m .rv-c-ico { width: 14px; height: 14px; } .rv-c-m .st { width: 12px; height: 12px; }
 
 a:focus-visible { outline: 1px solid var(--n300); outline-offset: 4px; }
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; } .rv-a:hover .st, .rv-c:hover .st { transform: none; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; }  }
 </style>
 </head>
 <body>
@@ -111,7 +106,7 @@ a:focus-visible { outline: 1px solid var(--n300); outline-offset: 4px; }
   <div class="intro">
     <span class="t-eyebrow">Шапка · отзывы</span>
     <h1 class="t-h1" style="margin:0">Оценка в шапке</h1>
-    <p>Три варианта: средняя оценка со стилизованной звездой ведёт в отзывы. Звезда заливается по оценке (4,9 из 5 — на 98 %). Число — Oranienbaum, как все цифры; кобальта нет — шапка остаётся нейтральной. Оценка 4,9 — пример, на сайте — средняя по отзывам.</p>
+    <p>Три места для одной и той же оценки: простая пятиконечная звезда и средняя оценка мелким Manrope — коротко и понятно. Кобальта нет, шапка остаётся нейтральной. Оценка 4,9 — пример, на сайте — средняя по отзывам.</p>
   </div>
   
 <section class="var" id="vA">
@@ -125,9 +120,9 @@ a:focus-visible { outline: 1px solid var(--n300); outline-offset: 4px; }
   <div class="frame frame-m"><div class="frame-cap t-caption">Телефон</div><header class="hdr hdr-m"><a href="#" class="logo" aria-label="Ticket to Show"><svg viewBox="0 0 676 194"><use href="#tts-logo"/></svg></a><span class="hdr-m-sp"></span><a class="rv-b rv-b-m" href="#" aria-label="Отзывы: средняя оценка 4,9 из 5"><svg class="st st-b" viewBox="0 0 24 24" aria-hidden="true"><defs><clipPath id="cb2"><rect x="0" y="0" width="24" height="24" style="width:calc(24px * var(--fill))"/></clipPath></defs><path d="M12 2.6l2.75 6.05 6.6.68-4.95 4.45 1.42 6.5L12 16.95 6.18 20.28l1.42-6.5L2.65 9.33l6.6-.68z" class="st-o"/><path d="M12 2.6l2.75 6.05 6.6.68-4.95 4.45 1.42 6.5L12 16.95 6.18 20.28l1.42-6.5L2.65 9.33l6.6-.68z" class="st-f" clip-path="url(#cb2)"/></svg><span class="rv-num">4,9</span></a><button class="theme-toggle" type="button" data-mode="dark" aria-label="Включить светлую тему"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path class="tt-moon" d="M20 12.19A8 8 0 1 1 11.81 4A6.5 6.5 0 0 0 20 12.19Z"/><g class="tt-sun"><circle cx="12" cy="12" r="4"/></g></svg></button><button class="nav-icon-btn" type="button" aria-label="Меню"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></header></div>
 </section>
 <section class="var" id="vC">
-  <div class="var-h"><span class="t-eyebrow">Вариант C</span><h2 class="t-h2">Звезда сцены</h2><p class="var-d">Стилизованная четырёхлучевая звезда — «блик софита» — с мягким свечением при наведении, под числом подпись «Отзывы». Стоит в конце меню за тонкой чертой. Самый характерный вариант, ближе к образу театра.</p></div>
-  <div class="frame frame-d"><div class="frame-cap t-caption">Десктоп · наведите на оценку</div><header class="hdr"><a href="#" class="logo" aria-label="Ticket to Show"><svg viewBox="0 0 676 194"><use href="#tts-logo"/></svg></a><nav class="hdr-links" aria-label="Основная навигация"><a class="hdr-link" href="#" aria-current="page">Афиша</a><a class="hdr-link" href="#">Площадки</a><a class="hdr-link" href="#">Партнёрам</a><span class="rv-c-div" aria-hidden="true"></span><a class="rv-c" href="#" aria-label="Отзывы: средняя оценка 4,9 из 5"><span class="rv-c-ico"><svg class="st st-c" viewBox="0 0 24 24" aria-hidden="true"><defs><clipPath id="cc1"><rect x="0" y="0" width="24" height="24" style="width:calc(24px * var(--fill))"/></clipPath></defs><path d="M12 1.5C12.9 8.4 15.6 11.1 22.5 12 15.6 12.9 12.9 15.6 12 22.5 11.1 15.6 8.4 12.9 1.5 12 8.4 11.1 11.1 8.4 12 1.5z" class="st-o"/><path d="M12 1.5C12.9 8.4 15.6 11.1 22.5 12 15.6 12.9 12.9 15.6 12 22.5 11.1 15.6 8.4 12.9 1.5 12 8.4 11.1 11.1 8.4 12 1.5z" class="st-f" clip-path="url(#cc1)"/></svg></span><span class="rv-c-t"><span class="rv-num">4,9</span><span class="rv-c-l">Отзывы</span></span></a></nav><div class="hdr-search" role="search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input type="search" placeholder="Театр, спектакль, артист…" aria-label="Поиск по афише"></div><button class="theme-toggle" type="button" data-mode="dark" aria-label="Включить светлую тему"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path class="tt-moon" d="M20 12.19A8 8 0 1 1 11.81 4A6.5 6.5 0 0 0 20 12.19Z"/><g class="tt-sun"><circle cx="12" cy="12" r="4"/></g></svg></button><button class="hdr-city" type="button">Москва</button><button class="hdr-profile" type="button" aria-label="Войти"><span class="pm-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/></svg></span><span class="pm-l">Войти</span></button></header></div>
-  <div class="frame frame-m"><div class="frame-cap t-caption">Телефон</div><header class="hdr hdr-m"><a href="#" class="logo" aria-label="Ticket to Show"><svg viewBox="0 0 676 194"><use href="#tts-logo"/></svg></a><span class="hdr-m-sp"></span><a class="rv-c rv-c-m" href="#" aria-label="Отзывы: средняя оценка 4,9 из 5"><span class="rv-c-ico"><svg class="st st-c" viewBox="0 0 24 24" aria-hidden="true"><defs><clipPath id="cc2"><rect x="0" y="0" width="24" height="24" style="width:calc(24px * var(--fill))"/></clipPath></defs><path d="M12 1.5C12.9 8.4 15.6 11.1 22.5 12 15.6 12.9 12.9 15.6 12 22.5 11.1 15.6 8.4 12.9 1.5 12 8.4 11.1 11.1 8.4 12 1.5z" class="st-o"/><path d="M12 1.5C12.9 8.4 15.6 11.1 22.5 12 15.6 12.9 12.9 15.6 12 22.5 11.1 15.6 8.4 12.9 1.5 12 8.4 11.1 11.1 8.4 12 1.5z" class="st-f" clip-path="url(#cc2)"/></svg></span><span class="rv-num">4,9</span></a><button class="theme-toggle" type="button" data-mode="dark" aria-label="Включить светлую тему"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path class="tt-moon" d="M20 12.19A8 8 0 1 1 11.81 4A6.5 6.5 0 0 0 20 12.19Z"/><g class="tt-sun"><circle cx="12" cy="12" r="4"/></g></svg></button><button class="nav-icon-btn" type="button" aria-label="Меню"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></header></div>
+  <div class="var-h"><span class="t-eyebrow">Вариант C</span><h2 class="t-h2">Подпись под оценкой</h2><p class="var-d">Звезда и оценка в конце меню за тонкой чертой, под оценкой — мелкая подпись «Отзывы». При наведении за звездой проявляется слабое свечение. На телефоне — звезда и число.</p></div>
+  <div class="frame frame-d"><div class="frame-cap t-caption">Десктоп · наведите на оценку</div><header class="hdr"><a href="#" class="logo" aria-label="Ticket to Show"><svg viewBox="0 0 676 194"><use href="#tts-logo"/></svg></a><nav class="hdr-links" aria-label="Основная навигация"><a class="hdr-link" href="#" aria-current="page">Афиша</a><a class="hdr-link" href="#">Площадки</a><a class="hdr-link" href="#">Партнёрам</a><span class="rv-c-div" aria-hidden="true"></span><a class="rv-c" href="#" aria-label="Отзывы: средняя оценка 4,9 из 5"><span class="rv-c-ico"><svg class="st st-c" viewBox="0 0 24 24" aria-hidden="true"><defs><clipPath id="cc1"><rect x="0" y="0" width="24" height="24" style="width:calc(24px * var(--fill))"/></clipPath></defs><path d="M12 2.6l2.75 6.05 6.6.68-4.95 4.45 1.42 6.5L12 16.95 6.18 20.28l1.42-6.5L2.65 9.33l6.6-.68z" class="st-o"/><path d="M12 2.6l2.75 6.05 6.6.68-4.95 4.45 1.42 6.5L12 16.95 6.18 20.28l1.42-6.5L2.65 9.33l6.6-.68z" class="st-f" clip-path="url(#cc1)"/></svg></span><span class="rv-c-t"><span class="rv-num">4,9</span><span class="rv-c-l">Отзывы</span></span></a></nav><div class="hdr-search" role="search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input type="search" placeholder="Театр, спектакль, артист…" aria-label="Поиск по афише"></div><button class="theme-toggle" type="button" data-mode="dark" aria-label="Включить светлую тему"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path class="tt-moon" d="M20 12.19A8 8 0 1 1 11.81 4A6.5 6.5 0 0 0 20 12.19Z"/><g class="tt-sun"><circle cx="12" cy="12" r="4"/></g></svg></button><button class="hdr-city" type="button">Москва</button><button class="hdr-profile" type="button" aria-label="Войти"><span class="pm-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/></svg></span><span class="pm-l">Войти</span></button></header></div>
+  <div class="frame frame-m"><div class="frame-cap t-caption">Телефон</div><header class="hdr hdr-m"><a href="#" class="logo" aria-label="Ticket to Show"><svg viewBox="0 0 676 194"><use href="#tts-logo"/></svg></a><span class="hdr-m-sp"></span><a class="rv-c rv-c-m" href="#" aria-label="Отзывы: средняя оценка 4,9 из 5"><span class="rv-c-ico"><svg class="st st-c" viewBox="0 0 24 24" aria-hidden="true"><defs><clipPath id="cc2"><rect x="0" y="0" width="24" height="24" style="width:calc(24px * var(--fill))"/></clipPath></defs><path d="M12 2.6l2.75 6.05 6.6.68-4.95 4.45 1.42 6.5L12 16.95 6.18 20.28l1.42-6.5L2.65 9.33l6.6-.68z" class="st-o"/><path d="M12 2.6l2.75 6.05 6.6.68-4.95 4.45 1.42 6.5L12 16.95 6.18 20.28l1.42-6.5L2.65 9.33l6.6-.68z" class="st-f" clip-path="url(#cc2)"/></svg></span><span class="rv-num">4,9</span></a><button class="theme-toggle" type="button" data-mode="dark" aria-label="Включить светлую тему"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path class="tt-moon" d="M20 12.19A8 8 0 1 1 11.81 4A6.5 6.5 0 0 0 20 12.19Z"/><g class="tt-sun"><circle cx="12" cy="12" r="4"/></g></svg></button><button class="nav-icon-btn" type="button" aria-label="Меню"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></header></div>
 </section>
 </main>
 </body>
