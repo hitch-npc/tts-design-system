@@ -38,8 +38,10 @@
   }
 
   /* Логотип площадки; без логотипа — монограмма */
-  .logo { flex:none; width:40px; height:40px; display:grid; place-items:center; border:1px solid var(--n800); border-radius:var(--r-sm); background:var(--n950); overflow:hidden; }
+  .logo { flex:none; width:40px; height:40px; display:flex; align-items:center; justify-content:center; border:1px solid var(--n800); border-radius:var(--r-sm); background:var(--n950); overflow:hidden; }
   .logo img { width:80%; height:80%; object-fit:contain; display:block; }
+  .row .logo img { width:32px; height:32px; }
+  .vt .logo img { width:45px; height:45px; }
   .logo span { font-family:var(--f-head); font-size:15px; color:var(--n300); }
   .name { font-family:var(--f-head); font-size:19px; line-height:1.25; color:var(--n100); }
   .addr { font-size:12px; color:var(--n400); line-height:1.5; }
@@ -107,7 +109,8 @@
   .vb-head .logo { position:relative; isolation:isolate; width:120px; height:84px; border:0; background:none; overflow:visible; }
   .vb-head .logo::before { content:""; position:absolute; inset:-10% 0; z-index:-1; border-radius:50%; pointer-events:none;
     background:radial-gradient(ellipse at center, var(--blob-core) 0%, var(--blob-mid) 45%, transparent 72%); filter:blur(28px); opacity:.55; }
-  .vb-head .logo img { width:100%; height:100%; max-width:none; max-height:none; object-fit:contain; object-position:left center; }
+  /* размеры в пикселях: в Safari высота в процентах внутри сетки не срабатывает, и логотип выходил за рамку */
+  .vb-head .logo img { width:120px; height:84px; max-width:none; max-height:none; object-fit:contain; object-position:left center; }
   .vb-head .logo span { font-size:44px; color:var(--n200); }
   .vb-head h2 { margin:0; font-family:var(--f-thin); font-weight:500; font-size:24px; line-height:1.2; }
   .vb-head h2:focus { outline:none; }
@@ -115,10 +118,35 @@
   .vb-body { display:flex; flex-direction:column; gap:20px; min-width:0; }
   .month { display:flex; flex-direction:column; gap:10px; }
   .month h3 { margin:0; font-size:10px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--n500); }
+  .month .mc { display:none; }
+  /* Переключатель деления по месяцам — только в макете, для сравнения */
+  .m-switch { display:flex; align-items:center; gap:12px; padding-top:20px; }
+  .m-switch .seg button { min-width:0; padding:8px 14px; font-size:10px; }
+  /* Месяцы колонкой: полоса на месяц с линией сверху, слева крупно месяц, год и число событий */
+  .results[data-m="rail"] .vb-body { gap:0; }
+  .results[data-m="rail"] .month { display:grid; grid-template-columns:128px minmax(0,1fr); gap:20px; padding:20px 0; border-top:1px solid var(--n800); }
+  .results[data-m="rail"] .month:first-child { border-top:0; padding-top:0; }
+  .results[data-m="rail"] .month h3 { display:flex; flex-direction:column; gap:6px; font-family:var(--f-thin); font-weight:500; font-size:24px; line-height:1.1; letter-spacing:0; text-transform:none; color:var(--n100); }
+  .results[data-m="rail"] .month .my { font-family:var(--font); font-size:10px; font-weight:500; letter-spacing:.14em; color:var(--n500); }
+  .results[data-m="rail"] .month .mc { display:block; margin-top:6px; font-size:11px; color:var(--n500); }
+  /* в колонке карточки уже: цена уходит под название, чтобы название не обрезалось */
+  .results[data-m="rail"] .venue-block { grid-template-columns:200px minmax(0,1fr); }
+  .results[data-m="rail"] .month { grid-template-columns:104px minmax(0,1fr); gap:16px; }
+  .results[data-m="rail"] .vh { grid-template-columns:96px minmax(0,1fr); grid-template-rows:auto auto; row-gap:8px; }
+  .results[data-m="rail"] .vh-thumb { grid-row:1 / span 2; align-self:stretch; height:auto; min-height:76px; }
+  .results[data-m="rail"] .vh-price { grid-column:2; text-align:left; display:flex; align-items:baseline; gap:6px; }
+  .results[data-m="rail"] .vh-price .event-card-price-label { display:inline; margin:0; }
+  @media (max-width:640px) {
+    .results[data-m="rail"] .month { grid-template-columns:minmax(0,1fr); gap:12px; padding:16px 0; }
+    .results[data-m="rail"] .month h3 { flex-direction:row; align-items:baseline; gap:10px; font-size:22px; }
+    .results[data-m="rail"] .month-l { display:flex; align-items:baseline; justify-content:space-between; }
+    .results[data-m="rail"] .month .mc { margin:0; }
+  }
   @media (max-width:860px) {
     .venue-block { grid-template-columns:minmax(0,1fr); gap:18px; padding:28px 0; }
     .vb-head { position:static; flex-direction:row; align-items:center; gap:16px; }
     .vb-head .logo { width:88px; height:62px; flex:none; }
+    .vb-head .logo img { width:88px; height:62px; }
     .vb-head .logo span { font-size:32px; }
     .vb-head h2 { font-size:22px; }
   }
@@ -171,7 +199,7 @@ const COUNT=V.map((_,i)=>E.filter(e=>e[0]===i).length);
 const ORDER=V.map((v,i)=>({...v,i})).filter(v=>COUNT[v.i]>0).sort((a,b)=>COUNT[b.i]-COUNT[a.i]);
 
 const qs=new URLSearchParams(location.search);
-const st={view:qs.get('view')==='map'?'map':'tiles', q:'', sel:new Set(), shown:[]};
+const st={view:qs.get('view')==='map'?'map':'tiles', q:'', sel:new Set(), shown:[], months:qs.get('months')==='caps'?'caps':'rail'};
 if(qs.get('sel')) qs.get('sel').split(',').map(Number).filter(i=>COUNT[i]>0).forEach(i=>st.sel.add(i));
 if(qs.has('applied')) st.shown=[...st.sel];
 
@@ -215,12 +243,14 @@ function cards(rows){
   }).join('');
 }
 function results(){
-  return st.shown.map(i=>{
+  if(!st.shown.length) return '';
+  const sw=`<div class="m-switch"><span class="t-caption">Месяцы</span><div class="seg" role="group" aria-label="Деление по месяцам"><button type="button" data-months="caps" aria-pressed="${st.months==='caps'}">Подписью</button><button type="button" data-months="rail" aria-pressed="${st.months==='rail'}">Колонкой</button></div></div>`;
+  return sw + st.shown.map(i=>{
     const v=V[i], rows=E.filter(e=>e[0]===i), months=new Map();
     rows.forEach(e=>{ const k=e[2].slice(0,7); if(!months.has(k)) months.set(k,[]); months.get(k).push(e); });
     return `<section class="venue-block" aria-labelledby="vb-${i}"><div class="vb-head">${logo(v)}<div><h2 id="vb-${i}" tabindex="-1">${esc(v.n)}</h2><div class="addr">${esc(v.a)}</div></div></div>
-      <div class="vb-body">${[...months].map(([k,list])=>{ const m=+k.slice(5,7)-1; const t=MON[m][0].toUpperCase()+MON[m].slice(1)+' '+k.slice(0,4);
-        return `<div class="month"><h3>${t}</h3><div class="cards">${cards(list)}</div></div>`; }).join('')}</div></section>`;
+      <div class="vb-body">${[...months].map(([k,list])=>{ const m=+k.slice(5,7)-1, n=new Set(list.map(x=>x[1])).size;
+        return `<div class="month"><div class="month-l"><h3><span class="mn">${MON[m][0].toUpperCase()+MON[m].slice(1)}</span> <span class="my">${k.slice(0,4)}</span></h3><span class="mc">${n} ${pl(n,'событие','события','событий')}</span></div><div class="cards">${cards(list)}</div></div>`; }).join('')}</div></section>`;
   }).join('');
 }
 function applyBar(){
@@ -234,7 +264,7 @@ function render(){
   const list=ORDER.filter(match);
   app.innerHTML=`<div class="head"><h1>Площадки</h1><span class="t-caption">${ORDER.length} ${pl(ORDER.length,'площадка','площадки','площадок')}</span></div>`
     + tools() + (st.view==='tiles'?tiles(list):mapView(list))
-    + `<div class="results" id="events">${results()}</div>`;
+    + `<div class="results" id="events" data-m="${st.months}">${results()}</div>`;
   applyBar();
   quietScroll(document.querySelector('.rows'));
 }
@@ -254,9 +284,10 @@ function doApply(){
 }
 document.addEventListener('click',e=>{
   if(e.target.closest('.search-clear')){ e.preventDefault(); st.q=''; render(); document.getElementById('q').focus(); return; }
-  const t=e.target.closest('[data-view],[data-i],[data-act],a.event-card');
+  const t=e.target.closest('[data-view],[data-i],[data-act],[data-months],a.vh');
   if(!t) return;
   if(t.matches('a')){ e.preventDefault(); return; }
+  if(t.dataset.months){ st.months=t.dataset.months; const ev=document.getElementById('events'); ev.dataset.m=st.months; ev.innerHTML=results(); return; }
   if(t.dataset.view){ st.view=t.dataset.view; render(); return; }
   if(t.dataset.i){ setSel(+t.dataset.i); return; }
   if(t.dataset.act==='reset'){ st.sel.clear(); document.querySelectorAll('[data-i]').forEach(b=>b.setAttribute('aria-pressed','false')); applyBar(); return; }
