@@ -276,7 +276,7 @@
   </header>
 
   <section class="part" aria-labelledby="sum-h">
-    <div class="part-h"><div class="meta-cap">Сводка</div><h2 id="sum-h">9 багов, 8 правок и 4 предложения</h2></div>
+    <div class="part-h"><div class="meta-cap">Сводка</div><h2 id="sum-h">9 багов, 9 правок и 4 предложения</h2></div>
     <div class="scroll">
       <table class="sum">
         <tr><th></th><th>Где</th><th>Что</th><th>Суть</th><th>Статус</th></tr>
@@ -297,6 +297,7 @@
         <tr><td class="sid"><a href="#r4">Р4</a></td><td>Площадки</td><td class="sw">Список площадок</td><td>крупные плитки и фильтр по типу; запасной — список с картой</td><td><span class="st st-pick">На выбор</span></td></tr>
         <tr><td class="sid"><a href="#r7">Р5</a></td><td>Событие</td><td class="sw">Афиша события</td><td>во всю ширину и складывается в миниатюру при прокрутке (D); запасной — A</td><td><span class="st st-pick">На выбор</span></td></tr>
         <tr><td class="sid"><a href="#r8">Р8</a></td><td>Карточка афиши · везде</td><td class="sw">Ценз вместо города<span class="new">New</span></td><td>строка над названием — «Спектакль · 16+», ценз тише жанра; города на карточке нет</td><td><span class="st st-ok">Макет готов</span></td></tr>
+        <tr><td class="sid"><a href="#r9">Р9</a></td><td>Шапка · все страницы</td><td class="sw">Оценка в шапке</td><td>звезда и средняя оценка за пунктом «Отзывы»; на телефоне — перед кнопкой темы</td><td><span class="st st-ok">Макет готов</span></td></tr>
         <tr class="grp"><td colspan="5">Низкий приоритет</td></tr>
         <tr><td class="sid"><a href="#r5">Р6</a></td><td>Партнёрам</td><td class="sw">«Как это работает?»</td><td>наведение и нажатие заметнее</td><td><span class="st st-low">Низкий</span></td></tr>
         <tr><td class="sid"><a href="#r6">Р7</a></td><td>Шапка</td><td class="sw">Отзывы</td><td>отзывы на сайте вместо перехода в Яндекс Карты</td><td><span class="st st-low">Низкий</span></td></tr>
@@ -763,6 +764,18 @@
         <div class="col"><span class="lbl lbl-after">Тёмная тема</span><figure class="shot"><img src="img/card-age.webp" width="928" height="160" alt="Строка над названием: «Спектакль · 16+», ценз тусклее жанра; тёмная тема" loading="lazy"></figure></div>
         <div class="col"><span class="lbl lbl-after">Светлая тема</span><figure class="shot"><img src="img/card-age-light.webp" width="928" height="160" alt="То же в светлой теме" loading="lazy"></figure></div>
       </div>
+    </article>
+    <article class="chg" id="r9">
+      <div class="chg-h"><div class="chg-id">Р9</div><div class="chg-t"><h3>Оценка в шапке</h3><div class="where">Шапка — все страницы, десктоп и телефон · пункт «Отзывы»</div></div><span class="st st-ok">Макет готов</span></div>
+      <div class="live"><a href="../../header-rating-demo.html#vA">Живой макет ↗</a><a href="../../home-new.html?intro=0">В шапке главной ↗</a></div>
+      <table class="spec">
+        <tr><th>Что</th><th>Сейчас на стенде</th><th>Нужно</th></tr>
+        <tr><td class="p">Десктоп</td><td class="o" data-h="Сейчас на стенде">пункт «Отзывы» без оценки</td><td class="n" data-h="Нужно">за словом «Отзывы» через 10 px — сплошная пятиконечная звезда 11 px и средняя оценка «4,9»: Manrope 12 px 600, разрядка .02em, обычный регистр, цифры одной ширины, цвет <code>--n100</code>; вся группа — одна ссылка на отзывы</td></tr>
+        <tr><td class="p">Телефон и узкий экран</td><td class="o" data-h="Сейчас на стенде">—</td><td class="n" data-h="Нужно">когда меню спрятано (до 1180 px) — звезда и оценка отдельной ссылкой перед кнопкой темы, высота 36 px</td></tr>
+        <tr><td class="p">Оценка</td><td class="o" data-h="Сейчас на стенде">—</td><td class="n" data-h="Нужно">средняя по отзывам с одним знаком после запятой; для экранного диктора — «Отзывы: средняя оценка 4,9 из 5»</td></tr>
+        <tr><td class="p">Куда ведёт</td><td class="o" data-h="Сейчас на стенде">переход в Яндекс Карты</td><td class="n" data-h="Нужно">пока вид блока отзывов не выбран — как сейчас; затем — на отзывы на сайте (<a href="#r7">Р7</a>)</td></tr>
+        <tr><td class="p">Без кобальта</td><td class="o" data-h="Сейчас на стенде">—</td><td class="n" data-h="Нужно">звезда и число — цветом текста, шапка остаётся нейтральной</td></tr>
+      </table>
     </article>
 
     <article class="chg" id="r5">
