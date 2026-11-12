@@ -111,7 +111,7 @@ function px(v, vars) {
 
 /* классы самого гайда (витрина ядра) — не продукт */
 const GUIDE = /^\.(ds-|color-swatch|type-|spacing-|mode-btn|btn-row-label|token-|swatch)/;
-const SKIP = /:disabled|\.disabled|\[disabled\]|-disabled|-sold|placeholder|blob|skeleton|scrim|overlay|::selection|smap-dot|seat|grain|::before|::after|\.tt-|svg|icon|logo|-ico\b|stroke|hero-bg|cover-/;
+const SKIP = /:disabled|\.disabled|\[disabled\]|-disabled|-sold|placeholder|blob|skeleton|scrim|overlay|::selection|smap-dot|seat|grain|::before|::after|\.tt-|svg|icon|logo|-ico\b|stroke|hero-bg|cover-|\.fav\b/;
 
 function main() {
 const findings = [];
