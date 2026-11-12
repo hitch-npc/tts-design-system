@@ -28,6 +28,12 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .stars { display: inline-flex; gap: 2px; color: var(--n100); }
 .stars svg { width: 11px; height: 11px; display: block; }
 .stars .off { color: var(--n700); }
+/* дробная оценка: серые звёзды, сверху белые на долю оценки (4,4 → 88 %) */
+.stars-f { position: relative; display: inline-flex; }
+.stars-f .stars { color: var(--n700); }
+.stars-f { line-height: 0; }
+.stars-f .on { position: absolute; inset: 0 auto 0 0; display: flex; overflow: hidden; white-space: nowrap; color: var(--n100); }
+.stars-f .on .stars { flex: none; }
 .score { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; letter-spacing: .02em; color: var(--n100); white-space: nowrap; }
 .score svg { width: 12px; height: 12px; }
 .score .cnt { font-weight: 500; color: var(--n400); }
@@ -37,13 +43,14 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .rv-top { display: flex; align-items: center; gap: 12px; }
 .rv-ava { flex: none; width: 36px; height: 36px; display: grid; place-items: center; border: 1px solid var(--n800); border-radius: var(--r-sm); font-family: var(--f-head); font-size: 15px; color: var(--n300); }
 .rv-who { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-.rv-name { font-size: 13px; font-weight: 600; color: var(--n100); }
+.rv-name { font-size: 13px; font-weight: 600; color: var(--n100); text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 3px; transition: text-decoration-color var(--dur-fast); }
+.rv-name:hover { text-decoration-color: var(--n500); }
 .rv-date { font-size: 11px; color: var(--n500); }
 .rv-top .stars { margin-left: auto; }
 .rv-text { margin: 0; font-size: 14px; line-height: 1.7; color: var(--n200); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; line-clamp: 4; overflow: hidden; }
 .rv.open .rv-text { -webkit-line-clamp: unset; line-clamp: unset; display: block; }
 .rv-more { align-self: flex-start; font-size: 12px; }
-.rv-src { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--n850); display: flex; justify-content: space-between; gap: 10px; }
+.rv-src { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--n850); display: flex; justify-content: flex-start; gap: 10px; }
 .rv-src > * { white-space: nowrap; }
 
 /* A · лента на главной */
@@ -61,6 +68,16 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .a-foot { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
 @media (prefers-reduced-motion: reduce) { .track { scroll-behavior: auto; } }
 
+/* A: сводка слева от ленты — как у слайдера виджета */
+.a-body { display: grid; grid-template-columns: 220px minmax(0,1fr); gap: 16px; align-items: stretch; }
+.a-sum { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 20px; border: 1px solid var(--n800); border-radius: var(--r-sm); background: var(--n950); }
+.a-sum .sum-n { font-size: 44px; }
+.a-sum .btn { margin-top: auto; }
+.a-body .track { grid-auto-columns: calc((100% - 16px) / 2); }
+.prog { height: 1px; background: var(--n800); margin-top: 20px; position: relative; }
+.prog i { position: absolute; left: 0; top: -1px; height: 3px; width: 34%; background: var(--n300); transition: left var(--dur-slow) var(--ease-out); }
+@media (max-width: 900px) { .a-body { grid-template-columns: minmax(0,1fr); } .a-sum { flex-direction: row; flex-wrap: wrap; align-items: center; } .a-sum .btn { margin: 0 0 0 auto; } .a-body .track { grid-auto-columns: 82%; } }
+
 /* B · страница отзывов */
 .b-grid { display: grid; grid-template-columns: 300px minmax(0,1fr); gap: 40px; align-items: start; }
 @media (max-width: 900px) { .b-grid { grid-template-columns: 1fr; gap: 28px; } }
@@ -71,11 +88,6 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .sum-of { font-size: 12px; color: var(--n500); }
 .sum .stars svg { width: 14px; height: 14px; }
 .sum-cnt { font-size: 12px; color: var(--n400); }
-.dist { display: flex; flex-direction: column; gap: 6px; padding: 4px 0; }
-.dist-r { display: grid; grid-template-columns: 14px minmax(0,1fr) 30px; gap: 10px; align-items: center; font-size: 11px; color: var(--n400); }
-.dist-r span:last-child { text-align: right; font-variant-numeric: tabular-nums; }
-.bar { height: 4px; background: var(--n850); border-radius: var(--r-sm); overflow: hidden; }
-.bar i { display: block; height: 100%; background: var(--n300); }
 .sum .btn { width: 100%; justify-content: center; }
 .sum-note { font-size: 11px; line-height: 1.6; color: var(--n500); }
 .b-tools { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
@@ -154,34 +166,36 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   <div class="intro">
     <span class="t-eyebrow">Сайт · отзывы</span>
     <h1 class="t-h1">Отзывы на сайте</h1>
-    <p>Три способа показать отзывы из Яндекс Карт на сайте в стиле системы. Источник один — отзывы организации в Яндексе; виджет подтягивает их, а вёрстка наша: карточки, звёзды и кнопки из ядра, без чужих цветов и скруглений. Оценка, число отзывов и тексты — примеры.</p>
+    <p>Три способа показать отзывы из Яндекс Карт. Виджет SmartWidgets отдаёт: среднюю оценку дробью («4,4 из 5»), число оценок, а у каждого отзыва — фото и имя автора со ссылкой на профиль, оценку, дату, текст с «Читать полностью» и ссылку на отзыв в Яндекс Картах; умеет фильтр по звёздам, сортировку «новые / случайно», кнопку «Оставить отзыв» и «Ещё». Разбивки по звёздам у него нет. Макеты собраны только из этого. Оценка, число и тексты — примеры.</p>
+    <p>Два пути: настроить сам виджет под систему (насколько позволяют его настройки цветов и шрифтов — проверить в кабинете SmartWidgets) или брать у сервиса данные и рисовать отзывы нашими компонентами, как здесь. Есть ли у сервиса выдача данных для своей вёрстки — уточнить у них.</p>
   </div>
 
   <section class="var" id="vA">
     <div class="var-h"><span class="t-eyebrow">Вариант A</span><h2 class="t-h2">Лента на главной</h2>
-      <p class="var-d">Блок перед футером: заголовок, сводка «★ 4,9 · 128 отзывов», карусель из трёх карточек со стрелками; на телефоне — свайп, видна часть следующей карточки. Без автопрокрутки: отзыв читают, а не ловят. Показываем только 4 и 5 звёзд, сначала новые. Внизу — «Все отзывы» и «Оставить отзыв» (открывает Яндекс Карты с формой).</p></div>
+      <p class="var-d">Блок перед футером, как слайдер виджета: слева сводка (средняя, дробные звёзды, число оценок, «Оставить отзыв»), справа лента со стрелками и линией прогресса; на телефоне сводка становится строкой, лента листается свайпом. Без автопрокрутки: отзыв читают, а не ловят. Показываем только 4 и 5 звёзд, сначала новые. Внизу — «Все отзывы». «Оставить отзыв» открывает Яндекс Карты сразу с формой.</p></div>
     <div class="frame"><div class="frame-cap t-caption">Главная · блок отзывов</div><div class="frame-in">
       <div class="a-head">
         <div><span class="t-eyebrow">Отзывы зрителей</span><h3 class="t-h2">Что говорят о нас</h3></div>
-        <div class="a-tools"><span class="score" data-score></span>
-          <div class="a-arr"><button type="button" aria-label="Предыдущие отзывы" data-scroll="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button><button type="button" aria-label="Следующие отзывы" data-scroll="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button></div>
+        <div class="a-tools"><div class="a-arr"><button type="button" aria-label="Предыдущие отзывы" data-scroll="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button><button type="button" aria-label="Следующие отзывы" data-scroll="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button></div>
         </div>
       </div>
-      <div class="track" id="track" tabindex="0" aria-label="Отзывы"></div>
-      <div class="a-foot"><a class="btn btn-ghost btn-sm" href="#vB">Все отзывы</a><a class="btn btn-ghost btn-sm" href="#">Оставить отзыв ↗</a></div>
+      <div class="a-body">
+        <aside class="a-sum" aria-label="Сводка отзывов"><span class="sum-n">4,9</span><span data-frac="4.9"></span><span class="sum-cnt">На основе 128 оценок в Яндекс Картах</span><a class="btn btn-ghost btn-sm" href="#">Оставить отзыв ↗</a></aside>
+        <div><div class="track" id="track" tabindex="0" aria-label="Отзывы"></div><div class="prog" aria-hidden="true"><i id="prog"></i></div></div>
+      </div>
+      <div class="a-foot"><a class="btn btn-ghost btn-sm" href="#vB">Все отзывы</a></div>
     </div></div>
   </section>
 
   <section class="var" id="vB">
     <div class="var-h"><span class="t-eyebrow">Вариант B</span><h2 class="t-h2">Страница «Отзывы»</h2>
-      <p class="var-d">Отдельная страница, на неё ведёт оценка в шапке. Слева — сводка: средняя оценка, число отзывов, распределение по звёздам и «Оставить отзыв». Справа — все отзывы в две колонки, фильтр по звёздам (чипы ядра) и сортировка «Новые / Случайно». Длинный текст сворачивается до четырёх строк с «Читать полностью». Показываем все оценки — так честнее и полезнее для доверия.</p></div>
+      <p class="var-d">Отдельная страница, на неё ведёт оценка в шапке. Слева — сводка: средняя оценка, дробные звёзды, число оценок и «Оставить отзыв» (разбивки по звёздам виджет не даёт). Справа — все отзывы в две колонки, фильтр по звёздам (чипы ядра) и сортировка «Новые / Случайно». Длинный текст сворачивается до четырёх строк с «Читать полностью». Показываем все оценки — так честнее и полезнее для доверия.</p></div>
     <div class="frame"><div class="frame-cap t-caption">Страница /reviews</div><div class="frame-in">
       <div class="b-grid">
         <aside class="sum" aria-label="Сводка отзывов">
           <div class="sum-big"><span class="sum-n">4,9</span><span class="sum-of">из 5</span></div>
-          <span class="stars" data-stars="5"></span>
-          <span class="sum-cnt">128 отзывов на Яндекс Картах</span>
-          <div class="dist" id="dist"></div>
+          <span data-frac="4.9"></span>
+          <span class="sum-cnt">На основе 128 оценок в Яндекс Картах</span>
           <a class="btn btn-primary btn-sm" href="#">Оставить отзыв</a>
           <span class="sum-note">Отзывы приходят из Яндекс Карт; новые появляются на сайте в течение суток.</span>
         </aside>
@@ -191,7 +205,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
             <div class="sort" role="group" aria-label="Сортировка"><button type="button" aria-pressed="true" data-sort="new">Новые</button><button type="button" aria-pressed="false" data-sort="rnd">Случайно</button></div>
           </div>
           <div class="masonry" id="masonry"></div>
-          <div class="b-more"><button class="btn btn-ghost btn-sm" type="button">Показать ещё</button></div>
+          <div class="b-more"><button class="btn btn-ghost btn-sm" type="button">Ещё</button></div>
         </div>
       </div>
     </div></div>
@@ -210,7 +224,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
         <aside class="panel" role="dialog" aria-label="Отзывы">
           <div class="p-head">
             <div class="p-top"><h3 class="t-h2">Отзывы</h3><button class="p-x" type="button" aria-label="Закрыть отзывы"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-            <div class="p-sum"><span class="sum-n">4,9</span><span class="p-sum-r"><span class="stars" data-stars="5"></span><span class="sum-cnt">128 отзывов на Яндекс Картах</span></span></div>
+            <div class="p-sum"><span class="sum-n">4,9</span><span class="p-sum-r"><span data-frac="4.9"></span><span class="sum-cnt">На основе 128 оценок в Яндекс Картах</span></span></div>
           </div>
           <div class="p-list" id="plist"></div>
           <div class="p-foot"><a class="btn btn-ghost btn-sm" href="#">Оставить отзыв ↗</a><a class="btn btn-primary btn-sm" href="#vB">Все отзывы</a></div>
@@ -223,9 +237,10 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
     <span class="t-eyebrow">Предложение</span>
     <p>A на главной и B отдельной страницей; оценка в шапке ведёт на B. C — если важно не уводить человека со страницы покупки.</p>
     <ul>
-      <li>Отзывы рисуем сами по данным виджета: так карточки совпадают с системой и работают в обеих темах.</li>
+      <li>Лучше рисовать отзывы самим по данным сервиса: карточки совпадают с системой и работают в обеих темах. Если сервис данных не отдаёт — настраиваем виджет: нейтральные цвета, без теней и жёлтых звёзд, радиус 2 px.</li>
       <li>На главной — только 4–5 звёзд, на странице — все с фильтром.</li>
-      <li>Ссылка на профиль автора в Яндексе и подпись «Яндекс Карты» — у каждого отзыва, для доверия.</li>
+      <li>Имя автора ведёт в его профиль в Яндексе, внизу карточки — «Отзыв в Яндекс Картах ↗»: виджет это умеет, и это добавляет доверия.</li>
+      <li>Плашка «Сделано на SmartWidgets» есть во всех примерах; можно ли её убрать на платном тарифе — уточнить.</li>
       <li>Без автопрокрутки; движение отключается при <code>prefers-reduced-motion</code>.</li>
     </ul>
   </div>
@@ -242,13 +257,14 @@ const R = [
 ];
 const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.6l2.75 6.05 6.6.68-4.95 4.45 1.42 6.5L12 16.95 6.18 20.28l1.42-6.5L2.65 9.33l6.6-.68z"/></svg>';
 const stars = n => [1,2,3,4,5].map(i => i <= n ? STAR : STAR.replace('<svg', '<svg class="off"')).join('');
-const card = r => `<article class="rv"><div class="rv-top"><span class="rv-ava" aria-hidden="true">${r.n[0]}</span><span class="rv-who"><span class="rv-name">${r.n}</span><span class="rv-date">${r.d}</span></span><span class="stars" role="img" aria-label="Оценка ${r.s} из 5">${stars(r.s)}</span></div><p class="rv-text">${r.t}</p><button class="rv-more t-link" type="button" hidden>Читать полностью</button><div class="rv-src"><span class="t-caption">Яндекс Карты</span><a class="t-caption" href="#">Профиль автора ↗</a></div></article>`;
+const card = r => `<article class="rv"><div class="rv-top"><span class="rv-ava" aria-hidden="true">${r.n[0]}</span><span class="rv-who"><a class="rv-name" href="#" title="Профиль автора в Яндексе">${r.n}</a><span class="rv-date">${r.d}</span></span><span class="stars" role="img" aria-label="Оценка ${r.s} из 5">${stars(r.s)}</span></div><p class="rv-text">${r.t}</p><button class="rv-more t-link" type="button" hidden>Читать полностью</button><div class="rv-src"><a class="t-caption" href="#">Отзыв в Яндекс Картах ↗</a></div></article>`;
 
 document.querySelectorAll('[data-score]').forEach(e => e.innerHTML = STAR + '4,9<span class="cnt">· 128 отзывов</span>');
+const frac = v => `<span class="stars-f" role="img" aria-label="Средняя оценка ${String(v).replace('.', ',')} из 5"><span class="stars">${stars(0)}</span><span class="on" style="width:${v / 5 * 100}%"><span class="stars" style="color:inherit">${[1,2,3,4,5].map(() => STAR).join('')}</span></span></span>`;
+document.querySelectorAll('[data-frac]').forEach(e => e.outerHTML = frac(+e.dataset.frac));
 document.querySelectorAll('[data-stars]').forEach(e => { e.innerHTML = stars(+e.dataset.stars); e.setAttribute('role','img'); e.setAttribute('aria-label','Средняя оценка 4,9 из 5'); });
 track.innerHTML = R.filter(r => r.s >= 4).map(card).join('');
 plist.innerHTML = R.map(card).join('');
-dist.innerHTML = [[5,112],[4,11],[3,3],[2,1],[1,1]].map(([s,c]) => `<div class="dist-r"><span>${s}</span><span class="bar"><i style="width:${Math.round(c/128*100)}%"></i></span><span>${c}</span></div>`).join('');
 
 let filt = 'all', sort = 'new';
 function renderB() {
@@ -270,6 +286,9 @@ document.addEventListener('click', e => {
   if (e.target.closest('a[href="#"]')) e.preventDefault();
 });
 addEventListener('resize', clamp);
+/* линия прогресса ленты */
+const setProg = () => { const max = track.scrollWidth - track.clientWidth, w = track.clientWidth / track.scrollWidth * 100; prog.style.width = w + '%'; prog.style.left = (max > 0 ? track.scrollLeft / max * (100 - w) : 0) + '%'; };
+track.addEventListener('scroll', setProg, { passive: true }); addEventListener('resize', setProg); setProg();
 </script>
 </body>
 </html>
