@@ -136,6 +136,9 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .reco { padding: 24px; border: 1px solid var(--n800); border-radius: var(--r-sm); background: var(--n950); display: flex; flex-direction: column; gap: 10px; }
 .reco p { margin: 0; font-size: 14px; line-height: 1.7; color: var(--n200); }
 .reco ul { margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.8; color: var(--n300); }
+/* окно подтверждения перехода на внешний сайт: кнопки в ряд, на телефоне — столбиком, «Перейти» сверху */
+.leave-foot { display: flex; gap: 8px; justify-content: flex-end; }
+@media (max-width: 480px) { .leave-foot { flex-direction: column-reverse; } .leave-foot .btn { width: 100%; } }
 </style>
 </head>
 <body>
@@ -180,7 +183,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
         </div>
       </div>
       <div class="a-body">
-        <aside class="a-sum" aria-label="Сводка отзывов"><span class="sum-n">4,9</span><span data-frac="4.9"></span><span class="sum-cnt">На основе 128 оценок в Яндекс Картах</span><a class="btn btn-ghost btn-sm" href="#">Оставить отзыв ↗</a></aside>
+        <aside class="a-sum" aria-label="Сводка отзывов"><span class="sum-n">4,9</span><span data-frac="4.9"></span><span class="sum-cnt">На основе 128 оценок в Яндекс Картах</span><a class="btn btn-ghost btn-sm" href="#" data-ext="Яндекс Карты" data-host="yandex.ru">Оставить отзыв ↗</a></aside>
         <div><div class="track" id="track" tabindex="0" aria-label="Отзывы"></div><div class="prog" aria-hidden="true"><i id="prog"></i></div></div>
       </div>
       <div class="a-foot"><a class="btn btn-ghost btn-sm" href="#vB">Все отзывы</a></div>
@@ -196,7 +199,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
           <div class="sum-big"><span class="sum-n">4,9</span><span class="sum-of">из 5</span></div>
           <span data-frac="4.9"></span>
           <span class="sum-cnt">На основе 128 оценок в Яндекс Картах</span>
-          <a class="btn btn-primary btn-sm" href="#">Оставить отзыв</a>
+          <a class="btn btn-primary btn-sm" href="#" data-ext="Яндекс Карты" data-host="yandex.ru">Оставить отзыв</a>
           <span class="sum-note">Отзывы приходят из Яндекс Карт; новые появляются на сайте в течение суток.</span>
         </aside>
         <div>
@@ -227,7 +230,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
             <div class="p-sum"><span class="sum-n">4,9</span><span class="p-sum-r"><span data-frac="4.9"></span><span class="sum-cnt">На основе 128 оценок в Яндекс Картах</span></span></div>
           </div>
           <div class="p-list scroll-quiet" id="plist"></div>
-          <div class="p-foot"><a class="btn btn-ghost btn-sm" href="#">Оставить отзыв ↗</a><a class="btn btn-primary btn-sm" href="#vB">Все отзывы</a></div>
+          <div class="p-foot"><a class="btn btn-ghost btn-sm" href="#" data-ext="Яндекс Карты" data-host="yandex.ru">Оставить отзыв ↗</a><a class="btn btn-primary btn-sm" href="#vB">Все отзывы</a></div>
         </aside>
       </div>
     </div>
@@ -240,11 +243,24 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
       <li>Лучше рисовать отзывы самим по данным сервиса: карточки совпадают с системой и работают в обеих темах. Если сервис данных не отдаёт — настраиваем виджет: нейтральные цвета, без теней и жёлтых звёзд, радиус 2 px.</li>
       <li>На главной — только 4–5 звёзд, на странице — все с фильтром.</li>
       <li>Имя автора ведёт в его профиль в Яндексе, внизу карточки — «Отзыв в Яндекс Картах ↗»: виджет это умеет, и это добавляет доверия.</li>
+      <li>Переход на Яндекс Карты и другие внешние сервисы — через окно подтверждения: «Перейти» открывает сервис в новой вкладке, «Остаться» возвращает к странице. Нажмите «Оставить отзыв» или «Отзыв в Яндекс Картах ↗» в любом варианте выше.</li>
       <li>Плашка «Сделано на SmartWidgets» есть во всех примерах; можно ли её убрать на платном тарифе — уточнить.</li>
       <li>Без автопрокрутки; движение отключается при <code>prefers-reduced-motion</code>.</li>
     </ul>
   </div>
 </main>
+<div class="modal-overlay" id="leave" aria-hidden="true">
+  <div class="modal-box leave-box" role="dialog" aria-modal="true" aria-labelledby="leave-t" aria-describedby="leave-d">
+    <div class="modal-body">
+      <h2 class="t-h2" id="leave-t" style="margin:0 0 8px">Перейти на Яндекс Карты?</h2>
+      <p class="t-body" id="leave-d" style="margin:0;color:var(--n300)"></p>
+    </div>
+    <div class="modal-footer leave-foot">
+      <button class="btn btn-ghost btn-md" type="button" data-leave="stay">Остаться</button>
+      <button class="btn btn-primary btn-md" type="button" data-leave="go">Перейти<svg class="btn-arr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></button>
+    </div>
+  </div>
+</div>
 <script>
 /* Тексты и имена — примеры, не настоящие отзывы */
 const R = [
@@ -257,7 +273,7 @@ const R = [
 ];
 const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.6l2.75 6.05 6.6.68-4.95 4.45 1.42 6.5L12 16.95 6.18 20.28l1.42-6.5L2.65 9.33l6.6-.68z"/></svg>';
 const stars = n => [1,2,3,4,5].map(i => i <= n ? STAR : STAR.replace('<svg', '<svg class="off"')).join('');
-const card = r => `<article class="rv"><div class="rv-top"><span class="rv-ava" aria-hidden="true">${r.n[0]}</span><span class="rv-who"><a class="rv-name" href="#" title="Профиль автора в Яндексе">${r.n}</a><span class="rv-date">${r.d}</span></span><span class="stars" role="img" aria-label="Оценка ${r.s} из 5">${stars(r.s)}</span></div><p class="rv-text">${r.t}</p><button class="rv-more t-link" type="button" hidden>Читать полностью</button><div class="rv-src"><a class="t-caption" href="#">Отзыв в Яндекс Картах ↗</a></div></article>`;
+const card = r => `<article class="rv"><div class="rv-top"><span class="rv-ava" aria-hidden="true">${r.n[0]}</span><span class="rv-who"><a class="rv-name" href="#" data-ext="профиль автора в Яндексе" data-host="yandex.ru" title="Профиль автора в Яндексе">${r.n}</a><span class="rv-date">${r.d}</span></span><span class="stars" role="img" aria-label="Оценка ${r.s} из 5">${stars(r.s)}</span></div><p class="rv-text">${r.t}</p><button class="rv-more t-link" type="button" hidden>Читать полностью</button><div class="rv-src"><a class="t-caption" href="#" data-ext="Яндекс Карты" data-host="yandex.ru">Отзыв в Яндекс Картах ↗</a></div></article>`;
 
 document.querySelectorAll('[data-score]').forEach(e => e.innerHTML = STAR + '4,9<span class="cnt">· 128 отзывов</span>');
 const frac = v => `<span class="stars-f" role="img" aria-label="Средняя оценка ${String(v).replace('.', ',')} из 5"><span class="stars">${stars(0)}</span><span class="on" style="width:${v / 5 * 100}%"><span class="stars" style="color:inherit">${[1,2,3,4,5].map(() => STAR).join('')}</span></span></span>`;
@@ -283,8 +299,21 @@ document.addEventListener('click', e => {
   const f = e.target.closest('[data-f]'); if (f) { filt = f.dataset.f; renderB(); return; }
   const s = e.target.closest('[data-sort]'); if (s) { sort = s.dataset.sort; document.querySelectorAll('[data-sort]').forEach(b => b.setAttribute('aria-pressed', b === s)); renderB(); return; }
   const a = e.target.closest('[data-scroll]'); if (a) { track.scrollBy({ left: +a.dataset.scroll * track.clientWidth, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); return; }
+  const x = e.target.closest('[data-ext]'); if (x) { e.preventDefault(); askLeave(x); return; }
   if (e.target.closest('a[href="#"]')) e.preventDefault();
 });
+/* Переход на внешний сайт — через подтверждение (решение №54): «Перейти» открывает сервис в новой вкладке, «Остаться» закрывает окно.
+   В макете переход не выполняется. Esc и нажатие мимо окна — «Остаться»; фокус возвращается на ссылку. */
+const leave = document.getElementById('leave'); let leaveFrom = null;
+function askLeave(a) {
+  leaveFrom = a;
+  leave.querySelector('#leave-t').textContent = 'Перейти на ' + (a.dataset.ext === 'Яндекс Карты' ? 'Яндекс Карты' : 'сайт ' + a.dataset.host) + '?';
+  leave.querySelector('#leave-d').textContent = (a.dataset.ext === 'Яндекс Карты' ? 'Отзывы оставляют и читают целиком на Яндекс Картах. ' : '') + 'Откроется ' + a.dataset.host + ' в новой вкладке, страница Ticket to Show останется открытой.';
+  leave.classList.add('open'); leave.setAttribute('aria-hidden', 'false'); leave.querySelector('[data-leave="go"]').focus();
+}
+function closeLeave() { leave.classList.remove('open'); leave.setAttribute('aria-hidden', 'true'); if (leaveFrom) leaveFrom.focus(); leaveFrom = null; }
+leave.addEventListener('click', e => { if (e.target === leave || e.target.closest('[data-leave]')) closeLeave(); });
+addEventListener('keydown', e => { if (e.key === 'Escape' && leave.classList.contains('open')) closeLeave(); });
 addEventListener('resize', clamp);
 /* Внутренняя прокрутка без системной полосы: класс .scroll-quiet из ядра; data-more — затухание у края, где есть ещё */
 function quietScroll(el){ if(!el||el.dataset.qs) return; el.dataset.qs='1';
