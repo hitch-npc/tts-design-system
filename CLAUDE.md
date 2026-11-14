@@ -1,5 +1,15 @@
 # TTS Design System — Справочник для Claude
 
+> ## ⛔ ЗНАК РУБЛЯ ₽ — ГЛАВНОЕ ПРАВИЛО, ЧИТАЙ ПЕРВЫМ
+> Владелец чинил это десятки раз, злится — и справедливо. **Знак ₽ в ценах всегда рисуется шрифтом Source Serif 4** (решение №40). В `Oranienbaum` (цены, `--f-num`) и в `Forum` знака ₽ НЕТ: без своего глифа браузер молча берёт запасной шрифт, и ₽ выглядит чужим — жирным, без засечек.
+> **Как сделано, чтобы не ломалось:** глиф ₽ (1 КБ, Source Serif 4, лицензия OFL) вшит base64 в каждый файл, который его показывает, — никакой сети и никакого Google. Блок `@font-face` объявляет U+20BD для семейств `Oranienbaum`, `Forum` и `Source Serif 4`, поэтому правильный ₽ получается в ЛЮБОМ месте, где есть эти шрифты, без правки `font-family`. Источник — `tooling/rub/`; расставляет и проверяет **`tooling/build-rub.mjs`**, он входит в `npm run build` и `npm run check`.
+> **Что делать тебе, без напоминаний:**
+> 1. Новая страница, сборка или макет со знаком ₽ → после создания `npm run build`. Файл без блока не пройдёт `npm run check`, CI и push.
+> 2. Пришла НОВАЯ выгрузка редизайна (`site/redesign-v2-*.html`, это «Bundled Page» из внешнего инструмента — она затирает правки) → сразу `npm run build`: скрипт заново вшивает ₽ в шаблон и в схему зала внутри сборки.
+> 3. **Никогда** не подключай Source Serif 4 через Google (`@import`/`<link>`) ради ₽ — это и есть причина поломок (сеть, блокировки, офлайн, новая сборка без строки).
+> 4. Любой новый кадр с ценой (кейс, Behance, handoff, письма-превью) снимай только ПОСЛЕ этой проверки и **смотри глазами на знак ₽** на кадре: он должен быть тонким, с засечками, в тон цифрам.
+> 5. Письма (`emails/`) — исключение: почтовые клиенты не грузят веб-шрифты; там ₽ задаётся стеком `font-family` в генераторе.
+
 > Этот файл — сжатый источник истины по дизайн-системе TTS (Ticket to Show).
 > Читай его в начале каждой сессии вместо полных CSS-файлов.
 > **Актуальная версия: DS TTS R15 (15.0.0)** — `ds-core-r14.css` (тёмная), `ds-core-r14-light.css` (светлая). Имена файлов с «r14» не меняются (решение №56).
@@ -25,7 +35,7 @@
 | `index.html` | Витрина для GitHub Pages — ссылки на все страницы. Не демо, а навигация. |
 | `.gitignore` | **Белый список** публикации (см. «Git и публикация»). |
 | `.github/`, `.githooks/` | CI (`npm run check:strict` + `security`) и pre-push хук. |
-| `tooling/` | Сборка и страж: `build-tokens.mjs`, `build-smm.mjs`, `guardrail.mjs`, `README.md` (как менять X), `backup/`, `examples/`. |
+| `tooling/` | Сборка и страж: `build-tokens.mjs`, `build-smm.mjs`, `build-rub.mjs` (знак ₽, см. начало файла), `guardrail.mjs`, `README.md` (как менять X), `rub/` (глиф ₽), `backup/`, `examples/`. |
 | `uploads/` | Пользовательские ассеты (логотипы, скриншоты, исходные материалы) |
 | `_archive/` | Историческое — R11 CSS, гайды v10/v11, портфолио, демо-компоненты, письма. См. `_archive/README.md`. Не править. |
 
@@ -369,7 +379,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 | `--font` | Manrope | UI-элементы, кнопки, метки |
 | `--f-head` | Forum | Названия мельче 22px: карточки афиши, плитки, подзаголовки (`.t-h3`) |
 | `--f-thin` | Cormorant Garamond 400/500 | Display и заголовки **от 22px** (до 25pt — 500, крупнее — 400/500) |
-| `--f-num` | Oranienbaum (+ Source Serif 4 для ₽) | Числа (цены, даты); знак ₽ — из Source Serif 4, ядро подгружает его само (решение №40) |
+| `--f-num` | Oranienbaum (+ Source Serif 4 для ₽) | Числа (цены, даты); знак ₽ — вшитый глиф Source Serif 4 для Oranienbaum и Forum (решение №40, `tooling/build-rub.mjs`) |
 
 ### Классы типографики
 ```
@@ -754,7 +764,7 @@ CSS-ядро, токены, `tooling/`, `package.json`, `VERSION`, `CLAUDE.md`, 
 - Blob только через `.cover-blob-1/.cover-blob-2` или radial-gradient с blur
 - Шрифт Cormorant — только названия событий и display. Для UI — Manrope
 - Минимальная высота кнопки `.btn-sm` — 36px
-- Подключаемые шрифты (R14): `https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap`. Знак ₽ (Source Serif 4, только этот символ) ядро подключает само; странице без ядра — второй строкой: `https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400&text=%E2%82%BD&display=swap`
+- Подключаемые шрифты (R14): `https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap`. Знак ₽ (Source Serif 4, только этот символ) вшит в ядро и в каждую страницу со знаком ₽ — скриптом `tooling/build-rub.mjs`; по Google его не подключать (см. правило в самом начале файла)
 
 ---
 
