@@ -574,8 +574,8 @@ def personal():
                     f'{T("ср,&nbsp;22&nbsp;апр,&nbsp;19:00", 12, 16, N200, 500, tag="span", extra="display:block;white-space:nowrap;")}'
                     f'</td></tr>', width='auto')
     meta_row = tbl(
-        f'<tr><td valign="middle" style="padding-right:14px;vertical-align:middle;">{date_chip}</td>'
-        f'<td valign="middle" style="vertical-align:middle;white-space:nowrap;">'
+        f'<tr><td class="col meta-chip" valign="middle" style="padding-right:14px;vertical-align:middle;">{date_chip}</td>'
+        f'<td class="col" valign="middle" style="vertical-align:middle;white-space:nowrap;">'
         f'{S("от&nbsp;", N500, f"font-family:{SANS};font-size:12px;line-height:24px;")}'
         f'{S("7&nbsp;000&nbsp;₽", N100, f"font-family:{NUM};font-size:22px;line-height:24px;")}</td></tr>',
         width='auto')
@@ -635,6 +635,7 @@ def personal():
 
     css = """
       .thumb-lg-cell { width: 64px !important; padding: 14px !important; }
+      .meta-chip { padding: 0 0 8px 0 !important; }
       .thumb-lg { width: 64px !important; height: 64px !important; }
       .cover-sm { height: 140px !important; }
       .banner-txt { padding: 20px 20px 16px !important; }

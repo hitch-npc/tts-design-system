@@ -6,6 +6,7 @@
 <title>TTS DS R14 — Cookie consent card · Хендофф (standalone)</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Forum&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 /* ════════════════════════════════════════════════════════════
    STANDALONE-версия хендоффа: весь CSS заинлайнен, внешних
    зависимостей нет (кроме Google Fonts — деградируют в системные).
@@ -249,6 +250,8 @@ table.spec th {
 }
 table.spec td { padding: 10px 12px; border-bottom: 1px solid var(--n900); color: var(--n200); vertical-align: top; }
 table.spec td:first-child { white-space: nowrap; }
+/* на телефоне таблица прокручивается сама, страница не шире экрана */
+@media (max-width: 760px) { table.spec { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; } .note code { white-space: normal; overflow-wrap: anywhere; } }
 .spec-wrap { overflow-x: auto; }
 code {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;

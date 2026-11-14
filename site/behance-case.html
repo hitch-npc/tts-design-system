@@ -10,11 +10,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../ds-core-r14.css">
 <style>
-body{ background:var(--n950); margin:0; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
-.bh-page{ display:flex; flex-direction:column; align-items:center; gap:24px; padding:24px 0 64px; }
-.bh-note{ width:1400px; max-width:calc(100% - 32px); font-family:var(--font); font-size:13px; line-height:1.6; color:var(--n500); }
+html{ -webkit-text-size-adjust:100%; text-size-adjust:100%; }
+body{ background:var(--n950); margin:0; overflow-x:hidden; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+.bh-page{ display:flex; flex-direction:column; align-items:center; gap:24px; padding:24px 16px 64px; }
+.bh-note{ width:100%; max-width:1400px; font-family:var(--font); font-size:13px; line-height:1.6; color:var(--n500); }
 .bh-note a{ color:var(--n100); text-decoration:underline; text-decoration-color:var(--accent); text-underline-offset:3px; }
-.bh{ position:relative; width:1400px; flex:none; background:var(--ink); color:var(--n100); overflow:hidden; padding:96px 104px; box-sizing:border-box; font-family:var(--font); }
+.bh{ position:relative; width:100%; max-width:1400px; flex:none; background:var(--ink); color:var(--n100); overflow:hidden; padding:96px 104px; box-sizing:border-box; font-family:var(--font); }
 .bh-alt{ background:var(--n950); }
 .bh-eb{ font-size:12px; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:var(--n300); margin:0 0 20px; }
 .bh-h{ font-family:var(--f-thin); font-weight:400; font-size:64px; line-height:1.05; margin:0 0 24px; color:var(--n100); }
@@ -64,18 +65,20 @@ body{ background:var(--n950); margin:0; -webkit-font-smoothing:antialiased; -moz
 .bh-g2{ display:grid; grid-template-columns:1fr 1fr; gap:32px; align-items:start; }
 .bh-g4{ display:grid; grid-template-columns:repeat(4,1fr); gap:28px; align-items:start; }
 .bh-stack{ display:flex; flex-direction:column; gap:48px; }
-.bh-phone img{ border-radius:2px; }
+.bh-phone img{ border-radius:2px; aspect-ratio:600/1409; object-fit:cover; object-position:top; }
 
 /* выборы */
-.bh-choice{ display:grid; grid-template-columns:400px 1fr; gap:56px; padding:48px 0; border-top:1px solid var(--n800); align-items:start; }
-.bh-choice:first-of-type{ border-top:0; padding-top:0; }
-.bh-choice h3{ font-family:var(--f-thin); font-weight:500; font-size:32px; line-height:1.15; margin:0 0 18px; color:var(--n100); }
-.bh-kv{ margin:0 0 14px; }
+.bh-choice{ padding:56px 0; border-top:1px solid var(--n800); }
+.bh-choice:first-child, .bh-head + .bh-choice{ border-top:0; padding-top:0; }
+.bh-choice:last-child{ padding-bottom:0; }
+.bh-choice h3{ font-family:var(--f-thin); font-weight:500; font-size:36px; line-height:1.15; margin:0 0 24px; color:var(--n100); }
+.bh-kvs{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px 48px; margin:0 0 36px; }
+.bh-kv{ margin:0; }
 .bh-kv dt{ font-size:11px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--n500); margin-bottom:4px; }
 .bh-kv dd{ margin:0; font-size:15px; line-height:1.6; color:var(--n200); }
 .bh-kv dd b{ color:var(--n100); font-weight:600; }
-.bh-choice-shots{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
-.bh-choice-shots.three{ grid-template-columns:repeat(3,1fr); }
+.bh-choice-shots{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; }
+.bh-choice-shots.three{ grid-template-columns:repeat(3,minmax(0,1fr)); }
 
 /* система */
 .bh-pipe{ display:grid; grid-template-columns:280px 80px 1fr; align-items:center; margin-bottom:64px; }
@@ -93,6 +96,10 @@ body{ background:var(--n950); margin:0; -webkit-font-smoothing:antialiased; -moz
 .bh-type{ display:grid; grid-template-columns:1fr auto; align-items:baseline; gap:16px; padding:14px 0; border-top:1px solid var(--n800); }
 .bh-type:first-of-type{ border-top:0; padding-top:0; }
 .bh-type small{ font-size:12px; color:var(--n500); letter-spacing:.06em; }
+.ty-cor{ font-family:var(--f-thin); font-weight:400; font-size:44px; line-height:1; }
+.ty-for{ font-family:var(--f-head); font-size:24px; }
+.ty-man{ font-family:var(--font); font-size:15px; font-weight:500; }
+.ty-num{ font-family:var(--f-num); font-size:34px; }
 .bh-sw{ display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-bottom:20px; }
 .bh-sw div{ height:64px; border-radius:2px; border:1px solid var(--n800); }
 .bh-sw-l{ display:grid; grid-template-columns:repeat(5,1fr); gap:10px; font-size:12px; color:var(--n500); margin:-10px 0 24px; }
@@ -104,18 +111,75 @@ body{ background:var(--n950); margin:0; -webkit-font-smoothing:antialiased; -moz
 .bh-rules span{ font-size:15px; line-height:1.6; color:var(--n300); }
 
 /* финал */
-.bh-end{ height:760px; display:flex; flex-direction:column; justify-content:space-between; }
+.bh-end{ display:flex; flex-direction:column; gap:96px; }
 .bh-state{ display:grid; grid-template-columns:1fr 1fr; gap:64px; }
 .bh-state h3{ font-size:12px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--n500); margin:0 0 16px; }
 .bh-state ul{ margin:0; padding:0; list-style:none; }
 .bh-state li{ font-size:16px; line-height:1.6; color:var(--n200); padding:10px 0; border-top:1px solid var(--n800); }
 .bh-foot{ display:flex; justify-content:space-between; align-items:end; border-top:1px solid var(--n800); padding-top:32px; font-size:14px; color:var(--n300); }
 
+/* уже 1100 px: колонки и обложка перестраиваются, блок остаётся одним экраном */
+@media (max-width:1100px){
+  .bh{ padding:72px 48px; }
+  .bh-h{ font-size:52px; }
+  .bh-cover{ height:auto; padding-bottom:72px; }
+  .bh-cover .bh-h{ font-size:60px; white-space:normal; }
+  .bh-cover-top{ margin-bottom:56px; }
+  .bh-before{ grid-template-columns:1fr; }
+  .bh-pipe{ grid-template-columns:240px 56px 1fr; }
+}
+/* телефон */
+@media (max-width:760px){
+  .bh-page{ gap:16px; padding:16px 12px 48px; }
+  .bh{ padding:44px 20px; }
+  .bh-eb{ font-size:10px; margin-bottom:14px; }
+  .bh-h{ font-size:34px; margin-bottom:16px; }
+  .bh-cover .bh-h{ font-size:40px; }
+  .bh-cover-top{ margin-bottom:40px; }
+  .bh-cover-meta{ font-size:10px; }
+  .bh-cover-shot{ margin-top:40px; }
+  .bh-logo{ height:30px; }
+  .bh-p{ font-size:16px; }
+  .bh-head{ grid-template-columns:1fr; gap:14px; margin-bottom:32px; }
+  .bh-cols{ grid-template-columns:1fr; gap:28px; padding-top:28px; margin-top:28px!important; }
+  .bh-cols p{ font-size:15px; }
+  .bh-nums{ grid-template-columns:repeat(2,minmax(0,1fr)); margin-top:36px; }
+  .bh-num{ padding:20px 16px; }
+  .bh-num:nth-child(2){ border-right:0; }
+  .bh-num:nth-child(-n+2){ border-bottom:1px solid var(--n800); }
+  .bh-num b{ font-size:44px; margin-bottom:10px; }
+  .bh-num span{ font-size:13px; }
+  .bh-list li{ font-size:15px; padding-left:40px; }
+  .bh-g2{ grid-template-columns:1fr; gap:24px; }
+  .bh-g4{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px 12px; }
+  .bh-stack{ gap:32px; }
+  .bh-cap{ font-size:13px; margin-top:10px; }
+  .bh-choice{ padding:40px 0; }
+  .bh-choice h3{ font-size:28px; margin-bottom:16px; }
+  .bh-kvs{ grid-template-columns:1fr; gap:14px; margin-bottom:24px; }
+  .bh-choice-shots{ gap:12px; }
+  .bh-choice-shots.three{ gap:8px; }
+  .bh-pipe{ grid-template-columns:1fr; gap:12px; margin-bottom:40px; }
+  .bh-arrow{ display:none; }
+  .bh-out{ font-size:14px; padding:14px 16px; }
+  .bh-spec{ grid-template-columns:1fr; gap:20px; }
+  .bh-card{ padding:22px 18px; }
+  .ty-cor{ font-size:32px; } .ty-for{ font-size:20px; } .ty-num{ font-size:28px; }
+  .bh-type{ grid-template-columns:1fr; gap:4px; }
+  .bh-sw div{ height:44px; }
+  .bh-sw-l{ font-size:10px; }
+  .bh-rules{ grid-template-columns:1fr; gap:20px; margin-top:32px; }
+  .bh-end{ gap:56px; }
+  .bh-state{ grid-template-columns:1fr; gap:32px; }
+  .bh-state li{ font-size:15px; }
+  .bh-foot{ flex-direction:column; align-items:flex-start; gap:16px; font-size:13px; }
+}
+
 </style>
 </head>
 <body>
 <main class="bh-page">
-<p class="bh-note">Кейс для Behance: 15 блоков шириной 1400 px, каждый выгружается отдельной картинкой. Подробный кейс — <a href="case-r14.html">case-r14.html</a>.</p>
+<p class="bh-note">Кейс для Behance: 16 блоков шириной 1400 px, каждый выгружается отдельной картинкой при ширине окна 1440 px. Подробный кейс — <a href="case-r14.html">case-r14.html</a>.</p>
 <section class="bh bh-cover" data-bh="01-cover">
 <div class="bh-blob bh-blob-a"></div><div class="bh-blob bh-blob-b"></div>
 <div class="bh-in">
@@ -181,7 +245,7 @@ body{ background:var(--n950); margin:0; -webkit-font-smoothing:antialiased; -moz
 </section>
 
 <section class="bh bh-alt" data-bh="05-mobile-home">
-<div class="bh-head"><div><div class="bh-eb">Телефон</div><h2 class="bh-h">Главная и событие</h2></div><p class="bh-p">Первый экран — афиша целиком над названием. На странице события афиша во всю ширину складывается в миниатюру, пока человек читает описание и выбирает сеанс.</p></div><div class="bh-g4"><figure class="bh-shot bh-phone"><img src="img/case/after-home-m.webp" alt="Первый экран на телефоне"><div class="bh-cap">Первый экран</div></figure><figure class="bh-shot bh-phone"><img src="img/case/after-home-m-2.webp" alt="Плитки и афиша на телефоне"><div class="bh-cap">Жанры и афиша</div></figure><figure class="bh-shot bh-phone"><img src="handoff/stand-fixes/img/ab-0.webp" alt="Событие на телефоне в начале страницы"><div class="bh-cap">Событие · начало</div></figure><figure class="bh-shot bh-phone"><img src="handoff/stand-fixes/img/ab-100.webp" alt="Событие на телефоне после прокрутки"><div class="bh-cap">Событие · после прокрутки</div></figure></div>
+<div class="bh-head"><div><div class="bh-eb">Телефон</div><h2 class="bh-h">Главная и событие</h2></div><p class="bh-p">Первый экран — афиша целиком над названием. На странице события афиша во всю ширину складывается в миниатюру, пока человек читает описание и выбирает сеанс.</p></div><div class="bh-g4"><figure class="bh-shot bh-phone"><img src="img/case/m-home.webp" alt="Первый экран на телефоне"><div class="bh-cap">Первый экран</div></figure><figure class="bh-shot bh-phone"><img src="img/case/m-home-2.webp" alt="Плитки и афиша на телефоне"><div class="bh-cap">Жанры и афиша</div></figure><figure class="bh-shot bh-phone"><img src="img/case/m-event-0.webp" alt="Событие на телефоне в начале страницы"><div class="bh-cap">Событие · начало</div></figure><figure class="bh-shot bh-phone"><img src="img/case/m-event-1.webp" alt="Событие на телефоне после прокрутки"><div class="bh-cap">Событие · после прокрутки</div></figure></div>
 </section>
 
 <section class="bh " data-bh="06-event">
@@ -205,14 +269,18 @@ body{ background:var(--n950); margin:0; -webkit-font-smoothing:antialiased; -moz
 </section>
 
 <section class="bh bh-alt" data-bh="11-choices">
-<div class="bh-head"><div><div class="bh-eb">Решения, где был выбор</div><h2 class="bh-h">Спорное решалось сравнением</h2></div><p class="bh-p">Варианты собирались живыми макетами, обсуждались с фронтендом в issues; отклонённые варианты и причины сохранены.</p></div><div class="bh-choice"><div><div class="bh-eb">Схема зала</div><h3>Цвета зон</h3><dl><div class="bh-kv"><dt>Что было</dt><dd>Цены шли градиентом одного цвета: соседние категории не различались. Зелёный балкон почти совпадал с выбранным местом.</dd></div><div class="bh-kv"><dt>Варианты</dt><dd>Перекрасить только балкон или ещё и осветлить бельэтаж.</dd></div><div class="bh-kv"><dt>Выбрано</dt><dd><b>Балкон розово-малиновый, бельэтаж светлее.</b> Выбранное место отличается от любой зоны.</dd></div></dl></div><div class="bh-choice-shots"><figure class="bh-shot "><img src="handoff/stand-fixes/img/seat-grad.webp" alt="Схема зала до"><div class="bh-cap">Было</div></figure><figure class="bh-shot "><img src="handoff/stand-fixes/img/seat-crimson-light.webp" alt="Схема зала после"><div class="bh-cap">Выбрано</div></figure></div></div><div class="bh-choice"><div><div class="bh-eb">Главная</div><h3>Жанры под первым экраном</h3><dl><div class="bh-kv"><dt>Что было</dt><dd>Чипы «Все / Спектакли / Концерты…» терялись под крупным первым экраном.</dd></div><div class="bh-kv"><dt>Варианты</dt><dd>Чипы; пять плиток с описанием; четыре плитки без подписей.</dd></div><div class="bh-kv"><dt>Выбрано</dt><dd><b>Четыре плитки без подписей</b> и кнопка «Все»: цвет жанра виден сразу, афиша остаётся близко к первому экрану.</dd></div></dl></div><div class="bh-choice-shots"><figure class="bh-shot "><img src="handoff/stand-fixes/img/home-v-old.webp" alt="Вариант с чипами"><div class="bh-cap">Чипы</div></figure><figure class="bh-shot "><img src="handoff/stand-fixes/img/home-v-names.webp" alt="Выбранный вариант"><div class="bh-cap">Выбрано</div></figure></div></div><div class="bh-choice"><div><div class="bh-eb">Событие · телефон</div><h3>Афиша на странице события</h3><dl><div class="bh-kv"><dt>Что было</dt><dd>Картинки не было: категория, название, площадка и описание.</dd></div><div class="bh-kv"><dt>Варианты</dt><dd>Афиша уходит в фон градиентом или складывается в миниатюру.</dd></div><div class="bh-kv"><dt>Выбрано</dt><dd><b>Афиша складывается.</b> Видна целиком в начале и не занимает экран при чтении.</dd></div></dl></div><div class="bh-choice-shots three"><figure class="bh-shot "><img src="handoff/stand-fixes/img/ab-0.webp" alt="Начало"><div class="bh-cap">0 px</div></figure><figure class="bh-shot "><img src="handoff/stand-fixes/img/ab-50.webp" alt="Середина"><div class="bh-cap">150 px</div></figure><figure class="bh-shot "><img src="handoff/stand-fixes/img/ab-100.webp" alt="После прокрутки"><div class="bh-cap">300 px</div></figure></div></div><div class="bh-choice"><div><div class="bh-eb">Главная</div><h3>Заставка</h3><dl><div class="bh-kv"><dt>Что было</dt><dd>Первая версия играла около девяти секунд при каждой загрузке.</dd></div><div class="bh-kv"><dt>Варианты</dt><dd>Длина от трёх до девяти секунд; при каждой загрузке или раз за визит.</dd></div><div class="bh-kv"><dt>Выбрано</dt><dd><b>Около пяти секунд, один раз за визит.</b> Верхняя афиша перелетает в постер первого экрана.</dd></div></dl></div><div class="bh-choice-shots"><figure class="bh-shot "><img src="handoff/stand-fixes/img/intro-deck.webp" alt="Колода афиш"><div class="bh-cap">Колода афиш</div></figure><figure class="bh-shot "><img src="handoff/stand-fixes/img/intro-hero.webp" alt="Первый экран после заставки"><div class="bh-cap">Первый экран</div></figure></div></div>
+<div class="bh-head"><div><div class="bh-eb">Решения, где был выбор</div><h2 class="bh-h">Спорное решалось сравнением</h2></div><p class="bh-p">Варианты собирались живыми макетами, обсуждались с фронтендом в issues; отклонённые варианты и причины сохранены.</p></div><div class="bh-choice"><div class="bh-eb">Схема зала</div><h3>Цвета зон</h3><dl class="bh-kvs"><div class="bh-kv"><dt>Что было</dt><dd>Цены шли градиентом одного цвета: соседние категории не различались. Зелёный балкон почти совпадал с выбранным местом.</dd></div><div class="bh-kv"><dt>Варианты</dt><dd>Перекрасить только балкон или ещё и осветлить бельэтаж.</dd></div><div class="bh-kv"><dt>Выбрано</dt><dd><b>Балкон розово-малиновый, бельэтаж светлее.</b> Выбранное место отличается от любой зоны.</dd></div></dl><div class="bh-choice-shots"><figure class="bh-shot "><img src="handoff/stand-fixes/img/seat-grad.webp" alt="Схема зала до"><div class="bh-cap">Было</div></figure><figure class="bh-shot "><img src="handoff/stand-fixes/img/seat-crimson-light.webp" alt="Схема зала после"><div class="bh-cap">Выбрано</div></figure></div></div><div class="bh-choice"><div class="bh-eb">Главная</div><h3>Жанры под первым экраном</h3><dl class="bh-kvs"><div class="bh-kv"><dt>Что было</dt><dd>Чипы «Все / Спектакли / Концерты…» терялись под крупным первым экраном.</dd></div><div class="bh-kv"><dt>Варианты</dt><dd>Чипы; пять плиток с описанием; четыре плитки без подписей.</dd></div><div class="bh-kv"><dt>Выбрано</dt><dd><b>Четыре плитки без подписей</b> и кнопка «Все»: цвет жанра виден сразу, афиша остаётся близко к первому экрану.</dd></div></dl><div class="bh-choice-shots"><figure class="bh-shot "><img src="handoff/stand-fixes/img/home-v-old.webp" alt="Вариант с чипами"><div class="bh-cap">Чипы</div></figure><figure class="bh-shot "><img src="handoff/stand-fixes/img/home-v-names.webp" alt="Выбранный вариант"><div class="bh-cap">Выбрано</div></figure></div></div>
 </section>
 
-<section class="bh " data-bh="12-themes">
+<section class="bh bh-alt" data-bh="12-choices">
+<div class="bh-choice"><div class="bh-eb">Событие · телефон</div><h3>Афиша на странице события</h3><dl class="bh-kvs"><div class="bh-kv"><dt>Что было</dt><dd>Картинки не было: категория, название, площадка и описание.</dd></div><div class="bh-kv"><dt>Варианты</dt><dd>Афиша уходит в фон градиентом или складывается в миниатюру.</dd></div><div class="bh-kv"><dt>Выбрано</dt><dd><b>Афиша складывается.</b> Видна целиком в начале и не занимает экран при чтении.</dd></div></dl><div class="bh-choice-shots three"><figure class="bh-shot "><img src="handoff/stand-fixes/img/ab-0.webp" alt="Начало"><div class="bh-cap">0 px</div></figure><figure class="bh-shot "><img src="handoff/stand-fixes/img/ab-50.webp" alt="Середина"><div class="bh-cap">150 px</div></figure><figure class="bh-shot "><img src="handoff/stand-fixes/img/ab-100.webp" alt="После прокрутки"><div class="bh-cap">300 px</div></figure></div></div><div class="bh-choice"><div class="bh-eb">Главная</div><h3>Заставка</h3><dl class="bh-kvs"><div class="bh-kv"><dt>Что было</dt><dd>Первая версия играла около девяти секунд при каждой загрузке.</dd></div><div class="bh-kv"><dt>Варианты</dt><dd>Длина от трёх до девяти секунд; при каждой загрузке или раз за визит.</dd></div><div class="bh-kv"><dt>Выбрано</dt><dd><b>Около пяти секунд, один раз за визит.</b> Верхняя афиша перелетает в постер первого экрана.</dd></div></dl><div class="bh-choice-shots"><figure class="bh-shot "><img src="handoff/stand-fixes/img/intro-deck.webp" alt="Колода афиш"><div class="bh-cap">Колода афиш</div></figure><figure class="bh-shot "><img src="handoff/stand-fixes/img/intro-hero.webp" alt="Первый экран после заставки"><div class="bh-cap">Первый экран</div></figure></div></div>
+</section>
+
+<section class="bh " data-bh="13-themes">
 <div class="bh-head"><div><div class="bh-eb">Две темы</div><h2 class="bh-h">Тёмная и светлая — одни классы</h2></div><p class="bh-p">Тема меняется заменой одного CSS-файла. Тёмная — как зал перед спектаклем; у светлой та же шкала, перевёрнутая.</p></div><div class="bh-g2"><figure class="bh-shot "><img src="img/case/after-home-d.webp" alt="Главная, тёмная тема"><div class="bh-cap">Тёмная</div></figure><figure class="bh-shot "><img src="img/case/after-home-light.webp" alt="Главная, светлая тема"><div class="bh-cap">Светлая</div></figure></div>
 </section>
 
-<section class="bh bh-alt" data-bh="13-system">
+<section class="bh bh-alt" data-bh="14-system">
 <div class="bh-head"><div><div class="bh-eb">Дизайн-система</div><h2 class="bh-h">На чём это собрано</h2></div><p class="bh-p">Правила, которые повторялись от экрана к экрану, стали токенами, компонентами и записанными решениями. Система открыта в репозитории.</p></div>
 <div class="bh-pipe">
   <div class="bh-src"><span>Источник</span><b>tokens.json</b><span>примитивы и семантика, обе темы</span></div>
@@ -226,10 +294,10 @@ body{ background:var(--n950); margin:0; -webkit-font-smoothing:antialiased; -moz
 </div>
 <div class="bh-spec">
   <div class="bh-card"><h4>Шрифты</h4>
-    <div class="bh-type"><span style="font-family:var(--f-thin);font-weight:400;font-size:44px;line-height:1">Одни во вселенной</span><small>Cormorant · от 22 px</small></div>
-    <div class="bh-type"><span style="font-family:var(--f-head);font-size:24px">Театр «Современник»</span><small>Forum · карточки</small></div>
-    <div class="bh-type"><span style="font-family:var(--font);font-size:15px;font-weight:500">Выбрать места · Оформление</span><small>Manrope · интерфейс</small></div>
-    <div class="bh-type"><span style="font-family:var(--f-num);font-size:34px">от 1 500 ₽</span><small>Oranienbaum · цены</small></div>
+    <div class="bh-type"><span class="ty-cor">Одни во вселенной</span><small>Cormorant · от 22 px</small></div>
+    <div class="bh-type"><span class="ty-for">Театр «Современник»</span><small>Forum · карточки</small></div>
+    <div class="bh-type"><span class="ty-man">Выбрать места · Оформление</span><small>Manrope · интерфейс</small></div>
+    <div class="bh-type"><span class="ty-num">от 1 500 ₽</span><small>Oranienbaum · цены</small></div>
   </div>
   <div class="bh-card"><h4>Цвет</h4>
     <div class="bh-sw"><div style="background:var(--ink)"></div><div style="background:var(--n900)"></div><div style="background:var(--n500)"></div><div style="background:var(--n100)"></div><div style="background:var(--accent)"></div></div>
@@ -246,11 +314,11 @@ body{ background:var(--n950); margin:0; -webkit-font-smoothing:antialiased; -moz
 </div>
 </section>
 
-<section class="bh " data-bh="14-handoff">
+<section class="bh " data-bh="15-handoff">
 <div class="bh-head"><div><div class="bh-eb">Передача в разработку</div><h2 class="bh-h">Одна страница для команды и фронтенда</h2></div><p class="bh-p">Баги стенда — что сейчас, что нужно, как проверить. Решения — итог и спецификация сверху, история выбора ниже. У каждого экрана один макет-источник.</p></div><div class="bh-stack"><figure class="bh-shot "><img src="img/case/handoff-sum.webp" alt="Сводка итоговой страницы"><div class="bh-cap"><b>Сводка.</b> Баги стенда, решения, открытые вопросы, предложения.</div></figure><figure class="bh-shot "><img src="img/case/handoff-card.webp" alt="Карточка решения"><div class="bh-cap"><b>Карточка решения.</b> Итог и значения для вёрстки; варианты свёрнуты.</div></figure></div>
 </section>
 
-<section class="bh bh-end" data-bh="15-end">
+<section class="bh bh-end" data-bh="16-end">
 <div class="bh-blob bh-blob-a" style="opacity:.7"></div>
 <div class="bh-in">
   <div class="bh-eb">Состояние</div>
@@ -283,11 +351,5 @@ body{ background:var(--n950); margin:0; -webkit-font-smoothing:antialiased; -moz
 </svg><span>Head designer, UX/UI · 2025–2026 · hitch-npc.github.io/tts-design-system</span></div>
 </section>
 </main>
-<script>
-/* на узком окне блоки уменьшаются целиком: при выгрузке ширина окна 1440, масштаб 1 */
-(function(){ var m=document.querySelector('.bh-page');
-  function fit(){ var k=Math.min(1,(window.innerWidth-32)/1400); m.style.zoom=k<1?k:''; }
-  fit(); window.addEventListener('resize',fit); })();
-</script>
 </body>
 </html>

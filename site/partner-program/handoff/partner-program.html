@@ -20,6 +20,17 @@ html, body { background: #161616; -webkit-font-smoothing: antialiased; -moz-osx-
 .stage-row { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; justify-content: center; }
 .frame { width: 1440px; overflow: hidden; box-shadow: 0 16px 64px rgba(0,0,0,.5); flex-shrink: 0; position: relative; }
 .frame-m { width: 390px; }
+/* окно уже фреймов: фреймы прокручиваются внутри сцены, страница не становится шире экрана */
+@media (max-width: 1500px) {
+  .stage { align-items: flex-start; overflow-x: auto; }
+  #uikit-d { width: auto !important; max-width: 100%; overflow-x: auto; }
+  #uikit-d > div { min-width: 1440px; }
+}
+@media (max-width: 760px) {
+  .stage { padding: 32px 0 56px; }
+  .stage-label { padding: 0 16px; }
+  .stage-row { justify-content: flex-start; flex-wrap: nowrap; }
+}
 
 /* ════════════════════════ ТЕМЫ ════════════════════════ */
 .th-d {

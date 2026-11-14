@@ -44,6 +44,8 @@
     vertical-align: top;
   }
   table.spec td:first-child { white-space: nowrap; }
+  /* на телефоне таблица прокручивается сама, страница не шире экрана */
+  @media (max-width: 760px) { table.spec { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; } .note code { white-space: normal; overflow-wrap: anywhere; } }
   .spec-wrap { overflow-x: auto; }
 
   code, .code-inline {

@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link id="gfonts" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style id="css">
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 /* ═══════════ TOKENS — DS TTS R14 ═══════════ */
 :root{
   --ink:#0D0D0D; --black:#111111;
@@ -69,7 +70,7 @@ h1.t-display{font-family:var(--f-thin);font-weight:400;font-size:clamp(2.2rem,6v
 .t-h2{font-family:var(--f-head);font-size:1.3rem;font-weight:400;margin:0 0 var(--sp-4)}
 
 .controls{position:sticky;top:0;z-index:30;background:color-mix(in srgb, var(--ink) 92%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--n900);margin-bottom:var(--sp-10);padding:var(--sp-3) 0;display:flex;gap:var(--sp-2) var(--sp-5);flex-wrap:wrap;align-items:center}
-.ctl{display:flex;gap:var(--sp-2);align-items:center}
+.ctl{display:flex;flex-wrap:wrap;gap:var(--sp-2);align-items:center}
 .btn{font-family:var(--font);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;padding:9px 15px;min-height:36px;border-radius:var(--r-sm);border:1px solid var(--n800);background:transparent;color:var(--n300);cursor:pointer;transition:all 200ms var(--ease-smooth)}
 .btn:hover{border-color:var(--n700);color:var(--n100)}
 .btn.on{background:var(--n100);border-color:var(--n100);color:var(--ink)}
