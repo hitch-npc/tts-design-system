@@ -220,11 +220,11 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .fav-sec + .fav-sec { margin-top: var(--sp-10); }
 .fav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-4); }
 /* десктоп: полка — один ряд, «Все N» раскрывает остальное */
-.fav-sec:not(.open) .fav-grid > .fav:nth-child(n+4) { display: none; }
-.fav { position: relative; display: flex; flex-direction: column; background: var(--n950); border: 1px solid var(--n800); border-radius: var(--r-sm); overflow: hidden; transition: border-color var(--dur-base) var(--ease-out), opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out); }
-.fav:hover { border-color: var(--n700); }
-.fav.leaving { opacity: 0; transform: scale(.97); }
-.fav .poster { border-radius: 0; width: 100%; }
+.fav-sec:not(.open) .fav-grid > .fav-card:nth-child(n+4) { display: none; }
+.fav-card { position: relative; display: flex; flex-direction: column; background: var(--n950); border: 1px solid var(--n800); border-radius: var(--r-sm); overflow: hidden; transition: border-color var(--dur-base) var(--ease-out), opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out); }
+.fav-card:hover { border-color: var(--n700); }
+.fav-card.leaving { opacity: 0; transform: scale(.97); }
+.fav-card .poster { border-radius: 0; width: 100%; }
 .fav-rm { position: absolute; top: 12px; right: 12px; z-index: 2; width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; border-radius: var(--r-sm); background: var(--overlay); color: var(--on-accent); transition: background var(--dur-fast); }
 .fav-rm:hover { background: var(--scrim); }
 .fav-rm svg { width: 18px; height: 18px; }
@@ -358,11 +358,11 @@ textarea.form-input { min-height: 112px; resize: vertical; line-height: 1.5; }
   /* ниже десктопа полка — лента со свайпом: все карточки сразу, следующая выглядывает справа */
   .fav-grid { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; padding-bottom: 2px; }
   .fav-grid::-webkit-scrollbar { display: none; }
-  .fav-grid > .fav { flex: 0 0 calc((100% - var(--sp-4)) / 2.3); scroll-snap-align: start; }
-  .fav-sec:not(.open) .fav-grid > .fav:nth-child(n+4) { display: flex; }
+  .fav-grid > .fav-card { flex: 0 0 calc((100% - var(--sp-4)) / 2.3); scroll-snap-align: start; }
+  .fav-sec:not(.open) .fav-grid > .fav-card:nth-child(n+4) { display: flex; }
   /* «Все N» раскрывает ленту в столбец: так видно, что карточек больше */
   .fav-sec.open .fav-grid { flex-direction: column; overflow: visible; }
-  .fav-sec.open .fav-grid > .fav { flex: 0 0 auto; }
+  .fav-sec.open .fav-grid > .fav-card { flex: 0 0 auto; }
   .tk-row { grid-template-columns: 1fr auto; }
   .tk-who { grid-column: 1 / -1; order: 3; }
   .tk-row .tk-price, .rt-tk .tk-price { grid-column: 2; }
@@ -382,7 +382,7 @@ textarea.form-input { min-height: 112px; resize: vertical; line-height: 1.5; }
   .ord-end .btn { width: 100%; }
   .tk { padding: var(--sp-4); }
   .tk-actions .btn, .panel-actions .btn { flex: 1; }
-  .fav-grid > .fav { flex-basis: 82%; }
+  .fav-grid > .fav-card { flex-basis: 82%; }
   .rt-show { grid-template-columns: 1fr; gap: var(--sp-4); padding: var(--sp-4); }
   .rt-show .poster { width: 160px; }
   .rt-show .ev-title { font-size: 1.375rem; }
@@ -397,7 +397,7 @@ textarea.form-input { min-height: 112px; resize: vertical; line-height: 1.5; }
   .states .t-caption { display: none; }
   .order-sum { margin-left: 0; }
 }
-@media (prefers-reduced-motion: reduce) { .ev-chev svg, .fav, .note, .hdr-filter-l, .terms > summary .chev, .req > summary .chev { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .ev-chev svg, .fav-card, .note, .hdr-filter-l, .terms > summary .chev, .req > summary .chev { transition: none; } }
 </style>
 </head>
 <body>
@@ -953,7 +953,7 @@ function renderFav() {
   const head = (k, label, n) => `<div class="shelf-head"><h2 class="t-h2">${label}<span class="shelf-n">${n}</span></h2>${n > SHELF ? `<button class="shelf-more" data-act="shelf" data-k="${k}" aria-expanded="${!!shelfOpen[k]}">${shelfOpen[k] ? 'Свернуть' : `Все ${n}`}<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="${shelfOpen[k] ? 'M6 15l6-6 6 6' : 'M9 6l6 6-6 6'}"/></svg></button>` : ''}</div>`;
   const evSec = favs.length ? `
     <section class="fav-sec${shelfOpen.ev ? ' open' : ''}">${head('ev', 'Мероприятия', favs.length)}<div class="fav-grid">${favs.map(f => `
-      <article class="fav" data-f="${f.id}">
+      <article class="fav-card" data-f="${f.id}">
         ${poster(f)}
         <button class="fav-rm" data-act="fav-rm" data-k="ev" data-f="${f.id}" aria-label="Убрать «${esc(f.title)}» из избранного" title="Убрать из избранного">${ICON.heart}</button>
         <div class="fav-body">
@@ -968,7 +968,7 @@ function renderFav() {
       </article>`).join('')}</div></section>` : '';
   const vnSec = venues.length ? `
     <section class="fav-sec${shelfOpen.vn ? ' open' : ''}">${head('vn', 'Площадки', venues.length)}<div class="fav-grid">${venues.map(v => `
-      <article class="fav" data-f="${v.id}">
+      <article class="fav-card" data-f="${v.id}">
         <div class="vn-plate">
           <img src="${v.logo}" alt="${esc(v.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.outerHTML='<span class=&quot;vn-fallback&quot;>${esc(v.title).charAt(0)}</span>'">
           <button class="fav-rm" data-act="fav-rm" data-k="vn" data-f="${v.id}" aria-label="Убрать «${esc(v.title)}» из избранного" title="Убрать из избранного">${ICON.heart}</button>
@@ -1249,7 +1249,7 @@ document.addEventListener('click', e => {
     case 'fav-rm': {
       const arr = b.dataset.k === 'vn' ? venues : favs;
       const i = arr.findIndex(f => f.id === b.dataset.f), item = arr[i];
-      b.closest('.fav').classList.add('leaving');
+      b.closest('.fav-card').classList.add('leaving');
       setTimeout(() => { const j = arr.indexOf(item); if (j > -1) arr.splice(j, 1); renderFav(); }, 260);
       note(`«${item.title}» убрано из избранного`, () => { if (!arr.includes(item)) arr.splice(i, 0, item); renderFav(); });
       break;

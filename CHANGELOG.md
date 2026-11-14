@@ -26,6 +26,9 @@
 - `site/home-new.html`, `site/zone-palette-demo.html`, `site/category-tiles-demo.html` — промежуточные варианты, итог — `home-new-tiles.html` и итоговая страница сдачи.
 - `site/handoff/TTS-profile-handoff/` — дубль пакета `site/handoff/account/`; копия README из `tooling/build-copies.mjs` и спецификация из `tooling/build-specs.mjs` убраны.
 
+### Исправлено
+- Личный кабинет `site/account.html`, вкладка «Избранное»: карточки мероприятий и площадок сжимались до 36 px — класс карточки `.fav` совпал с кнопкой «В избранное» из ядра (решение №47). Карточка на странице переименована в `.fav-card`, ядро не менялось.
+
 ### Ранее в работе (с 14.9.0)
 
 #### Добавлено
