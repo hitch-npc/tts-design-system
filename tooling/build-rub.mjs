@@ -14,7 +14,9 @@
  *   · ядро обеих тем и ds-smm.css — блок CSS на месте старого @import из Google;
  *   · любая страница со знаком ₽, которая не подключает ядро, — <style data-tts-rub> сразу после <head>;
  *   · сборки редизайна site/redesign-v2-*.html — в шаблон и в каждый встроенный HTML-ресурс (схема зала);
- *   · письма не трогаются: почтовые клиенты веб-шрифты не грузят.
+ *   · письма emails/ — тем же <style>: Apple Mail, iOS Mail и Thunderbird берут вшитый ₽ (цифры у них тоже Oranienbaum). Gmail и Outlook
+ *     веб-шрифты не грузят — там и цифры, и ₽ рисует Georgia/Times, они совпадают. Письма пересобирает tooling/build-emails.py,
+ *     после него `npm run build:emails` сам вызывает этот скрипт.
  * Пришла новая выгрузка редизайна — `npm run build`: блок встанет заново.
  */
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
@@ -99,7 +101,7 @@ function patchBundle(raw) {
 /* ── обход ── */
 const files = execFileSync('git', ['ls-files', '-co', '--exclude-standard'], { cwd: ROOT, encoding: 'utf8' })
   .split('\n').filter((f) => /\.(html|css)$/.test(f))
-  .filter((f) => !/^(_archive|emails|node_modules|tooling\/build)\//.test(f));
+  .filter((f) => !/^(_archive|node_modules|tooling\/build)\//.test(f));
 
 let changed = 0, stale = 0, checked = 0;
 function apply(rel, fn, why) {
