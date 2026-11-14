@@ -15,7 +15,7 @@
 | `ds-smm.css` | SMM: генерируется целиком из `smm.tokens.json` | **НЕТ — генерируется** |
 | `tooling/build-tokens.mjs` | Генератор `:root` сайта | по необходимости |
 | `tooling/build-smm.mjs` | Генератор `ds-smm.css` | по необходимости |
-| `tooling/build-copies.mjs` | Пишет копии для передачи из рабочих файлов (`COPIES`: страница партнёров → `handoff/`, README профиля → `TTS-profile-handoff/`) | по необходимости |
+| `tooling/build-copies.mjs` | Пишет копии для передачи из рабочих файлов (`COPIES`: страница партнёров → `handoff/`) | по необходимости |
 | `tooling/build-specs.mjs` | Собирает `spec.html` — оформленную спецификацию — из `README.md` handoff-пакета (`SPECS`); README скачивается со страницы | по необходимости |
 | `tooling/drift-check.mjs` | Сторож расхождений (`npm run drift`) | по необходимости |
 | `tooling/contrast-check.mjs` | Контраст текста по APCA в обеих темах (`npm run contrast`) | по необходимости |

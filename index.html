@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TTS Design System R14</title>
-<meta name="description" content="Дизайн-система Ticket to Show: ядро R14, редизайн сайта, партнёрская страница, cookie-баннер, письма, Telegram-эмодзи.">
+<title>TTS Design System R15</title>
+<meta name="description" content="Дизайн-система Ticket to Show: редизайн tickettoshow.ru, ядро R15, партнёрская страница, cookie-баннер, письма, Telegram-эмодзи.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -27,6 +27,10 @@
   .hub-links { display: flex; flex-wrap: wrap; gap: var(--sp-2); padding-top: var(--sp-2); }
   .hub-links .btn { text-decoration: none; }
   .hub-foot { position: relative; display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--sp-4); margin-top: var(--section-gap-sm); padding-top: var(--sp-6); border-top: 1px solid var(--n900); font-size: 12px; color: var(--n500); }
+  .hub-sec { position: relative; margin-top: var(--section-gap-sm); }
+  .hub-sec-h { display: flex; align-items: baseline; gap: var(--sp-4); flex-wrap: wrap; padding-bottom: var(--sp-3); margin-bottom: var(--sp-5); border-bottom: 1px solid var(--n900); }
+  .hub-sec-h h2 { margin: 0; }
+  .hub-sec-h p { margin: 0; font-size: 13px; color: var(--n400); }
   .hub-foot a { color: var(--n300); }
   .hub-foot a:hover { color: var(--n100); }
 </style>
@@ -57,78 +61,126 @@
 <path d="M120.717 33.877C187.382 33.8789 241.427 95.3157 241.427 95.3157C240.957 95.8482 187.094 156.746 120.717 156.748C54.2542 156.748 0.333887 95.6944 0 95.3157C0 95.3157 54.0501 33.877 120.717 33.877ZM120.633 49.6928C95.4466 49.6928 75.0306 70.1087 75.0306 95.2949C75.0306 120.481 95.4459 140.897 120.633 140.897C145.818 140.896 166.234 120.481 166.234 95.2949C166.234 70.109 145.818 49.6933 120.633 49.6928ZM120.639 68.0628C135.682 68.0646 147.879 80.2592 147.879 95.3021C147.878 110.344 135.681 122.539 120.639 122.541C105.596 122.541 93.3945 110.345 93.393 95.3021C93.393 80.2577 105.596 68.0628 120.639 68.0628Z" fill="currentColor"></path>
 </g>
 </svg>
-    <span class="tag tag-default">R14 · 14.9.0</span>
+    <span class="tag tag-default">R15 · 15.0.0</span>
   </header>
 
   <section class="hub-hero">
     <div class="t-caption">Ticket to Show</div>
-    <h1 class="t-display">Дизайн-система</h1>
-    <p class="t-body-lg hub-lead">Токены, компоненты и готовые страницы на R14. Тёмная тема — основная, светлая собрана на тех же классах.</p>
+    <h1 class="t-display">Редизайн и дизайн-система</h1>
+    <p class="t-body-lg hub-lead">Редизайн tickettoshow.ru и система, на которой он собран: макеты сайта, пакеты для фронтенда, ядро с токенами. Тёмная тема — основная, светлая собрана на тех же классах.</p>
   </section>
 
-  <div class="hub-grid">
+  <section class="hub-sec" aria-labelledby="sec-case">
+    <div class="hub-sec-h"><h2 class="t-h2" id="sec-case">Кейс</h2><p>Как шёл редизайн и что получилось.</p></div>
+    <div class="hub-grid">
     <article class="hub-card">
-      <div class="t-caption">Кейс</div>
-      <h2 class="hub-card-title">Как собиралась система</h2>
-      <p class="hub-card-text">Аналитика, работа над ошибками, решения и автопроверки — одной страницей, с живыми демонстрациями фильтров, подсказок поиска и схемы зала.</p>
+      <div class="t-caption">Портфолио</div>
+      <h3 class="hub-card-title">Редизайн Ticket to Show</h3>
+      <p class="hub-card-text">Редизайн tickettoshow.ru и дизайн-система, на которой он собран: что было, какие решения приняты и как к ним пришли, что передано в разработку.</p>
       <div class="hub-links">
         <a class="btn btn-primary btn-sm" href="site/case-r14.html">Открыть кейс</a>
+        <a class="btn btn-ghost btn-sm" href="site/behance-case.html">Блоки для Behance</a>
       </div>
     </article>
+    </div>
+  </section>
 
+  <section class="hub-sec" aria-labelledby="sec-site">
+    <div class="hub-sec-h"><h2 class="t-h2" id="sec-site">Сайт</h2><p>Макеты страниц. Обе темы; у каждого экрана один макет-источник.</p></div>
+    <div class="hub-grid">
     <article class="hub-card">
-      <div class="t-caption">Сайт</div>
-      <h2 class="hub-card-title">Редизайн v2</h2>
-      <p class="hub-card-text">Сайт целиком на R14. Каждый файл самодостаточен: шрифты и скрипты внутри, открывается без интернета.</p>
-      <div class="hub-links">
-        <a class="btn btn-primary btn-sm" href="site/redesign-v2-dark.html">Тёмная тема</a>
-        <a class="btn btn-ghost btn-sm" href="site/redesign-v2-light.html">Светлая тема</a>
-      </div>
-    </article>
-
-    <article class="hub-card">
-      <div class="t-caption">Сайт</div>
-      <h2 class="hub-card-title">Личный кабинет</h2>
-      <p class="hub-card-text">Вход по коду или паролю, предстоящие показы с заказами и билетами, избранное, история покупок, возврат заказом и меню профиля в шапке. Обе темы в одном файле.</p>
-      <div class="hub-links">
-        <a class="btn btn-primary btn-sm" href="site/account.html">Макет</a>
-        <a class="btn btn-ghost btn-sm" href="site/handoff/account/index.html">Handoff</a>
-      </div>
-    </article>
-
-    <article class="hub-card">
-      <div class="t-caption">Сайт · утверждено</div>
-      <h2 class="hub-card-title">Новая главная</h2>
-      <p class="hub-card-text">Заставка: колода из шести случайных афиш сайта, около 5 с, один раз за визит, свет «Рампа», крупно «Ticket to Show — билеты без кассовых сборов»; верхняя афиша перелетает в постер первого экрана, и только у неё к концу полёта проявляется кобальтовая рамка. Под первым экраном — четыре плитки жанров и «Все ↓»; лента дат со свайпом, весь месяц в окне по нажатию на месяц, дни без событий не нажимаются; на карточках афиши — «В избранное». Обе темы в одном файле.</p>
+      <div class="t-caption">Главная · утверждено</div>
+      <h3 class="hub-card-title">Новая главная</h3>
+      <p class="hub-card-text">Заставка с колодой афиш один раз за визит, первый экран с постером события, четыре плитки жанров и «Все ↓», календарь со свайпом, афиша с «В избранное» на карточках.</p>
       <div class="hub-links">
         <a class="btn btn-primary btn-sm" href="site/home-new-tiles.html?intro=long">Макет</a>
         <a class="btn btn-ghost btn-sm" href="site/home-new-tiles.html?intro=0">Без заставки</a>
       </div>
     </article>
-
     <article class="hub-card">
-      <div class="t-caption">Передача фронтенду</div>
-      <h2 class="hub-card-title">Заставка главной</h2>
-      <p class="hub-card-text">Готовый файл заставки с живым примером и документацией: подключение, параметры, когда играет (один раз за визит, повтор — <code>TTSIntro.replay()</code>, сброс отметки — <code>TTSIntro.reset()</code>), доступность.</p>
+      <div class="t-caption">Событие и покупка</div>
+      <h3 class="hub-card-title">Редизайн v2</h3>
+      <p class="hub-card-text">Страница события, оформление заказа в три–четыре шага, билет, подсказки поиска, 404, мобильные версии. Экраны, которые заменили новые макеты, помечены и ведут на них. Файлы открываются без интернета.</p>
       <div class="hub-links">
-        <a class="btn btn-primary btn-sm" href="site/handoff/intro/index.html">Пример и документация</a>
+        <a class="btn btn-primary btn-sm" href="site/redesign-v2-dark.html">Тёмная тема</a>
+        <a class="btn btn-ghost btn-sm" href="site/redesign-v2-light.html">Светлая тема</a>
+      </div>
+    </article>
+    <article class="hub-card">
+      <div class="t-caption">Выбор мест</div>
+      <h3 class="hub-card-title">Схема зала</h3>
+      <p class="hub-card-text">Большой зал на 15 цен: цвета по диапазонам, приближение зоны, фильтр по цене, заказ с корзиной. Зал на пять цен с фильтром в легенде.</p>
+      <div class="hub-links">
+        <a class="btn btn-primary btn-sm" href="site/seat-big-hall-demo.html">Большой зал</a>
+        <a class="btn btn-ghost btn-sm" href="site/seat-price-filter-demo.html">Пять цен и фильтр</a>
+      </div>
+    </article>
+    <article class="hub-card">
+      <div class="t-caption">Афиша и шапка</div>
+      <h3 class="hub-card-title">Карточка, афиша события, оценка</h3>
+      <p class="hub-card-text">«В избранное» на обложке карточки; афиша на странице события, которая складывается при прокрутке; звезда и средняя оценка в шапке.</p>
+      <div class="hub-links">
+        <a class="btn btn-ghost btn-sm" href="site/event-card-fav-demo.html">В избранное</a>
+        <a class="btn btn-ghost btn-sm" href="site/event-poster-demo.html">Афиша события</a>
+        <a class="btn btn-ghost btn-sm" href="site/header-rating-demo.html">Оценка в шапке</a>
+      </div>
+    </article>
+    <article class="hub-card">
+      <div class="t-caption">Профиль</div>
+      <h3 class="hub-card-title">Личный кабинет</h3>
+      <p class="hub-card-text">Вход по коду или паролю, предстоящие показы с заказами и билетами, избранное, история покупок, возврат заказом, меню профиля в шапке.</p>
+      <div class="hub-links">
+        <a class="btn btn-primary btn-sm" href="site/account.html">Макет</a>
+        <a class="btn btn-ghost btn-sm" href="site/handoff/account/index.html">Пакет для фронтенда</a>
+      </div>
+    </article>
+    <article class="hub-card">
+      <div class="t-caption">Вид не утверждён</div>
+      <h3 class="hub-card-title">Площадки и отзывы</h3>
+      <p class="hub-card-text">Страница «Площадки»: плитки и карта, выбор нескольких площадок, события по месяцам. Отзывы из Яндекс Карт: лента на главной, страница, панель из шапки; окно подтверждения перехода на внешний сайт.</p>
+      <div class="hub-links">
+        <a class="btn btn-ghost btn-sm" href="site/venues-variants-demo.html">Площадки</a>
+        <a class="btn btn-ghost btn-sm" href="site/reviews-demo.html">Отзывы</a>
+      </div>
+    </article>
+    <article class="hub-card">
+      <div class="t-caption">Отдельные страницы</div>
+      <h3 class="hub-card-title">Партнёрам и cookie-баннер</h3>
+      <p class="hub-card-text">Страница партнёрской программы с переключателем темы и проверкой e-mail. Баннер согласия на cookie: компонент и превью в интерфейсе.</p>
+      <div class="hub-links">
+        <a class="btn btn-ghost btn-sm" href="site/partner-program/partner-program-r14.html">Партнёрам</a>
+        <a class="btn btn-ghost btn-sm" href="site/cookie-banner/cookie-banner-preview.html">Cookie · превью</a>
+        <a class="btn btn-ghost btn-sm" href="site/cookie-banner/cookie-banner.html">Cookie · компонент</a>
+      </div>
+    </article>
+    </div>
+  </section>
+
+  <section class="hub-sec" aria-labelledby="sec-front">
+    <div class="hub-sec-h"><h2 class="t-h2" id="sec-front">Фронтенду</h2><p>Что передано в разработку: итог решений, пакеты и рабочие стенды.</p></div>
+    <div class="hub-grid">
+    <article class="hub-card">
+      <div class="t-caption">Начать отсюда</div>
+      <h3 class="hub-card-title">Редизайн: итоговая сдача</h3>
+      <p class="hub-card-text">Источник по каждому экрану, десять багов стенда, принятые решения с историей выбора, два открытых вопроса и три предложения к обсуждению.</p>
+      <div class="hub-links">
+        <a class="btn btn-primary btn-sm" href="site/handoff/stand-fixes/index.html">Итоговая страница</a>
+        <a class="btn btn-ghost btn-sm" href="https://github.com/hitch-npc/tts-design-system/issues">Issues</a>
+      </div>
+    </article>
+    <article class="hub-card">
+      <div class="t-caption">Пакет</div>
+      <h3 class="hub-card-title">Заставка главной</h3>
+      <p class="hub-card-text">Один файл без зависимостей с живым примером и документацией: подключение, параметры, когда играет, доступность.</p>
+      <div class="hub-links">
+        <a class="btn btn-ghost btn-sm" href="site/handoff/intro/index.html">Пример и документация</a>
         <a class="btn btn-ghost btn-sm" href="site/handoff/intro/tts-intro.js">tts-intro.js</a>
       </div>
     </article>
-
     <article class="hub-card">
-      <div class="t-caption">Баг · iPhone</div>
-      <h2 class="hub-card-title">Поиск увеличивает страницу</h2>
-      <p class="hub-card-text">Safari на iPhone увеличивает страницу при фокусе на поле мельче 16 px. Проблема, причина, решение одним правилом CSS, кадры «до» и «после», где ещё встречается.</p>
-      <div class="hub-links">
-        <a class="btn btn-primary btn-sm" href="site/handoff/ios-input-zoom.html">Разбор</a>
-      </div>
-    </article>
-
-    <article class="hub-card">
-      <div class="t-caption">Передача фронтенду</div>
-      <h2 class="hub-card-title">Редизайн, октябрь 2026</h2>
-      <p class="hub-card-text">Рабочие стенды по вопросам фронтенда: каждый показывает состояния одного блока с переключателями темы и ширины.</p>
+      <div class="t-caption">Стенды · октябрь 2026</div>
+      <h3 class="hub-card-title">Состояния блоков</h3>
+      <p class="hub-card-text">Каждый стенд показывает состояния одного блока с переключателями темы и ширины.</p>
       <div class="hub-links">
         <a class="btn btn-ghost btn-sm" href="site/handoff/redesign-2026-10/lab-card.html">Карточка</a>
         <a class="btn btn-ghost btn-sm" href="site/handoff/redesign-2026-10/lab-loaders.html">Лоадеры</a>
@@ -143,104 +195,76 @@
         <a class="btn btn-ghost btn-sm" href="site/handoff/redesign-2026-10/lab-new-elements.html">Новые элементы</a>
       </div>
     </article>
+    <article class="hub-card">
+      <div class="t-caption">Разбор бага</div>
+      <h3 class="hub-card-title">Поля ввода на iPhone</h3>
+      <p class="hub-card-text">Safari увеличивает страницу при фокусе на поле мельче 16 px: причина, решение одним правилом CSS, кадры «до» и «после».</p>
+      <div class="hub-links">
+        <a class="btn btn-ghost btn-sm" href="site/handoff/ios-input-zoom.html">Разбор</a>
+      </div>
+    </article>
+    <article class="hub-card">
+      <div class="t-caption">Сентябрь — октябрь 2026</div>
+      <h3 class="hub-card-title">Прежние сдачи</h3>
+      <p class="hub-card-text">«Было / стало» после 8 сентября в обеих темах, пакеты страницы партнёров и cookie-баннера.</p>
+      <div class="hub-links">
+        <a class="btn btn-ghost btn-sm" href="site/handoff/frontend-changes.html">Фронтенд</a>
+        <a class="btn btn-ghost btn-sm" href="site/handoff/redesign-changes.html">Редизайн</a>
+        <a class="btn btn-ghost btn-sm" href="site/partner-program/handoff/partner-program.html">Партнёрам</a>
+        <a class="btn btn-ghost btn-sm" href="site/cookie-banner/cookie-banner-handoff-standalone.html">Cookie · спецификация</a>
+        <a class="btn btn-ghost btn-sm" href="site/cookie-banner/cookie-banner-handoff.html">Cookie · handoff</a>
+      </div>
+    </article>
+    </div>
+  </section>
 
+  <section class="hub-sec" aria-labelledby="sec-ds">
+    <div class="hub-sec-h"><h2 class="t-h2" id="sec-ds">Система</h2><p>Ядро и всё, что собрано на тех же токенах.</p></div>
+    <div class="hub-grid">
     <article class="hub-card">
       <div class="t-caption">Ядро</div>
-      <h2 class="hub-card-title">Токены и компоненты</h2>
-      <p class="hub-card-text">Кнопки, формы, карточки событий, выбор сеанса, схема зала, чекаут, меню профиля и футер с разделителем «Рампа». Тема меняется заменой одного CSS-файла.</p>
+      <h3 class="hub-card-title">Токены и компоненты</h3>
+      <p class="hub-card-text">Кнопки, формы, карточки событий, выбор сеанса, схема зала, оформление, меню профиля, футер. Тема меняется заменой одного CSS-файла; <code>:root</code> собирается из <code>tokens.json</code>.</p>
       <div class="hub-links">
         <a class="btn btn-ghost btn-sm" href="https://github.com/hitch-npc/tts-design-system/blob/main/ds-core-r14.css">ds-core-r14.css</a>
         <a class="btn btn-ghost btn-sm" href="https://github.com/hitch-npc/tts-design-system/blob/main/ds-core-r14-light.css">light</a>
         <a class="btn btn-ghost btn-sm" href="https://github.com/hitch-npc/tts-design-system/blob/main/tokens.json">tokens.json</a>
+        <a class="btn btn-ghost btn-sm" href="https://github.com/hitch-npc/tts-design-system/blob/main/DECISIONS.md">Решения</a>
       </div>
     </article>
-
-    <article class="hub-card">
-      <div class="t-caption">Сайт</div>
-      <h2 class="hub-card-title">Партнёрская программа</h2>
-      <p class="hub-card-text">Страница для партнёров с переключателем темы и живой проверкой e-mail. Рядом — пакет для передачи в разработку.</p>
-      <div class="hub-links">
-        <a class="btn btn-ghost btn-sm" href="site/partner-program/partner-program-r14.html">Страница</a>
-        <a class="btn btn-ghost btn-sm" href="site/partner-program/handoff/partner-program.html">Handoff</a>
-      </div>
-    </article>
-
-    <article class="hub-card">
-      <div class="t-caption">Передача фронтенду</div>
-      <h2 class="hub-card-title">Редизайн: итоговая сдача</h2>
-      <p class="hub-card-text">Все макеты и пакеты редизайна, девять багов стенда и принятые решения с историей выбора: главная и заставка, схема зала, плитки жанров, афиша события, «В избранное» на карточке. Открыты два вопроса — страница «Площадки» и блок отзывов. Ниже — макеты по пунктам.</p>
-      <div class="hub-links">
-        <a class="btn btn-primary btn-sm" href="site/handoff/stand-fixes/index.html">Итоговая страница</a>
-        <a class="btn btn-ghost btn-sm" href="https://github.com/hitch-npc/tts-design-system/issues">Issues</a>
-        <a class="btn btn-ghost btn-sm" href="site/seat-big-hall-demo.html">Большой зал</a>
-        <a class="btn btn-ghost btn-sm" href="site/seat-price-filter-demo.html">Цены и фильтр</a>
-        <a class="btn btn-ghost btn-sm" href="site/event-card-fav-demo.html">В избранное</a>
-        <a class="btn btn-ghost btn-sm" href="site/zone-palette-demo.html">Палитры зон · история</a>
-        <a class="btn btn-ghost btn-sm" href="site/category-tiles-demo.html">Плитки · история</a>
-        <a class="btn btn-ghost btn-sm" href="site/home-new.html?intro=0">Главная с чипами · история</a>
-        <a class="btn btn-ghost btn-sm" href="site/venues-variants-demo.html">Площадки</a>
-        <a class="btn btn-ghost btn-sm" href="site/header-rating-demo.html">Оценка в шапке</a>
-        <a class="btn btn-ghost btn-sm" href="site/reviews-demo.html">Отзывы</a>
-        <a class="btn btn-ghost btn-sm" href="site/event-poster-demo.html">Афиша</a>
-      </div>
-    </article>
-
-    <article class="hub-card">
-      <div class="t-caption">Передача фронтенду</div>
-      <h2 class="hub-card-title">Изменения для фронтенда</h2>
-      <p class="hub-card-text">Всё, что поменялось после 8 сентября: cookie-баннер, страница партнёров, ядро, письма и редизайн v2 — «было / стало» в обеих темах. Файлы статичные — импортируются в Figma.</p>
-      <div class="hub-links">
-        <a class="btn btn-ghost btn-sm" href="site/handoff/frontend-changes.html">Фронтенд</a>
-        <a class="btn btn-ghost btn-sm" href="site/handoff/redesign-changes.html">Редизайн</a>
-      </div>
-    </article>
-
-    <article class="hub-card">
-      <div class="t-caption">Компонент</div>
-      <h2 class="hub-card-title">Cookie-баннер</h2>
-      <p class="hub-card-text">Баннер согласия на cookie: компонент, превью в интерфейсе и спецификация для разработки.</p>
-      <div class="hub-links">
-        <a class="btn btn-ghost btn-sm" href="site/cookie-banner/cookie-banner-preview.html">Превью</a>
-        <a class="btn btn-ghost btn-sm" href="site/cookie-banner/cookie-banner-handoff-standalone.html">Спецификация</a>
-        <a class="btn btn-ghost btn-sm" href="site/cookie-banner/cookie-banner.html">Компонент</a>
-        <a class="btn btn-ghost btn-sm" href="site/cookie-banner/cookie-banner-handoff.html">Handoff</a>
-      </div>
-    </article>
-
-    <article class="hub-card">
-      <div class="t-caption">Telegram</div>
-      <h2 class="hub-card-title">Кастомные эмодзи</h2>
-      <p class="hub-card-text">14 анимированных лент и 11 реакций. В сэндбоксе меняются текст, цвета и тема, экспорт — в .webm.</p>
-      <div class="hub-links">
-        <a class="btn btn-ghost btn-sm" href="tg-emoji/preview.html">Наборы</a>
-        <a class="btn btn-ghost btn-sm" href="tg-emoji/tts-tg-emoji-sandbox.html">Сэндбокс</a>
-      </div>
-    </article>
-
     <article class="hub-card">
       <div class="t-caption">Почта</div>
-      <h2 class="hub-card-title">Транзакционные письма</h2>
-      <p class="hub-card-text">Подтверждение оплаты с билетами и напоминание накануне спектакля.</p>
+      <h3 class="hub-card-title">Письма</h3>
+      <p class="hub-card-text">Подтверждение оплаты с билетами, напоминание накануне, письмо после события.</p>
       <div class="hub-links">
         <a class="btn btn-ghost btn-sm" href="emails/email-1-payment-confirmation.html">Оплата</a>
         <a class="btn btn-ghost btn-sm" href="emails/email-2-reminder.html">Напоминание</a>
         <a class="btn btn-ghost btn-sm" href="emails/emails-all.html">Все письма</a>
       </div>
     </article>
-
     <article class="hub-card">
       <div class="t-caption">Соцсети</div>
-      <h2 class="hub-card-title">SMM-слой</h2>
+      <h3 class="hub-card-title">SMM-слой</h3>
       <p class="hub-card-text">Посты и сторис для Telegram и Instagram на тех же токенах, что и сайт.</p>
       <div class="hub-links">
         <a class="btn btn-ghost btn-sm" href="tooling/examples/smm-example.html">Все посты</a>
         <a class="btn btn-ghost btn-sm" href="https://hitch-npc.github.io/tts-post-builder/">Конструктор</a>
       </div>
     </article>
-  </div>
+    <article class="hub-card">
+      <div class="t-caption">Telegram</div>
+      <h3 class="hub-card-title">Кастомные эмодзи</h3>
+      <p class="hub-card-text">14 анимированных лент и 11 реакций. В сэндбоксе меняются текст, цвета и тема, экспорт — в .webm.</p>
+      <div class="hub-links">
+        <a class="btn btn-ghost btn-sm" href="tg-emoji/preview.html">Наборы</a>
+        <a class="btn btn-ghost btn-sm" href="tg-emoji/tts-tg-emoji-sandbox.html">Сэндбокс</a>
+      </div>
+    </article>
+    </div>
+  </section>
 
   <footer class="hub-foot">
-    <span>TTS Design System · R14 · версия 14.9.0</span>
+    <span>TTS Design System · R15 · версия 15.0.0</span>
     <span><a href="https://github.com/hitch-npc/tts-design-system">Исходники и правила</a> · <a href="https://github.com/hitch-npc/tts-design-system/blob/main/CHANGELOG.md">История версий</a></span>
   </footer>
 </main>

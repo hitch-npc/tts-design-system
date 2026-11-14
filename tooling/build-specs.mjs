@@ -23,7 +23,6 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 /* readme — источник; css — путь к ядру из папки пакета; mockup — живой макет; back — витрина пакета */
 export const SPECS = [
   { dir: 'site/handoff/account', css: '../../../ds-core-r14.css', mockup: '../../account.html', back: 'index.html', eyebrow: 'Handoff · спецификация' },
-  { dir: 'site/handoff/TTS-profile-handoff', css: 'ds-core-r14.css', mockup: 'account.html', back: 'index.html', eyebrow: 'Handoff · спецификация' },
 ];
 
 const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');

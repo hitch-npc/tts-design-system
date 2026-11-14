@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TTS Design System R14 — кейс</title>
-<meta name="description" content="Кейс дизайн-системы Ticket to Show R14: аналитика, работа над ошибками, решения, автопроверки и публикация в открытом репозитории.">
+<title>Редизайн Ticket to Show — кейс</title>
+<meta name="description" content="Кейс: редизайн билетного сервиса tickettoshow.ru и дизайн-система, на которой он собран. Было и стало, путь покупки, решения с выбором из вариантов, передача в разработку.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Oranienbaum&family=Forum&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -329,11 +329,46 @@ a{ color:var(--accent); }
   .sc-chip{ position:static; margin-right:6px; }
   .rice-bar i{ width:var(--w); }
 }
+
+/* ── Кейс редизайна: кадры, пары «было / стало», телефоны ── */
+.cs-shot{ margin:0; display:flex; flex-direction:column; gap:var(--sp-2); min-width:0; }
+.cs-shot img{ display:block; width:100%; height:auto; border:1px solid var(--n800); border-radius:var(--r-sm); background:var(--ink); }
+.cs-shot figcaption{ font-size:12px; line-height:1.55; color:var(--n400); }
+.cs-shot figcaption b{ color:var(--n200); font-weight:600; }
+.cs-pair{ display:grid; grid-template-columns:1fr; gap:var(--sp-5) var(--col-gap); margin-top:var(--sp-8); }
+@media (min-width:860px){ .cs-pair{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+.cs-lbl{ align-self:flex-start; font-size:9px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; padding:4px 8px; border-radius:var(--r-sm); border:1px solid var(--n700); color:var(--n400); }
+.cs-lbl-new{ color:var(--ink); background:var(--n100); border-color:var(--n100); }
+.cs-phones{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:var(--sp-5) var(--col-gap); margin-top:var(--sp-8); align-items:start; }
+@media (min-width:640px){ .cs-phones{ grid-template-columns:repeat(3,minmax(0,1fr)); } }
+@media (min-width:1024px){ .cs-phones{ grid-template-columns:repeat(5,minmax(0,1fr)); } }
+.cs-phones.four{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+@media (min-width:860px){ .cs-phones.four{ grid-template-columns:repeat(4,minmax(0,1fr)); } }
+.cs-stack{ display:grid; gap:var(--sp-6); margin-top:var(--sp-8); }
+.cs-two{ display:grid; grid-template-columns:1fr; gap:var(--sp-6) var(--col-gap); margin-top:var(--sp-8); align-items:start; }
+@media (min-width:860px){ .cs-two{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+.cs-cols{ display:grid; grid-template-columns:1fr; gap:var(--sp-6) var(--sp-10); margin-top:var(--sp-6); }
+@media (min-width:860px){ .cs-cols{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+.cs-cols h3{ margin:0 0 var(--sp-2); font-family:var(--f-head); font-weight:400; font-size:18px; color:var(--n100); }
+.cs-cols .cs-list{ margin-top:var(--sp-2); }
+.cs-choice{ display:grid; grid-template-columns:1fr; gap:var(--sp-5) var(--sp-8); padding:var(--sp-6) 0; border-top:1px solid var(--n900); align-items:start; }
+@media (min-width:960px){ .cs-choice{ grid-template-columns:minmax(0,5fr) minmax(0,7fr); } }
+.cs-choice h3{ margin:var(--sp-2) 0 var(--sp-3); font-family:var(--f-thin); font-weight:500; font-size:26px; line-height:1.15; color:var(--n100); }
+.cs-choice dl{ margin:0; display:grid; gap:var(--sp-3); }
+.cs-choice dt{ font-size:10px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--n500); }
+.cs-choice dd{ margin:2px 0 0; font-size:14px; line-height:1.7; color:var(--n300); }
+.cs-choice dd b{ color:var(--n100); font-weight:600; }
+.cs-thumbs{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:var(--sp-3); }
+.cs-thumbs.ph{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+.cs-h{ text-wrap:balance; }
+.cs-sub{ margin:var(--sp-10) 0 0; font-family:var(--f-thin); font-weight:500; font-size:26px; line-height:1.15; color:var(--n100); }
+.cs-sub + .cs-lead{ margin-top:var(--sp-3); }
+.cs-links{ display:flex; flex-wrap:wrap; gap:var(--sp-2); margin-top:var(--sp-6); }
+.cs-links .btn{ text-decoration:none; }
 </style>
 </head>
 <body>
 
-<!-- ══ ОБЛОЖКА ══ -->
 <header class="cs-sec cs-cover">
   <div class="cs-cover-blob cs-blob-a" aria-hidden="true"></div>
   <div class="cs-cover-blob cs-blob-b" aria-hidden="true"></div>
@@ -360,82 +395,77 @@ a{ color:var(--accent); }
 <path d="M120.717 33.877C187.382 33.8789 241.427 95.3157 241.427 95.3157C240.957 95.8482 187.094 156.746 120.717 156.748C54.2542 156.748 0.333887 95.6944 0 95.3157C0 95.3157 54.0501 33.877 120.717 33.877ZM120.633 49.6928C95.4466 49.6928 75.0306 70.1087 75.0306 95.2949C75.0306 120.481 95.4459 140.897 120.633 140.897C145.818 140.896 166.234 120.481 166.234 95.2949C166.234 70.109 145.818 49.6933 120.633 49.6928ZM120.639 68.0628C135.682 68.0646 147.879 80.2592 147.879 95.3021C147.878 110.344 135.681 122.539 120.639 122.541C105.596 122.541 93.3945 110.345 93.393 95.3021C93.393 80.2577 105.596 68.0628 120.639 68.0628Z" fill="currentColor"></path>
 </g>
 </svg>
-    <span class="tag tag-default">R14 · 14.9.0</span>
+    <span class="tag tag-default">R15 · 15.0.0</span>
   </div>
 
   <div class="cs-cover-mid">
-    <div class="t-eyebrow">Кейс дизайн-системы · Ticket to Show</div>
-    <h1 class="cs-title">Система, в которой<br>ничего не решается <em>дважды</em>.</h1>
-    <p class="cs-cover-sub">Билетный сервис: 12 экранов, две темы, письма, партнёрская страница. Полгода работы — от набора красивых макетов до ядра с токенами, записанными решениями и автопроверками, которые не дают системе расползтись.</p>
+    <div class="t-eyebrow">Кейс · tickettoshow.ru</div>
+    <h1 class="cs-title">Редизайн Ticket to Show</h1>
+    <p class="cs-cover-sub">Билетный сервис: афиша, выбор мест, оформление заказа, личный кабинет. Редизайн сайта и дизайн-система, на которой он собран и передан в разработку.</p>
     <div class="cs-cover-cta">
-      <a class="btn btn-primary btn-md" href="https://github.com/hitch-npc/tts-design-system">Открытый репозиторий</a>
-      <a class="btn btn-ghost btn-md" href="../index.html">Витрина системы</a>
+      <a class="btn btn-primary btn-md" href="../index.html">Все макеты</a>
+      <a class="btn btn-ghost btn-md" href="https://github.com/hitch-npc/tts-design-system">Репозиторий</a>
     </div>
   </div>
 
   <div class="cs-cover-meta">
-    <div><div class="t-caption">Роль</div><div class="cs-meta-v">Дизайн-система, продуктовый дизайн</div></div>
-    <div><div class="t-caption">Период</div><div class="cs-meta-v">Март — сентябрь 2026</div></div>
-    <div><div class="t-caption">Релиз</div><div class="cs-meta-v">R14 · SemVer, теги, CHANGELOG</div></div>
-    <div><div class="t-caption">Код</div><div class="cs-meta-v">Публичный, с CI и проверками</div></div>
+    <div><div class="t-caption">Роль</div><div class="cs-meta-v">Head designer, UX/UI. Единственный дизайнер в команде</div></div>
+    <div><div class="t-caption">Период</div><div class="cs-meta-v">2025–2026</div></div>
+    <div><div class="t-caption">Объём</div><div class="cs-meta-v">Сайт, личный кабинет, письма, страница партнёров, соцсети</div></div>
+    <div><div class="t-caption">Состояние</div><div class="cs-meta-v">Редизайн на тестовом стенде, на проде — прежняя версия</div></div>
   </div>
 </header>
 
-<!-- ══ ЦИФРЫ ══ -->
 <section class="cs-sec cs-sec-deep">
   <div class="cs-in rv">
-    <div class="t-eyebrow">Итог в цифрах</div>
-    <h2 class="cs-h">Что стало <em>измеримым</em>.</h2>
-    <div class="cs-nums" style="margin-top:var(--sp-8)">
-      <div class="cs-num"><div class="cs-num-v"><span data-count="0">0</span></div><div class="cs-num-k">сырых <code>#hex</code> вне <code>:root</code> в ядре</div><div class="cs-num-was">было 68 предупреждений стража</div></div>
-      <div class="cs-num"><div class="cs-num-v"><span data-count="63">63</span></div><div class="cs-num-k">цветовые переменные уезжают в Figma одной командой</div><div class="cs-num-was">было 27, вручную</div></div>
-      <div class="cs-num"><div class="cs-num-v"><span data-count="21">21</span></div><div class="cs-num-k">решений записаны с причиной и условием пересмотра</div><div class="cs-num-was">было — «помним на словах»</div></div>
-      <div class="cs-num"><div class="cs-num-v"><span data-count="5">5</span><span class="u">✓</span></div><div class="cs-num-k">правил держит страж и проверка публикации</div><div class="cs-num-was">каждый push, локально и в CI</div></div>
+    <div class="t-eyebrow">Коротко</div>
+    <div class="cs-nums" style="margin-top:var(--sp-5)">
+      <div class="cs-num"><div class="cs-num-v"><span data-count="56">56</span></div><div class="cs-num-k">решений записано с причиной, датой и условием пересмотра</div></div>
+      <div class="cs-num"><div class="cs-num-v"><span data-count="13">13</span></div><div class="cs-num-k">решений по макету приняты выбором из вариантов, с сохранённой историей</div></div>
+      <div class="cs-num"><div class="cs-num-v"><span data-count="10">10</span></div><div class="cs-num-k">багов стенда описаны для фронтенда: что сейчас, что нужно, как проверить</div></div>
+      <div class="cs-num"><div class="cs-num-v"><span data-count="2">2</span></div><div class="cs-num-k">темы на одних классах; 110 переменных собираются из одного файла токенов</div></div>
     </div>
-    <p class="cs-note">Цифры — из репозитория: <code>tokens.json</code>, <code>DECISIONS.md</code>, <code>tooling/guardrail.mjs</code>, история версий 14.1.0 → 14.6.3.</p>
+    <p class="cs-note">Цифры — из репозитория: <code>DECISIONS.md</code>, итоговая страница сдачи, <code>tokens.json</code>.</p>
   </div>
 </section>
 
-<!-- ══ КОНТЕКСТ ══ -->
-<section class="cs-sec">
+<section class="cs-sec ">
   <div class="cs-in rv">
-    <div class="t-eyebrow">С чего начали</div>
-    <h2 class="cs-h">Система выглядела цельной,<br>пока экраны смотрели <em>по одному</em>.</h2>
-    <p class="cs-lead">Рядом жили тринадцать способов набрать одну и ту же серую подпись, три принципа выделения активного чипа и кобальт на десятипиксельном тексте. Ни одно из этих решений не было ошибкой в момент принятия — ошибкой было то, что каждое принималось заново. Это дрейф: правило нигде не записано, поэтому его каждый раз изобретают.</p>
-
-    <div class="dm" style="margin-top:var(--sp-8)">
-      <div class="dm-body">
-        <div class="cap-wall">
-          <span style="--fs:9px;--fw:600;--ls:.08em;--cl:var(--n400)">Дата и время</span>
-          <span style="--fs:11px;--fw:700;--ls:.2em;--cl:var(--n300)">Площадка</span>
-          <span style="--fs:8px;--fw:500;--ls:.05em;--cl:var(--n500)">Ряд и место</span>
-          <span style="--fs:12px;--fw:600;--ls:.12em;--cl:var(--n200)">Цена</span>
-          <span style="--fs:10px;--fw:700;--ls:.24em;--cl:var(--accent-soft)">Шаг 2</span>
-          <span style="--fs:9px;--fw:500;--ls:.18em;--cl:var(--n400)">Промокод</span>
-          <span style="--fs:11px;--fw:600;--ls:.06em;--cl:var(--n300)">Зона</span>
-          <span style="--fs:8px;--fw:600;--ls:.22em;--cl:var(--n500)">Почта</span>
-          <span style="--fs:12px;--fw:500;--ls:.1em;--cl:var(--n400)">Телефон</span>
-          <span style="--fs:10px;--fw:600;--ls:.16em;--cl:var(--n300)">Фильтры</span>
-          <span style="--fs:9px;--fw:700;--ls:.14em;--cl:var(--n200)">Итого</span>
-          <span style="--fs:11px;--fw:500;--ls:.2em;--cl:var(--n500)">Билет</span>
-          <span style="--fs:10px;--fw:600;--ls:.09em;--cl:var(--n400)">Сеанс</span>
-        </div>
-      </div>
-      <div class="dm-cap">
-        <div class="t-caption">13 подписей → один стиль: 10px / 500 / .14em / <code>--n500</code></div>
-        <div class="t-caption dm-ok">14.3.0</div>
-      </div>
+    <div class="t-eyebrow">Было и стало</div>
+    <h2 class="cs-h">Главная</h2>
+    <p class="cs-lead">«Было» — сайт на проде в ноябре 2026 года, «стало» — макет редизайна.</p>
+    <div class="cs-pair">
+      <div class="cs-shot"><span class="cs-lbl">Было · прод</span><figure class="cs-shot "><img src="img/case/before-home-d.webp" width="1440" height="900" alt="Главная на проде: шапка из восьми пунктов, лента логотипов площадок, заголовок «Репертуар мероприятий», карточки по две в ряд" loading="lazy"></figure></div>
+      <div class="cs-shot"><span class="cs-lbl cs-lbl-new">Стало · макет</span><figure class="cs-shot "><img src="img/case/after-home-d.webp" width="1440" height="900" alt="Главная в редизайне: шапка из четырёх пунктов с поиском, первый экран с афишей события и кнопкой «Купить», ниже плитки жанров" loading="lazy"></figure></div>
+    </div>
+    <div class="cs-cols">
+      <div><h3>Было</h3><ul class="cs-list">
+        <li>В шапке восемь пунктов; три из них служебные: «Проверка билета», «Возврат билетов», «Тех. поддержка».</li>
+        <li>Первый экран занят лентой логотипов площадок и заголовком-плашкой.</li>
+        <li>Карточки по две в ряд; цена мелко на обложке, действие — «Подробнее».</li>
+        <li>На телефоне до первого события — шапка в две строки и лента площадок.</li>
+      </ul></div>
+      <div><h3>Стало</h3><ul class="cs-list">
+        <li>В шапке четыре раздела, поиск с фильтрами, тема, город и профиль. Служебное ушло в футер.</li>
+        <li>Первый экран — одно событие: афиша, площадка и дата, «Купить — от … ₽».</li>
+        <li>Под ним плитки жанров, календарь с днями без событий и афиша; в карточке — жанр и ценз, название, площадка, цена.</li>
+        <li>Тёмная и светлая темы на одних классах.</li>
+      </ul></div>
+    </div>
+    <div class="cs-phones four">
+      <div class="cs-shot"><span class="cs-lbl">Было · телефон</span><figure class="cs-shot "><img src="img/case/before-home-m.webp" width="600" height="1298" alt="Главная на проде на телефоне" loading="lazy"></figure></div>
+      <div class="cs-shot"><span class="cs-lbl">Было · афиша</span><figure class="cs-shot "><img src="img/case/before-list-m.webp" width="600" height="1298" alt="Список событий на проде на телефоне" loading="lazy"></figure></div>
+      <div class="cs-shot"><span class="cs-lbl cs-lbl-new">Стало · первый экран</span><figure class="cs-shot "><img src="img/case/after-home-m.webp" width="600" height="1298" alt="Первый экран редизайна на телефоне: афиша целиком над названием, кнопка «Купить»" loading="lazy"></figure></div>
+      <div class="cs-shot"><span class="cs-lbl cs-lbl-new">Стало · афиша</span><figure class="cs-shot "><img src="img/case/after-home-m-2.webp" width="600" height="1298" alt="Плитки жанров, календарь и карточки афиши на телефоне" loading="lazy"></figure></div>
     </div>
   </div>
 </section>
 
-<!-- ══ АНАЛИТИКА ══ -->
 <section class="cs-sec cs-sec-surface">
   <div class="cs-in rv">
-    <div class="t-eyebrow">Аналитика</div>
-    <h2 class="cs-h">Сначала — разбор воронки,<br>только потом <em>пиксели</em>.</h2>
-    <p class="cs-lead">UX-аудит прошёл по десяти блокам пути пользователя — от первого экрана до письма после покупки. Каждая гипотеза получила метрику успеха и оценку по RICE, чтобы спорить не о вкусе, а о порядке работ. В дизайн-систему попало то, что выигрывало по счёту, а не то, что интереснее рисовать.</p>
-
+    <div class="t-eyebrow">С чего начинали</div>
+    <h2 class="cs-h">UX-аудит и порядок работ</h2>
+    <p class="cs-lead">Аудит прошёл по десяти блокам пути пользователя — от первого экрана до письма после покупки. У каждой гипотезы — метрика и оценка по RICE; в работу шло то, что выше по счёту.</p>
     <div class="rice">
       <div class="rice-row"><div class="cs-card-t"><b>Бейджи срочности на карточках</b></div><div class="rice-bar"><i style="--w:100%"></i></div><div class="rice-v">13 600</div></div>
       <div class="rice-row"><div class="cs-card-t"><b>Первый экран на мобильном</b></div><div class="rice-bar"><i style="--w:66%"></i></div><div class="rice-v">9 000</div></div>
@@ -444,123 +474,168 @@ a{ color:var(--accent); }
       <div class="rice-row"><div class="cs-card-t"><b>Степпер в оформлении</b></div><div class="rice-bar"><i style="--w:20%"></i></div><div class="rice-v">2 700</div></div>
       <div class="rice-row"><div class="cs-card-t"><b>Письмо после события и NPS</b></div><div class="rice-bar"><i style="--w:18%"></i></div><div class="rice-v">2 400</div></div>
     </div>
-
     <ul class="cs-list">
-      <li><b>Степпер «Места → Данные → Оплата»</b> стал компонентом <code>steps-bar</code>, а не украшением одного макета.</li>
-      <li><b>Теги «Мало мест» и «Новинка»</b> получили смысловые цвета и правила, когда их показывать.</li>
-      <li><b>Цена и площадка</b> видны прямо в списке сеансов — не нужно заходить на схему зала, чтобы понять порядок цен.</li>
-      <li><b>Подсказки при фокусе поиска</b> — восемь состояний, включая пустой результат и неверную раскладку.</li>
-      <li><b>Фильтры</b> перестали быть модальным окном и раскрываются из строки поиска.</li>
+      <li><b>Шаги оформления</b> стали компонентом: «Билеты · Данные · Оплата», с именными билетами добавляется «Документы».</li>
+      <li><b>Цена и площадка</b> видны в списке сеансов — до схемы зала.</li>
+      <li><b>Подсказки поиска</b> — восемь состояний, включая пустой результат и неверную раскладку.</li>
+      <li><b>Фильтры</b> раскрываются из строки поиска, а не модальным окном.</li>
     </ul>
-    <p class="cs-note">Полный аудит, конкурентный разбор и репорты советов остаются в приватной части проекта: в публичный репозиторий выкладывается только дизайн-система и продуктовые сборки.</p>
+    <p class="cs-note">Полный аудит и конкурентный разбор — в приватной части проекта.</p>
   </div>
 </section>
 
-<!-- ══ РАБОТА НАД ОШИБКАМИ ══ -->
-<section class="cs-sec">
+<section class="cs-sec ">
   <div class="cs-in rv">
-    <div class="t-eyebrow">Работа над ошибками</div>
-    <h2 class="cs-h">Каждая правка — <em>с замером</em>,<br>а не «так красивее».</h2>
-    <p class="cs-lead">Внешнее ревью репозитория и две сверки с владельцем дали список ошибок. Ниже — те, где правка держится на числе: контрасте, пикселях, поведении реального движка. Анимации проигрываются сами.</p>
-
-    <div class="cs-grid2">
-
-      <!-- контраст -->
-      <article class="dm">
-        <div class="dm-body">
-          <div class="ctr">
-            <div class="ctr-item ctr-old-w">
-              <button class="ctr-btn ctr-old" type="button" disabled>Купить</button>
-              <div class="ctr-badge dm-bad">2,3 : 1</div>
-              <div class="t-caption">Зелёная кнопка, 14.3.0</div>
-            </div>
-            <div class="ctr-item ctr-new-w">
-              <button class="ctr-btn ctr-new" type="button" disabled>Купить</button>
-              <div class="ctr-badge dm-ok">6,3 : 1</div>
-              <div class="t-caption">Кобальт, 14.3.1</div>
-            </div>
-          </div>
-          <p class="cs-card-t" style="margin-top:var(--sp-5)">Зелёная кнопка покупки прожила один релиз. Белый текст на <code>--success</code> даёт 2,3 : 1 при норме 4,5 : 1 — отменили, зелёный остался только у выбранного места на схеме зала.</p>
-        </div>
-        <div class="dm-cap"><div class="t-caption">Решение №1 · главные кнопки всегда кобальт</div><div class="t-caption dm-ok">14.3.1</div></div>
-      </article>
-
-      <!-- штрихкод -->
-      <article class="dm">
-        <div class="dm-body">
-          <div class="bc">
-            <div class="bc-plate bc-dark">
-              <div class="bc-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-              <div class="bc-scan"></div>
-            </div>
-            <div class="bc-plate bc-light">
-              <div class="bc-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-              <div class="bc-scan"></div>
-            </div>
-          </div>
-          <p class="cs-card-t" style="margin-top:var(--sp-5)">Тёмная тема доходит до физического мира и останавливается. Инверсный код читают не все сканеры на входе, а билет проверяют один раз и в очереди: цена ошибки — человек, которого не пустили. Плашка светлая в обеих темах — интерфейс подстраивается под сканер, а не наоборот.</p>
-        </div>
-        <div class="dm-cap"><div class="t-caption">Решение №13 · система считается с железом</div><div class="t-caption dm-ok">14.5.0</div></div>
-      </article>
-
-      <!-- сглаживание -->
-      <article class="dm">
-        <div class="dm-body">
-          <div class="aa">
-            <div class="aa-row aa-auto"><div class="aa-sample">Партер · ряд 7 · место 12</div><div class="t-caption" style="margin-top:8px">Без сглаживания — Manrope 400 выглядит жирнее</div></div>
-            <div class="aa-row aa-on"><div class="aa-sample">Партер · ряд 7 · место 12</div><div class="t-caption" style="margin-top:8px">antialiased — та же толщина, что в Figma</div></div>
-          </div>
-          <p class="cs-card-t" style="margin-top:var(--sp-5)">Макет в браузере был жирнее макета в Figma, хотя толщины совпадали. Причина — субпиксельное сглаживание Chrome и Safari на macOS: светлый текст на тёмном фоне утолщается. Одна строка на <code>body</code> в ядре обеих тем — и разница ушла.</p>
-        </div>
-        <div class="dm-cap"><div class="t-caption">Решение №17 · разницу видно на macOS</div><div class="t-caption dm-ok">14.6.0</div></div>
-      </article>
-
-      <!-- чипы -->
-      <article class="dm">
-        <div class="dm-body">
-          <div class="chips" style="margin-bottom:var(--sp-4)">
-            <span class="chip chip-old">Все площадки</span>
-            <span class="chip">Театр эстрады</span>
-            <span class="chip">Таганка</span>
-          </div>
-          <div class="chips">
-            <span class="chip chip-on">Все площадки</span>
-            <span class="chip">Театр эстрады</span>
-            <span class="chip">Таганка</span>
-          </div>
-          <p class="cs-card-t" style="margin-top:var(--sp-5)">Активный чип выделялся сразу тремя способами: цветом текста, толщиной и рамкой — и на каждом экране по-разному. Оставили два признака: фон <code>--accent-ghost</code> и рамка <code>--accent</code>. Жирность у активного и неактивного одна.</p>
-        </div>
-        <div class="dm-cap"><div class="t-caption">Решения №9 и №16 · один принцип выделения</div><div class="t-caption dm-ok">14.5.0</div></div>
-      </article>
-
-      <!-- прочее -->
-      <article class="dm">
-        <div class="dm-body">
-          <ul class="cs-list" style="margin-top:0">
-            <li><b>Светлая тема тянула цвета тёмной.</b> Ошибки форм, фокус поля и оранжевый тег брали тёмные значения — выглядело как грязь на белом. Поправлено в 14.3.1 и 14.4.0.</li>
-            <li><b>68 сырых <code>#hex</code> в ядре.</b> Заменены 21 новым токеном — теги, ошибки, затемнения, тени. Сейчас ноль, и новый hex валит сборку.</li>
-            <li><b>Кобальт на мелком тексте.</b> <code>#0047FF</code> на 10 пикселях даёт 3,1 : 1. Теперь акцент в тексте живёт от 17px и в ссылках, мелкие подписи серые.</li>
-            <li><b>Нет видимого фокуса с клавиатуры.</b> Добавлен <code>:focus-visible</code> с обводкой 2px на весь интерактив, включая места на схеме зала.</li>
-            <li><b>Анимации не спрашивали разрешения.</b> <code>prefers-reduced-motion</code> останавливает бегущую строку, парение билета и переходы — эта страница тоже замирает.</li>
-          </ul>
-        </div>
-        <div class="dm-cap"><div class="t-caption">Ревью репозитория · доступность и чистота токенов</div><div class="t-caption dm-ok">14.4.0</div></div>
-      </article>
-
+    <div class="t-eyebrow">Путь покупки</div>
+    <h2 class="cs-h">От афиши до билета</h2>
+    <p class="cs-lead">Экраны редизайна по шагам покупки. Каждый открывается живым макетом на витрине.</p>
+    <div class="cs-stack">
+      <figure class="cs-shot "><img src="img/case/flow-event.webp" width="1400" height="1303" alt="Страница события: слева афиша, название и описание, справа цена и список сеансов по месяцам" loading="lazy"><figcaption><b>Событие.</b> Афиша в блоке обложки; сеансы одним списком, месяц — разделителем; адрес и «Маршрут» — у выбранного сеанса.</figcaption></figure>
+    </div>
+    <div class="cs-two">
+      <figure class="cs-shot "><img src="img/case/flow-seat.webp" width="1400" height="798" alt="Схема зала на пять зон с корзиной мест справа" loading="lazy"><figcaption><b>Схема зала.</b> Зоны контрастных цветов, зелёным — только выбранное место.</figcaption></figure>
+      <figure class="cs-shot "><img src="img/case/flow-hall.webp" width="1440" height="900" alt="Схема большого зала на пятнадцать цен со списком цен по диапазонам" loading="lazy"><figcaption><b>Большой зал.</b> Пятнадцать цен: цвет по диапазону, фильтр по цене, приближение зоны.</figcaption></figure>
+      <figure class="cs-shot "><img src="img/case/flow-checkout.webp" width="1400" height="640" alt="Оформление заказа: контактные данные, подтверждение почты кодом, сводка заказа справа" loading="lazy"><figcaption><b>Оформление.</b> Данные и подтверждение почты кодом; согласия раздельные.</figcaption></figure>
+      <figure class="cs-shot "><img src="img/case/flow-docs.webp" width="1400" height="769" alt="Шаг «Документы» для именных билетов: ФИО и документ на каждое место" loading="lazy"><figcaption><b>Документы.</b> Шаг появляется только у сеансов с именными билетами.</figcaption></figure>
+      <figure class="cs-shot "><img src="img/case/flow-ticket.webp" width="1400" height="829" alt="Электронные билеты стопкой, штрихкод на светлой плашке" loading="lazy"><figcaption><b>Билет.</b> Штрихкод на светлой плашке в обеих темах: инверсию читают не все сканеры.</figcaption></figure>
+      <figure class="cs-shot "><img src="img/case/flow-account.webp" width="1440" height="900" alt="Личный кабинет: предстоящие показы с заказами и билетами" loading="lazy"><figcaption><b>Личный кабинет.</b> Предстоящие показы, избранное, история, возврат заказом.</figcaption></figure>
+    </div>
+    <div class="cs-phones">
+      <figure class="cs-shot "><img src="img/case/after-home-m.webp" width="600" height="1298" alt="Главная на телефоне" loading="lazy"><figcaption>Главная</figcaption></figure>
+      <figure class="cs-shot "><img src="handoff/stand-fixes/img/ab-0.webp" width="390" height="700" alt="Страница события на телефоне: афиша во всю ширину" loading="lazy"><figcaption>Событие</figcaption></figure>
+      <figure class="cs-shot "><img src="img/case/m-hall.webp" width="600" height="1298" alt="Схема большого зала на телефоне" loading="lazy"><figcaption>Схема зала</figcaption></figure>
+      <figure class="cs-shot "><img src="img/case/m-checkout.webp" width="600" height="1409" alt="Оформление заказа на телефоне" loading="lazy"><figcaption>Оформление</figcaption></figure>
+      <figure class="cs-shot "><img src="img/case/m-ticket.webp" width="600" height="974" alt="Билет на телефоне" loading="lazy"><figcaption>Билет</figcaption></figure>
     </div>
   </div>
 </section>
 
-<!-- ══ ФИЧИ В ДВИЖЕНИИ ══ -->
 <section class="cs-sec cs-sec-deep">
   <div class="cs-in rv">
-    <div class="t-eyebrow">Интерфейс в движении</div>
-    <h2 class="cs-h">Пять механик,<br>которые проще <em>показать</em>.</h2>
-    <p class="cs-lead">Всё ниже — живая вёрстка на том же ядре <code>ds-core-r14.css</code>, а не видео. Тайминги совпадают с продуктовыми: 420 мс на появление, 252 мс на уход.</p>
+    <div class="t-eyebrow">Решения, где был выбор</div>
+    <h2 class="cs-h">Четыре примера</h2>
+    <p class="cs-lead">Спорные места решались выбором из собранных вариантов: живые макеты, обсуждение с фронтендом в issues, решение владельца. Отклонённые варианты и причины сохранены на странице сдачи.</p>
+    <div style="margin-top:var(--sp-8)">
+    <div class="cs-choice">
+      <div><div class="t-caption">Схема зала</div><h3>Цвета цен</h3><dl>
+        <div><dt>Что было</dt><dd>Цены шли градиентом одного цвета: соседние категории не различались. Зелёный балкон почти совпадал с выбранным местом — разница 5 ΔE.</dd></div>
+        <div><dt>Варианты</dt><dd>A — перекрасить только балкон. B — ещё и осветлить бельэтаж.</dd></div>
+        <div><dt>Выбрано</dt><dd><b>B.</b> Балкон — розово-малиновый, выбранное место отличается на 32 ΔE. Партер и бельэтаж различимы и при дальтонизме: 7,3 ΔE против 3,3 в варианте A.</dd></div>
+      </dl></div>
+      <div class="cs-thumbs"><figure class="cs-shot "><img src="handoff/stand-fixes/img/seat-grad.webp" width="1100" height="442" alt="Схема зала с градиентом одного цвета" loading="lazy"><figcaption>Было</figcaption></figure><figure class="cs-shot "><img src="handoff/stand-fixes/img/seat-crimson-light.webp" width="1100" height="442" alt="Схема зала с контрастными зонами" loading="lazy"><figcaption>Выбрано</figcaption></figure></div>
+    </div>
+    <div class="cs-choice">
+      <div><div class="t-caption">Главная</div><h3>Категории под первым экраном</h3><dl>
+        <div><dt>Что было</dt><dd>Чипы «Все / Спектакли / Концерты / Классика / Детям» терялись под крупным первым экраном.</dd></div>
+        <div><dt>Варианты</dt><dd>Чипы; пять плиток с описанием; первый экран на всю высоту с плитками после прокрутки; четыре плитки без подписей.</dd></div>
+        <div><dt>Выбрано</dt><dd><b>Четыре плитки без подписей</b> и серая кнопка «Все». Цвет жанра виден всегда, при наведении плитка поднимается; афиша остаётся близко к первому экрану.</dd></div>
+      </dl></div>
+      <div class="cs-thumbs"><figure class="cs-shot "><img src="handoff/stand-fixes/img/home-v-old.webp" width="1100" height="688" alt="Вариант с чипами" loading="lazy"><figcaption>Чипы</figcaption></figure><figure class="cs-shot "><img src="handoff/stand-fixes/img/home-v-tiles.webp" width="1100" height="688" alt="Вариант с пятью плитками" loading="lazy"><figcaption>Пять плиток</figcaption></figure><figure class="cs-shot "><img src="handoff/stand-fixes/img/home-v-full.webp" width="1100" height="688" alt="Вариант с первым экраном на всю высоту" loading="lazy"><figcaption>Полный экран</figcaption></figure><figure class="cs-shot "><img src="handoff/stand-fixes/img/home-v-names.webp" width="1100" height="688" alt="Четыре плитки без подписей" loading="lazy"><figcaption>Выбрано</figcaption></figure></div>
+    </div>
+    <div class="cs-choice">
+      <div><div class="t-caption">Событие · телефон</div><h3>Афиша на странице события</h3><dl>
+        <div><dt>Что было</dt><dd>На странице события не было картинки: категория, название, площадка и описание.</dd></div>
+        <div><dt>Варианты</dt><dd>A — афиша во всю ширину уходит в фон градиентом. D — афиша складывается в миниатюру при прокрутке.</dd></div>
+        <div><dt>Выбрано</dt><dd><b>D.</b> Афиша видна целиком в начале и не занимает экран, пока человек читает описание и выбирает сеанс. На десктопе афиша стоит в блоке обложки.</dd></div>
+      </dl></div>
+      <div class="cs-thumbs ph"><figure class="cs-shot "><img src="handoff/stand-fixes/img/ab-0.webp" width="390" height="700" alt="Афиша во всю ширину" loading="lazy"><figcaption>0 px</figcaption></figure><figure class="cs-shot "><img src="handoff/stand-fixes/img/ab-50.webp" width="390" height="700" alt="Афиша сжимается" loading="lazy"><figcaption>150 px</figcaption></figure><figure class="cs-shot "><img src="handoff/stand-fixes/img/ab-100.webp" width="390" height="700" alt="Миниатюра рядом с названием" loading="lazy"><figcaption>300 px</figcaption></figure></div>
+    </div>
+    <div class="cs-choice">
+      <div><div class="t-caption">Главная</div><h3>Заставка</h3><dl>
+        <div><dt>Что было</dt><dd>Заставки не было. Первая версия играла около девяти секунд при каждой загрузке.</dd></div>
+        <div><dt>Варианты</dt><dd>Длина от трёх до девяти секунд; показ при каждой загрузке или один раз за визит.</dd></div>
+        <div><dt>Выбрано</dt><dd><b>Шесть афиш, около пяти секунд, один раз за визит.</b> Верхняя афиша перелетает в постер первого экрана. Как часто показывать её постоянным покупателям — открытый вопрос.</dd></div>
+      </dl></div>
+      <div class="cs-thumbs"><figure class="cs-shot "><img src="handoff/stand-fixes/img/intro-deck.webp" width="1200" height="750" alt="Заставка: колода афиш и надпись" loading="lazy"><figcaption>Колода афиш</figcaption></figure><figure class="cs-shot "><img src="handoff/stand-fixes/img/intro-hero.webp" width="1200" height="750" alt="Первый экран после заставки" loading="lazy"><figcaption>Первый экран</figcaption></figure></div>
+    </div>
+    </div>
+  </div>
+</section>
 
+<section class="cs-sec cs-sec-surface">
+  <div class="cs-in rv">
+    <div class="t-eyebrow">Передача в разработку</div>
+    <h2 class="cs-h">Одна страница для команды и фронтенда</h2>
+    <p class="cs-lead">У каждого экрана один макет-источник. Итоговая страница собирает баги стенда, принятые решения со спецификацией и открытые вопросы; обсуждение вариантов шло в issues репозитория.</p>
+    <div class="cs-two">
+      <figure class="cs-shot "><img src="img/case/handoff-sum.webp" width="1440" height="900" alt="Сводка итоговой страницы: баги, решения, открытые вопросы" loading="lazy"><figcaption>Сводка: баги стенда, решения, открытые вопросы, предложения.</figcaption></figure>
+      <figure class="cs-shot "><img src="img/case/handoff-card.webp" width="1440" height="900" alt="Карточка решения: итог, спецификация, история выбора" loading="lazy"><figcaption>Карточка решения: сверху итог и спецификация, под ними — история выбора.</figcaption></figure>
+    </div>
+    <ul class="cs-list">
+      <li><b>Баг</b> описан тремя колонками: что сейчас на стенде, что нужно, как проверить.</li>
+      <li><b>Решение</b> — итог, значения для вёрстки и свёрнутая история: какие варианты отклонены и почему.</li>
+      <li><b>Пакеты</b>: заставка одним файлом без зависимостей, личный кабинет со спецификацией, стенды состояний по блокам.</li>
+    </ul>
+    <div class="cs-links"><a class="btn btn-ghost btn-sm" href="handoff/stand-fixes/index.html">Итоговая страница</a><a class="btn btn-ghost btn-sm" href="handoff/account/index.html">Пакет личного кабинета</a><a class="btn btn-ghost btn-sm" href="handoff/intro/index.html">Пакет заставки</a></div>
+  </div>
+</section>
+
+<section class="cs-sec ">
+  <div class="cs-in rv">
+    <div class="t-eyebrow">Дизайн-система</div>
+    <h2 class="cs-h">На чём это собрано</h2>
+    <p class="cs-lead">Система выросла из редизайна: правила, которые повторялись от экрана к экрану, стали токенами, компонентами и записанными решениями. Версия 15.0.0, открытый репозиторий.</p>
+    <div class="pl" style="margin-top:var(--sp-8)">
+      <div class="pl-src">
+        <div class="t-caption">Источник</div>
+        <div class="cs-card-h" style="margin-top:6px">tokens.json</div>
+        <p class="cs-card-t">global + dark + light, примитивы и семантика</p>
+      </div>
+      <div class="pl-wire" aria-hidden="true"><i></i></div>
+      <div class="pl-out">
+        <div class="pl-o"><span>ds-core-r14.css</span><span>тёмная тема</span></div>
+        <div class="pl-o"><span>ds-core-r14-light.css</span><span>светлая тема</span></div>
+        <div class="pl-o"><span>Figma · переменные и стили</span><span>63 цвета, 16 стилей текста</span></div>
+        <div class="pl-o"><span>ds-smm.css</span><span>соц-форматы из smm.tokens.json</span></div>
+      </div>
+    </div>
+    <ul class="cs-list">
+      <li><b>Один источник.</b> Блоки <code>:root</code> обеих тем собираются из <code>tokens.json</code>; тот же файл читают скрипты Figma.</li>
+      <li><b>Две темы — одни классы.</b> Тема меняется заменой одного CSS-файла.</li>
+      <li><b>Решения записаны.</b> У каждого — причина, дата и условие пересмотра; менять решение можно только вместе с записью.</li>
+    </ul>
+    <h3 class="cs-sub">Решения</h3>
+    <div class="dc" style="margin-top:var(--sp-5)">
+      <article class="dc-card">
+        <div class="t-caption">Решение №1 · 12.09.2026</div>
+        <div class="dc-q">Главные кнопки — всегда кобальт.</div>
+        <div class="dc-grid">
+          <div><div class="dc-k">Причина</div><div class="dc-v">Один акцент на систему. Зелёная кнопка давала 2,3 : 1 при норме 4,5 : 1.</div></div>
+          <div><div class="dc-k">Где действует</div><div class="dc-v">«Купить», «Перейти к оформлению», все первичные CTA.</div></div>
+          <div><div class="dc-k">Чтобы пересмотреть</div><div class="dc-v">Пара «фон + текст» с контрастом ≥ 4,5 : 1 в обеих темах.</div></div>
+        </div>
+      </article>
+      <article class="dc-card">
+        <div class="t-caption">Решение №13 · 12.09.2026</div>
+        <div class="dc-q">Штрихкод — тёмные полосы на светлой плашке, не инверсия.</div>
+        <div class="dc-grid">
+          <div><div class="dc-k">Причина</div><div class="dc-v">Сканеру нужен светлый фон; инверсный код читают не все модели.</div></div>
+          <div><div class="dc-k">Где действует</div><div class="dc-v">Электронный билет в обеих темах, мобильный и десктопный.</div></div>
+          <div><div class="dc-k">Чтобы пересмотреть</div><div class="dc-v">Подтверждение, что целевые сканеры читают инверсию.</div></div>
+        </div>
+      </article>
+    </div>
+    <h3 class="cs-sub">Автопроверки</h3>
+    <p class="cs-lead">Часть правил проверяет код — на каждом push, локально и в CI.</p>
+    <div class="dm" style="margin-top:var(--sp-5)">
+      <div class="dm-body">
+        <div class="trm">
+          <div class="ln"><b>$ npm run check:strict</b></div>
+          <div class="ln">→ сборка токенов из tokens.json … <span class="dm-ok">без изменений</span></div>
+          <div class="ln">✓ font-weight: 300, border-radius больше 8px, Cormorant мельче 22px — не найдено</div>
+          <div class="ln">✓ сырой #hex вне :root — не найдено</div>
+          <div class="ln">✓ сторож расхождений: ядро, страницы со своим CSS, сборки редизайна, Figma-скрипты, витрина — <span class="dm-ok">сходятся</span></div>
+          <div class="ln"><b>$ npm run contrast</b></div>
+          <div class="ln">→ контраст текста по APCA в обеих темах</div>
+          <div class="ln"><b>$ npm run security</b></div>
+          <div class="ln">✓ секреты, личные данные, приватные файлы — <span class="dm-ok">чисто</span></div>
+        </div>
+      </div>
+      <div class="dm-cap"><div class="t-caption">tooling/ · страж, сторож расхождений, контраст, проверка публикации</div><div class="t-caption dm-ok">pre-push и CI</div></div>
+    </div>
+    <h3 class="cs-sub">Компоненты в движении</h3>
+    <p class="cs-lead">Живая вёрстка на ядре, не видео.</p>
     <div class="cs-grid2">
-
-      <!-- фильтры -->
       <article class="dm">
         <div class="dm-body fl-stage">
           <div class="fl">
@@ -580,8 +655,6 @@ a{ color:var(--accent); }
         </div>
         <div class="dm-cap"><div class="t-caption">Фильтры разворачиваются из-под строки, в 6px, той же ширины</div><div class="t-caption dm-ok">Решение №18</div></div>
       </article>
-
-      <!-- подсказки -->
       <article class="dm">
         <div class="dm-body">
           <div class="sg">
@@ -600,8 +673,6 @@ a{ color:var(--accent); }
         </div>
         <div class="dm-cap"><div class="t-caption">Совпадение — цветом, не жирным; раскладка исправляется сама</div><div class="t-caption dm-ok">Решение №19</div></div>
       </article>
-
-      <!-- схема зала -->
       <article class="dm">
         <div class="dm-body">
           <div class="sm">
@@ -633,220 +704,67 @@ a{ color:var(--accent); }
         </div>
         <div class="dm-cap"><div class="t-caption">Зелёный на схеме — только выбранное место: балкон розово-малиновый, зелёной зоны нет</div><div class="t-caption dm-ok">Решение №11</div></div>
       </article>
-
-      <!-- карточка + сеансы -->
       <article class="dm">
         <div class="dm-body">
-          <div class="sc">
-            <div class="sc-card">
-              <div class="sc-cover">
-                <span class="sc-chip">14 июня</span>
-                <span class="sc-chip">14 — 20 июня</span>
-                <span class="sc-chip">5 дат</span>
-                <span class="sc-chip">2 площадки</span>
-              </div>
-              <div class="sc-body">
-                <div class="sc-meta">Театр · 2 площадки · 16+</div>
-                <div class="sc-title">Лебединое озеро</div>
-              </div>
+          <div class="ctr">
+            <div class="ctr-item ctr-old-w">
+              <button class="ctr-btn ctr-old" type="button" disabled>Купить</button>
+              <div class="ctr-badge dm-bad">2,3 : 1</div>
+              <div class="t-caption">Зелёная кнопка, 14.3.0</div>
             </div>
-            <div class="ss">
-              <div class="ss-chips"><span class="ss-chip">Театр эстрады</span><span class="ss-chip">Таганка</span></div>
-              <div class="ss-row"><span class="ss-time">19:00</span><span class="ss-v"><span class="ss-name">Театр эстрады</span><span class="ss-hall">Большой зал</span></span><span class="ss-price">1 500 ₽</span></div>
-              <div class="ss-row ss-b"><span class="ss-time">20:00</span><span class="ss-v"><span class="ss-name">Таганка</span><span class="ss-hall">Малая сцена</span></span><span class="ss-price">2 400 ₽</span></div>
+            <div class="ctr-item ctr-new-w">
+              <button class="ctr-btn ctr-new" type="button" disabled>Купить</button>
+              <div class="ctr-badge dm-ok">6,3 : 1</div>
+              <div class="t-caption">Кобальт, 14.3.1</div>
             </div>
           </div>
-          <p class="cs-card-t" style="margin-top:var(--sp-5)">Одно событие — одна карточка на афише, даже если площадок две, а дат пять. Плашка на обложке подбирается агрегатом, а сеансы раскрываются только на странице события.</p>
+          <p class="cs-card-t" style="margin-top:var(--sp-5)">Зелёная кнопка покупки прожила один релиз. Белый текст на <code>--success</code> даёт 2,3 : 1 при норме 4,5 : 1 — отменили, зелёный остался только у выбранного места на схеме зала.</p>
         </div>
-        <div class="dm-cap"><div class="t-caption">Smart-chip дат и фильтр площадок в списке сеансов</div><div class="t-caption dm-ok">R14</div></div>
-      </article>
-
-      <!-- шаги -->
-      <article class="dm" style="grid-column:1/-1">
-        <div class="dm-body">
-          <div class="st">
-            <div class="st-i st-1"><span class="st-dot"></span><span class="st-l">Места</span></div>
-            <div class="st-line"></div>
-            <div class="st-i st-2"><span class="st-dot"></span><span class="st-l">Данные</span></div>
-            <div class="st-line"></div>
-            <div class="st-i st-3"><span class="st-dot"></span><span class="st-l">Оплата</span></div>
-          </div>
-          <p class="cs-card-t" style="margin-top:var(--sp-5)">Степпер — самая дешёвая гипотеза аудита по трудозатратам и одна из самых заметных по эффекту на доведение до оплаты. В системе он живёт как компонент, а не как украшение одного макета.</p>
-        </div>
-        <div class="dm-cap"><div class="t-caption">steps-bar · три шага оформления</div><div class="t-caption dm-ok">Из плана аудита</div></div>
-      </article>
-
-    </div>
-  </div>
-</section>
-
-<!-- ══ РЕШЕНИЯ ══ -->
-<section class="cs-sec cs-sec-surface">
-  <div class="cs-in rv">
-    <div class="t-eyebrow">Решения</div>
-    <h2 class="cs-h">Решение — это строка в файле,<br>а не <em>чья-то память</em>.</h2>
-    <p class="cs-lead">У каждого правила есть причина, дата и условие пересмотра. Менять решение можно — но только вместе с записью, в том же коммите. Изменение без записи считается дрейфом и откатывается. Оспорить решение можно замером или экраном, где правило ломается; «мне так больше нравится» тоже принимается — от владельца системы, и тоже записывается.</p>
-
-    <div class="dc" style="margin-top:var(--sp-8)">
-      <article class="dc-card">
-        <div class="t-caption">Решение №1 · 12.09.2026</div>
-        <div class="dc-q">Главные кнопки — всегда кобальт.</div>
-        <div class="dc-grid">
-          <div><div class="dc-k">Причина</div><div class="dc-v">Один акцент на систему. Зелёная кнопка давала 2,3 : 1 при норме 4,5 : 1.</div></div>
-          <div><div class="dc-k">Где действует</div><div class="dc-v">«Купить», «Перейти к оформлению», все первичные CTA.</div></div>
-          <div><div class="dc-k">Чтобы пересмотреть</div><div class="dc-v">Пара «фон + текст» с контрастом ≥ 4,5 : 1 в обеих темах.</div></div>
-        </div>
-      </article>
-      <article class="dc-card">
-        <div class="t-caption">Решение №7 · 11.09.2026</div>
-        <div class="dc-q">Cormorant — только от 22px, мельче — Forum 400.</div>
-        <div class="dc-grid">
-          <div><div class="dc-k">Причина</div><div class="dc-v">Тонкие штрихи Cormorant рябят на малом кегле — это видно на карточках афиши.</div></div>
-          <div><div class="dc-k">Где действует</div><div class="dc-v">Названия событий, подзаголовки карточек, плитки категорий.</div></div>
-          <div><div class="dc-k">Чтобы пересмотреть</div><div class="dc-v">Начертание с бо́льшим контрастом штриха на 15–20px.</div></div>
-        </div>
-      </article>
-      <article class="dc-card">
-        <div class="t-caption">Решение №13 · 12.09.2026</div>
-        <div class="dc-q">Штрихкод — тёмные полосы на светлой плашке, не инверсия.</div>
-        <div class="dc-grid">
-          <div><div class="dc-k">Причина</div><div class="dc-v">Сканеру нужен светлый фон; инверсный код читают не все модели.</div></div>
-          <div><div class="dc-k">Где действует</div><div class="dc-v">Электронный билет в обеих темах, мобильный и десктопный.</div></div>
-          <div><div class="dc-k">Чтобы пересмотреть</div><div class="dc-v">Подтверждение, что целевые сканеры читают инверсию.</div></div>
-        </div>
-      </article>
-      <article class="dc-card">
-        <div class="t-caption">Решение №20 · 15.09.2026</div>
-        <div class="dc-q">Футер — один на весь сайт, темнее страницы.</div>
-        <div class="dc-grid">
-          <div><div class="dc-k">Причина</div><div class="dc-v">Два разных футера на соседних страницах читались как два разных сайта.</div></div>
-          <div><div class="dc-k">Где действует</div><div class="dc-v">Редизайн, страница партнёров, все публичные сборки.</div></div>
-          <div><div class="dc-k">Чтобы пересмотреть</div><div class="dc-v">Решение владельца — пересматривается только им.</div></div>
-        </div>
-      </article>
-    </div>
-
-    <p class="cs-note">Отдельно ведётся список осознанных исключений: капс на первом экране страницы партнёров, название спектакля капсом на билетах, <code>font-weight: 300</code> у кнопки зума схемы зала. Исключение, записанное с причиной, — не нарушение системы, а её часть.</p>
-  </div>
-</section>
-
-<!-- ══ АВТОПРОВЕРКИ ══ -->
-<section class="cs-sec">
-  <div class="cs-in rv">
-    <div class="t-eyebrow">Автопроверки</div>
-    <h2 class="cs-h">Правила, которые проверяет<br>не человек, а <em>машина</em>.</h2>
-    <p class="cs-lead">Часть правил переведена в код: страж читает ядро и валит сборку, если кто-то (включая меня) забыл договорённость. Проверка публикации отдельно ищет секреты, личные данные и приватные файлы — на каждом push, локально хуком и в CI.</p>
-
-    <div class="dm" style="margin-top:var(--sp-8)">
-      <div class="dm-body">
-        <div class="trm">
-          <div class="ln"><b>$ npm run check:strict</b></div>
-          <div class="ln">→ сборка токенов из tokens.json … <span class="dm-ok">без изменений</span></div>
-          <div class="ln">✓ font-weight: 300 вне <code>.smap-zoom-btn</code> — не найдено</div>
-          <div class="ln">✓ border-radius больше 8px — не найдено</div>
-          <div class="ln">✓ Cormorant мельче 22px — не найдено</div>
-          <div class="ln">✓ сырой #hex вне :root — не найдено</div>
-          <div class="ln"><b>$ npm run security</b></div>
-          <div class="ln">✓ секреты, личные данные, приватные файлы — <span class="dm-ok">чисто</span></div>
-        </div>
-      </div>
-      <div class="dm-cap"><div class="t-caption">tooling/guardrail.mjs + tooling/security-check.mjs</div><div class="t-caption dm-ok">pre-push и CI</div></div>
-    </div>
-
-    <div class="cs-grid3">
-      <article class="cs-card">
-        <h3 class="cs-card-h">Страж правил</h3>
-        <p class="cs-card-t">Запреты из документации стали проверкой. Новый <code>#hex</code> вне <code>:root</code> в ядре теперь не предупреждение, а ошибка сборки — поэтому их и ноль.</p>
-      </article>
-      <article class="cs-card">
-        <h3 class="cs-card-h">Проверка публикации</h3>
-        <p class="cs-card-t">Репозиторий публичный, поэтому перед push ищутся токены, реальные почты и телефоны, макеты Figma, презентации и архивы. В демо живут только заглушки.</p>
-      </article>
-      <article class="cs-card">
-        <h3 class="cs-card-h">Белый список</h3>
-        <p class="cs-card-t">В <code>.gitignore</code> закрыто всё, открыто перечисленное. Новая папка не попадёт в публикацию, пока её не откроют явно — приватное не утекает по умолчанию.</p>
+        <div class="dm-cap"><div class="t-caption">Решение №1 · главные кнопки всегда кобальт</div><div class="t-caption dm-ok">14.3.1</div></div>
       </article>
     </div>
   </div>
 </section>
 
-<!-- ══ ТОКЕНЫ ══ -->
 <section class="cs-sec cs-sec-deep">
   <div class="cs-in rv">
-    <div class="t-eyebrow">Один источник правды</div>
-    <h2 class="cs-h">Цвет меняется в одном месте —<br>и <em>везде</em>.</h2>
-    <p class="cs-lead">Блоки <code>:root</code> в обеих темах генерируются из <code>tokens.json</code>, руками их не правят. Тот же файл читают скрипты Figma: переменные и стили собираются в макет одной командой, ссылки на примитивы разрешаются, прозрачность поддерживается.</p>
-
-    <div class="pl" style="margin-top:var(--sp-8)">
-      <div class="pl-src">
-        <div class="t-caption">Источник</div>
-        <div class="cs-card-h" style="margin-top:6px">tokens.json</div>
-        <p class="cs-card-t">global + dark + light, примитивы и семантика</p>
-      </div>
-      <div class="pl-wire" aria-hidden="true"><i></i></div>
-      <div class="pl-out">
-        <div class="pl-o"><span>ds-core-r14.css</span><span>тёмная тема</span></div>
-        <div class="pl-o"><span>ds-core-r14-light.css</span><span>светлая тема</span></div>
-        <div class="pl-o"><span>Figma · переменные и стили</span><span>63 цвета, 16 стилей текста</span></div>
-        <div class="pl-o"><span>ds-smm.css</span><span>соц-форматы из smm.tokens.json</span></div>
-      </div>
-    </div>
-
-    <ul class="cs-list">
-      <li><b>Две темы — одни классы.</b> Переключение темы = замена одного CSS-файла, разметка не меняется.</li>
-      <li><b>Figma не расходится с кодом</b>, потому что собирается из того же файла, а не перебивается руками.</li>
-      <li><b>Компоненты правятся руками</b>, но цвета в них — только через <code>var(--…)</code>: это и проверяет страж.</li>
-    </ul>
-  </div>
-</section>
-
-<!-- ══ ПУБЛИКАЦИЯ ══ -->
-<section class="cs-sec cs-sec-surface">
-  <div class="cs-in rv">
-    <div class="t-eyebrow">Публикация</div>
-    <h2 class="cs-h">Система живёт в открытом<br><em>репозитории</em>, а не в папке.</h2>
-    <p class="cs-lead">Ядро, продуктовые сборки, письма, Telegram-эмодзи и скрипты Figma лежат на GitHub и открываются прямо в браузере. Аудиты, деки, макеты и контент-планы остаются приватными — их не пускает белый список и проверка перед публикацией.</p>
-
-    <div class="cs-grid3">
-      <article class="cs-card">
-        <div class="t-caption">Версии</div>
-        <h3 class="cs-card-h">SemVer и CHANGELOG</h3>
-        <p class="cs-card-t">MAJOR — номер релиза системы, MINOR — новые компоненты и страницы, PATCH — исправления. Каждая версия — тег и запись в истории с причиной изменения.</p>
-      </article>
-      <article class="cs-card">
-        <div class="t-caption">Передача</div>
-        <h3 class="cs-card-h">Пакет для фронтенда</h3>
-        <p class="cs-card-t">Страницы «было / стало» с кадрами обеих тем, состояниями и таблицей значений — чтобы разработчик и дизайнер читали одно и то же, а не пересказ.</p>
-      </article>
-      <article class="cs-card">
-        <div class="t-caption">Витрина</div>
-        <h3 class="cs-card-h">GitHub Pages</h3>
-        <p class="cs-card-t">Все сборки открываются по ссылке: редизайн в двух темах, партнёрская страница, cookie-баннер, письма, эмодзи. Каждый файл самодостаточен и работает офлайн.</p>
-      </article>
+    <div class="t-eyebrow">Состояние</div>
+    <h2 class="cs-h">Что готово и что дальше</h2>
+    <div class="cs-cols">
+      <div><h3>Готово</h3><ul class="cs-list">
+        <li>Макеты главной, события, схемы зала, оформления, билета и личного кабинета в двух темах.</li>
+        <li>Итоговая страница сдачи и пакеты для фронтенда.</li>
+        <li>Ядро системы, письма, страница партнёров, слой для соцсетей.</li>
+      </ul></div>
+      <div><h3>В работе</h3><ul class="cs-list">
+        <li>Фронтенд собирает редизайн на тестовом стенде; на проде пока прежняя версия.</li>
+        <li>Не утверждён вид страницы «Площадки» и блока отзывов.</li>
+        <li>Ждут обсуждения: таймер брони в оформлении, частота показа заставки, правило выбора события первого экрана.</li>
+        <li>Данных о конверсии после редизайна пока нет: он не вышел на прод.</li>
+      </ul></div>
     </div>
   </div>
 </section>
 
-<!-- ══ ФИНАЛ ══ -->
 <section class="cs-sec cs-final">
   <div class="cs-in rv">
     <div class="t-eyebrow">Посмотреть</div>
-    <h2 class="cs-h">Всё, о чём выше, <em>открыто</em>.</h2>
-    <p class="cs-lead">Ссылки ведут на живые сборки и на код. Тёмная тема — основная, светлая собрана на тех же классах.</p>
-    <div class="cs-final-cta">
-      <a class="btn btn-primary btn-md" href="https://github.com/hitch-npc/tts-design-system">Репозиторий</a>
+    <h2 class="cs-h">Макеты и код</h2>
+    <div class="cs-links">
+      <a class="btn btn-primary btn-md" href="home-new-tiles.html?intro=long">Новая главная</a>
       <a class="btn btn-ghost btn-md" href="redesign-v2-dark.html">Редизайн · тёмная</a>
       <a class="btn btn-ghost btn-md" href="redesign-v2-light.html">Редизайн · светлая</a>
-      <a class="btn btn-ghost btn-md" href="partner-program/partner-program-r14.html">Партнёрам</a>
-      <a class="btn btn-ghost btn-md" href="../emails/emails-all.html">Письма</a>
+      <a class="btn btn-ghost btn-md" href="seat-big-hall-demo.html">Большой зал</a>
+      <a class="btn btn-ghost btn-md" href="account.html">Личный кабинет</a>
       <a class="btn btn-ghost btn-md" href="../index.html">Витрина</a>
+      <a class="btn btn-ghost btn-md" href="https://github.com/hitch-npc/tts-design-system">Репозиторий</a>
     </div>
   </div>
 </section>
 
 <footer class="cs-foot">
   <div class="cs-foot-in">
-    <span>TTS Design System · R14 · 14.9.0</span>
+    <span>Ticket to Show · редизайн и дизайн-система · R15 · 15.0.0</span>
     <span><a href="https://github.com/hitch-npc/tts-design-system">GitHub</a> · <a href="https://github.com/hitch-npc/tts-design-system/blob/main/CHANGELOG.md">История версий</a> · <a href="https://github.com/hitch-npc/tts-design-system/blob/main/DECISIONS.md">Решения</a></span>
   </div>
 </footer>
